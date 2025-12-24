@@ -7,17 +7,3 @@ export interface Event {
 	location: string;
 	description: string;
 }
-
-export interface Artist {
-	_id?: ObjectId;
-	name: string;
-	genre: string;
-	bio: string;
-}
-
-export interface Testimonial {
-	_id?: ObjectId;
-	author: string;
-	content: string;
-	rating: number;
-}

@@ -1,12 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import ShareLinks from "./ShareLinks";
 
-export default function BlogSidebar({ blog, blogs }) {
+export default function BlogSidebar({ blogs }) {
 	return (
 		<div className="space-y-6">
 			{/* Share Box */}
-			<ShareLinks title={blog?.blogTitle} />
 
 			{/* Other Blogs */}
 			<div className="bg-white rounded-lg shadow-sm p-6">

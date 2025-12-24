@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import HomeVideo from "@/components/HomeVideo";
 
 export default function About() {
 	return (
@@ -42,7 +41,6 @@ export default function About() {
 								</Link>
 							</div>
 						</div>
-						<HomeVideo />
 					</div>
 				</motion.div>
 			</div>

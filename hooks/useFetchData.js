@@ -14,8 +14,6 @@ const useFetchData = (apiEndpoint, responseKey = "data") => {
 			if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
 			const result = await res.json();
 
-			// If result is already an array, use it directly
-			// Otherwise, try to get the data from the responseKey
 			if (Array.isArray(result)) {
 				setData(result);
 			} else {
