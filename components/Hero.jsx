@@ -14,7 +14,7 @@ export default function Hero() {
 	// Define your slides with unique content for each
 	const slides = [
 		{
-			image: "/magichero.jpeg",
+			image: "/rabi1.webp",
 			title: "Welcome to RSP Norway",
 			description: "Discover RSP Norway, where parents find the perfect blend of nurturing care and innovative learning for their toddlers.",
 			primaryButton: "Explore Our School",
@@ -25,7 +25,7 @@ export default function Hero() {
 			primaryHover: "#0093dd",
 		},
 		{
-			image: "/mc-group.jpeg", // You'll need to add this image to your public folder
+			image: "/rabi2.webp", // You'll need to add this image to your public folder
 			title: "Where Learning Meets Imagination",
 			description: "Our creative curriculum engages children through play-based learning, helping them develop essential cognitive and social skills in a safe environment.",
 			primaryButton: "Our Curriculum",
@@ -36,7 +36,7 @@ export default function Hero() {
 			primaryHover: "#3A7BC8",
 		},
 		{
-			image: "/pre.jpeg", // You'll need to add this image to your public folder
+			image: "/rabi3.webp", // You'll need to add this image to your public folder
 			title: "Growing Bright Minds For Tomorrow",
 			description: "We provide age-appropriate activities that foster creativity, critical thinking, and a lifelong love of learning in a nurturing community.",
 			primaryButton: "Enroll Today",
