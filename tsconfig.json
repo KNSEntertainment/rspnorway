@@ -1,0 +1,58 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"allowJs": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"@/*": ["./*"]
+		}
+	},
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"app/components/ContactCard.jsx",
+		"app/components/UpcomingEvents.jsx",
+		"app/components/Newsletter.jsx",
+		"app/dashboard/subscribers/SubscribersList.jsx",
+		"app/dashboard/events/page.jsx",
+		"app/dashboard/artists/page.jsx",
+		"app/dashboard/testimonials/page.jsx",
+		"app/components/Testimonials.jsx",
+		"app/components/FeaturedArtists.jsx",
+		"app/dashboard/settings/page.jsx",
+		"app/(auth)/user/page.jsx",
+		"app/api/webhook/route.js",
+		"app/dashboard/layout.jsx",
+		"app/dashboard/subscribers/page.jsx",
+		"components/Footer.jsx",
+		"app/request-a-quote/page.jsx",
+		"components/Hero.jsx",
+		"components/SearchModal.jsx",
+		"components/SearchBox.jsx",
+		"app/contact/page.tsx",
+		"components/DisplayPrices.jsx",
+		"components/Testimonials.jsx",
+		"components/testimonials-masonry.jsx",
+		"components/testimonials-alt.jsx",
+		"components/Blog.jsx",
+		"components/TestimonialCard.jsx"
+	],
+	"exclude": ["node_modules"]
+}
