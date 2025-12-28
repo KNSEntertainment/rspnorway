@@ -10,9 +10,9 @@ export default function Footer() {
 	if (loading) return <p>Loading...</p>;
 
 	return (
-		<footer className="bg-gradient-to-b to-blue-200 from-transparent text-black">
+		<footer className="bg-gradient-to-b to-blue-50 from-transparent text-black py-8">
 			{/* Main Footer Content */}
-			<div className="container mx-auto px-6 py-12">
+			<div className="container mx-auto px-6">
 				{/* Logo and Tagline */}
 				<div className="flex flex-col items-center mb-12">
 					<div className=" shadow-lg mb-4">
@@ -70,8 +70,8 @@ export default function Footer() {
 				</div>
 
 				{/* Links Row */}
-				<div className="pt-8 border-t border-gray-800">
-					<nav className="mb-6">
+				<div className="pt-2 md:pt-8 border-t border-gray-800">
+					<nav className="mb-2 md:mb-4">
 						<ul className="flex flex-wrap gap-x-8 gap-y-3 justify-center">
 							<li className="text-gray-400 hover:text-black transition-colors text-sm">
 								<Link href="#">Terms And Conditions</Link>

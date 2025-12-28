@@ -74,7 +74,7 @@ export default function Header({ isMenuOpen, toggleMenu }: HeaderProps) {
 				{ title: "Past Events", href: "/events-notices/past" },
 			],
 		},
-		{ title: "Gallery", href: "#" },
+		{ title: "Gallery", href: "/gallery" },
 		{ title: "Circulars", href: "/notices" },
 		{ title: "Contact", href: "/contact" },
 	];
@@ -125,9 +125,10 @@ export default function Header({ isMenuOpen, toggleMenu }: HeaderProps) {
 				<div className="container mx-auto p-4 flex justify-between items-center">
 					<Link href="/" className="flex items-center space-x-4 cursor-pointer group">
 						<Image src="/rsp-norway-logo.png" alt="RSP Norway Logo" width={200} height={200} className="w-auto h-12 md:h-16 rounded-md" />
-						<span className={`leading-6 text-2xl font-bold ${isScrolled ? "text-black" : "text-white group-hover:text-slate-100"} transition-colors duration-200`}>
-							RSP <br />
-							Norway
+						<span className={`hidden md:block leading-3 text-2xl font-bold ${isScrolled ? "text-black" : "text-white group-hover:text-slate-100"} transition-colors duration-200`}>
+							<span className="text-2xl font-bold">RSP </span>
+							<br />
+							<span className="text-md font-thin">Norway </span>
 						</span>
 					</Link>
 
@@ -194,7 +195,7 @@ export default function Header({ isMenuOpen, toggleMenu }: HeaderProps) {
 									Login
 								</Link>
 								<Link href="#" className={`px-4 py-2 rounded-md text-[#007bbd] bg-white font-medium hover:bg-white/80 transition-colors duration-200`} onClick={() => setActiveDropdown(null)}>
-									Become a Member
+									Join us
 								</Link>
 							</div>
 						)}

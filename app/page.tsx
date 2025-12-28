@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Blog from "@/components/Blog";
+import Gallery from "@/components/Gallery";
 // import Post from "@/components/Post";
 
 export default function LandingPage() {
@@ -11,6 +12,7 @@ export default function LandingPage() {
 				{/* <Post /> */}
 				<About />
 				<Blog />
+				<Gallery />
 			</main>
 		</div>
 	);

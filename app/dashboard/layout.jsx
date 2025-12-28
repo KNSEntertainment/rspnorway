@@ -56,7 +56,7 @@ export default function DashboardLayout({ children }) {
 
 	return (
 		<div
-			className="mx-auto flex flex-col md:flex-row h-screen overflow-hidden"
+			className="mx-auto flex flex-col md:flex-row h-screen overflow-hidden pt-20"
 			onClick={(e) => {
 				// close profile dropdown when clicking outside of the profile container
 				if (profileOpen && !(e.target.closest && e.target.closest("#admin-profile-menu"))) {

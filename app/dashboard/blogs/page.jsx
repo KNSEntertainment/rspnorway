@@ -56,8 +56,8 @@ export default function EventsPage() {
 					<TableHeader>
 						<TableRow>
 							<TableHead>Blog Title</TableHead>
-							<TableHead>Blog Description</TableHead>
-							<TableHead>Blog Author</TableHead>
+							{/* <TableHead>Blog Description</TableHead> */}
+							{/* <TableHead>Blog Author</TableHead> */}
 							<TableHead>Blog Date</TableHead>
 							<TableHead>Main Image</TableHead>
 							<TableHead>Secondary Image</TableHead>
@@ -69,14 +69,14 @@ export default function EventsPage() {
 							blogs.map((blog) => (
 								<TableRow key={blog?._id}>
 									<TableCell className="w-64 font-semibold">{blog.blogTitle}</TableCell>
-									<TableCell className="w-72">{blog.blogDesc}</TableCell>
-									<TableCell className="w-36">{blog.blogAuthor}</TableCell>
+									{/* <TableCell className="w-72">{blog.blogDesc}</TableCell> */}
+									{/* <TableCell className="w-36">{blog.blogAuthor}</TableCell> */}
 									<TableCell className="w-32">{blog.blogDate}</TableCell>
-									<TableCell className="w-32">
-										<Image src={blog?.blogMainPicture || "/placeholder.jpg"} width={200} height={200} alt={blog?.blogAuthor || "alt"} className="w-24 h-32 object-cover" />
+									<TableCell className="w-16">
+										<Image src={blog?.blogMainPicture || "/placeholder.jpg"} width={50} height={50} alt={blog?.blogAuthor || "alt"} className="w-16 h-16 object-cover" />
 									</TableCell>
-									<TableCell className="w-32">
-										<Image src={blog?.blogSecondPicture || "/placeholder.jpg"} width={200} height={200} alt={blog?.blogAuthor || "alt"} className="w-24 h-32 object-cover" />
+									<TableCell className="w-16">
+										<Image src={blog?.blogSecondPicture || "/placeholder.jpg"} width={50} height={50} alt={blog?.blogAuthor || "alt"} className="w-16 h-16 object-cover" />
 									</TableCell>
 
 									<TableCell className="w-32">

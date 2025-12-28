@@ -6,14 +6,14 @@ import HomeVideo from "./HomeVideo";
 
 export default function About() {
 	return (
-		<section id="about" className="my-12 md:my-20 flex items-center justify-center">
+		<section id="about" className="md:my-20 flex items-center justify-center">
 			{/* Content container */}
 			<div className="container mx-auto flex flex-col md:flex-row gap-8 relative z-10">
 				<motion.div className="mx-auto bg-white overflow-hidden" initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }}>
 					{/* green accent bar */}
 
 					{/* Content with padding */}
-					<div className="grid grid-cols-1 md:grid-cols-2">
+					<div className="grid grid-cols-1 md:grid-cols-2 justify-center items-center">
 						<div className="p-8 md:p-12">
 							<h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800">
 								Welcome to
@@ -35,7 +35,9 @@ export default function About() {
 								</Link>
 							</div>
 						</div>
-						<HomeVideo />
+						<div className="mx-8 h-[240px] md:h-[300px] lg:h-[400px] w-auto">
+							<HomeVideo />
+						</div>
 					</div>
 				</motion.div>
 			</div>

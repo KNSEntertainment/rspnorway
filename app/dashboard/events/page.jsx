@@ -49,14 +49,14 @@ export default function EventsPage() {
 	};
 
 	return (
-		<div className="w-max">
-			<div className="text-right">
-				<button onClick={handleCreateEvent} className="bg-red-800 text-slate-200 font-bold px-4 py-2 my-4">
+		<div className="w-full max-w-full px-2 sm:px-6">
+			<div className="flex flex-col sm:flex-row sm:justify-end items-stretch gap-2 mt-2 mb-4">
+				<button onClick={handleCreateEvent} className="bg-red-800 text-slate-200 font-bold px-4 py-2 rounded w-full sm:w-auto text-center">
 					Create Event
 				</button>
 			</div>
-			<div className="bg-white rounded-lg shadow">
-				<Table>
+			<div className="bg-white rounded-lg shadow overflow-x-auto">
+				<Table className="min-w-[700px]">
 					<TableHeader>
 						<TableRow>
 							<TableHead>Event Name</TableHead>
@@ -64,7 +64,6 @@ export default function EventsPage() {
 							<TableHead>Event Venue</TableHead>
 							<TableHead>Event Date</TableHead>
 							<TableHead>Event Time</TableHead>
-
 							<TableHead>Poster</TableHead>
 							<TableHead>Actions</TableHead>
 						</TableRow>
@@ -73,22 +72,21 @@ export default function EventsPage() {
 						{events.length > 0 ? (
 							events.map((event) => (
 								<TableRow key={event._id}>
-									<TableCell className="font-semibold max-w-96">{event.eventname}</TableCell>
-									<TableCell className="max-w-96">{event.eventdescription}</TableCell>
+									<TableCell className="font-semibold max-w-40 truncate whitespace-normal break-words">{event.eventname}</TableCell>
+									<TableCell className="max-w-40 truncate whitespace-normal break-words">{event.eventdescription}</TableCell>
 									<TableCell>{event.eventvenue}</TableCell>
 									<TableCell className="w-24">{event.eventdate}</TableCell>
 									<TableCell className="w-28">{event.eventtime}</TableCell>
-
 									<TableCell>
-										<Image src={event.eventposterUrl || "/placeholder.jpg"} width={200} height={200} alt={event.eventname || "alt"} className="w-24 h-32 object-cover" />
+										<Image src={event.eventposterUrl || "/placeholder.jpg"} width={100} height={100} alt={event.eventname || "alt"} className="w-16 h-20 object-cover rounded" />
 									</TableCell>
 									<TableCell>
-										<div className="flex space-x-2">
-											<Button variant="ghost" size="icon" onClick={() => handleEdit(event)}>
-												<Pencil className="w-6 h-6 text-blue-700" />
+										<div className="flex flex-col sm:flex-row gap-2">
+											<Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="w-8 h-8">
+												<Pencil className="w-5 h-5 text-blue-700" />
 											</Button>
-											<Button variant="ghost" size="icon" onClick={() => handleDelete(event._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+											<Button variant="ghost" size="icon" onClick={() => handleDelete(event._id)} className="w-8 h-8">
+												<Trash2 className="w-5 h-5 text-red-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -96,7 +94,7 @@ export default function EventsPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={11} className="text-center">
+								<TableCell colSpan={7} className="text-center">
 									No events found.
 								</TableCell>
 							</TableRow>
@@ -105,9 +103,9 @@ export default function EventsPage() {
 				</Table>
 			</div>
 			{openEventModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-[960px]">
-						<h2 className="text-lg font-bold text-slate-200 bg-red-700 p-4 mb-6 text-center">{eventToEdit ? "Edit Event" : "Create Event"}</h2>
+				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
+					<div className="bg-white p-2 sm:p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-2xl mx-auto">
+						<h2 className="text-base sm:text-lg font-bold text-slate-200 bg-red-700 p-2 sm:p-4 mb-4 sm:mb-6 text-center">{eventToEdit ? "Edit Event" : "Create Event"}</h2>
 						<EventForm handleCloseEventModal={handleCloseEventModal} eventToEdit={eventToEdit} />
 					</div>
 				</div>
