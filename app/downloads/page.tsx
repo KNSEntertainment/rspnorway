@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Download, Eye, FileText, Calendar, Search } from "lucide-react";
+import { Download, FileText, Calendar, Search } from "lucide-react";
 import Image from "next/image";
 
 interface Document {
@@ -62,10 +62,6 @@ export default function DownloadsPage() {
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
-	};
-
-	const handleView = (fileUrl: string) => {
-		window.open(fileUrl, "_blank");
 	};
 
 	const filteredDocuments = documents.filter((doc) => {
@@ -131,7 +127,13 @@ export default function DownloadsPage() {
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 								{filteredDocuments.map((doc) => (
 									<div key={doc.id} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-										{doc?.imageUrl ? <Image src={doc.imageUrl} alt={doc.title} width={350} height={350} className="text-white object-cover w-full max-h-48" /> : <FileText size={48} className="text-white" />}
+										{doc.imageUrl && doc.imageUrl.trim() !== "" ? (
+											<Image src={doc.imageUrl} alt={doc.title} width={350} height={350} className="text-white object-cover w-full max-h-48" />
+										) : (
+											<div className="w-full max-h-48 h-[192px] flex items-center justify-center bg-brand">
+												<FileText size={48} className="text-blue-100" />
+											</div>
+										)}
 
 										{/* Document Info */}
 										<div className="p-6">
@@ -144,10 +146,6 @@ export default function DownloadsPage() {
 
 											{/* Action Buttons */}
 											<div className="flex gap-3">
-												<button onClick={() => handleView(doc.fileUrl)} className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium">
-													<Eye size={18} />
-													View
-												</button>
 												<button onClick={() => handleDownload(doc.fileUrl, doc.title)} className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-md">
 													<Download size={18} />
 													Download
