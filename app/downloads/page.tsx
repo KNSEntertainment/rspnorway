@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Download, FileText, Calendar, Search } from "lucide-react";
+import { Download, FileText, Calendar, Search, Filter } from "lucide-react";
 import Image from "next/image";
 
 interface Document {
@@ -17,6 +17,7 @@ interface Document {
 export default function DownloadsPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All");
+	const [showMobileFilter, setShowMobileFilter] = useState(false);
 
 	const [documents, setDocuments] = useState<Document[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -117,30 +118,56 @@ export default function DownloadsPage() {
 	return (
 		<div className="mt-24 min-h-screen">
 			<main className="container mx-auto px-4 py-8">
-				<section className="container mx-auto px-4 py-8 mb-16">
+				<section className="container mx-auto md:px-4 py-8 mb-16">
 					<h2 className="text-3xl text-center font-bold mb-6">
 						Download <span className="mx-auto text-[#0094da]">Documents</span>
 					</h2>
 					<div className="w-24 h-1 mx-auto bg-[#0094da] mb-6 md:mb-12 rounded-full"></div>
 
 					{/* Main Content */}
-					<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+					<div className="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
 						{/* Search and Filter Bar */}
-						<div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-							<div className="flex flex-col md:flex-row gap-4">
-								{/* Search Input */}
-								<div className="flex-1 relative">
+						<div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 mb-8">
+							<div className="flex flex-col md:flex-row gap-2 md:gap-4">
+								{/* Search Input + Filter Icon for mobile */}
+								<div className="flex items-center w-full md:flex-1 min-w-0 relative">
 									<Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
 									<input type="text" placeholder="Search documents..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+									{/* Filter icon for mobile */}
+									<button type="button" className="ml-2 md:hidden flex items-center justify-center p-2 rounded-lg bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Show filter categories" onClick={() => setShowMobileFilter((v) => !v)}>
+										<Filter size={22} className="text-gray-500" />
+									</button>
 								</div>
 
 								{/* Category Filter */}
-								<div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
-									{categories.map((category) => (
-										<button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${selectedCategory === category ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>
-											{category}
-										</button>
-									))}
+								<div className="w-full md:w-auto min-w-0">
+									{/* Dropdown for small screens (shown when filter icon clicked) */}
+									{showMobileFilter && (
+										<div className="block md:hidden mb-2 animate-fade-in">
+											<select
+												value={selectedCategory}
+												onChange={(e) => {
+													setSelectedCategory(e.target.value);
+													setShowMobileFilter(false);
+												}}
+												className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+											>
+												{categories.map((category) => (
+													<option key={category} value={category}>
+														{category}
+													</option>
+												))}
+											</select>
+										</div>
+									)}
+									{/* Buttons for medium and larger screens */}
+									<div className="hidden md:flex gap-2 overflow-x-auto pb-2 md:pb-0">
+										{categories.map((category) => (
+											<button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${selectedCategory === category ? "bg-blue-600 text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>
+												{category}
+											</button>
+										))}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -151,7 +178,7 @@ export default function DownloadsPage() {
 								{filteredDocuments.map((doc) => (
 									<div key={doc.id} className="flex bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-h-[224px] group">
 										{doc.imageUrl && doc.imageUrl.trim() !== "" ? (
-											<Image src={doc.imageUrl} alt={doc.title} width={350} height={350} className="text-white object-fill w-48 h-full" />
+											<Image src={doc.imageUrl} alt={doc.title} width={350} height={350} className="text-white hidden lg:block object-fill w-48 h-full" />
 										) : (
 											<div className="w-full max-h-48 h-[192px] flex items-center justify-center bg-brand">
 												<FileText size={48} className="text-blue-100" />
