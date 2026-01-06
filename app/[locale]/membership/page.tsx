@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function MembershipPage() {
@@ -286,13 +287,13 @@ export default function MembershipPage() {
 								<input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} className="w-5 h-5 text-blue-600 rounded mt-1" />
 								<span className="ml-3 text-gray-700">
 									I agree to the{" "}
-									<a href="/terms" className="text-blue-600 hover:underline">
+									<Link href="/terms" className="text-blue-600 hover:underline">
 										Terms and Conditions
-									</a>{" "}
+									</Link>{" "}
 									and{" "}
-									<a href="/privacy-policy" className="text-blue-600 hover:underline">
+									<Link href="/privacy-policy" className="text-blue-600 hover:underline">
 										Privacy Policy
-									</a>
+									</Link>
 									. I understand that my information will be used solely for RSP Norway membership purposes.
 									<span className="text-red-500"> *</span>
 								</span>

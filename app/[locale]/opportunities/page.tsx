@@ -306,9 +306,9 @@ function Sidebar({ opportunities, onSelect }: { opportunities: Opportunity[]; on
 			<div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
 				<h3 className="text-lg font-bold mb-3">Need Help Choosing?</h3>
 				<p className="text-blue-100 text-sm mb-4">Not sure which role fits you best? We&apos;re here to help!</p>
-				<a href="/contact" className="block w-full bg-white text-blue-600 text-center py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+				<Link href="/contact" className="block w-full bg-white text-blue-600 text-center py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
 					Contact Us
-				</a>
+				</Link>
 			</div>
 		</div>
 	);

@@ -59,12 +59,12 @@ export default function GetInvolvedPage() {
 					<h1 className="text-3xl md:text-4xl font-bold mb-6 animate-fade-in">Get Involved</h1>
 					<p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8">Your participation can transform Nepal. Join thousands of committed individuals working towards a progressive, corruption-free nation.</p>
 					<div className="flex justify-center gap-4">
-						<a href="/opportunities" className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg">
+						<Link href="/opportunities" className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg">
 							See Opportunities
-						</a>
-						<a href="#volunteer" className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105">
+						</Link>
+						<Link href="#volunteer" className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105">
 							Volunteering
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>
@@ -134,12 +134,12 @@ export default function GetInvolvedPage() {
 					<h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Make History?</h2>
 					<p className="text-xl text-blue-100 mb-8">Join RSP Norway today and be part of Nepal&apos;s transformation story</p>
 					<div className="flex justify-center gap-4">
-						<a href="/membership" className="px-10 py-4 bg-white text-blue-600 rounded-full font-bold text-lg hover:bg-blue-50 transition-all transform hover:scale-105 shadow-xl">
+						<Link href="/membership" className="px-10 py-4 bg-white text-blue-600 rounded-full font-bold text-lg hover:bg-blue-50 transition-all transform hover:scale-105 shadow-xl">
 							Become Member
-						</a>
-						<a href="/contact" className="px-10 py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105">
+						</Link>
+						<Link href="/contact" className="px-10 py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105">
 							Contact
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>

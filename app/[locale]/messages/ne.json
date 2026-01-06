@@ -1,0 +1,19 @@
+{
+	"nav": {
+		"home": "Ghar",
+		"about": "About Us",
+		"contact": "Contact",
+		"gallery": "Gallery"
+	},
+	"home": {
+		"title": "Welcome to RSP Norway",
+		"description": "Your trusted partner in education"
+	},
+	"contact": {
+		"title": "Contact Us",
+		"name": "Name",
+		"email": "Email",
+		"message": "Message",
+		"submit": "Send Message"
+	}
+}

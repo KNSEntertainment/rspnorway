@@ -1,0 +1,19 @@
+{
+	"nav": {
+		"home": "Hjem",
+		"about": "Om Oss",
+		"contact": "Kontakt",
+		"gallery": "Galleri"
+	},
+	"home": {
+		"title": "Velkommen til RSP Norge",
+		"description": "Din pålitelige partner innen utdanning"
+	},
+	"contact": {
+		"title": "Kontakt Oss",
+		"name": "Navn",
+		"email": "E-post",
+		"message": "Melding",
+		"submit": "Send Melding"
+	}
+}

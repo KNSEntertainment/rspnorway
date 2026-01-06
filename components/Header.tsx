@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SearchModal from "@/components/SearchModal";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface NavItemProps {
 	title: string;
@@ -105,6 +106,8 @@ export default function Header({ isMenuOpen, toggleMenu }: HeaderProps) {
 	}, [showUserDropdown]);
 	const pathname = usePathname();
 	const headerRef = useRef<HTMLDivElement>(null);
+
+	const t = useTranslations("home");
 
 	function handleSignOut() {
 		signOut({ callbackUrl: "/" });
@@ -261,7 +264,8 @@ export default function Header({ isMenuOpen, toggleMenu }: HeaderProps) {
 									Login
 								</Link>
 								<Link href="/membership" className={`px-4 py-2 rounded-md text-[#007bbd] bg-gray-200 font-medium hover:bg-brand hover:text-white transition-colors duration-200`} onClick={() => setActiveDropdown(null)}>
-									Become a Member
+									{/* Become a Member */}
+									{t("welcome_message")}
 								</Link>
 							</div>
 						)}

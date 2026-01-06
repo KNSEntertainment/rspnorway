@@ -55,7 +55,7 @@ export default function DownloadsPage() {
 			}
 		};
 		fetchDocuments();
-	}, []);
+	}, [setLoading]);
 
 	const categories = ["All", ...Array.from(new Set(documents.map((doc) => doc.category)))];
 
