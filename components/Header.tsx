@@ -165,11 +165,18 @@ export default function MenuHeader() {
 	};
 
 	return (
-		<>
-			<section className={`w-full h-10 p-[5px] border-b border-gray-300 shadow-sm fixed top-0 left-0 z-50 transition-colors duration-500 will-change-[background-color] ${isScrolled ? "bg-brand" : "bg-gradient-to-r from-gray-50 to-gray-100"}`}>
+		<div
+			className={`fixed w-full left-0 z-50 transition-all duration-300 bg-transparent`}
+			style={{
+				top: 0,
+				transitionProperty: "height, box-shadow, background-color",
+			}}
+		>
+			{/* Top header */}
+			<section className={`w-full h-10 p-[5px] border-b border-gray-300 shadow-sm transition-colors duration-500 will-change-[background-color] ${isScrolled ? "bg-brand" : "bg-gradient-to-r from-gray-50 to-gray-100"}`}>
 				<div className="container mx-auto px-4">
 					<div className="flex justify-between items-center">
-						{/* Left Section - Contact Info */}
+						{/* ...existing code for top header left and right sections... */}
 						<div className="flex items-center gap-4 md:gap-6">
 							<a href="tel:+4796800984" className="flex items-center gap-2 text-gray-700 hover:text-brand transition-colors group">
 								<svg className={`w-4 h-4 ${isScrolled ? "text-white" : "text-brand"} group-hover:scale-110 transition-transform`} fill="currentColor" viewBox="0 0 20 20">
@@ -177,7 +184,6 @@ export default function MenuHeader() {
 								</svg>
 								<span className={`inline text-sm font-medium ${isScrolled ? "text-white" : "text-gray-900"}`}>{tr("phone_small_device")}</span>
 							</a>
-
 							<a href="mailto:info@rspnorway.org" className="hidden md:flex items-center gap-2 text-gray-700 hover:text-brand transition-colors group">
 								<svg className={`w-4 h-4 ${isScrolled ? "text-white" : "text-brand"} group-hover:scale-110 transition-transform`} fill="currentColor" viewBox="0 0 20 20">
 									<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -186,16 +192,9 @@ export default function MenuHeader() {
 								<span className={`text-sm font-medium ${isScrolled ? "text-white" : "text-gray-900"}`}>info@rspnorway.org</span>
 							</a>
 						</div>
-
-						{/* Right Section - Social & Language */}
 						<div className="flex items-center gap-3 md:gap-4">
-							{/* Social Media Links */}
 							<SocialMediaLinks />
-
-							{/* Divider */}
 							<div className="h-6 w-px bg-gray-300 hidden sm:block"></div>
-
-							{/* Language Switcher Dropdown */}
 							<div className="relative select-none" ref={langDropdownRef}>
 								<button
 									onClick={(e) => {
@@ -212,13 +211,9 @@ export default function MenuHeader() {
 									<span className="hidden sm:inline text-sm font-medium text-gray-700">{LANGUAGES.find((l) => l.code === locale)?.label}</span>
 									<ChevronDown size={16} className={`text-gray-500 transition-transform duration-200 ${showLangDropdown ? "rotate-180" : ""}`} />
 								</button>
-
 								{showLangDropdown && (
 									<>
-										{/* Backdrop for mobile */}
 										<div className="fixed inset-0 z-40 md:hidden" onClick={() => setShowLangDropdown(false)} />
-
-										{/* Dropdown Menu */}
 										<div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50 overflow-hidden">
 											<div className="py-1">
 												{LANGUAGES.map((lang) => (
@@ -249,13 +244,10 @@ export default function MenuHeader() {
 				</div>
 			</section>
 
-			{/* Push-down search bar */}
-			<div className={`w-full transition-all duration-300 ${isModalOpen ? "h-auto" : "h-0 overflow-hidden"}`} style={{ zIndex: 60, position: "relative" }}>
-				{isModalOpen && <SearchModal closeModal={closeModal} placeholder={t("search_placeholder")} />}
-			</div>
-
-			<motion.header ref={headerRef} className={`fixed w-full z-40 transition-colors duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-brand"}`} style={{ top: "40px" }} initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }} onClick={handleHeaderClick}>
+			{/* Main nav bar */}
+			<motion.header ref={headerRef} className={`w-full z-40 transition-colors duration-300 ${isScrolled ? "bg-white shadow-md" : "bg-brand"}`} style={{}} initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }} onClick={handleHeaderClick}>
 				<div className="container mx-auto p-4 flex justify-between items-center">
+					{/* ...existing code for nav bar... */}
 					<Link href="/" className="flex items-center space-x-4 cursor-pointer group">
 						<Image src="/rsp-norway-logo.png" alt="RSP Norway Logo" width={200} height={200} className="w-auto h-12 md:h-16 rounded-md" />
 						<span className={`hidden md:block leading-3 text-2xl font-bold ${isScrolled ? "text-black" : "text-white group-hover:text-slate-100"} transition-colors duration-200`}>
@@ -264,15 +256,13 @@ export default function MenuHeader() {
 							<span className="text-md font-thin">{t("norway")} </span>
 						</span>
 					</Link>
-
 					<div className="flex gap-6 items-center">
-						<nav className="hidden md:flex items-center space-x-6">
+						<nav className="hidden md:flex items-center space-x-6 font-medium text-md lg:text-lg">
 							{navItems.map((item) => (
 								<NavItem key={item.href || item.title} title={item.title} href={item.href} isScrolled={isScrolled} pathname={pathname} activeDropdown={activeDropdown} setActiveDropdown={setActiveDropdown} />
 							))}
 						</nav>
 					</div>
-
 					<div className="flex gap-4 md:gap-6 items-center">
 						<button
 							onClick={(e) => {
@@ -286,7 +276,6 @@ export default function MenuHeader() {
 								<Search />
 							</span>
 						</button>
-
 						{user ? (
 							<div className="relative" ref={userDropdownRef}>
 								<button
@@ -299,10 +288,9 @@ export default function MenuHeader() {
 								>
 									<div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-brand flex items-center justify-center text-white font-semibold shadow-sm">{avatarInitial}</div>
 								</button>
-
 								{showUserDropdown && (
 									<div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl ring-1 ring-gray-900/5 overflow-hidden z-50">
-										{/* User Info Section */}
+										{/* ...existing code for user dropdown... */}
 										<div className="p-4 bg-gradient-to-br from-brand/5 to-transparent border-b border-gray-100">
 											<div className="flex items-center gap-3 mb-3">
 												<div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-semibold text-lg">{user?.name?.charAt(0).toUpperCase()}</div>
@@ -312,8 +300,6 @@ export default function MenuHeader() {
 												</div>
 											</div>
 										</div>
-
-										{/* Menu Items */}
 										<div className="py-2">
 											<button
 												onClick={() => {
@@ -325,7 +311,6 @@ export default function MenuHeader() {
 												<User size={18} className="text-gray-400" />
 												<span>My Profile</span>
 											</button>
-
 											<button
 												onClick={() => {
 													setShowUserDropdown(false);
@@ -336,7 +321,6 @@ export default function MenuHeader() {
 												<Settings size={18} className="text-gray-400" />
 												<span>Settings</span>
 											</button>
-
 											<Link
 												href="/membership"
 												onClick={() => {
@@ -348,11 +332,7 @@ export default function MenuHeader() {
 												<span>Become a Member</span>
 											</Link>
 										</div>
-
-										{/* Divider */}
 										<div className="border-t border-gray-100"></div>
-
-										{/* Sign Out */}
 										<div className="py-2">
 											<button
 												onClick={() => {
@@ -378,7 +358,6 @@ export default function MenuHeader() {
 								</Link>
 							</div>
 						)}
-
 						<div
 							className="md:hidden cursor-pointer ml-4"
 							onClick={(e) => {
@@ -391,7 +370,6 @@ export default function MenuHeader() {
 						</div>
 					</div>
 				</div>
-
 				<AnimatePresence>
 					{isMenuOpen && (
 						<motion.div className="md:hidden" initial={{ opacity: 0, x: 300 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 300 }} transition={{ duration: 0.3 }}>
@@ -420,6 +398,18 @@ export default function MenuHeader() {
 					)}
 				</AnimatePresence>
 			</motion.header>
-		</>
+
+			{/* Animated search bar below nav */}
+			<div
+				className={`w-full transition-all duration-300 ${isModalOpen ? "h-20 opacity-100" : "h-0 opacity-0 overflow-hidden"}`}
+				style={{
+					transitionProperty: "height, opacity",
+					transitionDuration: "300ms, 300ms",
+					transitionDelay: isModalOpen ? "0ms, 150ms" : "0ms, 0ms",
+				}}
+			>
+				{isModalOpen && <SearchModal closeModal={closeModal} placeholder={t("search_placeholder")} />}
+			</div>
+		</div>
 	);
 }
