@@ -11,11 +11,11 @@ function BlogSidebar({ blogs }) {
 
 			{/* Other Blogs */}
 			<div className="rounded-lg shadow-sm p-6">
-				<h3 className="text-lg font-semibold text-gray-800 mb-4">Circulars</h3>
+				<h3 className="text-lg font-semibold text-gray-800 mb-4">Blogs</h3>
 				<div className="space-y-4">
 					{blogs &&
 						blogs.map((relBlog) => (
-							<Link href={`/${locale}/circulars/${relBlog._id}`} key={relBlog._id} className="flex space-x-4 group border-b pb-4 last:border-0 last:pb-0">
+							<Link href={`/${locale}/blogs/${relBlog._id}`} key={relBlog._id} className="flex space-x-4 group border-b pb-4 last:border-0 last:pb-0">
 								<div className="relative w-16 h-16 flex-shrink-0">
 									<Image src={relBlog?.blogMainPicture || "Image"} alt={relBlog.blogTitle || "Blog Title"} width={64} height={64} className="object-cover rounded-md" />
 								</div>

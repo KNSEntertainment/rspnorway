@@ -4,6 +4,7 @@ import useFetchData from "@/hooks/useFetchData";
 import { Mail, MapPin, Phone } from "lucide-react";
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
+import SectionHeader from "@/components/SectionHeader";
 
 type Setting = {
 	address?: string;
@@ -16,7 +17,7 @@ export default function ContactPage() {
 	const [success, setSuccess] = useState("");
 	const [error, setError] = useState("");
 
-	const { data: settings } = useFetchData("/api/settings", "settings");
+	const { data: settings, loading } = useFetchData("/api/settings", "settings");
 	const typedSettings = settings as Setting[] | undefined;
 	const t = useTranslations("contact");
 
@@ -51,12 +52,9 @@ export default function ContactPage() {
 	}
 
 	return (
-		<section className="container min-h-screen mt-24 md:mt-32 mx-auto px-4 pt-12">
-			<h2 className="text-2xl md:text-3xl text-center font-bold mb-6">
-				{t("title").split(" ")[0]} <span className="mx-auto text-brand">{t("title").split(" ")[1]}</span>
-			</h2>
-			<div className="w-24 h-1 mx-auto bg-brand md:mb-12 rounded-full"></div>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+		<section>
+			<SectionHeader heading={t("title")} />
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 -mt-6 md:-mt-0 gap-8">
 				<div className="bg-white lg:col-span-2 shadow-xl rounded-lg p-8 w-full">
 					<h1 className="text-lg md:text-3xl font-bold text-center mb-2 md:mb-4 text-brand">{t("subtitle")}</h1>
 					<p className="text-center text-gray-600 mb-8">{t("description")}</p>
@@ -74,7 +72,7 @@ export default function ContactPage() {
 							<textarea name="message" value={form.message} onChange={handleChange} required rows={5} className="mt-1 block w-full rounded-md border border-gray-300 bg-white/80 shadow focus:border-blue-500 focus:ring-2 focus:ring-blue-400 focus:outline-none px-4 py-2 text-gray-800 placeholder-gray-400" placeholder={t("form.message_placeholder")} />
 						</div>
 						<button type="submit" className="w-full py-3 px-6 bg-brand text-white font-semibold rounded-md shadow hover:bg-brand/90 transition-colors">
-							{/* {isLoading ? t("form.sending") : t("form.send")} */}
+							{loading ? t("form.sending") : t("form.send")}
 						</button>
 						{success && <p className="text-green-600 text-center mt-2">{t("success")}</p>}
 						{error && <p className="text-red-600 text-center mt-2">{t("error")}</p>}

@@ -7,21 +7,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 
-export default function Circulars() {
+export default function Blogs() {
 	const { data: blogs, loading } = useFetchData("/api/blogs", "blogs");
 	const pathname = usePathname();
 	const router = useRouter();
 	const [navLoading, setNavLoading] = useState(false);
-	const t = useTranslations("circulars");
+	const t = useTranslations("blogs");
 	const locale = useLocale();
 
 	if (loading) {
 		return (
-			<section id="circulars" className="bg-white">
+			<section id="blogs" className="bg-white">
 				<div className="container mx-auto px-4 lg:px-8 py-12 sm:py-16">
-					<h2 className="text-3xl font-bold text-center mb-6">
-						{t("circulars_title")} / <span className="text-brand">{t("notices_title")}</span>
-					</h2>
+					<h2 className="text-3xl font-bold text-center mb-6">{t("blogs_title")}</h2>
 					<div className="w-24 h-1 bg-brand mx-auto mb-6 md:mb-12 rounded-full"></div>
 					<div className="mx-auto px-4 py-12">
 						<div className="space-y-8">
@@ -52,9 +50,7 @@ export default function Circulars() {
 	return (
 		<section id="blog" className="bg-gradient-to-br from-brand-100 to-gray-100">
 			<div className="container mx-auto px-4 py-12">
-				<h2 className="text-3xl font-bold text-center mb-6">
-					{t("circulars_title")} / <span className="text-brand">{t("notices_title")}</span>
-				</h2>
+				<h2 className="text-3xl font-bold text-center mb-6">{t("blogs_title")}</h2>
 				<div className="w-24 h-1 bg-brand mx-auto mb-4 md:mb-8 rounded-full"></div>
 
 				{/* Loading overlay for navigation */}
@@ -91,7 +87,7 @@ export default function Circulars() {
 												className="bg-transparent p-0 m-0 border-none text-left w-full hover:text-brand focus:outline-none"
 												onClick={() => {
 													setNavLoading(true);
-													router.push(`/${locale}/circulars/${blog?._id}`);
+													router.push(`/${locale}/blogs/${blog?._id}`);
 												}}
 												disabled={navLoading}
 											>
@@ -103,9 +99,9 @@ export default function Circulars() {
 							</div>
 						))}
 				</div>
-				{pathname !== "/en/circulars" && (
+				{pathname !== "/en/blogs" && (
 					<div className="flex justify-center mt-6">
-						<Link href="/en/circulars" className="inline-flex items-center px-5 py-2.5 font-medium text-sm rounded-lg bg-brand text-white hover:bg-brand transition-colors duration-200">
+						<Link href="/en/blogs" className="inline-flex items-center px-5 py-2.5 font-medium text-sm rounded-lg bg-brand text-white hover:bg-brand transition-colors duration-200">
 							{t("view_all")}
 							<svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
 								<path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />

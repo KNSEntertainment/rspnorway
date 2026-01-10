@@ -24,13 +24,14 @@ export default function SearchModal({ closeModal, placeholder }) {
 	};
 
 	return (
-		<div className="w-full flex items-center justify-center bg-white/20 backdrop-blur-sm transition-all duration-300 px-4 py-4 md:py-6 z-40">
-			<form onSubmit={handleSearch} className="flex items-center w-full max-w-2xl gap-2 md:gap-4">
-				<input type="text" ref={searchInputRef} className="flex-1 border border-blue-200 rounded-md px-4 py-2 md:py-3 text-lg md:text-2xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-blue-50" placeholder={placeholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} required />
-				<button type="submit" className="bg-brand rounded-md p-2 md:p-3 flex items-center justify-center hover:bg-blue-700 transition-colors">
+		<div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-lg transition-all duration-300 pointer-events-none">
+			<form onSubmit={handleSearch} className=" flex items-center max-w-2xl w-full gap-2 md:gap-4 rounded-xl shadow-xl px-4 py-4 md:py-6 mx-4 pointer-events-auto">
+				<input type="text" ref={searchInputRef} className="flex-1 border-b-2 text-white text-2xl border-brand px-4 py-2 md:py-3 md:text-4xl focus:outline-none  bg-transparent" placeholder={placeholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} required />
+				<button type="submit" className="bg-brand rounded-md p-2 md:p-4 flex items-center justify-center hover:bg-brand transition-colors">
 					<Search className="text-white w-6 h-6 md:w-8 md:h-8" />
 				</button>
-				<button type="button" onClick={closeModal} className="ml-2 text-gray-400 hover:text-blue-700 transition-colors">
+				{/* Close icon at top right */}
+				<button type="button" onClick={closeModal} className="absolute top-6 right-6 text-gray-400 hover:text-brand transition-colors">
 					<X className="w-6 h-6 md:w-8 md:h-8" />
 				</button>
 			</form>

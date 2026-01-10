@@ -112,7 +112,7 @@ function OpportunitiesPageInner() {
 	const otherOpportunities = opportunitiesData.filter((opp) => opp.id !== selectedId);
 
 	return (
-		<div className="min-h-screen mt-24 bg-gradient-to-br from-slate-50 to-blue-50">
+		<div className=" bg-gradient-to-br from-slate-50 to-blue-50">
 			{/* Breadcrumb */}
 			<div className="bg-white border-b border-gray-200">
 				<div className="max-w-7xl mx-auto px-4 py-4">

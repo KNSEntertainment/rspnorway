@@ -73,13 +73,25 @@ export default function Hero() {
 	const currentSlideData = slides[currentSlide];
 
 	return (
-		<>
+		<div className="relative left-1/2 right-1/2 w-screen max-h-screen max-w-none -translate-x-1/2">
 			<Head>
 				<title>RSP Norway</title>
 			</Head>
 
 			{/* Hero Section */}
-			<section className="relative h-screen flex items-center justify-center text-center overflow-hidden">
+			<section
+				className="relative flex items-center justify-center text-center overflow-hidden"
+				role="hero"
+				style={{
+					height: "calc(100vh - 6rem)",
+					minHeight: 320,
+				}}
+			>
+				<style>{`
+					   @media (min-width: 768px) {
+						   section[role='hero'] { height: calc(100vh - 8.5rem) !important; }
+					   }
+				   `}</style>
 				{/* Background Images (one for each slide with animation) */}
 				{slides.map((slide, index) => (
 					<motion.div
@@ -159,7 +171,7 @@ export default function Hero() {
 					<ChevronRight className="w-6 h-6" />
 				</button>
 			</section>
-		</>
+		</div>
 	);
 }
 

@@ -7,9 +7,5 @@ export default async function Gallery() {
 
 	// Import GalleryWrapper as a client component
 	const GalleryWrapper = (await import("./GalleryWrapper")).default;
-	return (
-		<section className="container mx-auto px-4 py-16 md:py-12">
-			<GalleryWrapper images={images} />
-		</section>
-	);
+	return <GalleryWrapper images={images} />;
 }

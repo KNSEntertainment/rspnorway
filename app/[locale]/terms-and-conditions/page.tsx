@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function TermsAndConditions() {
 	return (
-		<div className="min-h-screen mt-24 bg-gradient-to-br from-indigo-50 to-purple-50">
+		<div className=" bg-gradient-to-br from-indigo-50 to-purple-50">
 			{/* Header */}
 			<header className="bg-white shadow-sm border-b border-gray-200">
 				<div className="max-w-4xl mx-auto px-4 py-6">
@@ -70,21 +70,6 @@ export default function TermsAndConditions() {
 						<h2 className="text-xl font-bold text-yellow-900 mb-3 uppercase">Termination Policy</h2>
 						<p className="text-gray-800 leading-relaxed font-medium">FAILURE TO ADHERE TO THE TERMS OF SERVICE AND PRIVACY POLICY, AMONG OTHERS, MAY RESULT, AMONG OTHER THINGS, IN THE TERMINATION OF YOUR ACCOUNT AND THE DELETION OF CONTENT SUBMITTED FROM YOUR ACCOUNT ON THE RSP APP, WITH OR WITHOUT NOTICE, AS DETERMINED BY THE RSP APP IN ITS SOLE DISCRETION.</p>
 					</section>
-
-					{/* Agreement Acknowledgment */}
-					{/* <section className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-lg p-8">
-						<div className="flex items-start space-x-4">
-							<div className="flex-shrink-0">
-								<svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-								</svg>
-							</div>
-							<div>
-								<h2 className="text-2xl font-bold text-green-900 mb-3">I AGREE</h2>
-								<p className="text-gray-800 leading-relaxed font-medium">I have read and understood all of the terms and conditions above and the Privacy Policy.</p>
-							</div>
-						</div>
-					</section> */}
 
 					{/* Additional Resources */}
 					<section className="border-t border-gray-200 pt-6">

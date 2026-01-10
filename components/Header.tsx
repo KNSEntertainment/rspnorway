@@ -191,7 +191,7 @@ export default function Header() {
 	return (
 		<div className="fixed inset-x-0 top-0 z-50">
 			{/* Utility Bar */}
-			<motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`h-11 border-b transition-all duration-500 ${isScrolled ? "bg-gradient-to-r from-brand via-brand to-emerald-600 text-white border-brand" : "bg-neutral-50/95 backdrop-blur-md border-neutral-200"}`}>
+			<motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className={`h-11 border-b transition-colors duration-500 ${isScrolled ? "bg-gradient-to-r from-brand via-brand to-emerald-600" : "bg-neutral-50/95 backdrop-blur-md"}`}>
 				<div className="container mx-auto px-4 lg:px-6 h-full flex items-center justify-between">
 					<div className="flex items-center gap-6 text-sm font-medium">
 						<a href="tel:+4796800984" className="hover:opacity-75 transition-opacity duration-200 flex items-center gap-2" aria-label="Call us">
@@ -217,7 +217,7 @@ export default function Header() {
                   font-medium text-sm transition-all duration-200
                   hover:scale-105 active:scale-95
                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
-                  ${isScrolled ? "bg-white/95 text-brand border-white/20 shadow-sm" : "bg-white text-neutral-800 border-neutral-200"}
+				  bg-white ${isScrolled ? "shadow-sm" : ""}
                 `}
 							>
 								<Flag country={LANGUAGES.find((l) => l.code === locale)?.flag as "no" | "np" | "gb"} size={20} />
@@ -256,19 +256,19 @@ export default function Header() {
 				animate={{ y: 0 }}
 				transition={{ duration: 0.4, ease: "easeOut" }}
 				className={`
-          transition-all duration-500
-          ${isScrolled ? "bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]" : "bg-gradient-to-r from-brand via-brand to-emerald-600"}
+		  transition-colors duration-500
+		  ${isScrolled ? "bg-white/95 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)]" : "bg-gradient-to-r from-brand via-brand to-emerald-600"}
         `}
 			>
-				<div className="container mx-auto px-4 lg:px-6 h-24 flex items-center justify-between">
+				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex items-center justify-between border-b border-brand">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
-							<Image src="/rsp-norway-logo.png" alt="RSP Norway" width={180} height={72} className="h-14 w-auto transition-transform duration-300 group-hover:scale-105" />
+							<Image src="/rsp-norway-logo.png" alt="RSP Norway" width={180} height={72} className="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" />
 						</div>
 						<div className="flex flex-col leading-3">
-							<span className={`text-xl font-bold ${isScrolled ? "text-brand" : "text-white"}`}>{t("rsp")}</span>
-							<span className={`text-md ${isScrolled ? "text-brand" : "text-white"}`}>{t("norway")}</span>
+							<span className={`hidden md:block text-xl font-bold ${isScrolled ? "text-brand" : "text-white"}`}>{t("rsp")}</span>
+							<span className={`hidden md:block text-md ${isScrolled ? "text-brand" : "text-white"}`}>{t("norway")}</span>
 						</div>
 					</Link>
 
@@ -285,7 +285,7 @@ export default function Header() {
 							onClick={() => setIsModalOpen(true)}
 							aria-label="Open search"
 							className={`
-                h-11 w-11 rounded-xl flex items-center justify-center
+                h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center
                 transition-all duration-300 hover:scale-105 active:scale-95
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
                 ${isScrolled ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-700" : "bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"}
@@ -322,7 +322,7 @@ export default function Header() {
 							<Link
 								href="/login"
 								className={`
-                  px-6 py-2.5 rounded-xl font-semibold tracking-wide
+                  px-4 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold tracking-wide
                   transition-all duration-300 hover:scale-105 active:scale-95
                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
                   ${isScrolled ? "bg-gradient-to-r from-brand to-emerald-600 text-white shadow-md hover:shadow-lg" : "bg-white text-brand shadow-md hover:shadow-lg"}
@@ -334,7 +334,7 @@ export default function Header() {
 
 						<button
 							className={`
-                lg:hidden h-11 w-11 rounded-xl flex items-center justify-center
+                lg:hidden h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center
                 transition-all duration-300
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
                 ${isScrolled ? "bg-neutral-100 hover:bg-neutral-200 text-neutral-700" : "bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"}

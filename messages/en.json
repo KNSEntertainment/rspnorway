@@ -152,7 +152,7 @@
 		"other_events": "Other Events",
 		"venue": "Venue",
 		"other_notices": "Other Notices",
-		"title": "Events & Notices",
+		"title": "Events/Notices",
 		"description": "Stay connected with our vibrant school community. Explore upcoming events and important announcements.",
 		"events_tab": "Events",
 		"notices_tab": "Notices",
@@ -197,13 +197,18 @@
 		"description": "RSP Norway is dedicated to empowering the Nepali community residing in Norway socially, culturally, and educationally. We are committed to providing our members with support, guidance, and opportunities to help them reach their full potential.",
 		"read_more": "Read More"
 	},
-	"circulars": {
-		"circulars_title": "Circulars",
-		"notices_title": "Notices",
+	"blogs": {
+		"blogs_title": "Blogs",
 		"view_all": "View All",
 		"loading": "Loading...",
-		"no_circulars": "No circulars found",
+		"no_blogs": "No blogs found",
 		"no_notices": "No notices found"
+	},
+	"circulars": {
+		"circulars_title": "Circulars",
+		"view_all": "View All",
+		"loading": "Loading...",
+		"no_circulars": "No circulars found"
 	},
 	"membership": {
 		"title": "Membership Application Form",

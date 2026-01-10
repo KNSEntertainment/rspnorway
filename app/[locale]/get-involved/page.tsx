@@ -73,7 +73,7 @@ export default function GetInvolvedPage() {
 	];
 
 	return (
-		<div className="min-h-screen mt-20 md:mt-24 bg-brand/5">
+		<div className=" bg-brand/5">
 			{/* Hero Section with Animated Background */}
 			<div className="relative overflow-hidden bg-gradient-to-b from-transparent to-brand/20 text-gray-700 pt-16 pb-32">
 				<div className="absolute inset-0 opacity-20">

@@ -8,7 +8,7 @@ export default function BlogPageClient({ blogData, blogsData }) {
 	const blogs = blogsData?.blogs || [];
 
 	if (!blog || !blog._id) {
-		return <p className="flex items-center justify-center w-full min-h-screen bg-red-50 mt-24">Circulars not found.</p>;
+		return <p className="flex items-center justify-center w-full min-h-screen bg-red-50 mt-24">Blogs not found.</p>;
 	}
 
 	return (

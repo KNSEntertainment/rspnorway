@@ -116,7 +116,7 @@
 		"about": "Om Oss",
 		"notices": "Meldinger",
 		"gallery": "Galleri",
-		"circulars": "Sirkulærer",
+		"blogs": "Sirkulærer",
 		"downloads": "Nedlastinger",
 		"contact": "Kontakt",
 		"login": "Logg Inn",
@@ -153,7 +153,7 @@
 		"other_events": "Andre arrangementer",
 		"venue": "Sted",
 		"other_notices": "Andre meldinger",
-		"title": "Arrangementer og meldinger",
+		"title": "Arrangementer/meldinger",
 		"description": "Hold deg oppdatert med vårt levende skolemiljø. Utforsk kommende arrangementer og viktige kunngjøringer.",
 		"events_tab": "Arrangementer",
 		"notices_tab": "Meldinger",
@@ -198,13 +198,18 @@
 		"description": "RSP Norway er en dedikert organisasjon som jobber for å styrke det nepalske samfunnet som bor i Norge sosialt, kulturelt og utdanningsmessig. Vi er forpliktet til å tilby våre medlemmer støtte, veiledning og muligheter slik at de kan nå sitt fulle potensial.",
 		"read_more": "Les Mer"
 	},
-	"circulars": {
-		"circulars_title": "Sirkulærer",
-		"notices_title": "Meldinger",
+	"blogs": {
+		"blogs_title": "Sirkulærer",
 		"view_all": "Se Alle",
 		"loading": "Laster inn...",
-		"no_circulars": "Ingen sirkulærer funnet",
+		"no_blogs": "Ingen sirkulærer funnet",
 		"no_notices": "Ingen meldinger funnet"
+	},
+	"circulars": {
+		"circulars_title": "Sirkulærer",
+		"view_all": "Se Alle",
+		"loading": "Laster inn...",
+		"no_circulars": "Ingen sirkulærer funnet"
 	},
 	"membership": {
 		"title": "Medlemskaps Søknadsskjema",

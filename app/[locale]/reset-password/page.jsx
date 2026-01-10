@@ -50,7 +50,7 @@ export default function ResetPasswordPage() {
 	};
 
 	return (
-		<div className="max-w-md mx-auto pt-48 min-h-screen p-6 bg-white">
+		<div className="max-w-md bg-white">
 			<h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<Suspense fallback={null}>
