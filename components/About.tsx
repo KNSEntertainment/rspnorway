@@ -3,10 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 
 export default function About() {
+	const locale = useLocale();
 	const t = useTranslations("about");
 	return (
 		<section id="about" className="container mx-auto w-full px-4 md:my-20 flex items-center justify-center">
@@ -26,7 +27,7 @@ export default function About() {
 							</div>
 
 							<div className="my-4">
-								<Link href="message-from-rsp">
+								<Link href={`/${locale}/message-from-rsp`}>
 									<Button className="bg-brand text-white px-6 py-3 rounded transition-colors duration-300 inline-flex items-center group">
 										{t("read_more")}
 										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">

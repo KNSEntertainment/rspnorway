@@ -5,7 +5,7 @@ import { Quote } from "lucide-react";
 
 export default function WelcomeMessage() {
 	return (
-		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-48">
 			{/* Section Header */}
 			<div className="text-center mb-16">
 				<h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -20,7 +20,7 @@ export default function WelcomeMessage() {
 					{/* Image Section */}
 					<div className="relative h-64 sm:h-80 lg:h-auto min-h-[500px] bg-brand">
 						<div className="absolute inset-0">
-							<Image src="/Saroj1.png" alt="Welcome Photo" fill className="object-cover" />
+							<Image src="/Saroj.png" alt="Welcome Photo" fill className="object-cover" />
 							<div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent"></div>
 						</div>
 
