@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import { FileText, Download, Calendar, Eye } from "lucide-react";
-import { useState } from "react";
+import { FileText, Download, Calendar, Eye, ZoomIn, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 
 interface Document {
@@ -16,7 +16,19 @@ interface Document {
 
 export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Document; otherDownloads: Document[] }) {
 	const [showPreview, setShowPreview] = useState(false);
+	const [isZoomed, setIsZoomed] = useState(false);
 	const locale = useLocale();
+
+	// Handle ESC key to close fullscreen
+	useEffect(() => {
+		const handleEsc = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && isZoomed) {
+				setIsZoomed(false);
+			}
+		};
+		window.addEventListener("keydown", handleEsc);
+		return () => window.removeEventListener("keydown", handleEsc);
+	}, [isZoomed]);
 
 	// Improved PDF detection: checks for .pdf at end of fileUrl before ? or #, case-insensitive
 	const isPdf = typeof doc.fileUrl === "string" && /\.pdf($|[?#])/i.test(doc.fileUrl);
@@ -42,7 +54,12 @@ export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Doc
 			<div className="flex-1 bg-white rounded-xl shadow-lg p-8">
 				<div className="mb-6">
 					{doc.imageUrl ? (
-						<Image src={doc.imageUrl} alt={doc.title} width={400} height={300} className="rounded-lg object-contain max-h-80 w-full" />
+						<div className="relative group cursor-pointer" onClick={() => setIsZoomed(true)}>
+							<Image src={doc.imageUrl} alt={doc.title} width={400} height={300} className="rounded-lg object-contain max-h-80 w-full" />
+							<div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 rounded-lg flex items-center justify-center">
+								<ZoomIn size={48} className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+							</div>
+						</div>
 					) : (
 						<div className="w-full h-60 flex items-center justify-center bg-blue-50 rounded-lg">
 							<FileText size={64} className="text-blue-200" />
@@ -97,6 +114,17 @@ export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Doc
 					))}
 				</div>
 			</aside>
+			{/* Fullscreen Zoom Modal */}
+			{isZoomed && doc.imageUrl && (
+				<div className="fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center p-4" onClick={() => setIsZoomed(false)}>
+					<button type="button" className="absolute top-4 right-4 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all" onClick={() => setIsZoomed(false)} aria-label="Close fullscreen">
+						<X size={32} className="text-white" />
+					</button>
+					<div className="relative max-w-7xl max-h-full" onClick={(e) => e.stopPropagation()}>
+						<Image src={doc.imageUrl} alt={doc.title} width={1920} height={1080} className="max-w-full max-h-[90vh] w-auto h-auto object-contain" />
+					</div>
+				</div>
+			)}{" "}
 		</div>
 	);
 }
