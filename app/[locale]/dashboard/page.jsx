@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useActiveMenu } from "@/context/ActiveMenuContext";
-import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Users } from "lucide-react";
+import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Users, VideoIcon } from "lucide-react";
 
 export default function DashboardGrid() {
 	const { setActiveMenu } = useActiveMenu();
@@ -11,6 +11,7 @@ export default function DashboardGrid() {
 		{ id: "memberships", label: "Memberships", icon: Users, color: "bg-blue-600", href: "/en/dashboard/memberships" },
 		{ id: "events", label: "Events", icon: BookImage, color: "bg-purple-500", href: "/en/dashboard/events" },
 		{ id: "blogs", label: "Blogs", icon: Newspaper, color: "bg-orange-700", href: "/en/dashboard/blogs" },
+		{ id: "videos", label: "Videos", icon: VideoIcon, color: "bg-orange-700", href: "/en/dashboard/videos" },
 		{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-orange-500", href: "/en/dashboard/gallery" },
 		{ id: "downloads", label: "Downloads", icon: Download, color: "bg-red-500", href: "/en/dashboard/downloads" },
 		{ id: "users", label: "Users", icon: User, color: "bg-green-700", href: "/en/dashboard/users" },

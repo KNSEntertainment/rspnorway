@@ -1,86 +1,49 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, X } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 
 interface Video {
-	id: number;
+	_id: string;
 	url: string;
-	thumbnail: string;
+	thumbnail?: string;
 	title: string;
 	category: string;
-	duration: string;
+	duration?: string;
 	creator: string;
+	description?: string;
 }
 
 const VideoGallery: React.FC = () => {
 	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-	const [playingId, setPlayingId] = useState<number | null>(null);
+	const [playingId, setPlayingId] = useState<string | null>(null);
 	const [isMuted, setIsMuted] = useState<boolean>(true);
-	const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
+	const [videos, setVideos] = useState<Video[]>([]);
+	const [loading, setLoading] = useState(true);
+	const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 	const modalVideoRef = useRef<HTMLVideoElement | null>(null);
 	const t = useTranslations("gallery");
 
-	// Sample videos - replace with your database data
-	const videos: Video[] = [
-		{
-			id: 1,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1536440136628-849c177e76a1",
-			title: "Cinematic Journey",
-			category: "Documentary",
-			duration: "2:45",
-			creator: "Alex River",
-		},
-		{
-			id: 2,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d",
-			title: "Urban Pulse",
-			category: "Short Film",
-			duration: "1:30",
-			creator: "Maya Chen",
-		},
-		{
-			id: 3,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb",
-			title: "Nature's Symphony",
-			category: "Nature",
-			duration: "3:15",
-			creator: "Jordan Blake",
-		},
-		{
-			id: 4,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728",
-			title: "Night Vibes",
-			category: "Music Video",
-			duration: "4:20",
-			creator: "Sam Torres",
-		},
-		{
-			id: 5,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb",
-			title: "Adventure Awaits",
-			category: "Travel",
-			duration: "2:10",
-			creator: "Riley Park",
-		},
-		{
-			id: 6,
-			url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-			thumbnail: "https://images.unsplash.com/photo-1478720568477-152d9b164e26",
-			title: "Speed & Motion",
-			category: "Action",
-			duration: "1:55",
-			creator: "Casey Morgan",
-		},
-	];
+	// Fetch videos from database
+	useEffect(() => {
+		const fetchVideos = async () => {
+			try {
+				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+				const res = await fetch(`${baseUrl}/api/videos`, { cache: "no-store" });
+				const data = await res.json();
+				setVideos(data.videos || []);
+			} catch (error) {
+				console.error("Failed to fetch videos:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-	const togglePlay = (id: number, e: React.MouseEvent) => {
+		fetchVideos();
+	}, []);
+
+	const togglePlay = (id: string, e: React.MouseEvent) => {
 		e.stopPropagation();
 		const video = videoRefs.current[id];
 		if (!video) return;
@@ -110,11 +73,58 @@ const VideoGallery: React.FC = () => {
 		modalVideoRef.current?.pause();
 	};
 
+	// Navigation functions for video modal
+	const getCurrentVideoIndex = () => {
+		if (!selectedVideo) return -1;
+		return videos.findIndex((video) => video._id === selectedVideo._id);
+	};
+
+	const navigateToVideo = (direction: "prev" | "next") => {
+		const currentIndex = getCurrentVideoIndex();
+		if (currentIndex === -1) return;
+
+		let newIndex;
+		if (direction === "prev") {
+			newIndex = currentIndex === 0 ? videos.length - 1 : currentIndex - 1;
+		} else {
+			newIndex = currentIndex === videos.length - 1 ? 0 : currentIndex + 1;
+		}
+		setSelectedVideo(videos[newIndex]);
+	};
+
+	// Keyboard navigation for video modal
+	useEffect(() => {
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if (!selectedVideo) return;
+
+			if (e.key === "ArrowLeft") {
+				e.preventDefault();
+				navigateToVideo("prev");
+			} else if (e.key === "ArrowRight") {
+				e.preventDefault();
+				navigateToVideo("next");
+			} else if (e.key === "Escape") {
+				closeModal();
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyPress);
+		return () => window.removeEventListener("keydown", handleKeyPress);
+	}, [selectedVideo, videos]);
+
 	useEffect(() => {
 		if (selectedVideo && modalVideoRef.current) {
 			modalVideoRef.current.play();
 		}
 	}, [selectedVideo]);
+
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center min-h-screen">
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -187,11 +197,11 @@ const VideoGallery: React.FC = () => {
 					}}
 				>
 					{videos.map((video, index) => {
-						const isPlaying = playingId === video.id;
+						const isPlaying = playingId === video._id;
 
 						return (
 							<div
-								key={video.id}
+								key={video._id}
 								onClick={() => openModal(video)}
 								style={{
 									position: "relative",
@@ -216,7 +226,7 @@ const VideoGallery: React.FC = () => {
 								{/* Video Element */}
 								<video
 									ref={(el) => {
-										videoRefs.current[video.id] = el;
+										videoRefs.current[video._id] = el;
 									}}
 									src={video.url}
 									poster={video.thumbnail}
@@ -265,12 +275,12 @@ const VideoGallery: React.FC = () => {
 										border: "1px solid rgba(255, 255, 255, 0.1)",
 									}}
 								>
-									{video.duration}
+									{video.duration || "N/A"}
 								</div>
 
 								{/* Play/Pause Button */}
 								<button
-									onClick={(e) => togglePlay(video.id, e)}
+									onClick={(e) => togglePlay(video._id, e)}
 									style={{
 										position: "absolute",
 										top: "50%",
@@ -409,6 +419,80 @@ const VideoGallery: React.FC = () => {
 						}}
 					>
 						<X size={28} />
+					</button>
+
+					{/* Left Arrow */}
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							navigateToVideo("prev");
+						}}
+						style={{
+							position: "absolute",
+							left: "24px",
+							top: "50%",
+							transform: "translateY(-50%)",
+							width: "56px",
+							height: "56px",
+							borderRadius: "50%",
+							border: "2px solid rgba(255, 255, 255, 0.2)",
+							background: "rgba(0, 0, 0, 0.5)",
+							backdropFilter: "blur(10px)",
+							color: "white",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							cursor: "pointer",
+							transition: "all 0.3s ease",
+							zIndex: 1001,
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.background = "rgba(138, 43, 226, 0.8)";
+							e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
+							e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+						}}
+					>
+						<ChevronLeft size={28} />
+					</button>
+
+					{/* Right Arrow */}
+					<button
+						onClick={(e) => {
+							e.stopPropagation();
+							navigateToVideo("next");
+						}}
+						style={{
+							position: "absolute",
+							right: "24px",
+							top: "50%",
+							transform: "translateY(-50%)",
+							width: "56px",
+							height: "56px",
+							borderRadius: "50%",
+							border: "2px solid rgba(255, 255, 255, 0.2)",
+							background: "rgba(0, 0, 0, 0.5)",
+							backdropFilter: "blur(10px)",
+							color: "white",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							cursor: "pointer",
+							transition: "all 0.3s ease",
+							zIndex: 1001,
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.background = "rgba(138, 43, 226, 0.8)";
+							e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
+							e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+						}}
+					>
+						<ChevronRight size={28} />
 					</button>
 
 					<div
