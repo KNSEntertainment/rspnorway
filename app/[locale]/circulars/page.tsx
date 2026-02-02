@@ -1,5 +1,5 @@
 import { getLocale } from "next-intl/server";
-import { getPublishedCirculars } from "@/lib/circulars";
+import { getPublishedCirculars } from "@/lib/data/circulars";
 import { localize } from "@/lib/localize";
 import Link from "next/link";
 

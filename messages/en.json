@@ -176,6 +176,8 @@
 	"gallery": {
 		"title": "Photo Gallery",
 		"description": "Explore our gallery filled with memories from our events and activities.",
+		"video_title": "Video Gallery",
+		"video_description": "Explore our gallery filled with memories from our events and activities.",
 		"load_more": "Load More",
 		"zoom_in": "Zoom In"
 	},

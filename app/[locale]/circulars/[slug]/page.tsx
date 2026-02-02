@@ -1,5 +1,5 @@
 import { getLocale } from "next-intl/server";
-import { getCircularBySlug } from "@/lib/circulars";
+import { getCircularBySlug } from "@/lib/data/circulars";
 import { localize } from "@/lib/localize";
 import { notFound } from "next/navigation";
 

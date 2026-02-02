@@ -177,6 +177,8 @@
 	"gallery": {
 		"title": "Foto Galleri",
 		"description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
+		"video_title": "Video Galleri",
+		"video_description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
 		"load_more": "Last inn mer",
 		"zoom_in": "Zoom inn"
 	},

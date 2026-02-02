@@ -51,7 +51,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{blogs &&
 						blogs.map((blog) => (
-							<div key={blog._id} className="group bg-white rounded-xl shadow-sm overflow-hidden md:transition-all md:duration-300 md:hover:shadow-lg md:hover:translate-y-[-4px]">
+							<div key={blog._id} className="group bg-white rounded-xl shadow-md overflow-hidden md:transition-all md:duration-300 md:hover:shadow-lg md:hover:translate-y-[-4px]">
 								{/* Responsive flex: row on small, col on md+ */}
 								<div className="flex flex-row md:flex-col h-32 md:h-full bg-white">
 									{/* Image: small and left on mobile, top on md+ */}
