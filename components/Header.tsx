@@ -159,21 +159,12 @@ export default function Header() {
 		{
 			title: t("home"),
 			href: "/",
-			dropdownItems: [
-				{ title: t("about"), href: "/about-us" },
-				{ title: t("privacy"), href: "/privacy-policy" },
-				{ title: t("terms"), href: "/terms-and-conditions" },
-			],
+			dropdownItems: [{ title: t("about"), href: "/about-us" }],
 		},
 
 		{
 			title: t("updates"),
-			href: "/notices",
-			dropdownItems: [
-				{ title: t("notices"), href: "/notices" },
-				{ title: t("events"), href: "/events" },
-				{ title: t("circulars"), href: "/circulars" },
-			],
+			href: "/updates",
 		},
 		{
 			title: t("gallery"),

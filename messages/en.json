@@ -162,16 +162,20 @@
 		"other_events": "Other Events",
 		"venue": "Venue",
 		"other_notices": "Other Notices",
+		"other_circulars": "Other Circulars",
 		"title": "Events/Notices",
 		"description": "Stay connected with our vibrant school community. Explore upcoming events and important announcements.",
 		"events_tab": "Events",
 		"notices_tab": "Notices",
+		"circulars_tab": "Circulars",
 		"learn_more": "Learn more",
 		"no_events": "No Events Scheduled",
 		"no_events_desc": "Check back soon for upcoming events!",
 		"read_more": "Read more",
 		"no_notices": "No Notices Available",
-		"no_notices_desc": "Check back later for updates and announcements."
+		"no_notices_desc": "Check back later for updates and announcements.",
+		"no_circulars": "No Circulars Available",
+		"no_circulars_desc": "Check back later for circulars and official documents."
 	},
 	"gallery": {
 		"title": "Photo Gallery",

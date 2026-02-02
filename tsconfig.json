@@ -57,10 +57,10 @@
 		"models/Membership.Model.js",
 		"app/[locale]/dashboard/downloads/page.jsx",
 		"i18n",
-		"app/[locale]/notices/page.jsx",
-		"app/[locale]/notices/page.jsx",
-		"app/[locale]/notices/page.jsx",
-		"app/[locale]/notices/page.jsx",
+		"app/[locale]/updates/page.jsx",
+		"app/[locale]/updates/page.jsx",
+		"app/[locale]/updates/page.jsx",
+		"app/[locale]/updates/page.jsx",
 		"components/FooterClient.jsx"
 	],
 	"exclude": ["node_modules"]

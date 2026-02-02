@@ -16,42 +16,58 @@ export async function POST(request) {
 		const formData = await request.formData();
 		console.log("Received form data: ", formData);
 
-		const locale = formData.get("locale") || "en";
-		const circularTitle = { en: "", ne: "", no: "" };
-		circularTitle[locale] = formData.get("circularTitle")?.toString() || "";
+		// Get multi-language fields
+		const circularTitle = {
+			en: formData.get("circularTitle_en")?.toString() || "",
+			no: formData.get("circularTitle_no")?.toString() || "",
+			ne: formData.get("circularTitle_ne")?.toString() || "",
+		};
 
-		const circularDesc = { en: "", ne: "", no: "" };
-		circularDesc[locale] = formData.get("circularDesc")?.toString() || "";
+		const circularDesc = {
+			en: formData.get("circularDesc_en")?.toString() || "",
+			no: formData.get("circularDesc_no")?.toString() || "",
+			ne: formData.get("circularDesc_ne")?.toString() || "",
+		};
 
-		const circularAuthor = { en: "", ne: "", no: "" };
-		circularAuthor[locale] = formData.get("circularAuthor")?.toString() || "";
+		const circularAuthor = {
+			en: formData.get("circularAuthor_en")?.toString() || "",
+			no: formData.get("circularAuthor_no")?.toString() || "",
+			ne: formData.get("circularAuthor_ne")?.toString() || "",
+		};
 
-		const circularPublishedDate = formData.get("circularPublishedDate");
+		const publicationStatus = formData.get("publicationStatus")?.toString() || "draft";
+		const circularPublishedAt = formData.get("circularPublishedAt")?.toString() || "";
 		const circularMainPicture = formData.get("circularMainPicture");
 		const circularSecondPicture = formData.get("circularSecondPicture");
-		const slug = circularTitle[locale]
+
+		// Generate slug from English title (fallback to first available language)
+		const titleForSlug = circularTitle.en || circularTitle.no || circularTitle.ne || "circular";
+		const slug = titleForSlug
 			.toLowerCase()
 			.replace(/[^a-z0-9]+/g, "-")
 			.replace(/(^-|-$)+/g, "");
 
 		let mainPictureUrl = "";
 		if (circularMainPicture) {
-			mainPictureUrl = (await uploadToCloudinary(circularMainPicture, "circulars"))?.secure_url || "";
+			const uploadResult = await uploadToCloudinary(circularMainPicture, "circulars");
+			mainPictureUrl = uploadResult?.secure_url || "";
 		}
 
 		let secondPictureUrl = "";
 		if (circularSecondPicture) {
-			secondPictureUrl = (await uploadToCloudinary(circularSecondPicture, "circulars"))?.secure_url || "";
+			const uploadResult = await uploadToCloudinary(circularSecondPicture, "circulars");
+			secondPictureUrl = uploadResult?.secure_url || "";
 		}
 
 		const circular = await Circular.create({
 			slug,
-			circularTitle: { en: circularTitle[locale], ne: "", no: "" },
-			circularDesc: { en: circularDesc[locale], ne: "", no: "" },
-			circularAuthor: { en: circularAuthor[locale], ne: "", no: "" },
+			circularTitle,
+			circularDesc,
+			circularAuthor,
 			circularMainPicture: mainPictureUrl,
 			circularSecondPicture: secondPictureUrl,
-			circularPublishedDate,
+			publicationStatus,
+			circularPublishedAt: circularPublishedAt ? new Date(circularPublishedAt) : null,
 		});
 
 		return NextResponse.json({ success: true, circular }, { status: 201 });

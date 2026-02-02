@@ -48,49 +48,69 @@ export async function PUT(request, { params }) {
 	try {
 		await connectDB();
 
-		// Fetch form data
 		const formData = await request.formData();
 
-		// Get existing circular from DB
 		const existingCircular = await Circular.findById(id);
 		if (!existingCircular) {
 			return NextResponse.json({ success: false, error: "Circular not found" }, { status: 404 });
 		}
 
-		// Update text fields
-		const circularTitle = formData.get("circularTitle") || existingCircular.circularTitle;
-		const circularDesc = formData.get("circularDesc") || existingCircular.circularDesc;
-		// const circularAuthor = formData.get("circularAuthor") || existingCircular.circularAuthor;
-		const circularDate = formData.get("circularDate") || existingCircular.circularDate;
+		// Update multi-language fields
+		const circularTitle = {
+			en: formData.get("circularTitle_en")?.toString() || existingCircular.circularTitle?.en || "",
+			no: formData.get("circularTitle_no")?.toString() || existingCircular.circularTitle?.no || "",
+			ne: formData.get("circularTitle_ne")?.toString() || existingCircular.circularTitle?.ne || "",
+		};
+
+		const circularDesc = {
+			en: formData.get("circularDesc_en")?.toString() || existingCircular.circularDesc?.en || "",
+			no: formData.get("circularDesc_no")?.toString() || existingCircular.circularDesc?.no || "",
+			ne: formData.get("circularDesc_ne")?.toString() || existingCircular.circularDesc?.ne || "",
+		};
+
+		const circularAuthor = {
+			en: formData.get("circularAuthor_en")?.toString() || existingCircular.circularAuthor?.en || "",
+			no: formData.get("circularAuthor_no")?.toString() || existingCircular.circularAuthor?.no || "",
+			ne: formData.get("circularAuthor_ne")?.toString() || existingCircular.circularAuthor?.ne || "",
+		};
+
+		const publicationStatus = formData.get("publicationStatus")?.toString() || existingCircular.publicationStatus;
+		const circularPublishedAt = formData.get("circularPublishedAt")?.toString() || existingCircular.circularPublishedAt;
 
 		// Handle images
 		let circularMainPictureUrl = existingCircular.circularMainPicture;
 		let circularSecondPictureUrl = existingCircular.circularSecondPicture;
-		// Update main picture if a new file is provided
+
 		if (formData.get("circularMainPicture")) {
 			if (existingCircular.circularMainPicture) {
 				const mainPictureId = extractPublicId(existingCircular.circularMainPicture);
-				if (mainPictureId) await cloudinary.v2.uploader.destroy(mainPictureId);
+				if (mainPictureId) {
+					await cloudinary.v2.uploader.destroy(mainPictureId);
+				}
 			}
-			circularMainPictureUrl = await uploadToCloudinary(formData.get("circularMainPicture"), "circulars_images");
+			const uploadResult = await uploadToCloudinary(formData.get("circularMainPicture"), "circulars");
+			circularMainPictureUrl = uploadResult?.secure_url || "";
 		}
 
-		// Update second picture if a new file is provided
 		if (formData.get("circularSecondPicture")) {
 			if (existingCircular.circularSecondPicture) {
 				const secondPictureId = extractPublicId(existingCircular.circularSecondPicture);
-				if (secondPictureId) await cloudinary.v2.uploader.destroy(secondPictureId);
+				if (secondPictureId) {
+					await cloudinary.v2.uploader.destroy(secondPictureId);
+				}
 			}
-			circularSecondPictureUrl = await uploadToCloudinary(formData.get("circularSecondPicture"), "circulars_images");
+			const uploadResult = await uploadToCloudinary(formData.get("circularSecondPicture"), "circulars");
+			circularSecondPictureUrl = uploadResult?.secure_url || "";
 		}
 
-		// Update the circular in the database
 		existingCircular.circularTitle = circularTitle;
 		existingCircular.circularDesc = circularDesc;
-		// existingCircular.circularAuthor = circularAuthor;
-		existingCircular.circularDate = circularDate;
+		existingCircular.circularAuthor = circularAuthor;
+		existingCircular.publicationStatus = publicationStatus;
+		existingCircular.circularPublishedAt = circularPublishedAt ? new Date(circularPublishedAt) : null;
 		existingCircular.circularMainPicture = circularMainPictureUrl;
 		existingCircular.circularSecondPicture = circularSecondPictureUrl;
+
 		await existingCircular.save();
 
 		return NextResponse.json({ success: true, circular: existingCircular }, { status: 200 });

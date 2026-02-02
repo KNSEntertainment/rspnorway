@@ -21,20 +21,16 @@ const NoticeSchema = new mongoose.Schema(
 		noticeimage: {
 			type: String,
 		},
-		classGroup: {
-			type: String,
-			required: true,
-			trim: true,
-		},
 		createdBy: {
 			type: String,
 			required: true,
 			trim: true,
+			default: "Admin",
 		},
 	},
 	{
 		timestamps: true,
-	}
+	},
 );
 
 export default mongoose.models.Notice || mongoose.model("Notice", NoticeSchema);

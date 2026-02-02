@@ -163,16 +163,20 @@
 		"other_events": "Andre arrangementer",
 		"venue": "Sted",
 		"other_notices": "Andre meldinger",
+		"other_circulars": "Andre sirkulærer",
 		"title": "Arrangementer/meldinger",
 		"description": "Hold deg oppdatert med vårt levende skolemiljø. Utforsk kommende arrangementer og viktige kunngjøringer.",
 		"events_tab": "Arrangementer",
 		"notices_tab": "Meldinger",
+		"circulars_tab": "Sirkulærer",
 		"learn_more": "Les mer",
 		"no_events": "Ingen arrangementer planlagt",
 		"no_events_desc": "Kom tilbake snart for kommende arrangementer!",
 		"read_more": "Les mer",
 		"no_notices": "Ingen meldinger tilgjengelig",
-		"no_notices_desc": "Kom tilbake senere for oppdateringer og kunngjøringer."
+		"no_notices_desc": "Kom tilbake senere for oppdateringer og kunngjøringer.",
+		"no_circulars": "Ingen sirkulærer tilgjengelig",
+		"no_circulars_desc": "Kom tilbake senere for sirkulærer og offisielle dokumenter."
 	},
 	"gallery": {
 		"title": "Foto Galleri",
