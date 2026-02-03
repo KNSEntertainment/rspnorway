@@ -116,6 +116,7 @@
 	},
 	"navigation": {
 		"home": "Hjem",
+		"members": "Medlemmer",
 		"about": "Om Oss",
 		"privacy": "Personvernregler",
 		"terms": "Vilkår og Betingelser",
@@ -159,12 +160,12 @@
 		}
 	},
 	"notices": {
-		"back": "Tilbake til arrangementer og meldinger",
+		"back": "Tilbake til oppdateringer",
 		"other_events": "Andre arrangementer",
 		"venue": "Sted",
 		"other_notices": "Andre meldinger",
 		"other_circulars": "Andre sirkulærer",
-		"title": "Arrangementer/meldinger",
+		"title": "Oppdateringer",
 		"description": "Hold deg oppdatert med vårt levende skolemiljø. Utforsk kommende arrangementer og viktige kunngjøringer.",
 		"events_tab": "Arrangementer",
 		"notices_tab": "Meldinger",

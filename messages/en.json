@@ -116,6 +116,7 @@
 	},
 	"navigation": {
 		"home": "Home",
+		"members": "Members",
 		"about": "About Us",
 		"terms": "Terms And Conditions",
 		"privacy": "Privacy Policy",
@@ -158,12 +159,12 @@
 		}
 	},
 	"notices": {
-		"back": "Back to Events & Notices",
+		"back": "Back to Updates",
 		"other_events": "Other Events",
 		"venue": "Venue",
 		"other_notices": "Other Notices",
 		"other_circulars": "Other Circulars",
-		"title": "Events/Notices",
+		"title": "Updates",
 		"description": "Stay connected with our vibrant school community. Explore upcoming events and important announcements.",
 		"events_tab": "Events",
 		"notices_tab": "Notices",

@@ -114,40 +114,40 @@ export default function UpdatesClient({ events, notices, circulars, translations
 					<div className="grid lg:grid-cols-3 gap-8 md:py-6">
 						<div className="lg:col-span-2">
 							<Card className="md:shadow-md border-none bg-gray-50 overflow-hidden">
-								<div className="relative h-64 md:h-96">
-									{selectedEvent.eventposterUrl ? (
-										<Image src={selectedEvent.eventposterUrl} alt={selectedEvent.eventname} fill className="object-cover" />
-									) : (
-										<div className="flex items-center justify-center h-full">
-											<Calendar className="w-32 h-32" />
-										</div>
-									)}
-								</div>
-								<CardContent className="px-4 py-8 md:p-8">
-									<div className="flex items-end gap-6 mb-6">
-										<div className="bg-gradient-to-br  text-brand rounded-xl p-4 shadow-lg min-w-[70px] md:min-w-[100px] text-center">
-											<div className="text-2xl md:text-4xl font-bold">{day}</div>
-											<div className="text-sm uppercase tracking-wider">{month}</div>
-										</div>
-										<div className="flex-1">
-											<h1 className="text-md md:text-2xl font-bold text-gray-800 mb-2">{selectedEvent.eventname}</h1>
-											<div className="flex flex-col md:flex-row md:space-y-0 flex-wrap md:gap-4 text-gray-600">
-												{selectedEvent.eventtime && (
-													<div className="flex items-center gap-2">
-														<Clock className="w-5 h-5 text-brand" />
-														<span>{selectedEvent.eventtime}</span>
-													</div>
-												)}
-												{selectedEvent.eventvenue && (
-													<div className="flex items-center gap-2">
-														<MapPin className="w-5 h-5 text-brand" />
-														<span>{selectedEvent.eventvenue}</span>
-													</div>
-												)}
-											</div>
+								<div className="flex items-end gap-6 mb-6">
+									<div className="bg-gradient-to-br  text-brand rounded-xl p-4 shadow-lg min-w-[70px] md:min-w-[100px] text-center">
+										<div className="text-2xl md:text-4xl font-bold">{day}</div>
+										<div className="text-sm uppercase tracking-wider">{month}</div>
+									</div>
+									<div className="flex-1">
+										<h1 className="text-md md:text-2xl font-bold text-gray-800 mb-2">{selectedEvent.eventname}</h1>
+										<div className="flex flex-col md:flex-row md:space-y-0 flex-wrap md:gap-4 text-gray-600">
+											{selectedEvent.eventtime && (
+												<div className="flex items-center gap-2">
+													<Clock className="w-5 h-5 text-brand" />
+													<span>{selectedEvent.eventtime}</span>
+												</div>
+											)}
+											{selectedEvent.eventvenue && (
+												<div className="flex items-center gap-2">
+													<MapPin className="w-5 h-5 text-brand" />
+													<span>{selectedEvent.eventvenue}</span>
+												</div>
+											)}
 										</div>
 									</div>
+								</div>
 
+								<CardContent className="px-4 py-8 md:p-8">
+									<div className="relative h-screen">
+										{selectedEvent.eventposterUrl ? (
+											<Image src={selectedEvent.eventposterUrl} alt={selectedEvent.eventname} fill className="object-contain" />
+										) : (
+											<div className="flex items-center justify-center h-full">
+												<Calendar className="w-32 h-32" />
+											</div>
+										)}
+									</div>
 									{selectedEvent.eventdescription && selectedEvent.eventdescription !== "" ? (
 										<div className="grid md:grid-cols-2 gap-6 mt-2 md:mt-6 p-6">
 											<div className="prose prose-lg max-w-none mb-6">
@@ -265,6 +265,84 @@ export default function UpdatesClient({ events, notices, circulars, translations
 		);
 	}
 
+	// Circular Detail View
+	if (selectedCircular) {
+		return (
+			<div className=" min-h-screen">
+				<div className="container max-w-7xl mx-auto px-4 py-8">
+					<button onClick={() => setSelectedCircular(null)} className="flex items-center text-brand hover:text-brand font-medium transition-colors duration-300 mb-6">
+						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+						</svg>
+						{t.back}
+					</button>
+
+					<div className="grid lg:grid-cols-3 gap-8">
+						<div className="lg:col-span-2">
+							<Card className="shadow-2xl border-none bg-white overflow-hidden">
+								<div className="relative h-96">
+									{selectedCircular.circularMainPicture ? (
+										<Image src={selectedCircular.circularMainPicture} alt={selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"]} fill className="object-cover" />
+									) : (
+										<div className="flex items-center justify-center h-full bg-gradient-to-br from-indigo-100 to-purple-100">
+											<FileText className="w-32 h-32 text-brand" />
+										</div>
+									)}
+								</div>
+
+								<CardContent className="p-8">
+									<div className="flex items-center gap-2 mb-6">
+										<Calendar className="w-5 h-5 text-brand" />
+										<p className="text-brand font-medium">{formatDate(selectedCircular.circularPublishedAt || selectedCircular.createdAt)}</p>
+									</div>
+
+									<h1 className="text-4xl font-bold text-gray-800 mb-4">{selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"] || "Circular"}</h1>
+
+									{selectedCircular.circularAuthor && selectedCircular.circularAuthor[locale] && <p className="text-gray-500 text-lg mb-8 italic">By {selectedCircular.circularAuthor[locale]}</p>}
+
+									<div className="prose prose-lg max-w-none">
+										<div className="text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedCircular.circularDesc[locale] || selectedCircular.circularDesc["en"] || ""}</div>
+									</div>
+
+									{selectedCircular.circularSecondPicture && (
+										<div className="relative h-96 mt-8 rounded-lg overflow-hidden">
+											<Image src={selectedCircular.circularSecondPicture} alt="Additional image" fill className="object-cover" />
+										</div>
+									)}
+								</CardContent>
+							</Card>
+						</div>
+
+						<div>
+							<h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+								<FileText className="w-6 h-6 text-brand mr-2" />
+								{t.other_circulars}
+							</h3>
+							<div className="space-y-4">
+								{sortedCirculars
+									.filter((c) => c._id !== selectedCircular._id)
+									.slice(0, 3)
+									.map((circular) => (
+										<Card key={circular._id} className="cursor-pointer hover:shadow-lg transition-all duration-300" onClick={() => setSelectedCircular(circular)}>
+											<div className="bg-brand h-1" />
+											<CardContent className="p-4">
+												<div className="flex items-center gap-2 mb-2">
+													<Calendar className="w-4 h-4 text-brand" />
+													<p className="text-brand text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
+												</div>
+												<h4 className="font-bold text-gray-800 line-clamp-2 mb-2">{circular.circularTitle[locale] || circular.circularTitle["en"]}</h4>
+												<p className="text-gray-600 text-sm line-clamp-2">{circular.circularDesc[locale] || circular.circularDesc["en"]}</p>
+											</CardContent>
+										</Card>
+									))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	// Main Page - Events & Notices Grid
 	return (
 		<div className="px-4">
@@ -283,7 +361,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 						<Bell className="w-5 h-5 inline mr-2" />
 						{t.notices_tab}
 					</button>
-					<button onClick={() => setActiveTab("circulars")} className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition-all duration-300 ${activeTab === "circulars" ? "bg-gradient-to-r from-indigo-400 to-purple-600  text-white shadow-lg" : "text-gray-600 hover:text-gray-800"}`}>
+					<button onClick={() => setActiveTab("circulars")} className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition-all duration-300 ${activeTab === "circulars" ? "bg-gradient-to-r from-blue-400 to-brand  text-white shadow-lg" : "text-gray-600 hover:text-gray-800"}`}>
 						<FileText className="w-5 h-5 inline mr-2" />
 						{t.circulars_tab}
 					</button>

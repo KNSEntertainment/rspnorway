@@ -157,7 +157,10 @@ export default function Header() {
 		{
 			title: t("home"),
 			href: "/",
-			dropdownItems: [{ title: t("about"), href: "/about-us" }],
+			dropdownItems: [
+				{ title: t("about"), href: "/about-us" },
+				{ title: t("members"), href: "/members" },
+			],
 		},
 
 		{
