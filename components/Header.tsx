@@ -35,6 +35,8 @@ interface NavItemProps {
 function NavItem({ title, href, isScrolled, pathname, dropdownItems, activeDropdown, setActiveDropdown }: NavItemProps) {
 	const isActive = pathname === href;
 	const hasDropdown = !!dropdownItems?.length;
+	// Check if any child item in dropdown is active
+	const isChildActive = hasDropdown && dropdownItems?.some((item) => pathname === item.href);
 	const isOpen = activeDropdown === href;
 	const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -75,17 +77,13 @@ function NavItem({ title, href, isScrolled, pathname, dropdownItems, activeDropd
 						setActiveDropdown(isOpen ? null : href);
 					}}
 					className={`
-            relative px-4 py-2 flex items-center gap-2
-            transition-all duration-300 font-medium tracking-wide
-            text-white/90 hover:text-white
+            relative px-4 py-2 flex items-center gap-2 rounded-lg
+            transition-all duration-300 text-lg font-semibold tracking-wide
+            ${isActive || isChildActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
-            ${isActive ? "text-white" : ""}
           `}
 				>
-					<span className="relative">
-						{title}
-						<span className={`absolute -bottom-1 left-0 h-0.5 bg-current transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`} />
-					</span>
+					{title}
 					<ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
 				</button>
 			) : (
@@ -93,17 +91,13 @@ function NavItem({ title, href, isScrolled, pathname, dropdownItems, activeDropd
 					href={href}
 					onClick={() => setActiveDropdown(null)}
 					className={`
-            relative px-4 py-2 block font-medium tracking-wide
+            relative px-4 py-2 block text-lg font-semibold tracking-wide rounded-lg
             transition-all duration-300
-            text-white/90 hover:text-white
+            ${isActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
-            ${isActive ? "text-white" : ""}
           `}
 				>
-					<span className="relative">
-						{title}
-						<span className={`absolute -bottom-1 left-0 h-0.5 bg-current transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`} />
-					</span>
+					{title}
 				</Link>
 			)}
 
@@ -124,21 +118,25 @@ function NavItem({ title, href, isScrolled, pathname, dropdownItems, activeDropd
               py-2
             "
 					>
-						{dropdownItems!.map((item, idx) => (
-							<Link
-								key={item.href}
-								href={item.href}
-								role="menuitem"
-								onClick={() => setActiveDropdown(null)}
-								className={`
-                  block px-4 py-2 text-sm font-medium text-neutral-700 
-                  hover:bg-brand/5 hover:text-brand transition-all duration-200
+						{dropdownItems!.map((item, idx) => {
+							const isDropdownItemActive = pathname === item.href;
+							return (
+								<Link
+									key={item.href}
+									href={item.href}
+									role="menuitem"
+									onClick={() => setActiveDropdown(null)}
+									className={`
+                  block px-4 py-2 text-sm font-medium
+                  ${isDropdownItemActive ? "bg-brand text-white" : "text-neutral-700 hover:bg-brand/5 hover:text-brand"}
+                  transition-all duration-200
                   ${idx !== 0 ? "border-t border-neutral-100" : ""}
                 `}
-							>
-								{item.title}
-							</Link>
-						))}
+								>
+									{item.title}
+								</Link>
+							);
+						})}
 					</motion.div>
 				)}
 			</AnimatePresence>
@@ -263,7 +261,8 @@ export default function Header() {
 	return (
 		<div className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
 			{/* Utility Bar */}
-			<motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="h-11 border-b bg-neutral-50/95 backdrop-blur-md">
+			{/* <motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="h-11 border-b bg-neutral-50/95 backdrop-blur-md"> */}
+			<section className="h-11 border-b bg-neutral-50/95 backdrop-blur-md">
 				<div className="container mx-auto px-4 lg:px-6 h-full flex items-center justify-between">
 					<div className="flex items-center gap-6 text-sm font-medium">
 						<a href="tel:+4796800984" className="hover:opacity-75 transition-opacity duration-200 flex items-center gap-2" aria-label="Call us">
@@ -282,11 +281,12 @@ export default function Header() {
 						<LanguageSelector isScrolled={isScrolled} />
 					</div>
 				</div>
-			</motion.section>
+			</section>
 
 			{/* Main Header */}
-			<motion.header initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="bg-gradient-to-r from-brand via-brand to-emerald-600">
-				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex items-center justify-between border-b border-brand">
+			{/* <motion.header initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="bg-gradient-to-r from-brand via-brand to-emerald-600"> */}
+			<header className="bg-gradient-to-r from-brand via-brand to-emerald-600">
+				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 grid grid-cols-3 items-center border-b border-brand">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
@@ -298,14 +298,14 @@ export default function Header() {
 						</div>
 					</Link>
 
-					{/* Desktop Nav */}
-					<nav className="hidden lg:flex items-center gap-2" role="navigation">
+					{/* Desktop Nav - Centered */}
+					<nav className="hidden lg:flex items-center gap-2 justify-center" role="navigation">
 						{navItems.map((item) => (
 							<NavItem key={item.href} {...item} isScrolled={isScrolled} pathname={pathname} activeDropdown={activeDropdown} setActiveDropdown={handleDropdownChange} />
 						))}
 					</nav>
 
-					<div className="flex items-center gap-3">
+					<div className="flex items-center gap-3 justify-end">
 						{/* Search */}
 						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
 							<Search size={19} />
@@ -334,7 +334,8 @@ export default function Header() {
 						</button>
 					</div>
 				</div>
-			</motion.header>
+				{/* </motion.header> */}
+			</header>
 
 			{/* Mobile Menu */}
 			<AnimatePresence>{isMenuOpen && <MobileMenu navItems={navItems} isScrolled={isScrolled} pathname={pathname} closeMenu={() => setIsMenuOpen(false)} />}</AnimatePresence>

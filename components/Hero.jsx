@@ -19,14 +19,18 @@ export default function FullWidthHero() {
 			title: t("title_1"),
 			description: t("subtitle_1"),
 			primaryLink: "/membership",
+			primaryButton: t("become_a_member"),
 			secondaryLink: "/about-us",
+			secondaryButton: t("explore_rsp"),
 		},
 		{
 			image: "/rabi3.webp",
 			title: t("title_2"),
 			description: t("subtitle_2"),
 			primaryLink: "/get-involved",
+			primaryButton: t("get_involved"),
 			secondaryLink: "/contact",
+			secondaryButton: t("contact_us"),
 		},
 	];
 
@@ -71,16 +75,16 @@ export default function FullWidthHero() {
 					<div className="max-w-3xl">
 						<AnimatePresence mode="wait">
 							<motion.div key={currentSlide} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.7, ease: "easeOut" }}>
-								<h1 className="text-3xl md:text-6xl font-black text-white mb-6 leading-tight tracking-tighter">{slides[currentSlide].title}</h1>
-								<p className="text-xl md:text-2xl text-blue-100/80 mb-10 leading-relaxed font-light">{slides[currentSlide].description}</p>
+								<h1 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight tracking-tighter">{slides[currentSlide].title}</h1>
+								<p className="text-xl md:text-2xl text-white/80 mb-10 leading-relaxed font-light">{slides[currentSlide].description}</p>
 
 								<div className="flex flex-wrap gap-5">
 									<Link href={slides[currentSlide].primaryLink} locale={locale}>
-										<Button className="h-16 px-10 text-lg font-bold rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">{t("become_a_member")}</Button>
+										<Button className="h-12 px-6 text-lg font-bold rounded-full bg-brand/90 hover:bg-brand text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">{slides[currentSlide].primaryButton}</Button>
 									</Link>
 									<Link href={slides[currentSlide].secondaryLink} locale={locale}>
-										<Button variant="outline" className="h-16 px-10 text-lg font-bold rounded-full border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-blue-900 transition-all flex items-center gap-2">
-											{t("explore_rsp")}
+										<Button variant="outline" className="h-12 px-6 text-lg font-bold rounded-full border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-brand transition-all flex items-center gap-2">
+											{slides[currentSlide].secondaryButton}
 											<ArrowRight className="w-5 h-5" />
 										</Button>
 									</Link>
@@ -92,18 +96,18 @@ export default function FullWidthHero() {
 
 				{/* Navigation Controls */}
 				<div className="absolute bottom-12 right-12 md:right-24 z-30 flex items-center gap-4">
-					<button onClick={prevSlide} className="p-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-lg text-white hover:bg-white hover:text-blue-900 transition-all">
+					<button onClick={prevSlide} className="p-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-lg text-white hover:bg-white hover:text-brand transition-all">
 						<ChevronLeft className="w-6 h-6" />
 					</button>
 
 					{/* Progress Indicator */}
 					<div className="flex gap-2">
 						{slides.map((_, i) => (
-							<div key={i} className={`h-1.5 transition-all duration-500 rounded-full ${currentSlide === i ? "w-12 bg-blue-500" : "w-4 bg-white/30"}`} />
+							<div key={i} className={`h-1.5 transition-all duration-500 rounded-full ${currentSlide === i ? "w-12 bg-brand" : "w-4 bg-white/30"}`} />
 						))}
 					</div>
 
-					<button onClick={nextSlide} className="p-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-lg text-white hover:bg-white hover:text-blue-900 transition-all">
+					<button onClick={nextSlide} className="p-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-lg text-white hover:bg-white hover:text-brand transition-all">
 						<ChevronRight className="w-6 h-6" />
 					</button>
 				</div>
