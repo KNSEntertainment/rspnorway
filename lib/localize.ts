@@ -1,4 +1,8 @@
-export function localize(field: Map<string, string> | Record<string, string> | undefined, locale: string, fallback = "en") {
+import { LocalizedString } from "@/types";
+
+type LocalizableField = Map<string, string> | Record<string, string> | LocalizedString | undefined;
+
+export function localize(field: LocalizableField, locale: string, fallback = "en"): string {
 	if (!field) return "";
 
 	// Handle Map objects
@@ -6,6 +10,7 @@ export function localize(field: Map<string, string> | Record<string, string> | u
 		return field.get(locale) || field.get(fallback) || "";
 	}
 
-	// Handle plain objects (from JSON/API responses)
-	return field[locale] || field[fallback] || "";
+	// Handle plain objects (from JSON/API responses) and LocalizedString
+	const obj = field as Record<string, string>;
+	return obj[locale] || obj[fallback] || "";
 }

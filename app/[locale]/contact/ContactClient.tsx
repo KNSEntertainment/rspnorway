@@ -235,7 +235,7 @@ export default function ContactPageClient({ settings, translations: t }: Props) 
 			} else {
 				setError(t.error);
 			}
-		} catch (err) {
+		} catch {
 			setError(t.error);
 		}
 		setSubmitting(false);

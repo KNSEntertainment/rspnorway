@@ -6,20 +6,26 @@ import { saveUploadedFile } from "@/lib/saveUploadedFile";
 export async function PUT(req, { params }) {
 	try {
 		await connectDB();
-		const { id } = params;
+		const { id } = await params;
 
 		const formData = await req.formData();
 		const name = formData.get("name");
 		const position = formData.get("position");
+		const department = formData.get("department");
+		const subdepartment = formData.get("subdepartment");
 		const phone = formData.get("phone");
 		const email = formData.get("email");
 		const order = formData.get("order") || 0;
 		const isActive = formData.get("isActive") === "true";
 		const imageFile = formData.get("image");
 
+		console.log("Updating member with data:", { name, department, subdepartment, position });
+
 		const updateData = {
 			name,
 			position,
+			department,
+			subdepartment,
 			phone,
 			email,
 			order: parseInt(order),
@@ -36,6 +42,12 @@ export async function PUT(req, { params }) {
 
 		if (!updatedMember) {
 			return NextResponse.json({ error: "Member not found." }, { status: 404 });
+			console.log("Updated member in DB:", {
+				id: updatedMember._id,
+				name: updatedMember.name,
+				department: updatedMember.department,
+				subdepartment: updatedMember.subdepartment,
+			});
 		}
 
 		return NextResponse.json({ success: true, member: updatedMember });
@@ -48,7 +60,7 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
 	try {
 		await connectDB();
-		const { id } = params;
+		const { id } = await params;
 
 		const deletedMember = await ExecutiveMember.findByIdAndDelete(id);
 

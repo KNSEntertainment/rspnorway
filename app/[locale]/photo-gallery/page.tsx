@@ -1,8 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { X, Heart, Share2, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
+import Image from "next/image";
 
 interface GalleryItem {
 	_id: string;
@@ -34,7 +35,7 @@ const PhotoGallery = () => {
 				const galleryItems: GalleryItem[] = data.gallery || [];
 
 				// Transform gallery items with media arrays into individual photos
-				const transformedPhotos: Photo[] = galleryItems.flatMap((item, itemIndex) =>
+				const transformedPhotos: Photo[] = galleryItems.flatMap((item) =>
 					(item.media || []).map((url, mediaIndex) => ({
 						id: `${item._id}-${mediaIndex}`,
 						url: url,
@@ -56,23 +57,27 @@ const PhotoGallery = () => {
 	}, []);
 
 	// Navigation functions
-	const getCurrentPhotoIndex = () => {
-		if (!selectedPhoto) return -1;
-		return photos.findIndex((photo) => photo.id === selectedPhoto.id);
-	};
+	// const getCurrentPhotoIndex = () => {
+	// 	if (!selectedPhoto) return -1;
+	// 	return photos.findIndex((photo) => photo.id === selectedPhoto.id);
+	// };
 
-	const navigateToPhoto = (direction: "prev" | "next") => {
-		const currentIndex = getCurrentPhotoIndex();
-		if (currentIndex === -1) return;
+	const navigateToPhoto = useCallback(
+		(direction: "prev" | "next") => {
+			if (!selectedPhoto) return;
+			const currentIndex = photos.findIndex((photo) => photo.id === selectedPhoto.id);
+			if (currentIndex === -1) return;
 
-		let newIndex;
-		if (direction === "prev") {
-			newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
-		} else {
-			newIndex = currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
-		}
-		setSelectedPhoto(photos[newIndex]);
-	};
+			let newIndex;
+			if (direction === "prev") {
+				newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
+			} else {
+				newIndex = currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
+			}
+			setSelectedPhoto(photos[newIndex]);
+		},
+		[selectedPhoto, photos],
+	);
 
 	// Keyboard navigation
 	useEffect(() => {
@@ -92,7 +97,7 @@ const PhotoGallery = () => {
 
 		window.addEventListener("keydown", handleKeyPress);
 		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, [selectedPhoto, photos]);
+	}, [selectedPhoto, navigateToPhoto]);
 	// const images = gallery.flatMap((item) => (item.media || []).map((src) => ({ src, alt: item.alt || "Gallery image" })));
 
 	// Sample photos - replace with your database data
@@ -159,7 +164,7 @@ const PhotoGallery = () => {
 									}}
 								>
 									{/* Image */}
-									<img
+									<Image
 										src={`${photo.url}?w=800&q=80`}
 										alt={photo.title}
 										style={{
@@ -418,7 +423,7 @@ const PhotoGallery = () => {
 							animation: "scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
 						}}
 					>
-						<img
+						<Image
 							src={`${selectedPhoto.url}?w=1200&q=90`}
 							alt={selectedPhoto.title}
 							style={{

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Volume2, VolumeX, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
@@ -68,29 +68,32 @@ const VideoGallery: React.FC = () => {
 		Object.values(videoRefs.current).forEach((v) => v?.pause());
 	};
 
-	const closeModal = () => {
+	const closeModal = useCallback(() => {
 		setSelectedVideo(null);
 		modalVideoRef.current?.pause();
-	};
+	}, []);
 
 	// Navigation functions for video modal
-	const getCurrentVideoIndex = () => {
+	const getCurrentVideoIndex = useCallback(() => {
 		if (!selectedVideo) return -1;
 		return videos.findIndex((video) => video._id === selectedVideo._id);
-	};
+	}, [selectedVideo, videos]);
 
-	const navigateToVideo = (direction: "prev" | "next") => {
-		const currentIndex = getCurrentVideoIndex();
-		if (currentIndex === -1) return;
+	const navigateToVideo = useCallback(
+		(direction: "prev" | "next") => {
+			const currentIndex = getCurrentVideoIndex();
+			if (currentIndex === -1) return;
 
-		let newIndex;
-		if (direction === "prev") {
-			newIndex = currentIndex === 0 ? videos.length - 1 : currentIndex - 1;
-		} else {
-			newIndex = currentIndex === videos.length - 1 ? 0 : currentIndex + 1;
-		}
-		setSelectedVideo(videos[newIndex]);
-	};
+			let newIndex;
+			if (direction === "prev") {
+				newIndex = currentIndex === 0 ? videos.length - 1 : currentIndex - 1;
+			} else {
+				newIndex = currentIndex === videos.length - 1 ? 0 : currentIndex + 1;
+			}
+			setSelectedVideo(videos[newIndex]);
+		},
+		[getCurrentVideoIndex, videos],
+	);
 
 	// Keyboard navigation for video modal
 	useEffect(() => {
@@ -110,7 +113,7 @@ const VideoGallery: React.FC = () => {
 
 		window.addEventListener("keydown", handleKeyPress);
 		return () => window.removeEventListener("keydown", handleKeyPress);
-	}, [selectedVideo, videos]);
+	}, [selectedVideo, navigateToVideo, closeModal]);
 
 	useEffect(() => {
 		if (selectedVideo && modalVideoRef.current) {

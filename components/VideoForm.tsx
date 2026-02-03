@@ -1,9 +1,21 @@
 "use client";
 import React, { useState } from "react";
 import { X, Upload, Video as VideoIcon } from "lucide-react";
+import Image from "next/image";
+
+interface Video {
+	_id?: string;
+	title: string;
+	category: string;
+	duration?: string;
+	description: string;
+	creator: string;
+	url?: string;
+	thumbnail?: string;
+}
 
 interface VideoFormProps {
-	videoToEdit?: any;
+	videoToEdit?: Video;
 	onClose: () => void;
 }
 
@@ -80,8 +92,8 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 
 			alert(videoToEdit ? "Video updated successfully!" : "Video uploaded successfully!");
 			onClose();
-		} catch (err: any) {
-			setError(err.message || "An error occurred");
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "An error occurred");
 			console.error(err);
 		} finally {
 			setLoading(false);
@@ -131,7 +143,7 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 						</div>
 						{thumbnailPreview && (
 							<div className="mt-3">
-								<img src={thumbnailPreview} alt="Thumbnail" className="w-full rounded-lg max-h-48 object-cover" />
+								<Image src={thumbnailPreview} alt="Thumbnail" className="w-full rounded-lg max-h-48 object-cover" />
 							</div>
 						)}
 					</div>

@@ -5,14 +5,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import CircularForm from "@/components/CircularForm";
 
+interface Circular {
+	_id: string;
+	circularTitle: { en: string; no: string; ne: string };
+	circularDesc: { en: string; no: string; ne: string };
+	circularAuthor: { en: string; no: string; ne: string };
+	publicationStatus: string;
+	circularPublishedAt?: string;
+	circularPdfUrl?: string;
+	circularMainPicture?: string;
+	circularSecondPicture?: string;
+	createdAt: string;
+}
+
 export default function CircularsPage() {
-	const [circulars, setCirculars] = useState([]);
+	const [circulars, setCirculars] = useState<Circular[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [showForm, setShowForm] = useState(false);
-	const [selectedCircular, setSelectedCircular] = useState(null);
+	const [selectedCircular, setSelectedCircular] = useState<Circular | null>(null);
 
 	const fetchCirculars = async () => {
 		setLoading(true);
@@ -33,7 +46,7 @@ export default function CircularsPage() {
 		fetchCirculars();
 	}, []);
 
-	const handleEdit = (circular: any) => {
+	const handleEdit = (circular: Circular) => {
 		setSelectedCircular(circular);
 		setShowForm(true);
 	};
@@ -94,7 +107,7 @@ export default function CircularsPage() {
 					{loading ? (
 						<div className="text-center py-8">Loading circulars...</div>
 					) : circulars.length === 0 ? (
-						<div className="text-center py-8 text-gray-500">No circulars found. Click "Add Circular" to create your first circular.</div>
+						<div className="text-center py-8 text-gray-500">No circulars found. Click &quot;Add Circular&quot; to create your first circular.</div>
 					) : (
 						<Table>
 							<TableHeader>
@@ -108,7 +121,7 @@ export default function CircularsPage() {
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{circulars.map((circular: any) => (
+								{circulars.map((circular: Circular) => (
 									<TableRow key={circular._id}>
 										<TableCell className="font-medium">{circular.circularTitle?.en || "No title"}</TableCell>
 										<TableCell>{circular.circularAuthor?.en || "N/A"}</TableCell>
@@ -135,7 +148,7 @@ export default function CircularsPage() {
 				</CardContent>
 			</Card>
 
-			{showForm && <CircularForm circular={selectedCircular} onClose={handleCloseForm} onSuccess={handleFormSuccess} />}
+			{showForm && <CircularForm circular={selectedCircular as Circular} onClose={handleCloseForm} onSuccess={handleFormSuccess} />}
 		</div>
 	);
 }

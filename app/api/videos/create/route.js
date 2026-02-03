@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Video from "@/models/Video.Model";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 // POST - Create new video
 export async function POST(req) {

@@ -32,7 +32,7 @@ interface NavItemProps {
 	setActiveDropdown: (dropdown: string | null) => void;
 }
 
-function NavItem({ title, href, isScrolled, pathname, dropdownItems, activeDropdown, setActiveDropdown }: NavItemProps) {
+function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActiveDropdown }: NavItemProps) {
 	const isActive = pathname === href;
 	const hasDropdown = !!dropdownItems?.length;
 	// Check if any child item in dropdown is active

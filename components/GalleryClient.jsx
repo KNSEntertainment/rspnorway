@@ -42,13 +42,11 @@ import "yet-another-react-lightbox/styles.css";
 import { Zoom, Fullscreen, Thumbnails } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import { Maximize2 } from "lucide-react";
 
 export default function GalleryClient({ images }) {
 	const [open, setOpen] = useState(false);
 	const [index, setIndex] = useState(0);
-	const t = useTranslations("gallery");
 
 	return (
 		<div className="w-full">

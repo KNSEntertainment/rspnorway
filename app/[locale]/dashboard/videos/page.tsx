@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import VideoForm from "@/components/VideoForm";
 import { Edit, Trash2, Video as VideoIcon } from "lucide-react";
+import Image from "next/image";
 
 type Video = {
 	_id: string;
@@ -33,8 +34,8 @@ export default function VideosPage() {
 			setLoading(true);
 			const data = await fetchVideos();
 			setVideos(data);
-		} catch (err: any) {
-			setError("Failed to load videos: " + err.message);
+		} catch (err) {
+			setError("Failed to load videos: " + (err instanceof Error ? err.message : String(err)));
 		} finally {
 			setLoading(false);
 		}
@@ -57,8 +58,8 @@ export default function VideosPage() {
 			if (!res.ok) throw new Error("Failed to delete");
 			alert("Video deleted successfully!");
 			await loadVideos();
-		} catch (err: any) {
-			alert("Delete failed: " + err.message);
+		} catch (err) {
+			alert("Delete failed: " + (err instanceof Error ? err.message : String(err)));
 		}
 	};
 
@@ -91,9 +92,7 @@ export default function VideosPage() {
 					Upload Video
 				</button>
 			</div>
-
 			{error && <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">{error}</div>}
-
 			{videos.length === 0 ? (
 				<div className="text-center py-12 bg-gray-50 rounded-lg">
 					<VideoIcon size={64} className="mx-auto text-gray-400 mb-4" />
@@ -108,7 +107,7 @@ export default function VideosPage() {
 						<div key={video._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
 							{/* Video Thumbnail/Preview */}
 							<div className="relative aspect-video bg-gray-900">
-								{video.thumbnail ? <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" /> : <video src={video.url} className="w-full h-full object-cover" />}
+								{video.thumbnail ? <Image src={video.thumbnail} alt={video.title} width={400} height={225} className="w-full h-full object-cover" /> : <video src={video.url} className="w-full h-full object-cover" />}
 								{video.duration && <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded">{video.duration}</div>}
 							</div>
 
@@ -140,8 +139,7 @@ export default function VideosPage() {
 					))}
 				</div>
 			)}
-
-			{openModal && <VideoForm videoToEdit={videoToEdit} onClose={handleCloseModal} />}
+			{openModal && <VideoForm videoToEdit={videoToEdit as unknown as undefined} onClose={handleCloseModal} />}{" "}
 		</div>
 	);
 }

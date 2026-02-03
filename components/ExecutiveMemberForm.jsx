@@ -1,24 +1,54 @@
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = null }) {
 	const [formData, setFormData] = useState({
 		name: "",
 		position: "",
+		department: "",
+		subdepartment: "",
 		phone: "",
 		email: "",
 		order: 0,
 		isActive: true,
 		image: null,
 	});
+	const [departments, setDepartments] = useState([]);
+	const [availableSubdepartments, setAvailableSubdepartments] = useState([]);
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState("");
+
+	useEffect(() => {
+		fetchDepartments();
+	}, [fetchDepartments]);
+
+	const fetchDepartments = useCallback(async () => {
+		try {
+			const response = await fetch("/api/departments");
+			const data = await response.json();
+			if (data.success) {
+				setDepartments(data.departments);
+
+				// If editing and department exists, set subdepartments after departments are loaded
+				if (memberToEdit?.department) {
+					const selectedDept = data.departments.find((d) => d.name === memberToEdit.department);
+					if (selectedDept) {
+						setAvailableSubdepartments(selectedDept.subdepartments || []);
+					}
+				}
+			}
+		} catch (error) {
+			console.error("Error fetching departments:", error);
+		}
+	}, [memberToEdit]);
 
 	useEffect(() => {
 		if (memberToEdit) {
 			setFormData({
 				name: memberToEdit.name || "",
 				position: memberToEdit.position || "",
+				department: memberToEdit.department || "",
+				subdepartment: memberToEdit.subdepartment || "",
 				phone: memberToEdit.phone || "",
 				email: memberToEdit.email || "",
 				order: memberToEdit.order || 0,
@@ -30,10 +60,22 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 
 	const handleChange = (e) => {
 		const { name, value, type, checked, files } = e.target;
-		setFormData((prev) => ({
-			...prev,
-			[name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
-		}));
+
+		// If department changes, update available subdepartments and reset subdepartment
+		if (name === "department") {
+			const selectedDept = departments.find((d) => d.name === value);
+			setAvailableSubdepartments(selectedDept?.subdepartments || []);
+			setFormData((prev) => ({
+				...prev,
+				department: value,
+				subdepartment: "", // Reset subdepartment when department changes
+			}));
+		} else {
+			setFormData((prev) => ({
+				...prev,
+				[name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+			}));
+		}
 	};
 
 	const handleSubmit = async (e) => {
@@ -66,6 +108,8 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 				setFormData({
 					name: "",
 					position: "",
+					department: "",
+					subdepartment: "",
 					phone: "",
 					email: "",
 					order: 0,
@@ -103,6 +147,35 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 						Position
 					</label>
 					<input type="text" id="position" name="position" value={formData.position} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="President" />
+				</div>
+
+				<div>
+					<label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
+						Department
+					</label>
+					<select id="department" name="department" value={formData.department} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand">
+						<option value="">Select Department</option>
+						{departments.map((dept) => (
+							<option key={dept._id} value={dept.name}>
+								{dept.name}
+							</option>
+						))}
+					</select>
+				</div>
+
+				<div>
+					<label htmlFor="subdepartment" className="block text-sm font-medium text-gray-700 mb-1">
+						Subdepartment
+					</label>
+					<select id="subdepartment" name="subdepartment" value={formData.subdepartment} onChange={handleChange} disabled={!formData.department || availableSubdepartments.length === 0} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-gray-100 disabled:cursor-not-allowed">
+						<option value="">Select Subdepartment</option>
+						{availableSubdepartments.map((subdept, index) => (
+							<option key={index} value={subdept}>
+								{subdept}
+							</option>
+						))}
+					</select>
+					{formData.department && availableSubdepartments.length === 0 && <p className="text-xs text-gray-500 mt-1">No subdepartments available for this department</p>}
 				</div>
 
 				<div>

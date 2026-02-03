@@ -7,9 +7,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from "lucide-react";
+import Image from "next/image";
+
+interface Circular {
+	_id?: string;
+	circularTitle: { en: string; no: string; ne: string };
+	circularDesc: { en: string; no: string; ne: string };
+	circularAuthor: { en: string; no: string; ne: string };
+	publicationStatus: string;
+	circularPublishedAt?: string;
+	circularPdfUrl?: string;
+	circularMainPicture?: string;
+	circularSecondPicture?: string;
+}
 
 interface CircularFormProps {
-	circular?: any;
+	circular?: Circular;
 	onClose: () => void;
 	onSuccess: () => void;
 }
@@ -230,12 +243,12 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 							<div>
 								<Label htmlFor="mainImage">Main Picture</Label>
 								<Input id="mainImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "main")} />
-								{mainImagePreview && <img src={mainImagePreview} alt="Main preview" className="mt-2 w-full h-40 object-cover rounded" />}
+								{mainImagePreview && <Image src={mainImagePreview} alt="Main preview" className="mt-2 w-full h-40 object-cover rounded" />}
 							</div>
 							<div>
 								<Label htmlFor="secondImage">Second Picture</Label>
 								<Input id="secondImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "second")} />
-								{secondImagePreview && <img src={secondImagePreview} alt="Second preview" className="mt-2 w-full h-40 object-cover rounded" />}
+								{secondImagePreview && <Image src={secondImagePreview} alt="Second preview" className="mt-2 w-full h-40 object-cover rounded" />}
 							</div>
 						</div>
 					</div>

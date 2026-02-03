@@ -10,6 +10,8 @@ export async function POST(req) {
 		const formData = await req.formData();
 		const name = formData.get("name");
 		const position = formData.get("position");
+		const department = formData.get("department");
+		const subdepartment = formData.get("subdepartment");
 		const phone = formData.get("phone");
 		const email = formData.get("email");
 		const order = formData.get("order") || 0;
@@ -29,6 +31,8 @@ export async function POST(req) {
 		const newMember = await ExecutiveMember.create({
 			name,
 			position,
+			department,
+			subdepartment,
 			phone,
 			email,
 			order: parseInt(order),

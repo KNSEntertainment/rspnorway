@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useActiveMenu } from "@/context/ActiveMenuContext";
-import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Users, VideoIcon } from "lucide-react";
+import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Users, VideoIcon, Bell, FileText, Layers, Mail } from "lucide-react";
 
 export default function DashboardGrid() {
 	const { setActiveMenu } = useActiveMenu();
@@ -9,11 +9,16 @@ export default function DashboardGrid() {
 		{ id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "bg-brand", href: "/en/dashboard" },
 		{ id: "contactmessages", label: "Contact Messages", icon: Book, color: "bg-red-900", href: "/en/dashboard/contactmessages" },
 		{ id: "memberships", label: "Memberships", icon: Users, color: "bg-blue-600", href: "/en/dashboard/memberships" },
+		{ id: "departments", label: "Departments", icon: Layers, color: "bg-teal-600", href: "/en/dashboard/departments" },
+		{ id: "executive-members", label: "Executive Members", icon: Users, color: "bg-cyan-600", href: "/en/dashboard/executive-members" },
 		{ id: "events", label: "Events", icon: BookImage, color: "bg-purple-500", href: "/en/dashboard/events" },
 		{ id: "blogs", label: "Blogs", icon: Newspaper, color: "bg-orange-700", href: "/en/dashboard/blogs" },
-		{ id: "videos", label: "Videos", icon: VideoIcon, color: "bg-orange-700", href: "/en/dashboard/videos" },
+		{ id: "notices", label: "Notices", icon: Bell, color: "bg-blue-600", href: "/en/dashboard/notices" },
+		{ id: "circulars", label: "Circulars", icon: FileText, color: "bg-indigo-600", href: "/en/dashboard/circulars" },
+		{ id: "videos", label: "Videos", icon: VideoIcon, color: "bg-purple-600", href: "/en/dashboard/videos" },
 		{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-orange-500", href: "/en/dashboard/gallery" },
 		{ id: "downloads", label: "Downloads", icon: Download, color: "bg-red-500", href: "/en/dashboard/downloads" },
+		{ id: "subscribers", label: "Subscribers", icon: Mail, color: "bg-pink-600", href: "/en/dashboard/subscribers" },
 		{ id: "users", label: "Users", icon: User, color: "bg-green-700", href: "/en/dashboard/users" },
 		{ id: "settings", label: "Profile Settings", icon: Settings, color: "bg-gray-500", href: "/en/dashboard/settings" },
 	];

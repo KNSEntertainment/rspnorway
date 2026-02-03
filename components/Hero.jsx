@@ -64,7 +64,7 @@ export default function FullWidthHero() {
 				{/* Background Layer */}
 				<AnimatePresence mode="wait">
 					<motion.div key={currentSlide} className="absolute inset-0 z-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
-						<Image src={slides[currentSlide].image} alt="Background" fill className="object-cover transition-transform duration-[10s] scale-110 animate-ken-burns" priority />
+						<Image src={slides[currentSlide].image} alt="Background" fill className="object-cover scale-110 animate-ken-burns" priority />
 						{/* Overlay: Darkens and adds a blue tint for political branding */}
 						<div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-blue-950/40 to-transparent z-10" />
 					</motion.div>

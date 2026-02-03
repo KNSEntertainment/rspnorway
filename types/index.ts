@@ -46,3 +46,9 @@ export interface Membership {
 	profilePhoto?: string;
 	createdAt: string;
 }
+
+export interface LocalizedString {
+	en?: string;
+	no?: string;
+	ne?: string;
+}

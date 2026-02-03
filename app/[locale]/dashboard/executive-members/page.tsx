@@ -5,11 +5,22 @@ import { Plus, Edit, Trash2, Mail, Phone } from "lucide-react";
 import ExecutiveMemberForm from "@/components/ExecutiveMemberForm";
 import Image from "next/image";
 
+interface Member {
+	_id: string;
+	name: string;
+	email: string;
+	phone: string;
+	position?: string;
+	department?: string;
+	subdepartment?: string;
+	imageUrl?: string;
+}
+
 export default function ExecutiveMembersAdmin() {
-	const [members, setMembers] = useState([]);
+	const [members, setMembers] = useState<Member[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [showModal, setShowModal] = useState(false);
-	const [memberToEdit, setMemberToEdit] = useState(null);
+	const [memberToEdit, setMemberToEdit] = useState<Member | null>(null);
 
 	useEffect(() => {
 		fetchMembers();
@@ -32,7 +43,7 @@ export default function ExecutiveMembersAdmin() {
 		setShowModal(true);
 	};
 
-	const handleEditMember = (member: any) => {
+	const handleEditMember = (member: Member) => {
 		setMemberToEdit(member);
 		setShowModal(true);
 	};
@@ -87,14 +98,14 @@ export default function ExecutiveMembersAdmin() {
 							<h2 className="text-2xl font-bold text-gray-900">{memberToEdit ? "Edit Member" : "Add New Member"}</h2>
 						</div>
 						<div className="p-6">
-							<ExecutiveMemberForm handleCloseModal={handleCloseModal} memberToEdit={memberToEdit} />
+							<ExecutiveMemberForm handleCloseModal={handleCloseModal} memberToEdit={memberToEdit as unknown as null} />
 						</div>
 					</div>
 				</div>
 			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{members.map((member: any) => (
+				{members.map((member: Member) => (
 					<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
 						<div className="aspect-square overflow-hidden bg-gray-100">
 							{member.imageUrl ? (
