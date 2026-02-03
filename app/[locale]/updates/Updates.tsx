@@ -102,7 +102,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	if (selectedEvent) {
 		const { day, month } = formatEventDate(selectedEvent.eventdate);
 		return (
-			<div className="min-h-screen ">
+			<div className="min-h-screen bg-gray-50">
 				<div className="container max-w-7xl mx-auto px-4 py-8">
 					<button onClick={() => setSelectedEvent(null)} className="flex items-center text-gray-900 hover:text-brand font-medium transition-colors duration-300 mb-6">
 						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,82 +111,100 @@ export default function UpdatesClient({ events, notices, circulars, translations
 						{t.back}
 					</button>
 
-					<div className="grid lg:grid-cols-3 gap-8 md:py-6">
+					<div className="grid lg:grid-cols-3 gap-8">
+						{/* Main Content - Left Side */}
 						<div className="lg:col-span-2">
-							<Card className="md:shadow-md border-none bg-gray-50 overflow-hidden">
-								<div className="flex items-end gap-6 mb-6">
-									<div className="bg-gradient-to-br  text-brand rounded-xl p-4 shadow-lg min-w-[70px] md:min-w-[100px] text-center">
-										<div className="text-2xl md:text-4xl font-bold">{day}</div>
-										<div className="text-sm uppercase tracking-wider">{month}</div>
-									</div>
-									<div className="flex-1">
-										<h1 className="text-md md:text-2xl font-bold text-gray-800 mb-2">{selectedEvent.eventname}</h1>
-										<div className="flex flex-col md:flex-row md:space-y-0 flex-wrap md:gap-4 text-gray-600">
-											{selectedEvent.eventtime && (
-												<div className="flex items-center gap-2">
-													<Clock className="w-5 h-5 text-brand" />
-													<span>{selectedEvent.eventtime}</span>
-												</div>
-											)}
-											{selectedEvent.eventvenue && (
-												<div className="flex items-center gap-2">
-													<MapPin className="w-5 h-5 text-brand" />
-													<span>{selectedEvent.eventvenue}</span>
-												</div>
-											)}
+							<Card className="shadow-lg border border-gray-200 bg-white overflow-hidden">
+								{/* Event Header */}
+								<div className="bg-gradient-to-r from-gray-50 to-white p-6 md:p-8 border-b border-gray-100">
+									<div className="flex items-start gap-6">
+										<div className="bg-gradient-to-br from-brand to-brand/80 text-white rounded-2xl p-4 shadow-md min-w-[80px] md:min-w-[100px] text-center flex-shrink-0">
+											<div className="text-3xl md:text-4xl font-bold leading-none">{day}</div>
+											<div className="text-sm md:text-base uppercase tracking-wider mt-1 opacity-90">{month}</div>
+										</div>
+										<div className="flex-1 min-w-0">
+											<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">{selectedEvent.eventname}</h1>
+											<div className="flex flex-col gap-2.5 text-gray-600">
+												{selectedEvent.eventtime && (
+													<div className="flex items-center gap-2.5">
+														<Clock className="w-5 h-5 text-brand flex-shrink-0" />
+														<span className="text-sm md:text-base">{selectedEvent.eventtime}</span>
+													</div>
+												)}
+												{selectedEvent.eventvenue && (
+													<div className="flex items-center gap-2.5">
+														<MapPin className="w-5 h-5 text-brand flex-shrink-0" />
+														<span className="text-sm md:text-base">{selectedEvent.eventvenue}</span>
+													</div>
+												)}
+											</div>
 										</div>
 									</div>
 								</div>
 
-								<CardContent className="px-4 py-8 md:p-8">
-									<div className="relative h-screen">
+								<CardContent className="p-6 md:p-8">
+									{/* Event Poster */}
+									<div className="relative w-full overflow-hidden mb-6">
 										{selectedEvent.eventposterUrl ? (
-											<Image src={selectedEvent.eventposterUrl} alt={selectedEvent.eventname} fill className="object-contain" />
+											<Image src={selectedEvent.eventposterUrl} alt={selectedEvent.eventname} width={1200} height={800} className="w-full h-auto max-h-[50vh] md:max-h-[70vh] object-contain object-top" priority />
 										) : (
 											<div className="flex items-center justify-center h-full">
-												<Calendar className="w-32 h-32" />
+												<Calendar className="w-24 h-24 text-gray-300" />
 											</div>
 										)}
 									</div>
-									{selectedEvent.eventdescription && selectedEvent.eventdescription !== "" ? (
-										<div className="grid md:grid-cols-2 gap-6 mt-2 md:mt-6 p-6">
-											<div className="prose prose-lg max-w-none mb-6">
+
+									{/* Event Description */}
+									<div className="mt-6">
+										<h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+											<svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+											</svg>
+											About this event
+										</h2>
+										{selectedEvent.eventdescription && selectedEvent.eventdescription !== "" ? (
+											<div className="prose prose-lg max-w-none">
 												<p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedEvent.eventdescription}</p>
 											</div>
-										</div>
-									) : (
-										<p>Description will be available soon. Thank you for your patience.</p>
-									)}
+										) : (
+											<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+												<p className="text-blue-800 text-center">Description will be available soon. Thank you for your patience.</p>
+											</div>
+										)}
+									</div>
 								</CardContent>
 							</Card>
 						</div>
 
-						<div>
-							<h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-								<Calendar className="w-6 h-6 mr-2" />
-								{t.other_events}
-							</h3>
-							<div className="space-y-4">
-								{sortedEvents
-									.filter((e) => e._id !== selectedEvent._id)
-									.slice(0, 3)
-									.map((event) => {
-										const { day, month } = formatEventDate(event.eventdate);
-										return (
-											<Card key={event._id} className="cursor-pointer hover:shadow-lg transition-all duration-300" onClick={() => setSelectedEvent(event)}>
-												<CardContent className="p-4 flex gap-4">
-													<div className="  text-brand rounded-lg p-3 text-center min-w-[60px]">
-														<div className="text-2xl font-bold">{day}</div>
-														<div className="text-xs uppercase">{month}</div>
-													</div>
-													<div>
-														<h4 className="font-bold text-gray-800 line-clamp-2">{event.eventname}</h4>
-														<p className="text-sm text-gray-600">{event.eventvenue}</p>
-													</div>
-												</CardContent>
-											</Card>
-										);
-									})}
+						{/* Sidebar - Right Side */}
+						<div className="lg:col-span-1">
+							<div className="sticky top-8">
+								<h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+									<Calendar className="w-6 h-6 mr-2 text-brand" />
+									{t.other_events}
+								</h3>
+								<div className="space-y-4">
+									{sortedEvents
+										.filter((e) => e._id !== selectedEvent._id)
+										.slice(0, 3)
+										.map((event) => {
+											const { day, month } = formatEventDate(event.eventdate);
+											return (
+												<Card key={event._id} className="cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-200 bg-white hover:border-brand/50" onClick={() => setSelectedEvent(event)}>
+													<CardContent className="p-4 flex gap-4">
+														<div className="bg-gradient-to-br from-brand/10 to-brand/5 text-brand rounded-lg p-3 text-center min-w-[60px] flex-shrink-0">
+															<div className="text-2xl font-bold leading-none">{day}</div>
+															<div className="text-xs uppercase mt-1">{month}</div>
+														</div>
+														<div className="flex-1 min-w-0">
+															<h4 className="font-bold text-gray-900 line-clamp-2 mb-1">{event.eventname}</h4>
+															<p className="text-sm text-gray-600 line-clamp-1">{event.eventvenue}</p>
+														</div>
+													</CardContent>
+												</Card>
+											);
+										})}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -345,7 +363,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 
 	// Main Page - Events & Notices Grid
 	return (
-		<div className="px-4">
+		<div className="px-4 pb-8">
 			<div className="text-center mb-8 md:mb-12">
 				<SectionHeader heading={t.title} />
 				<p className="text-gray-600 max-w-3xl mx-auto text-lg">{t.description}</p>

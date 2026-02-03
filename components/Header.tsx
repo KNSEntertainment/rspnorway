@@ -262,7 +262,7 @@ export default function Header() {
 	/* ---------------------------------- */
 
 	return (
-		<div className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+		<div className={`fixed inset-x-0 top-0 z-40 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
 			{/* Utility Bar */}
 			{/* <motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="h-11 border-b bg-neutral-50/95 backdrop-blur-md"> */}
 			<section className="h-11 border-b bg-neutral-50/95 backdrop-blur-md">
@@ -289,7 +289,7 @@ export default function Header() {
 			{/* Main Header */}
 			{/* <motion.header initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="bg-gradient-to-r from-brand via-brand to-emerald-600"> */}
 			<header className="bg-gradient-to-r from-brand via-brand to-emerald-600">
-				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 grid grid-cols-3 items-center border-b border-brand">
+				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex lg:grid lg:grid-cols-3 items-center justify-between border-b border-brand">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">

@@ -75,15 +75,15 @@ export default function FullWidthHero() {
 					<div className="max-w-3xl">
 						<AnimatePresence mode="wait">
 							<motion.div key={currentSlide} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.7, ease: "easeOut" }}>
-								<h1 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight tracking-tighter">{slides[currentSlide].title}</h1>
-								<p className="text-xl md:text-2xl text-white/80 mb-10 leading-relaxed font-light">{slides[currentSlide].description}</p>
+								<h1 className="text-2xl md:text-5xl font-black text-white mb-2 md:mb-6 leading-tight tracking-tighter">{slides[currentSlide].title}</h1>
+								<p className="text-xl md:text-2xl text-white/80 mb-6 md:mb-10 md:leading-relaxed font-light">{slides[currentSlide].description}</p>
 
-								<div className="flex flex-wrap gap-5">
+								<div className="flex flex-wrap gap-2 md:gap-4">
 									<Link href={slides[currentSlide].primaryLink} locale={locale}>
-										<Button className="h-12 px-6 text-lg font-bold rounded-full bg-brand/90 hover:bg-brand text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">{slides[currentSlide].primaryButton}</Button>
+										<Button className="h-12 px-4 md:px-6 text-md md:text-lg font-bold rounded-full bg-brand/90 hover:bg-brand text-white shadow-2xl shadow-blue-500/20 transition-all hover:scale-105 active:scale-95">{slides[currentSlide].primaryButton}</Button>
 									</Link>
 									<Link href={slides[currentSlide].secondaryLink} locale={locale}>
-										<Button variant="outline" className="h-12 px-6 text-lg font-bold rounded-full border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-brand transition-all flex items-center gap-2">
+										<Button variant="outline" className="h-12 px-4 md:px-6 text-md md:text-lg font-bold rounded-full border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white hover:text-brand transition-all flex items-center gap-2">
 											{slides[currentSlide].secondaryButton}
 											<ArrowRight className="w-5 h-5" />
 										</Button>
@@ -95,7 +95,7 @@ export default function FullWidthHero() {
 				</div>
 
 				{/* Navigation Controls */}
-				<div className="absolute bottom-12 right-12 md:right-24 z-30 flex items-center gap-4">
+				<div className="hidden absolute bottom-12 right-12 md:right-24 z-30 md:flex items-center gap-4">
 					<button onClick={prevSlide} className="p-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-lg text-white hover:bg-white hover:text-brand transition-all">
 						<ChevronLeft className="w-6 h-6" />
 					</button>

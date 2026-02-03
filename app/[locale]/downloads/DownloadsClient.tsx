@@ -4,6 +4,7 @@
 import { useState, useMemo } from "react";
 import { Download, FileText, Calendar, Search, Filter } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useLocale } from "next-intl";
 
 interface Document {
@@ -150,9 +151,9 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 								<div className="p-6 flex flex-col justify-between flex-1">
 									{" "}
 									<span className="px-3 py-1 w-fit bg-blue-100 text-brand text-xs font-semibold rounded-full mb-3">{doc.category}</span>
-									<a href={`/${locale}/downloads/${doc.id}`} className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+									<Link href={`/${locale}/downloads/${doc.id}`} className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
 										{doc.title}
-									</a>
+									</Link>
 									<div className="flex items-center text-sm text-gray-500 mb-4">
 										{" "}
 										<Calendar size={16} className="mr-2" /> {doc.date}{" "}

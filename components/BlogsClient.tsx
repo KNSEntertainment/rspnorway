@@ -76,7 +76,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 				<div className="relative">
 					<h2 className="text-3xl font-bold text-center mb-6">{t.blogs_title}</h2>
 					{/* Navigation Arrows - Positioned absolutely at top right */}
-					<div className="absolute top-6 right-0 flex gap-2">
+					<div className="hidden absolute top-6 right-0 md:flex gap-2">
 						<button onClick={() => scroll("left")} disabled={!canScrollLeft} className={`p-2 rounded-full shadow-md transition-all duration-200 ${canScrollLeft ? "bg-white hover:bg-brand hover:text-white text-gray-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`} aria-label="Scroll left">
 							<ChevronLeft className="w-5 h-5" />
 						</button>

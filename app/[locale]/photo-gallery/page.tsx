@@ -167,6 +167,8 @@ const PhotoGallery = () => {
 									<Image
 										src={`${photo.url}?w=800&q=80`}
 										alt={photo.title}
+										width={400}
+										height={400}
 										style={{
 											width: "100%",
 											height: "100%",

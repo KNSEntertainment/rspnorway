@@ -18,20 +18,20 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 	const locale = useLocale();
 	return (
 		<>
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" onClick={() => closeMenu()} />
-			<motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.3, ease: "easeOut" }} className="fixed inset-y-0 right-0 w-[75%] max-w-md bg-gradient-to-br from-brand via-brand to-emerald-600 z-50 overflow-y-auto">
-				<div className="pt-16 px-8 h-full min-h-full flex flex-col">
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]" onClick={() => closeMenu()} style={{ top: 0, left: 0, right: 0, bottom: 0 }} />
+			<motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.3, ease: "easeOut" }} className="fixed top-0 bottom-0 right-0 w-[75%] max-w-md bg-gradient-to-br from-brand via-brand to-emerald-600 z-[110] overflow-y-auto" style={{ height: "100vh" }}>
+				<div className="pt-12 px-8 h-full min-h-full flex flex-col">
 					<nav className="flex flex-col gap-2" role="navigation">
 						{navItems.map((item, idx) => (
 							<motion.div key={item.href} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1, duration: 0.3 }}>
-								<Link href={`/${locale}${item.href}`} onClick={() => closeMenu()} className="block px-6 py-2 text-2xl font-semibold text-white/90 hover:text-white hover:bg-white/10 rounded-2xl transition-all duration-200">
+								<Link href={`/${locale}${item.href}`} onClick={() => closeMenu()} className="block px-6 py-1 text-xl font-semibold text-white/90 hover:text-white hover:bg-white/10 rounded-2xl transition-all duration-200">
 									{item.title}
 								</Link>
 							</motion.div>
 						))}
 					</nav>
 
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.3 }} className="mt-12 pt-8 border-t border-white/20">
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.3 }} className="mt-12 pt-4 border-t border-white/20">
 						<p className="text-white/90 text-lg font-medium mb-4 px-6">Contact Us</p>
 						<a href="tel:+4796800984" className="block px-6 text-white hover:bg-white/10 rounded-xl transition-all duration-200">
 							📞 {tr("phone_small_device")}
@@ -40,7 +40,7 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 							✉️ info@rspnorway.org
 						</a>
 					</motion.div>
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.3 }} className="mt-8 pt-8 border-t border-white/20">
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.3 }} className="mt-8 pt-4 border-t border-white/20">
 						<div className="px-6">
 							<p className="text-white/90 text-lg font-medium mb-4">Follow Us</p>
 
@@ -48,13 +48,13 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 						</div>
 					</motion.div>
 					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.3 }} className="mt-8 px-6">
-						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-6 py-2 text-center text-lg font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-1 text-center text-lg font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
 							{t("become_a_member") || "Become Member"}
 						</Link>
 					</motion.div>
 				</div>
 			</motion.div>
-			<button onClick={() => closeMenu()} className="fixed top-6 right-6 z-50 hover:bg-white/10 backdrop-blur-md rounded-full p-1 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+			<button onClick={() => closeMenu()} className="fixed top-6 right-6 z-[120] hover:bg-white/10 backdrop-blur-md rounded-full p-1 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
 				<X size={24} />
 			</button>
 		</>
