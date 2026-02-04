@@ -102,7 +102,7 @@ export default function SetPasswordClient({ translations: t }: Props) {
 			<div className="min-h-screen flex items-center justify-center  p-4">
 				<div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
 					<div className="flex justify-center mb-4">
-						<CheckCircle className="w-16 h-16 text-secondary0" />
+						<CheckCircle className="w-16 h-16 text-success0" />
 					</div>
 					<h2 className="text-2xl font-bold text-gray-900 mb-2">{t.success}</h2>
 					<p className="text-gray-900 mb-4">{t.successMessage}</p>

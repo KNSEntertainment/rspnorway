@@ -54,7 +54,7 @@ const opportunitiesData = [
 		title: "Fundraising Team",
 		shortDescription: "Support our mission through creative fundraising initiatives",
 		icon: "💰",
-		color: "bg-secondary0",
+		color: "bg-success0",
 		gradient: "from-green-400 to-green-600",
 		fullDescription: "Fundraising Team members ensure RSP has the resources to achieve its mission. You'll develop creative fundraising campaigns, build relationships with donors, and organize events that generate support for our cause while engaging the community.",
 		responsibilities: ["Plan and execute fundraising events and campaigns", "Identify and cultivate relationships with potential donors", "Create compelling fundraising materials and appeals", "Manage donor databases and maintain records", "Thank and recognize donors appropriately", "Collaborate with finance team on budget planning"],
@@ -214,7 +214,7 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 					<ul className="space-y-3">
 						{opportunity.responsibilities.map((resp: string, idx: number) => (
 							<li key={idx} className="flex items-start">
-								<svg className="w-6 h-6 text-secondary0 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<svg className="w-6 h-6 text-success0 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
 								</svg>
 								<span className="text-gray-900">{resp}</span>

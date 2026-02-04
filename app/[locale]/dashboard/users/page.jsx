@@ -9,7 +9,6 @@ import RegisterForm from "@/components/RegisterForm";
 
 export default function UsersPage() {
 	const [openUserModal, setOpenUserModal] = useState(false);
-	const [editUser, setEditUser] = useState(null);
 	const [search, setSearch] = useState("");
 	const [roleFilter, setRoleFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);

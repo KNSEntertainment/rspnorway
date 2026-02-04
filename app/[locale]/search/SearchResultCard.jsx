@@ -29,7 +29,7 @@ function isValidImageUrl(url) {
 export default function SearchResultCard({ item, query }) {
 	const t = useTranslations("search");
 	const typeIcon = {
-		Event: <Calendar className="w-5 h-5 text-secondary0" />,
+		Event: <Calendar className="w-5 h-5 text-success0" />,
 		Gallery: <ImageIcon className="w-5 h-5 text-pink-500" />,
 		Notice: <BookOpen className="w-5 h-5 text-orange-500" />,
 		Blog: <BookOpen className="w-5 h-5 text-blue-500" />,

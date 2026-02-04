@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { X, Upload, Video as VideoIcon } from "lucide-react";
+import { Upload, Video as VideoIcon } from "lucide-react";
 import Image from "next/image";
 
 interface Video {

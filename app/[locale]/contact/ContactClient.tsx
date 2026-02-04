@@ -117,7 +117,7 @@
 // 								{submitting ? t.form.sending : t.form.send}
 // 							</button>
 // 							{success && (
-// 								<p className="text-secondary text-center mt-2" role="status" aria-live="polite">
+// 								<p className="text-success text-center mt-2" role="status" aria-live="polite">
 // 									{t.success}
 // 								</p>
 // 							)}

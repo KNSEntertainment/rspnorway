@@ -143,7 +143,7 @@ export default function MembershipsPage() {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-secondary0 text-white">
+					<Badge className="bg-success0 text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						Approved
 					</Badge>
@@ -261,7 +261,7 @@ export default function MembershipsPage() {
 											</Button>
 											{member.membershipStatus === "pending" && (
 												<>
-													<Button variant="outline" size="sm" className="text-secondary hover:text-secondary" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
+													<Button variant="outline" size="sm" className="text-success hover:text-success" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
 														<CheckCircle className="w-4 h-4" />
 													</Button>
 													<Button variant="outline" size="sm" className="text-red-600 hover:text-red-600" onClick={() => handleStatusUpdate(member._id, "blocked")} title="Block">
@@ -275,7 +275,7 @@ export default function MembershipsPage() {
 												</Button>
 											)}
 											{member.membershipStatus === "blocked" && (
-												<Button variant="outline" size="sm" className="text-secondary hover:text-secondary" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
+												<Button variant="outline" size="sm" className="text-success hover:text-success" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
 													<CheckCircle className="w-4 h-4" />
 												</Button>
 											)}
@@ -384,7 +384,7 @@ export default function MembershipsPage() {
 							<Card className="mb-6 border-l-4 border-l-green-500 shadow-md hover:shadow-lg transition-shadow">
 								<CardHeader className="pb-3">
 									<CardTitle className="flex items-center gap-2 text-lg">
-										<MapPin className="w-5 h-5 text-secondary" />
+										<MapPin className="w-5 h-5 text-success" />
 										Location Details
 									</CardTitle>
 								</CardHeader>
@@ -485,7 +485,7 @@ export default function MembershipsPage() {
 								{viewingMember.membershipStatus === "pending" && (
 									<>
 										<Button
-											className="flex-1 bg-secondary hover:bg-secondary shadow-md hover:shadow-lg transition-all"
+											className="flex-1 bg-success hover:bg-success shadow-md hover:shadow-lg transition-all"
 											onClick={() => {
 												handleStatusUpdate(viewingMember._id, "approved");
 												setViewingMember(null);
@@ -520,7 +520,7 @@ export default function MembershipsPage() {
 								)}
 								{viewingMember.membershipStatus === "blocked" && (
 									<Button
-										className="flex-1 bg-secondary hover:bg-secondary shadow-md hover:shadow-lg transition-all"
+										className="flex-1 bg-success hover:bg-success shadow-md hover:shadow-lg transition-all"
 										onClick={() => {
 											handleStatusUpdate(viewingMember._id, "approved");
 											setViewingMember(null);

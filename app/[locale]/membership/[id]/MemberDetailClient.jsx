@@ -19,7 +19,7 @@ export default function MemberDetailClient({ member }) {
 			approved: {
 				icon: CheckCircle,
 				label: "Approved",
-				className: "bg-secondary text-secondary border-secondary",
+				className: "bg-success text-success border-success",
 			},
 			pending: {
 				icon: Clock,

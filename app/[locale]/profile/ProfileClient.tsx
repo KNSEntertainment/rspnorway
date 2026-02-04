@@ -190,7 +190,7 @@ export default function ProfileClient({ translations: t }: Props) {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-secondary0 text-white">
+					<Badge className="bg-success0 text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						{t.approved}
 					</Badge>
@@ -430,7 +430,7 @@ export default function ProfileClient({ translations: t }: Props) {
 											The selected file <span className="font-semibold text-gray-900">{alertFileInfo.name}</span> is <span className="font-bold text-red-600">{alertFileInfo.size}KB</span>.
 										</div>
 										<div>
-											Maximum allowed size is <span className="font-bold text-secondary">300KB</span>.
+											Maximum allowed size is <span className="font-bold text-success">300KB</span>.
 										</div>
 										<div className="bg-brand/10 border border-brand0 rounded-lg p-3 mt-2">
 											<div className="text-sm font-semibold text-blue-900 mb-1">💡 How to reduce file size:</div>

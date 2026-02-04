@@ -27,7 +27,7 @@ function DashboardLayoutContent({ children }) {
 		{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-brand", href: "/en/dashboard/gallery" },
 		{ id: "downloads", label: "Downloads", icon: Download, color: "bg-red-500", href: "/en/dashboard/downloads" },
 		{ id: "subscribers", label: "Subscribers", icon: Mail, color: "bg-brand", href: "/en/dashboard/subscribers" },
-		{ id: "users", label: "Users", icon: User, color: "bg-secondary", href: "/en/dashboard/users" },
+		{ id: "users", label: "Users", icon: User, color: "bg-success", href: "/en/dashboard/users" },
 		{ id: "settings", label: "Profile Settings", icon: Settings, color: "bg-light0", href: "/en/dashboard/settings" },
 	];
 

@@ -165,7 +165,7 @@ export default function NavCRUDForm() {
 					</div>
 				))}
 				<div className="mt-2">
-					<button type="submit" className="bg-secondary0 text-white px-3 py-1 rounded mr-2">
+					<button type="submit" className="bg-success0 text-white px-3 py-1 rounded mr-2">
 						{editingId ? "Update" : "Add"}
 					</button>
 					{editingId && (

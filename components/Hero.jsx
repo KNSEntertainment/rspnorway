@@ -319,7 +319,7 @@ export default function FullWidthHero() {
 // 				<div class="lg:w-1/2 text-center lg:text-left">
 // 					<span class="inline-block px-4 py-1 mb-6 border border-blue-400 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-800/50">For a Brighter Tomorrow</span>
 // 					<h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-// 						समृद्ध नेपाल, <span class="text-secondary">सुखी नेपाली</span>
+// 						समृद्ध नेपाल, <span class="text-success">सुखी नेपाली</span>
 // 					</h1>
 // 					<p class="text-lg text-blue-100 mb-10 leading-relaxed max-w-xl">Join us in our mission to transform Nepal through innovation, integrity, and grassroots empowerment. Your voice is the catalyst for change.</p>
 // 					<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">

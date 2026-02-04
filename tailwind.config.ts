@@ -12,8 +12,8 @@ export default {
 				// PRIMARY: Main brand color - buttons, links, active states
 				brand: "#0094da",
 				
-				// SECONDARY: Greenish accent - success states, highlights
-				secondary: "#10b981",
+				// SUCCESS: Greenish accent - success states, highlights
+				success: "#10b981",
 				
 				// LIGHT: Subtle backgrounds, borders, disabled states
 				light: "#f9fafb",

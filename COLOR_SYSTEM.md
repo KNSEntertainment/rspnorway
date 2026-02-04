@@ -30,23 +30,23 @@ This color system uses **ONLY 3 COLORS** to achieve:
 <nav class="border-l-4 border-brand">Active Menu</nav>
 ```
 
-### 2️⃣ SECONDARY: `secondary`
+### 2️⃣ SUCCESS: `success`
 **Color:** `#10b981` (Green)  
 **Usage:** Success states, checkmarks, verified badges, positive actions
 
 ```html
 <!-- Success Message -->
-<div class="bg-secondary/10 border-secondary text-secondary">
+<div class="bg-success/10 border-success text-success">
   ✓ Successfully saved!
 </div>
 
 <!-- Success Button -->
-<button class="bg-secondary text-white hover:opacity-90">
+<button class="bg-success text-white hover:opacity-90">
   Confirm
 </button>
 
 <!-- Badge -->
-<span class="bg-secondary text-white px-2 py-1 rounded">
+<span class="bg-success text-white px-2 py-1 rounded">
   Active
 </span>
 ```
@@ -83,7 +83,7 @@ This color system uses **ONLY 3 COLORS** to achieve:
 </button>
 
 <!-- Success Action -->
-<button class="bg-secondary text-white px-6 py-2 rounded hover:opacity-90 transition">
+<button class="bg-success text-white px-6 py-2 rounded hover:opacity-90 transition">
   Confirm
 </button>
 
@@ -155,8 +155,8 @@ This color system uses **ONLY 3 COLORS** to achieve:
 
 ```html
 <!-- Success -->
-<div class="bg-secondary/10 border-l-4 border-secondary p-4 rounded">
-  <p class="text-secondary font-semibold">✓ Success! Your changes have been saved.</p>
+<div class="bg-success/10 border-l-4 border-success p-4 rounded">
+  <p class="text-success font-semibold">✓ Success! Your changes have been saved.</p>
 </div>
 
 <!-- Error (using Tailwind default red) -->
@@ -184,7 +184,7 @@ This color system uses **ONLY 3 COLORS** to achieve:
 </span>
 
 <!-- Success Badge -->
-<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-white">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-success text-white">
   Active
 </span>
 
@@ -257,7 +257,7 @@ If you need dark mode in the future, use Tailwind's `dark:` variant:
 - Large CSS bundle with rarely used colors
 
 **After:**
-- **3 custom colors:** brand, secondary, light
+- **3 custom colors:** brand, success, light
 - **Tailwind defaults when needed:** red, orange, gray
 - ~85% reduction in custom color CSS
 - Faster page loads
