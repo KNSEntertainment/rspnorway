@@ -227,8 +227,8 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 						<div className="border-t border-light pt-3">
 							<p className="text-[10px] font-bold text-brand mb-1">RSP Norway</p>
 							<p className="text-[9px] text-gray-600">Rastriya Swatantra Party - Norway Chapter</p>
-							<p className="text-[9px] text-gray-600 mt-1">www.rspnorway.no</p>
-							<p className="text-[9px] text-gray-600">contact@rspnorway.no</p>
+							<p className="text-[9px] text-gray-600 mt-1">www.rspnorway.org</p>
+							<p className="text-[9px] text-gray-600">info@rspnorway.org</p>
 						</div>
 					</div>
 

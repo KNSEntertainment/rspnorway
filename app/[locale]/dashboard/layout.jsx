@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { useSession } from "next-auth/react";
 import { ActiveMenuProvider, useActiveMenu } from "@/context/ActiveMenuContext";
-import { menuItems } from "@/components/DashboardMenuItems";
+import { menuItems } from "@/components/DashboardMenuItems.js";
 
 function DashboardLayoutContent({ children }) {
 	const { activeMenu } = useActiveMenu();

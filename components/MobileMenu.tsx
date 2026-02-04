@@ -47,8 +47,11 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 							<SocialMediaLinks />
 						</div>
 					</motion.div>
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.3 }} className="mt-8 px-6">
-						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-1 text-center text-lg font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.3 }} className="mt-8 px-6 space-y-3">
+						<Link href={`/${locale}/donate`} onClick={() => closeMenu()} className="flex items-center justify-center gap-2 w-full px-4 py-3 text-center text-lg font-bold text-white bg-success rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+							Donate
+						</Link>
+						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-3 text-center text-lg font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
 							{t("become_a_member") || "Become Member"}
 						</Link>
 					</motion.div>

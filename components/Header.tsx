@@ -314,6 +314,11 @@ export default function Header() {
 							<Search size={19} />
 						</button>
 
+						{/* Donate Button */}
+						<Link href="/donate" className="hidden md:flex items-center gap-2 px-4 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
+							Donate
+						</Link>
+
 						{user ? (
 							<LoggedInUser user={user} />
 						) : (
