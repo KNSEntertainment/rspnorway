@@ -127,7 +127,7 @@ function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActi
 									role="menuitem"
 									onClick={() => setActiveDropdown(null)}
 									className={`
-                  block px-4 py-2 text-sm font-medium
+                  block px-4 py-2 text-lg font-medium
                   ${isDropdownItemActive ? "bg-brand text-white" : "text-gray-900 hover:bg-brand/5 hover:text-brand"}
                   transition-all duration-200
                   ${idx !== 0 ? "border-t border-neutral-100" : ""}

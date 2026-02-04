@@ -88,8 +88,8 @@ export default function ProfileClient({ translations: t }: Props) {
 		fetch("/api/settings")
 			.then((res) => res.json())
 			.then((data) => {
-				if (Array.isArray(data) && data.length > 0 && data[0].logo) {
-					setLogo(data[0].logo);
+				if (Array.isArray(data) && data.length > 0 && data[0].companyLogo) {
+					setLogo(data[0].companyLogo);
 				}
 			})
 			.catch((error) => console.error("Error fetching settings:", error));
@@ -199,6 +199,9 @@ export default function ProfileClient({ translations: t }: Props) {
 		return null;
 	}
 
+	// Extract username from email (everything before @)
+	const username = session.user.email?.split("@")[0] || "N/A";
+
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "approved":
@@ -305,7 +308,7 @@ export default function ProfileClient({ translations: t }: Props) {
 										<User className="w-4 h-4 mr-2" />
 										{t.username}
 									</label>
-									<p className="text-gray-900 text-lg">{session.user.username || "N/A"}</p>
+									<p className="text-gray-900 text-lg">{username}</p>
 								</div>
 
 								<div className="space-y-2">
@@ -435,11 +438,7 @@ export default function ProfileClient({ translations: t }: Props) {
 									<CreditCard className="w-6 h-6 mr-2 text-brand" />
 									Member ID Card
 								</CardTitle>
-								<Button
-									onClick={() => setShowIDCard(!showIDCard)}
-									variant={showIDCard ? "default" : "outline"}
-									className={showIDCard ? "bg-brand hover:bg-brand/90" : "border-brand text-brand hover:bg-brand/10"}
-								>
+								<Button onClick={() => setShowIDCard(!showIDCard)} variant={showIDCard ? "default" : "outline"} className={showIDCard ? "bg-brand hover:bg-brand/90" : "border-brand text-brand hover:bg-brand/10"}>
 									<CreditCard className="w-4 h-4 mr-2" />
 									{showIDCard ? "Hide ID Card" : "Generate ID Card"}
 								</Button>

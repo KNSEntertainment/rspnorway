@@ -28,6 +28,10 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 	// Generate membership number from last 6 digits of _id
 	const membershipNumber = memberData._id.slice(-6).toUpperCase();
 
+	console.log("MemberIDCard - _id:", memberData._id);
+	console.log("MemberIDCard - membershipNumber:", membershipNumber);
+	console.log("MemberIDCard - logo:", logo);
+
 	const handleDownload = async () => {
 		if (!cardRef.current) return;
 
@@ -62,13 +66,8 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 		window.print();
 	};
 
-	const qrData = JSON.stringify({
-		id: memberData._id,
-		name: memberData.fullName,
-		email: memberData.email,
-		membershipNo: membershipNumber,
-		verified: true,
-	});
+	// QR code contains only the membership number
+	const qrData = membershipNumber;
 
 	// Format membership date
 	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {
@@ -99,22 +98,19 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-4">
 						<div className="flex items-center justify-between">
 							<div>
+								<h2 className="text-xl font-bold mt-0.5">RSP Norway</h2>
 								<h3 className="text-xs font-semibold tracking-wide">MEMBER ID CARD</h3>
-								<h2 className="text-sm font-bold mt-0.5">RSP Norway</h2>
+								<p className="text-[10px] text-white font-semibold">Membership No. {membershipNumber}</p>
 							</div>
 							{/* Logo */}
-							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
-								{logo ? (
-									<Image src={logo} alt="RSP Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" />
-								) : (
-									<span className="text-brand font-bold text-lg">RSP</span>
-								)}
-							</div>
+							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">{logo ? <Image src={logo} alt="RSP Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" /> : <span className="text-brand font-bold text-lg">RSP</span>}</div>
 						</div>
 					</div>
 
 					{/* Content Section */}
 					<div className="px-6 py-4">
+						{/* Membership Number - TOP LEFT */}
+
 						{/* Photo and QR Code Row */}
 						<div className="flex items-start justify-between mb-3">
 							{/* Member Photo */}
@@ -146,12 +142,6 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 								<p className="text-sm font-bold text-gray-900 truncate">{memberData.fullName}</p>
 							</div>
 
-							{/* Membership Number */}
-							<div>
-								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Membership No.</p>
-								<p className="text-sm font-bold text-brand">{membershipNumber}</p>
-							</div>
-
 							{/* Two Column Layout */}
 							<div className="grid grid-cols-2 gap-2">
 								{/* Type */}
@@ -178,15 +168,17 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 					</div>
 
 					{/* Footer Section with Signature */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-2">
+					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-3">
 						<div className="flex items-center justify-between text-white">
 							<div className="flex items-center gap-1">
 								<div className="w-2 h-2 bg-white rounded-full"></div>
-								<p className="text-[10px] font-semibold">VERIFIED MEMBER</p>
+								<p className="text-[11px] font-semibold">VERIFIED MEMBER</p>
 							</div>
 							<div className="text-right">
-								<div className="border-b border-white/50 w-20 mb-0.5"></div>
-								<p className="text-[8px] font-medium">President</p>
+								<div className="h-6 flex items-end">
+									<div className="border-b-2 border-white w-24"></div>
+								</div>
+								<p className="text-[9px] font-semibold mt-0.5">President&apos;s Signature</p>
 							</div>
 						</div>
 					</div>
@@ -241,12 +233,14 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 					</div>
 
 					{/* Footer */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-2">
+					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-3">
 						<div className="flex items-center justify-between text-white">
 							<p className="text-[10px] font-semibold">Issued: {membershipDate}</p>
 							<div className="text-right">
-								<div className="border-b border-white/50 w-20 mb-0.5"></div>
-								<p className="text-[8px] font-medium">President</p>
+								<div className="h-6 flex items-end">
+									<div className="border-b-2 border-white w-24"></div>
+								</div>
+								<p className="text-[9px] font-semibold mt-0.5">President&apos;s Signature</p>
 							</div>
 						</div>
 					</div>

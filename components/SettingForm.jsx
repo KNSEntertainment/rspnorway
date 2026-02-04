@@ -34,26 +34,10 @@ export default function EmployeeForm({ settingdata }) {
 	};
 
 	const handleImageChange = async (e) => {
-		const file = e.target.files[0].name;
+		const file = e.target.files[0];
 		if (file) {
-			setFormData((prev) => ({ ...prev, [e.target.name]: "/" + file }));
-			console.log("/" + file);
-			// const formData = new FormData();
-			// formData.append("file", file);
-			// try {
-			// 	const response = await fetch("/api/upload", {
-			// 		method: "POST",
-			// 		body: formData,
-			// 	});
-			// 	if (response.ok) {
-			// 		const data = await response.json();
-			// 		setFormData((prev) => ({ ...prev, [e.target.name]: data.url }));
-			// 	} else {
-			// 		throw new Error("File upload failed");
-			// 	}
-			// } catch (error) {
-			// 	setError("Error uploading image: " + error.message);
-			// }
+			// Store file object for upload
+			setFormData((prev) => ({ ...prev, [e.target.name]: file }));
 		}
 	};
 
@@ -70,14 +54,39 @@ export default function EmployeeForm({ settingdata }) {
 				url = `/api/settings/${formData._id}`;
 				method = "PUT";
 			}
+
+			// Use FormData if companyLogo is a file
+			let body;
+			let headers = {};
+
+			if (formData.companyLogo instanceof File) {
+				const form = new FormData();
+				Object.keys(formData).forEach((key) => {
+					if (key === "companyLogo") {
+						form.append(key, formData[key]);
+					} else if (formData[key]) {
+						form.append(key, formData[key]);
+					}
+				});
+				body = form;
+			} else {
+				headers = { "Content-Type": "application/json" };
+				body = JSON.stringify(formData);
+			}
+
 			const response = await fetch(url, {
 				method,
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(formData),
+				headers,
+				body,
 			});
 
 			if (!response.ok) {
 				throw new Error(method === "POST" ? "Failed to create settings" : "Failed to update settings");
+			}
+
+			const result = await response.json();
+			if (result.setting && result.setting.companyLogo) {
+				setFormData((prev) => ({ ...prev, companyLogo: result.setting.companyLogo }));
 			}
 
 			toast.success(method === "POST" ? "Profile created successfully" : "Profile updated successfully");
