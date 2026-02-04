@@ -8,16 +8,16 @@ export default {
 			colors: {
 				// ✨ ULTRA MINIMAL COLOR SYSTEM - Only 3 Colors ✨
 				// This reduces CSS bundle size significantly!
-				
+
 				// PRIMARY: Main brand color - buttons, links, active states
 				brand: "#0094da",
-				
+
 				// SUCCESS: Greenish accent - success states, highlights
 				success: "#10b981",
-				
+
 				// LIGHT: Subtle backgrounds, borders, disabled states
 				light: "#f9fafb",
-				
+
 				// Shadcn UI compatibility (keep these for component library)
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
