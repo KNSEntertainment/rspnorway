@@ -133,7 +133,7 @@ export default function UsersPage() {
 			{/* Inline Form Section */}
 			{openUserModal && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4">Register New User</h2>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">Register New User</h2>
 					<RegisterForm handleCloseUserModal={handleCloseUserModal} fetchUsers={users} />
 				</div>
 			)}
@@ -164,7 +164,7 @@ export default function UsersPage() {
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(user._id)}>
-												<Trash2 className="w-6 h-6 text-error-700" />
+												<Trash2 className="w-6 h-6 text-red-600" />
 											</Button>
 											<Button variant="outline" size="sm" onClick={() => setEditUser(user)}>
 												Edit
@@ -185,15 +185,15 @@ export default function UsersPage() {
 				{/* Pagination Controls */}
 				{totalPages > 1 && (
 					<div className="flex justify-center items-center gap-2 py-4">
-						<button className="px-3 py-1 rounded border bg-neutral-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+						<button className="px-3 py-1 rounded border bg-light disabled:opacity-50" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
 							Prev
 						</button>
 						{Array.from({ length: totalPages }, (_, i) => (
-							<button key={i + 1} className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-red-800 text-white" : "bg-neutral-100"}`} onClick={() => handlePageChange(i + 1)}>
+							<button key={i + 1} className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-red-800 text-white" : "bg-light"}`} onClick={() => handlePageChange(i + 1)}>
 								{i + 1}
 							</button>
 						))}
-						<button className="px-3 py-1 rounded border bg-neutral-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+						<button className="px-3 py-1 rounded border bg-light disabled:opacity-50" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
 							Next
 						</button>
 					</div>

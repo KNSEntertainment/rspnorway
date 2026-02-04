@@ -84,12 +84,12 @@ export default function Page() {
 				</button>
 			</div>
 
-			{error && <div className="mb-4 p-4 bg-error-100 text-error-700 rounded text-center font-semibold">{error}</div>}
+			{error && <div className="mb-4 p-4 bg-red-50 text-red-600 rounded text-center font-semibold">{error}</div>}
 
 			{/* Inline Form Section */}
 			{openModal && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{galleryToEdit ? "Edit Gallery Item" : "Add New Gallery Item"}</h2>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">{galleryToEdit ? "Edit Gallery Item" : "Add New Gallery Item"}</h2>
 					<GalleryForm handleCloseGalleryModal={handleCloseGalleryModal} galleryToEdit={galleryToEdit} />
 				</div>
 			)}

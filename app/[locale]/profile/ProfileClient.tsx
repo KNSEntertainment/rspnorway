@@ -190,7 +190,7 @@ export default function ProfileClient({ translations: t }: Props) {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-success-500 text-white">
+					<Badge className="bg-secondary0 text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						{t.approved}
 					</Badge>
@@ -227,7 +227,7 @@ export default function ProfileClient({ translations: t }: Props) {
 			<div className="max-w-5xl mx-auto">
 				{/* Header */}
 				<div className="mb-8 text-center">
-					<h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">{t.title}</h1>
+					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t.title}</h1>
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -254,15 +254,15 @@ export default function ProfileClient({ translations: t }: Props) {
 								<Upload className="w-4 h-4 mr-2" />
 								{uploading ? "Uploading..." : "Upload Photo"}
 							</Button>
-							<div className="text-xs text-neutral-500 text-center space-y-1">
+							<div className="text-xs text-gray-900 text-center space-y-1">
 								<p>Maximum file size: 300KB</p>
 								{selectedFileName && selectedFileSize && (
-									<p className="text-info-600 font-medium">
+									<p className="text-brand font-medium">
 										Selected: {selectedFileName} ({Math.round(selectedFileSize / 1024)}KB)
 									</p>
 								)}
 							</div>
-							<Button onClick={() => signOut({ callbackUrl: "/" })} variant="outline" className="w-full text-error-600 hover:bg-error-50 hover:text-error-700 border-red-200">
+							<Button onClick={() => signOut({ callbackUrl: "/" })} variant="outline" className="w-full text-red-600 hover:bg-red-50 hover:text-red-600 border-red-200">
 								<LogOut className="w-4 h-4 mr-2" />
 								{t.logout}
 							</Button>
@@ -273,58 +273,58 @@ export default function ProfileClient({ translations: t }: Props) {
 					<Card className="md:col-span-2 shadow-lg border-0">
 						<CardHeader>
 							<CardTitle className="flex items-center text-2xl">
-								<User className="w-6 h-6 mr-2 text-info-600" />
+								<User className="w-6 h-6 mr-2 text-brand" />
 								{t.personalInfo}
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<User className="w-4 h-4 mr-2" />
 										{t.fullName}
 									</label>
-									<p className="text-neutral-900 text-lg">{session.user.fullName}</p>
+									<p className="text-gray-900 text-lg">{session.user.fullName}</p>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<User className="w-4 h-4 mr-2" />
 										{t.username}
 									</label>
-									<p className="text-neutral-900 text-lg">{session.user.username || "N/A"}</p>
+									<p className="text-gray-900 text-lg">{session.user.username || "N/A"}</p>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<Mail className="w-4 h-4 mr-2" />
 										{t.email}
 									</label>
-									<p className="text-neutral-900 text-lg">{session.user.email}</p>
+									<p className="text-gray-900 text-lg">{session.user.email}</p>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<Phone className="w-4 h-4 mr-2" />
 										{t.phone}
 									</label>
-									<p className="text-neutral-900 text-lg">{session.user.phone || "N/A"}</p>
+									<p className="text-gray-900 text-lg">{session.user.phone || "N/A"}</p>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<Calendar className="w-4 h-4 mr-2" />
 										{t.memberSince}
 									</label>
-									<p className="text-neutral-900 text-lg">{membershipData ? formatDate(membershipData.createdAt) : "N/A"}</p>
+									<p className="text-gray-900 text-lg">{membershipData ? formatDate(membershipData.createdAt) : "N/A"}</p>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600 flex items-center">
+									<label className="text-sm font-semibold text-gray-900 flex items-center">
 										<Shield className="w-4 h-4 mr-2" />
 										{t.accountType}
 									</label>
-									<p className="text-neutral-900 text-lg capitalize">{session.user.role}</p>
+									<p className="text-gray-900 text-lg capitalize">{session.user.role}</p>
 								</div>
 							</div>
 						</CardContent>
@@ -343,12 +343,12 @@ export default function ProfileClient({ translations: t }: Props) {
 						<CardContent>
 							<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600">{t.membershipStatus}</label>
+									<label className="text-sm font-semibold text-gray-900">{t.membershipStatus}</label>
 									<div>{getStatusBadge(membershipData.membershipStatus)}</div>
 								</div>
 
 								<div className="space-y-2">
-									<label className="text-sm font-semibold text-neutral-600">{t.membershipType}</label>
+									<label className="text-sm font-semibold text-gray-900">{t.membershipType}</label>
 									<Badge variant="outline" className="capitalize text-base">
 										{membershipData.membershipType === "general" ? t.general : t.active}
 									</Badge>
@@ -356,49 +356,49 @@ export default function ProfileClient({ translations: t }: Props) {
 
 								{membershipData.nationalMembershipNo && (
 									<div className="space-y-2">
-										<label className="text-sm font-semibold text-neutral-600">National Membership No</label>
-										<p className="text-neutral-900 text-lg">{membershipData.nationalMembershipNo}</p>
+										<label className="text-sm font-semibold text-gray-900">National Membership No</label>
+										<p className="text-gray-900 text-lg">{membershipData.nationalMembershipNo}</p>
 									</div>
 								)}
 
 								{membershipData.province && (
 									<div className="space-y-2">
-										<label className="text-sm font-semibold text-neutral-600">Province (Nepal)</label>
-										<p className="text-neutral-900 text-lg capitalize">{membershipData.province}</p>
+										<label className="text-sm font-semibold text-gray-900">Province (Nepal)</label>
+										<p className="text-gray-900 text-lg capitalize">{membershipData.province}</p>
 									</div>
 								)}
 
 								{membershipData.district && (
 									<div className="space-y-2">
-										<label className="text-sm font-semibold text-neutral-600">District (Nepal)</label>
-										<p className="text-neutral-900 text-lg capitalize">{membershipData.district}</p>
+										<label className="text-sm font-semibold text-gray-900">District (Nepal)</label>
+										<p className="text-gray-900 text-lg capitalize">{membershipData.district}</p>
 									</div>
 								)}
 
 								{membershipData.city && (
 									<div className="space-y-2">
-										<label className="text-sm font-semibold text-neutral-600">City (Norway)</label>
-										<p className="text-neutral-900 text-lg">{membershipData.city}</p>
+										<label className="text-sm font-semibold text-gray-900">City (Norway)</label>
+										<p className="text-gray-900 text-lg">{membershipData.city}</p>
 									</div>
 								)}
 
 								{membershipData.profession && (
 									<div className="space-y-2 md:col-span-3">
-										<label className="text-sm font-semibold text-neutral-600">Profession</label>
-										<p className="text-neutral-900 text-lg">{membershipData.profession}</p>
+										<label className="text-sm font-semibold text-gray-900">Profession</label>
+										<p className="text-gray-900 text-lg">{membershipData.profession}</p>
 									</div>
 								)}
 
 								{membershipData.skills && (
 									<div className="space-y-2 md:col-span-3">
-										<label className="text-sm font-semibold text-neutral-600">Skills & Expertise</label>
-										<p className="text-neutral-900 text-lg">{membershipData.skills}</p>
+										<label className="text-sm font-semibold text-gray-900">Skills & Expertise</label>
+										<p className="text-gray-900 text-lg">{membershipData.skills}</p>
 									</div>
 								)}
 
 								{membershipData.volunteerInterest && membershipData.volunteerInterest.length > 0 && (
 									<div className="space-y-2 md:col-span-3">
-										<label className="text-sm font-semibold text-neutral-600">Areas of Interest</label>
+										<label className="text-sm font-semibold text-gray-900">Areas of Interest</label>
 										<div className="flex flex-wrap gap-2 mt-2">
 											{membershipData.volunteerInterest.map((interest: string, index: number) => (
 												<Badge key={index} variant="secondary" className="text-sm">
@@ -418,7 +418,7 @@ export default function ProfileClient({ translations: t }: Props) {
 			<AlertDialog open={showSizeAlert} onOpenChange={setShowSizeAlert}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle className="flex items-center gap-2 text-error-600">
+						<AlertDialogTitle className="flex items-center gap-2 text-red-600">
 							<AlertCircle className="w-5 h-5" />
 							File Too Large
 						</AlertDialogTitle>
@@ -427,14 +427,14 @@ export default function ProfileClient({ translations: t }: Props) {
 								{alertFileInfo && (
 									<>
 										<div>
-											The selected file <span className="font-semibold text-neutral-900">{alertFileInfo.name}</span> is <span className="font-bold text-error-600">{alertFileInfo.size}KB</span>.
+											The selected file <span className="font-semibold text-gray-900">{alertFileInfo.name}</span> is <span className="font-bold text-red-600">{alertFileInfo.size}KB</span>.
 										</div>
 										<div>
-											Maximum allowed size is <span className="font-bold text-success-600">300KB</span>.
+											Maximum allowed size is <span className="font-bold text-secondary">300KB</span>.
 										</div>
-										<div className="bg-info-100 border border-info-500 rounded-lg p-3 mt-2">
+										<div className="bg-brand/10 border border-brand0 rounded-lg p-3 mt-2">
 											<div className="text-sm font-semibold text-blue-900 mb-1">💡 How to reduce file size:</div>
-											<ul className="text-sm text-info-700 space-y-1 ml-4 list-disc">
+											<ul className="text-sm text-brand space-y-1 ml-4 list-disc">
 												<li>
 													You may use free online tool{" "}
 													<strong>

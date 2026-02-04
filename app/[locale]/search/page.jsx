@@ -194,16 +194,16 @@ async function SearchContent({ query, locale }) {
 			{/* Search Header */}
 			{totalResults !== 0 && (
 				<div className="mb-8">
-					<h1 className="text-2xl md:text-3xl font-bold text-neutral-900 mb-2">{t("resultsTitle")}</h1>
-					<p className="text-neutral-600 text-lg">{t("resultsFound", { count: totalResults, query })}</p>
+					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t("resultsTitle")}</h1>
+					<p className="text-gray-900 text-lg">{t("resultsFound", { count: totalResults, query })}</p>
 				</div>
 			)}
 
 			{totalResults === 0 ? (
 				<div className="text-center py-20">
-					<Search className="mx-auto h-16 w-16 text-neutral-400 mb-4" />
-					<h2 className="text-2xl font-semibold text-neutral-700 mb-2">{t("noResults")}</h2>
-					<p className="text-neutral-600">{t("tryDifferentKeywords")}</p>
+					<Search className="mx-auto h-16 w-16 text-gray-900 mb-4" />
+					<h2 className="text-2xl font-semibold text-gray-900 mb-2">{t("noResults")}</h2>
+					<p className="text-gray-900">{t("tryDifferentKeywords")}</p>
 				</div>
 			) : (
 				<SearchResultsClient results={allResults} query={query} />
@@ -219,7 +219,7 @@ export default async function SearchPage({ searchParams, params }) {
 	const query = resolvedSearchParams.q || "";
 	if (!query) {
 		return (
-			<div className="min-h-screen bg-neutral-50 py-12">
+			<div className="min-h-screen bg-light py-12">
 				<div className="container mx-auto px-4">
 					<div className="text-center">No search query provided.</div>
 				</div>

@@ -154,7 +154,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 		<form onSubmit={handleSubmit} className="space-y-6">
 			{/* English Fields */}
 			<div className="space-y-4 border-b pb-6">
-				<h3 className="text-lg font-semibold text-neutral-700">English</h3>
+				<h3 className="text-lg font-semibold text-gray-900">English</h3>
 				<div>
 					<Label htmlFor="title_en">Title (English) *</Label>
 					<Input id="title_en" required value={formData.circularTitle.en} onChange={(e) => handleInputChange("circularTitle", e.target.value, "en")} placeholder="Enter circular title in English" />
@@ -171,7 +171,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 
 			{/* Norwegian Fields */}
 			<div className="space-y-4 border-b pb-6">
-				<h3 className="text-lg font-semibold text-neutral-700">Norwegian</h3>
+				<h3 className="text-lg font-semibold text-gray-900">Norwegian</h3>
 				<div>
 					<Label htmlFor="title_no">Title (Norwegian)</Label>
 					<Input id="title_no" value={formData.circularTitle.no} onChange={(e) => handleInputChange("circularTitle", e.target.value, "no")} placeholder="Enter circular title in Norwegian" />
@@ -188,7 +188,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 
 			{/* Nepali Fields */}
 			<div className="space-y-4 border-b pb-6">
-				<h3 className="text-lg font-semibold text-neutral-700">Nepali</h3>
+				<h3 className="text-lg font-semibold text-gray-900">Nepali</h3>
 				<div>
 					<Label htmlFor="title_ne">Title (Nepali)</Label>
 					<Input id="title_ne" value={formData.circularTitle.ne} onChange={(e) => handleInputChange("circularTitle", e.target.value, "ne")} placeholder="Enter circular title in Nepali" />
@@ -205,7 +205,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 
 			{/* Publication Settings */}
 			<div className="space-y-4 border-b pb-6">
-				<h3 className="text-lg font-semibold text-neutral-700">Publication Settings</h3>
+				<h3 className="text-lg font-semibold text-gray-900">Publication Settings</h3>
 				<div className="grid grid-cols-2 gap-4">
 					<div>
 						<Label htmlFor="status">Publication Status *</Label>
@@ -229,7 +229,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 
 			{/* Images */}
 			<div className="space-y-4">
-				<h3 className="text-lg font-semibold text-neutral-700">Images</h3>
+				<h3 className="text-lg font-semibold text-gray-900">Images</h3>
 				<div className="grid grid-cols-2 gap-4">
 					<div>
 						<Label htmlFor="mainImage">Main Picture</Label>

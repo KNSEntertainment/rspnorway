@@ -6,12 +6,12 @@ import { useLocale } from "next-intl";
 function BlogSidebar({ blogs }) {
 	const locale = useLocale();
 	return (
-		<div className="space-y-6 md:sticky md:top-36 bg-neutral-50 h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
+		<div className="space-y-6 md:sticky md:top-36 bg-light h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
 			{/* Share Box */}
 
 			{/* Other Blogs */}
 			<div className="rounded-lg shadow-sm p-6">
-				<h3 className="text-lg font-semibold text-neutral-800 mb-4">Blogs</h3>
+				<h3 className="text-lg font-semibold text-gray-900 mb-4">Blogs</h3>
 				<div className="space-y-4">
 					{blogs &&
 						blogs.map((relBlog) => (
@@ -20,8 +20,8 @@ function BlogSidebar({ blogs }) {
 									<Image src={relBlog?.blogMainPicture || "Image"} alt={relBlog.blogTitle || "Blog Title"} width={64} height={64} className="object-cover rounded-md" />
 								</div>
 								<div>
-									<h4 className="font-medium text-neutral-800 group-hover:text-brand transition duration-200">{relBlog.blogTitle}</h4>
-									<p className="text-sm text-neutral-500">{relBlog?.blogDate ? new Date(relBlog.blogDate).toISOString().slice(0, 10) : ""}</p>
+									<h4 className="font-medium text-gray-900 group-hover:text-brand transition duration-200">{relBlog.blogTitle}</h4>
+									<p className="text-sm text-gray-900">{relBlog?.blogDate ? new Date(relBlog.blogDate).toISOString().slice(0, 10) : ""}</p>
 								</div>
 							</Link>
 						))}

@@ -128,7 +128,7 @@ function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActi
 									onClick={() => setActiveDropdown(null)}
 									className={`
                   block px-4 py-2 text-sm font-medium
-                  ${isDropdownItemActive ? "bg-brand text-white" : "text-neutral-700 hover:bg-brand/5 hover:text-brand"}
+                  ${isDropdownItemActive ? "bg-brand text-white" : "text-gray-900 hover:bg-brand/5 hover:text-brand"}
                   transition-all duration-200
                   ${idx !== 0 ? "border-t border-neutral-100" : ""}
                 `}
@@ -264,8 +264,8 @@ export default function Header() {
 	return (
 		<div className={`fixed inset-x-0 top-0 z-40 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
 			{/* Utility Bar */}
-			{/* <motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="h-11 border-b bg-neutral-50/95 backdrop-blur-md"> */}
-			<section className="h-11 border-b bg-neutral-50/95 backdrop-blur-md">
+			{/* <motion.section initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="h-11 border-b bg-light/95 backdrop-blur-md"> */}
+			<section className="h-11 border-b bg-light/95 backdrop-blur-md">
 				<div className="container mx-auto px-4 lg:px-6 h-full flex items-center justify-between">
 					<div className="flex items-center gap-6 text-sm font-medium">
 						<a href="tel:+4796800984" className="hover:opacity-75 transition-opacity duration-200 flex items-center gap-2" aria-label="Call us">

@@ -85,11 +85,11 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 					<div className="flex flex-col md:flex-row gap-2 md:gap-4">
 						{/* Search Input + Filter Icon for mobile */}
 						<div className="flex items-center w-full md:flex-1 min-w-0 relative">
-							<Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400" size={20} />
-							<input type="text" placeholder={translations.searchPlaceholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 border border-neutral-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+							<Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-900" size={20} />
+							<input type="text" placeholder={translations.searchPlaceholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 border border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
 							{/* Filter icon for mobile */}{" "}
-							<button type="button" className="ml-2 md:hidden flex items-center justify-center p-2 rounded-lg bg-neutral-100 hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Show filter categories" onClick={() => setShowMobileFilter((v) => !v)}>
-								<Filter size={22} className="text-neutral-500" />
+							<button type="button" className="ml-2 md:hidden flex items-center justify-center p-2 rounded-lg bg-light hover:bg-light focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Show filter categories" onClick={() => setShowMobileFilter((v) => !v)}>
+								<Filter size={22} className="text-gray-900" />
 							</button>{" "}
 						</div>
 						{/* Category Filter */}{" "}
@@ -103,7 +103,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 											setSelectedCategory(e.target.value);
 											setShowMobileFilter(false);
 										}}
-										className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+										className="w-full px-4 py-2 rounded-lg border border-light focus:outline-none focus:ring-2 focus:ring-blue-500"
 									>
 										{categories.map((category) => (
 											<option key={category} value={category}>
@@ -117,7 +117,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 							{/* Buttons for medium and larger screens */}{" "}
 							<div className="hidden md:flex gap-2 overflow-x-auto pb-2 md:pb-0">
 								{categories.map((category) => (
-									<button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${selectedCategory === category ? "bg-blue-600 text-white shadow-md" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"}`}>
+									<button key={category} onClick={() => setSelectedCategory(category)} className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${selectedCategory === category ? "bg-blue-600 text-white shadow-md" : "bg-light text-gray-900 hover:bg-light"}`}>
 										{" "}
 										{category}{" "}
 									</button>
@@ -151,10 +151,10 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 								<div className="p-6 flex flex-col justify-between flex-1">
 									{" "}
 									<span className="px-3 py-1 w-fit bg-blue-100 text-brand text-xs font-semibold rounded-full mb-3">{doc.category}</span>
-									<Link href={`/${locale}/downloads/${doc.id}`} className="text-xl font-bold text-neutral-900 mb-2 line-clamp-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
+									<Link href={`/${locale}/downloads/${doc.id}`} className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
 										{doc.title}
 									</Link>
-									<div className="flex items-center text-sm text-neutral-500 mb-4">
+									<div className="flex items-center text-sm text-gray-900 mb-4">
 										{" "}
 										<Calendar size={16} className="mr-2" /> {doc.date}{" "}
 									</div>{" "}
@@ -168,7 +168,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 												<Download size={18} /> {translations.download}{" "}
 											</button>{" "}
 										</div>{" "}
-										<div className="flex items-center text-xs text-neutral-500 mb-2">
+										<div className="flex items-center text-xs text-gray-900 mb-2">
 											{" "}
 											<Download size={14} className="mr-1" /> {doc.downloadCount ?? 0} {translations.downloadsCount}{" "}
 										</div>{" "}
@@ -180,11 +180,11 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 				) : (
 					<div className="bg-white rounded-2xl shadow-lg p-12 text-center">
 						{" "}
-						<div className="inline-flex items-center justify-center w-20 h-20 bg-neutral-100 rounded-full mb-4">
+						<div className="inline-flex items-center justify-center w-20 h-20 bg-light rounded-full mb-4">
 							{" "}
-							<FileText size={40} className="text-neutral-400" />{" "}
+							<FileText size={40} className="text-gray-900" />{" "}
 						</div>{" "}
-						<h3 className="text-2xl font-bold text-neutral-900 mb-2">{translations.noDocuments}</h3> <p className="text-neutral-500">{translations.noDocumentsDesc}</p>{" "}
+						<h3 className="text-2xl font-bold text-gray-900 mb-2">{translations.noDocuments}</h3> <p className="text-gray-900">{translations.noDocumentsDesc}</p>{" "}
 					</div>
 				)}{" "}
 			</div>{" "}

@@ -130,7 +130,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 	return (
 		<div className="max-h-[calc(100vh-200px)] overflow-y-auto">
 			<form onSubmit={handleSubmit} className="space-y-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-				{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
+				{error && <div className="bg-red-50 border border-red-6000 text-red-600 px-4 py-3 rounded">{error}</div>}
 				<div>
 					<label htmlFor="eventname" className="block mb-2 font-bold">
 						Name of Event

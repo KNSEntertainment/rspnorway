@@ -32,7 +32,7 @@ const LanguageSelector = ({ isScrolled = false }: { isScrolled?: boolean }) => {
               transition-all duration-200 font-medium text-xs
               hover:scale-105 active:scale-95
               focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand/50
-              ${lang.code === locale ? (isScrolled ? "bg-white/20 text-white scale-105" : "bg-brand/10 text-brand scale-105") : isScrolled ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-neutral-600 hover:bg-neutral-100"}
+              ${lang.code === locale ? (isScrolled ? "bg-white/20 text-white scale-105" : "bg-brand/10 text-brand scale-105") : isScrolled ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-gray-900 hover:bg-light"}
             `}
 					>
 						<Flag country={lang.flag} size={14} />

@@ -63,7 +63,7 @@ export default function GalleryClient({ images }) {
 							className={`relative overflow-hidden rounded-2xl cursor-pointer group transition-all duration-500 
                                 ${isLarge ? "md:row-span-2 md:col-span-2" : ""} 
                                 ${isWide ? "md:col-span-2" : ""}
-                                border border-neutral-200 shadow-sm hover:shadow-2xl hover:border-blue-400
+                                border border-light shadow-sm hover:shadow-2xl hover:border-blue-400
                             `}
 							onClick={() => {
 								setIndex(i);

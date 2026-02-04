@@ -43,7 +43,7 @@ export default function SearchModal({ closeModal, placeholder }) {
 					</div>
 				)}
 				{/* Close icon at top right */}
-				<button type="button" onClick={closeModal} className="absolute top-6 right-6 text-neutral-400 hover:text-brand transition-colors" disabled={isSearching}>
+				<button type="button" onClick={closeModal} className="absolute top-6 right-6 text-gray-900 hover:text-brand transition-colors" disabled={isSearching}>
 					<X className="w-6 h-6 md:w-8 md:h-8" />
 				</button>
 			</form>

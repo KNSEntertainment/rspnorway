@@ -76,7 +76,7 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
-			{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
+			{error && <div className="bg-red-50 border border-red-6000 text-red-600 px-4 py-3 rounded">{error}</div>}
 
 			<div>
 				<label htmlFor="media" className="block mb-2 font-bold">

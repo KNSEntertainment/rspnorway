@@ -143,7 +143,7 @@ export default function MembershipsPage() {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-success-500 text-white">
+					<Badge className="bg-secondary0 text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						Approved
 					</Badge>
@@ -215,7 +215,7 @@ export default function MembershipsPage() {
 						Apply Status
 					</Button>
 				</div>
-				<div className="text-sm text-neutral-600">
+				<div className="text-sm text-gray-900">
 					Total: {filteredMemberships.length} | Selected: {selectedMemberIds.length}
 				</div>
 			</div>
@@ -261,25 +261,25 @@ export default function MembershipsPage() {
 											</Button>
 											{member.membershipStatus === "pending" && (
 												<>
-													<Button variant="outline" size="sm" className="text-success-600 hover:text-success-700" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
+													<Button variant="outline" size="sm" className="text-secondary hover:text-secondary" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
 														<CheckCircle className="w-4 h-4" />
 													</Button>
-													<Button variant="outline" size="sm" className="text-error-600 hover:text-error-700" onClick={() => handleStatusUpdate(member._id, "blocked")} title="Block">
+													<Button variant="outline" size="sm" className="text-red-600 hover:text-red-600" onClick={() => handleStatusUpdate(member._id, "blocked")} title="Block">
 														<XCircle className="w-4 h-4" />
 													</Button>
 												</>
 											)}
 											{member.membershipStatus === "approved" && (
-												<Button variant="outline" size="sm" className="text-error-600 hover:text-error-700" onClick={() => handleStatusUpdate(member._id, "blocked")} title="Block">
+												<Button variant="outline" size="sm" className="text-red-600 hover:text-red-600" onClick={() => handleStatusUpdate(member._id, "blocked")} title="Block">
 													<XCircle className="w-4 h-4" />
 												</Button>
 											)}
 											{member.membershipStatus === "blocked" && (
-												<Button variant="outline" size="sm" className="text-success-600 hover:text-success-700" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
+												<Button variant="outline" size="sm" className="text-secondary hover:text-secondary" onClick={() => handleStatusUpdate(member._id, "approved")} title="Approve">
 													<CheckCircle className="w-4 h-4" />
 												</Button>
 											)}
-											<Button variant="outline" size="sm" className="text-error-600 hover:text-error-700" onClick={() => handleDelete(member._id)} title="Delete">
+											<Button variant="outline" size="sm" className="text-red-600 hover:text-red-600" onClick={() => handleDelete(member._id)} title="Delete">
 												<Trash2 className="w-4 h-4" />
 											</Button>
 										</div>
@@ -288,7 +288,7 @@ export default function MembershipsPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={8} className="text-center py-8 text-neutral-500">
+								<TableCell colSpan={8} className="text-center py-8 text-gray-900">
 									No memberships found
 								</TableCell>
 							</TableRow>
@@ -299,7 +299,7 @@ export default function MembershipsPage() {
 
 			{/* Pagination */}
 			<div className="flex items-center justify-between mt-4">
-				<div className="text-sm text-neutral-600">
+				<div className="text-sm text-gray-900">
 					Page {currentPage} of {totalPages}
 				</div>
 				<div className="flex gap-2">
@@ -329,10 +329,10 @@ export default function MembershipsPage() {
 							{/* Profile Photo & Quick Info */}
 							<div className="flex flex-col items-center mb-8">
 								<div className="relative mb-4">
-									<div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center shadow-xl ring-4 ring-white">{viewingMember.profilePhoto ? <Image src={viewingMember.profilePhoto} alt={viewingMember.fullName} width={128} height={128} className="w-full h-full object-cover" /> : <User className="w-16 h-16 text-neutral-400" />}</div>
+									<div className="w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center shadow-xl ring-4 ring-white">{viewingMember.profilePhoto ? <Image src={viewingMember.profilePhoto} alt={viewingMember.fullName} width={128} height={128} className="w-full h-full object-cover" /> : <User className="w-16 h-16 text-gray-900" />}</div>
 									<div className="absolute -bottom-2 -right-2">{getStatusBadge(viewingMember.membershipStatus)}</div>
 								</div>
-								<h3 className="text-2xl font-bold text-neutral-900 mb-1">{viewingMember.fullName}</h3>
+								<h3 className="text-2xl font-bold text-gray-900 mb-1">{viewingMember.fullName}</h3>
 								<Badge variant="outline" className="capitalize text-sm">
 									{viewingMember.membershipType} Member
 								</Badge>
@@ -342,38 +342,38 @@ export default function MembershipsPage() {
 							<Card className="mb-6 border-l-4 border-l-blue-500 shadow-md hover:shadow-lg transition-shadow">
 								<CardHeader className="pb-3">
 									<CardTitle className="flex items-center gap-2 text-lg">
-										<Mail className="w-5 h-5 text-info-600" />
+										<Mail className="w-5 h-5 text-brand" />
 										Contact Information
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 										<div className="flex items-start gap-3">
-											<Mail className="w-5 h-5 text-neutral-400 mt-0.5" />
+											<Mail className="w-5 h-5 text-gray-900 mt-0.5" />
 											<div>
-												<p className="text-xs text-neutral-500 font-medium">Email</p>
-												<p className="text-neutral-900">{viewingMember.email}</p>
+												<p className="text-xs text-gray-900 font-medium">Email</p>
+												<p className="text-gray-900">{viewingMember.email}</p>
 											</div>
 										</div>
 										<div className="flex items-start gap-3">
-											<Phone className="w-5 h-5 text-neutral-400 mt-0.5" />
+											<Phone className="w-5 h-5 text-gray-900 mt-0.5" />
 											<div>
-												<p className="text-xs text-neutral-500 font-medium">Phone</p>
-												<p className="text-neutral-900">{viewingMember.phone}</p>
+												<p className="text-xs text-gray-900 font-medium">Phone</p>
+												<p className="text-gray-900">{viewingMember.phone}</p>
 											</div>
 										</div>
 										<div className="flex items-start gap-3">
-											<Calendar className="w-5 h-5 text-neutral-400 mt-0.5" />
+											<Calendar className="w-5 h-5 text-gray-900 mt-0.5" />
 											<div>
-												<p className="text-xs text-neutral-500 font-medium">Date of Birth</p>
-												<p className="text-neutral-900">{viewingMember.dateOfBirth}</p>
+												<p className="text-xs text-gray-900 font-medium">Date of Birth</p>
+												<p className="text-gray-900">{viewingMember.dateOfBirth}</p>
 											</div>
 										</div>
 										<div className="flex items-start gap-3">
-											<User className="w-5 h-5 text-neutral-400 mt-0.5" />
+											<User className="w-5 h-5 text-gray-900 mt-0.5" />
 											<div>
-												<p className="text-xs text-neutral-500 font-medium">Gender</p>
-												<p className="text-neutral-900 capitalize">{viewingMember.gender}</p>
+												<p className="text-xs text-gray-900 font-medium">Gender</p>
+												<p className="text-gray-900 capitalize">{viewingMember.gender}</p>
 											</div>
 										</div>
 									</div>
@@ -384,23 +384,23 @@ export default function MembershipsPage() {
 							<Card className="mb-6 border-l-4 border-l-green-500 shadow-md hover:shadow-lg transition-shadow">
 								<CardHeader className="pb-3">
 									<CardTitle className="flex items-center gap-2 text-lg">
-										<MapPin className="w-5 h-5 text-success-600" />
+										<MapPin className="w-5 h-5 text-secondary" />
 										Location Details
 									</CardTitle>
 								</CardHeader>
 								<CardContent>
 									<div className="space-y-4">
 										<div>
-											<p className="text-xs text-neutral-500 font-medium mb-1">Norway Address</p>
-											<p className="text-neutral-900">{viewingMember.address}</p>
-											<p className="text-neutral-700">
+											<p className="text-xs text-gray-900 font-medium mb-1">Norway Address</p>
+											<p className="text-gray-900">{viewingMember.address}</p>
+											<p className="text-gray-900">
 												{viewingMember.city}, {viewingMember.postalCode}
 											</p>
 										</div>
 										{(viewingMember.province || viewingMember.district) && (
 											<div className="pt-4 border-t">
-												<p className="text-xs text-neutral-500 font-medium mb-1">Nepal Address</p>
-												<p className="text-neutral-900">
+												<p className="text-xs text-gray-900 font-medium mb-1">Nepal Address</p>
+												<p className="text-gray-900">
 													{viewingMember.province && `Province: ${viewingMember.province}`}
 													{viewingMember.province && viewingMember.district && " | "}
 													{viewingMember.district && `District: ${viewingMember.district}`}
@@ -422,12 +422,12 @@ export default function MembershipsPage() {
 								<CardContent>
 									<div className="space-y-4">
 										<div>
-											<p className="text-xs text-neutral-500 font-medium mb-1">Profession</p>
-											<p className="text-neutral-900">{viewingMember.profession || "Not specified"}</p>
+											<p className="text-xs text-gray-900 font-medium mb-1">Profession</p>
+											<p className="text-gray-900">{viewingMember.profession || "Not specified"}</p>
 										</div>
 										<div>
-											<p className="text-xs text-neutral-500 font-medium mb-1">Skills & Expertise</p>
-											<p className="text-neutral-900">{viewingMember.skills || "Not specified"}</p>
+											<p className="text-xs text-gray-900 font-medium mb-1">Skills & Expertise</p>
+											<p className="text-gray-900">{viewingMember.skills || "Not specified"}</p>
 										</div>
 									</div>
 								</CardContent>
@@ -450,7 +450,7 @@ export default function MembershipsPage() {
 												</Badge>
 											))
 										) : (
-											<span className="text-neutral-500">No interests specified</span>
+											<span className="text-gray-900">No interests specified</span>
 										)}
 									</div>
 								</CardContent>
@@ -467,12 +467,12 @@ export default function MembershipsPage() {
 								<CardContent>
 									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 										<div>
-											<p className="text-xs text-neutral-500 font-medium mb-1">National Membership No</p>
-											<p className="text-neutral-900 font-mono">{viewingMember.nationalMembershipNo || "Not assigned"}</p>
+											<p className="text-xs text-gray-900 font-medium mb-1">National Membership No</p>
+											<p className="text-gray-900 font-mono">{viewingMember.nationalMembershipNo || "Not assigned"}</p>
 										</div>
 										<div>
-											<p className="text-xs text-neutral-500 font-medium mb-1">Registration Date</p>
-											<p className="text-neutral-900">{formatDate(viewingMember.createdAt)}</p>
+											<p className="text-xs text-gray-900 font-medium mb-1">Registration Date</p>
+											<p className="text-gray-900">{formatDate(viewingMember.createdAt)}</p>
 										</div>
 									</div>
 								</CardContent>
@@ -480,12 +480,12 @@ export default function MembershipsPage() {
 						</div>
 
 						{/* Action Buttons Footer */}
-						<div className="border-t bg-neutral-50 px-8 py-4">
+						<div className="border-t bg-light px-8 py-4">
 							<div className="flex gap-3">
 								{viewingMember.membershipStatus === "pending" && (
 									<>
 										<Button
-											className="flex-1 bg-success-600 hover:bg-success-700 shadow-md hover:shadow-lg transition-all"
+											className="flex-1 bg-secondary hover:bg-secondary shadow-md hover:shadow-lg transition-all"
 											onClick={() => {
 												handleStatusUpdate(viewingMember._id, "approved");
 												setViewingMember(null);
@@ -520,7 +520,7 @@ export default function MembershipsPage() {
 								)}
 								{viewingMember.membershipStatus === "blocked" && (
 									<Button
-										className="flex-1 bg-success-600 hover:bg-success-700 shadow-md hover:shadow-lg transition-all"
+										className="flex-1 bg-secondary hover:bg-secondary shadow-md hover:shadow-lg transition-all"
 										onClick={() => {
 											handleStatusUpdate(viewingMember._id, "approved");
 											setViewingMember(null);

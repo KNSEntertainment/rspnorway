@@ -102,17 +102,17 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
-			{error && <div className="mb-4 p-3 bg-error-100 border border-error-500 text-error-700 rounded">{error}</div>}
+			{error && <div className="mb-4 p-3 bg-red-50 border border-red-6000 text-red-600 rounded">{error}</div>}
 
 			{/* Video Upload */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">Video File {!videoToEdit && <span className="text-red-500">*</span>}</label>
-				<div className="border-2 border-dashed border-neutral-300 rounded-lg p-6 text-center hover:border-brand transition">
+				<label className="block text-sm font-medium text-gray-900 mb-2">Video File {!videoToEdit && <span className="text-red-500">*</span>}</label>
+				<div className="border-2 border-dashed border-light rounded-lg p-6 text-center hover:border-brand transition">
 					<input type="file" accept="video/*" onChange={handleVideoChange} className="hidden" id="video-upload" />
 					<label htmlFor="video-upload" className="cursor-pointer">
-						<VideoIcon size={48} className="mx-auto mb-2 text-neutral-400" />
-						<p className="text-sm text-neutral-600">Click to upload video</p>
-						<p className="text-xs text-neutral-400 mt-1">MP4, MOV, AVI (Max 100MB)</p>
+						<VideoIcon size={48} className="mx-auto mb-2 text-gray-900" />
+						<p className="text-sm text-gray-900">Click to upload video</p>
+						<p className="text-xs text-gray-900 mt-1">MP4, MOV, AVI (Max 100MB)</p>
 					</label>
 				</div>
 				{videoPreview && (
@@ -124,12 +124,12 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 
 			{/* Thumbnail Upload */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">Thumbnail (Optional)</label>
-				<div className="border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:border-brand transition">
+				<label className="block text-sm font-medium text-gray-900 mb-2">Thumbnail (Optional)</label>
+				<div className="border-2 border-dashed border-light rounded-lg p-4 text-center hover:border-brand transition">
 					<input type="file" accept="image/*" onChange={handleThumbnailChange} className="hidden" id="thumbnail-upload" />
 					<label htmlFor="thumbnail-upload" className="cursor-pointer">
-						<Upload size={32} className="mx-auto mb-2 text-neutral-400" />
-						<p className="text-xs text-neutral-600">Upload thumbnail image</p>
+						<Upload size={32} className="mx-auto mb-2 text-gray-900" />
+						<p className="text-xs text-gray-900">Upload thumbnail image</p>
 					</label>
 				</div>
 				{thumbnailPreview && (
@@ -141,18 +141,18 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 
 			{/* Title */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">
+				<label className="block text-sm font-medium text-gray-900 mb-2">
 					Title <span className="text-red-500">*</span>
 				</label>
-				<input type="text" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="Enter video title" />
+				<input type="text" name="title" value={formData.title} onChange={handleInputChange} required className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="Enter video title" />
 			</div>
 
 			{/* Category */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">
+				<label className="block text-sm font-medium text-gray-900 mb-2">
 					Category <span className="text-red-500">*</span>
 				</label>
-				<select name="category" value={formData.category} onChange={handleInputChange} required className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent">
+				<select name="category" value={formData.category} onChange={handleInputChange} required className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent">
 					<option value="">Select category</option>
 					<option value="Documentary">Documentary</option>
 					<option value="Short Film">Short Film</option>
@@ -168,25 +168,25 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 
 			{/* Duration */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">Duration (e.g., 2:45)</label>
-				<input type="text" name="duration" value={formData.duration} onChange={handleInputChange} className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="2:45" />
+				<label className="block text-sm font-medium text-gray-900 mb-2">Duration (e.g., 2:45)</label>
+				<input type="text" name="duration" value={formData.duration} onChange={handleInputChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="2:45" />
 			</div>
 
 			{/* Creator */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">Creator/Author</label>
-				<input type="text" name="creator" value={formData.creator} onChange={handleInputChange} className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="RSP Norway" />
+				<label className="block text-sm font-medium text-gray-900 mb-2">Creator/Author</label>
+				<input type="text" name="creator" value={formData.creator} onChange={handleInputChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="RSP Norway" />
 			</div>
 
 			{/* Description */}
 			<div>
-				<label className="block text-sm font-medium text-neutral-700 mb-2">Description (Optional)</label>
-				<textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="Enter video description..." />
+				<label className="block text-sm font-medium text-gray-900 mb-2">Description (Optional)</label>
+				<textarea name="description" value={formData.description} onChange={handleInputChange} rows={4} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="Enter video description..." />
 			</div>
 
 			{/* Buttons */}
 			<div className="flex justify-end gap-3 pt-4 border-t">
-				<button type="button" onClick={onClose} disabled={loading} className="px-6 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50">
+				<button type="button" onClick={onClose} disabled={loading} className="px-6 py-2 border border-light rounded-lg hover:bg-light disabled:opacity-50">
 					Cancel
 				</button>
 				<button type="submit" disabled={loading || (!videoFile && !videoToEdit) || !formData.title || !formData.category} className="px-6 py-2 bg-brand text-white rounded-lg hover:bg-red-800 disabled:opacity-50 disabled:cursor-not-allowed">

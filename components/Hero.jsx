@@ -272,7 +272,7 @@ export default function FullWidthHero() {
 // 							</Button>
 // 						</Link>
 // 						<Link href={currentSlideData.secondaryLink} locale={locale}>
-// 							<Button className="bg-white text-black px-6 py-3 rounded-lg hover:bg-neutral-200 transition-all duration-300">{currentSlideData.secondaryButton}</Button>
+// 							<Button className="bg-white text-black px-6 py-3 rounded-lg hover:bg-light transition-all duration-300">{currentSlideData.secondaryButton}</Button>
 // 						</Link>
 // 					</motion.div>
 // 				</div>
@@ -319,11 +319,11 @@ export default function FullWidthHero() {
 // 				<div class="lg:w-1/2 text-center lg:text-left">
 // 					<span class="inline-block px-4 py-1 mb-6 border border-blue-400 rounded-full text-sm font-semibold tracking-wide uppercase bg-blue-800/50">For a Brighter Tomorrow</span>
 // 					<h1 class="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-// 						समृद्ध नेपाल, <span class="text-green-200">सुखी नेपाली</span>
+// 						समृद्ध नेपाल, <span class="text-secondary">सुखी नेपाली</span>
 // 					</h1>
 // 					<p class="text-lg text-blue-100 mb-10 leading-relaxed max-w-xl">Join us in our mission to transform Nepal through innovation, integrity, and grassroots empowerment. Your voice is the catalyst for change.</p>
 // 					<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-// 						<button class="bg-white text-brand px-8 py-4 rounded-lg font-bold hover:bg-info-50 transition shadow-lg">Become a Member</button>
+// 						<button class="bg-white text-brand px-8 py-4 rounded-lg font-bold hover:bg-brand/10 transition shadow-lg">Become a Member</button>
 // 						<button class="border-2 border-white/30 px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition">View Manifest</button>
 // 					</div>
 // 				</div>

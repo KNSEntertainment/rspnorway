@@ -92,10 +92,10 @@ export default function EventsPage() {
 									<TableCell>
 										<div className="flex flex-col sm:flex-row gap-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="w-8 h-8">
-												<Pencil className="w-5 h-5 text-info-700" />
+												<Pencil className="w-5 h-5 text-brand" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(event._id)} className="w-8 h-8">
-												<Trash2 className="w-5 h-5 text-error-700" />
+												<Trash2 className="w-5 h-5 text-red-600" />
 											</Button>
 										</div>
 									</TableCell>

@@ -33,19 +33,19 @@ function SortableDepartmentCard({ department, onEdit, onDelete }: { department: 
 		<div ref={setNodeRef} style={style} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
 			<div className="flex justify-between items-start mb-4">
 				<div className="flex items-start gap-3 flex-1">
-					<button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-neutral-400 hover:text-neutral-600">
+					<button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing mt-1 text-gray-900 hover:text-gray-900">
 						<GripVertical className="w-5 h-5" />
 					</button>
 					<div>
-						<h2 className="text-xl font-semibold text-neutral-900">{department.name}</h2>
-						<p className="text-sm text-neutral-500 mt-1">Order: {department.order}</p>
+						<h2 className="text-xl font-semibold text-gray-900">{department.name}</h2>
+						<p className="text-sm text-gray-900 mt-1">Order: {department.order}</p>
 					</div>
 				</div>
 				<div className="flex gap-2">
-					<button onClick={() => onEdit(department)} className="p-2 text-info-600 hover:bg-info-50 rounded">
+					<button onClick={() => onEdit(department)} className="p-2 text-brand hover:bg-brand/10 rounded">
 						<Edit className="w-4 h-4" />
 					</button>
-					<button onClick={() => onDelete(department._id)} className="p-2 text-error-600 hover:bg-error-50 rounded">
+					<button onClick={() => onDelete(department._id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
 						<Trash2 className="w-4 h-4" />
 					</button>
 				</div>
@@ -53,7 +53,7 @@ function SortableDepartmentCard({ department, onEdit, onDelete }: { department: 
 
 			{department.subdepartments && department.subdepartments.length > 0 && (
 				<div className="mt-4">
-					<p className="text-sm font-medium text-neutral-700 mb-2">Subdepartments:</p>
+					<p className="text-sm font-medium text-gray-900 mb-2">Subdepartments:</p>
 					<div className="flex flex-wrap gap-2">
 						{department.subdepartments.map((subdept, index) => (
 							<span key={index} className="px-3 py-1 bg-brand/10 text-brand text-sm rounded-full">
@@ -64,8 +64,8 @@ function SortableDepartmentCard({ department, onEdit, onDelete }: { department: 
 				</div>
 			)}
 
-			<div className="mt-4 pt-4 border-t border-neutral-200">
-				<span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${department.isActive ? "bg-success-100 text-success-700" : "bg-neutral-100 text-neutral-800"}`}>{department.isActive ? "Active" : "Inactive"}</span>
+			<div className="mt-4 pt-4 border-t border-light">
+				<span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${department.isActive ? "bg-secondary text-secondary" : "bg-light text-gray-900"}`}>{department.isActive ? "Active" : "Inactive"}</span>
 			</div>
 		</div>
 	);
@@ -191,14 +191,14 @@ export default function DepartmentsPage() {
 			{/* Inline Form Section */}
 			{showModal && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{editingDepartment ? "Edit Department" : "Add New Department"}</h2>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">{editingDepartment ? "Edit Department" : "Add New Department"}</h2>
 					<DepartmentForm handleCloseModal={handleCloseModal} departmentToEdit={editingDepartment as unknown as null} />
 				</div>
 			)}
 
 			{departments.length === 0 ? (
-				<div className="text-center py-12 bg-neutral-50 rounded-lg">
-					<p className="text-neutral-500">No departments found. Create your first department!</p>
+				<div className="text-center py-12 bg-light rounded-lg">
+					<p className="text-gray-900">No departments found. Create your first department!</p>
 				</div>
 			) : (
 				<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

@@ -94,75 +94,75 @@ export default function EmployeeForm({ settingdata }) {
 		<form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 md:gap-12 bg-white px-2 md:px-12 md:pt-6 pb-2 md:pb-8">
 			<div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="name">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="name">
 						Name
 					</label>
-					<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="address">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="address">
 						Address
 					</label>
-					<input type="text" id="address" name="address" value={formData.address} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="text" id="address" name="address" value={formData.address} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="email">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="email">
 						Email
 					</label>
-					<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="phone">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="phone">
 						Phone
 					</label>
-					<input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="mobile">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="mobile">
 						Mobile
 					</label>
-					<input type="tel" id="mobile" name="mobile" value={formData.mobile} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="tel" id="mobile" name="mobile" value={formData.mobile} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="facebook">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="facebook">
 						Facebook
 					</label>
-					<input type="url" id="facebook" name="facebook" value={formData.facebook} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="url" id="facebook" name="facebook" value={formData.facebook} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 			</div>
 			<div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="youtube">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="youtube">
 						YouTube
 					</label>
-					<input type="url" id="youtube" name="youtube" value={formData.youtube} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="url" id="youtube" name="youtube" value={formData.youtube} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="instagram">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="instagram">
 						Instagram
 					</label>
-					<input type="url" id="instagram" name="instagram" value={formData.instagram} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="url" id="instagram" name="instagram" value={formData.instagram} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="linkedin">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="linkedin">
 						LinkedIn
 					</label>
-					<input type="url" id="linkedin" name="linkedin" value={formData.linkedin} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="url" id="linkedin" name="linkedin" value={formData.linkedin} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="businessHoursMF">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="businessHoursMF">
 						Business Hours (Mon-Fri)
 					</label>
-					<input type="text" id="businessHoursMF" name="businessHoursMF" value={formData.businessHoursMF} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="text" id="businessHoursMF" name="businessHoursMF" value={formData.businessHoursMF} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 
 				<div className="mb-4">
-					<label className="block text-neutral-700 text-sm font-bold mb-2" htmlFor="companyLogo">
+					<label className="block text-gray-900 text-sm font-bold mb-2" htmlFor="companyLogo">
 						Company Logo
 					</label>
 					{formData.companyLogo && <Image src={formData.companyLogo || "/ghanti.png"} alt="Company Logo" width={100} height={100} className="w-auto h-24 mb-2 rounded-full" />}
-					<input type="file" id="companyLogo" name="companyLogo" onChange={handleImageChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline" />
+					<input type="file" id="companyLogo" name="companyLogo" onChange={handleImageChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" />
 				</div>
 				<div className="grid justify-items-end gap-2 mt-12">
 					<button type="submit" disabled={submitting} className={`px-4 py-2 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-brand hover:bg-red-800"} text-neutral-200 font-bold`}>

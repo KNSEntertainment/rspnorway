@@ -43,8 +43,8 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 				{showUserDropdown && (
 					<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] ring-1 ring-black/5 overflow-hidden">
 						<div className="px-5 py-4 border-b border-neutral-100">
-							<p className="font-semibold text-neutral-900 truncate">{user.email}</p>
-							<p className="text-xs text-neutral-500 mt-1">Signed in</p>
+							<p className="font-semibold text-gray-900 truncate">{user.email}</p>
+							<p className="text-xs text-gray-900 mt-1">Signed in</p>
 						</div>
 						{user.role === "admin" ? (
 							<Link href="/en/dashboard" onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
@@ -57,7 +57,7 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 								My Profile
 							</Link>
 						)}
-						<button onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-3 px-5 py-3.5 text-error-600 hover:bg-error-50 w-full transition-all duration-200 font-medium">
+						<button onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-3 px-5 py-3.5 text-red-600 hover:bg-red-50 w-full transition-all duration-200 font-medium">
 							<LogOut size={18} />
 							Sign Out
 						</button>

@@ -72,7 +72,7 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 	};
 
 	return (
-		<div className="md:bg-neutral-50 md:py-20 py-6">
+		<div className="md:bg-light md:py-20 py-6">
 			<div className="max-w-6xl mx-auto px-4">
 				<div className="bg-white rounded-xl md:shadow-md overflow-hidden">
 					<div className="grid md:grid-cols-2">
@@ -93,23 +93,23 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 						<div className="p-12">
 							<div className="space-y-6">
 								<div>
-									<label className="block text-sm font-semibold text-neutral-700 mb-3">{tr.fullName}</label>
-									<input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder={tr.fullName_ph} />
+									<label className="block text-sm font-semibold text-gray-900 mb-3">{tr.fullName}</label>
+									<input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder={tr.fullName_ph} />
 								</div>
 								<div>
-									<label className="block text-sm font-semibold text-neutral-700 mb-3">{tr.email}</label>
-									<input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder={tr.email} />
+									<label className="block text-sm font-semibold text-gray-900 mb-3">{tr.email}</label>
+									<input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder={tr.email} />
 								</div>
 								<div>
-									<label className="block text-sm font-semibold text-neutral-700 mb-3">{tr.phone}</label>
-									<input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="+47 XXX XX XXX" />
+									<label className="block text-sm font-semibold text-gray-900 mb-3">{tr.phone}</label>
+									<input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" placeholder="+47 XXX XX XXX" />
 								</div>
 
 								<div>
-									<label className="block text-sm font-semibold text-neutral-700 mb-3">{tr.areasOfInterest}</label>
+									<label className="block text-sm font-semibold text-gray-900 mb-3">{tr.areasOfInterest}</label>
 									<div className="grid grid-cols-2 gap-2">
 										{interests.map((interest) => (
-											<label key={interest} className="flex items-center p-3 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-info-50 transition-all">
+											<label key={interest} className="flex items-center p-3 border-2 border-light rounded-lg cursor-pointer hover:border-blue-500 hover:bg-brand/10 transition-all">
 												<input
 													type="checkbox"
 													checked={formData.interests.includes(interest)}
@@ -120,9 +120,9 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 															setFormData({ ...formData, interests: formData.interests.filter((i) => i !== interest) });
 														}
 													}}
-													className="w-4 h-4 text-info-600 rounded"
+													className="w-4 h-4 text-brand rounded"
 												/>
-												<span className="ml-2 text-sm font-medium text-neutral-700">{interest}</span>
+												<span className="ml-2 text-sm font-medium text-gray-900">{interest}</span>
 											</label>
 										))}
 									</div>

@@ -15,20 +15,20 @@ function DashboardLayoutContent({ children }) {
 
 	const menuItems = [
 		{ id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "bg-brand", href: "/en/dashboard" },
-		{ id: "contactmessages", label: "Contact Messages", icon: Book, color: "bg-brand-700", href: "/en/dashboard/contactmessages" },
-		{ id: "memberships", label: "Memberships", icon: Users, color: "bg-brand-600", href: "/en/dashboard/memberships" },
-		{ id: "departments", label: "Departments", icon: Layers, color: "bg-brand-600", href: "/en/dashboard/departments" },
-		{ id: "executive-members", label: "Executive Members", icon: Users, color: "bg-brand-600", href: "/en/dashboard/executive-members" },
-		{ id: "events", label: "Events", icon: BookImage, color: "bg-brand-600", href: "/en/dashboard/events" },
-		{ id: "blogs", label: "Blogs", icon: Newspaper, color: "bg-brand-700", href: "/en/dashboard/blogs" },
-		{ id: "notices", label: "Notices", icon: Bell, color: "bg-brand-600", href: "/en/dashboard/notices" },
-		{ id: "circulars", label: "Circulars", icon: FileText, color: "bg-brand-600", href: "/en/dashboard/circulars" },
-		{ id: "videos", label: "Videos", icon: VideoIcon, color: "bg-brand-600", href: "/en/dashboard/videos" },
-		{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-brand-600", href: "/en/dashboard/gallery" },
+		{ id: "contactmessages", label: "Contact Messages", icon: Book, color: "bg-brand", href: "/en/dashboard/contactmessages" },
+		{ id: "memberships", label: "Memberships", icon: Users, color: "bg-brand", href: "/en/dashboard/memberships" },
+		{ id: "departments", label: "Departments", icon: Layers, color: "bg-brand", href: "/en/dashboard/departments" },
+		{ id: "executive-members", label: "Executive Members", icon: Users, color: "bg-brand", href: "/en/dashboard/executive-members" },
+		{ id: "events", label: "Events", icon: BookImage, color: "bg-brand", href: "/en/dashboard/events" },
+		{ id: "blogs", label: "Blogs", icon: Newspaper, color: "bg-brand", href: "/en/dashboard/blogs" },
+		{ id: "notices", label: "Notices", icon: Bell, color: "bg-brand", href: "/en/dashboard/notices" },
+		{ id: "circulars", label: "Circulars", icon: FileText, color: "bg-brand", href: "/en/dashboard/circulars" },
+		{ id: "videos", label: "Videos", icon: VideoIcon, color: "bg-brand", href: "/en/dashboard/videos" },
+		{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-brand", href: "/en/dashboard/gallery" },
 		{ id: "downloads", label: "Downloads", icon: Download, color: "bg-red-500", href: "/en/dashboard/downloads" },
-		{ id: "subscribers", label: "Subscribers", icon: Mail, color: "bg-brand-600", href: "/en/dashboard/subscribers" },
-		{ id: "users", label: "Users", icon: User, color: "bg-success-700", href: "/en/dashboard/users" },
-		{ id: "settings", label: "Profile Settings", icon: Settings, color: "bg-neutral-500", href: "/en/dashboard/settings" },
+		{ id: "subscribers", label: "Subscribers", icon: Mail, color: "bg-brand", href: "/en/dashboard/subscribers" },
+		{ id: "users", label: "Users", icon: User, color: "bg-secondary", href: "/en/dashboard/users" },
+		{ id: "settings", label: "Profile Settings", icon: Settings, color: "bg-light0", href: "/en/dashboard/settings" },
 	];
 
 	// Protect dashboard: redirect if not authenticated or not admin
@@ -70,7 +70,7 @@ function DashboardLayoutContent({ children }) {
 								key={item.id}
 								href={item.href}
 								className={`w-full flex items-center px-4 py-2 text-sm transition-colors duration-200
-									${isActive ? "bg-brand text-white font-semibold shadow border-l-2 border-black" : "text-black hover:text-brand hover:bg-neutral-100"}
+									${isActive ? "bg-brand text-white font-semibold shadow border-l-2 border-black" : "text-black hover:text-brand hover:bg-light"}
 								`}
 								style={isActive ? { boxShadow: "0 2px 8px 0 rgba(0, 0, 0, 0.10)" } : {}}
 							>

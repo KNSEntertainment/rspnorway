@@ -64,7 +64,7 @@ export default function ResetPasswordPage() {
 					<label className="block mb-1 font-semibold">Confirm Password</label>
 					<input type="password" className="w-full border rounded px-3 py-2" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
 				</div>
-				{error && <p className="text-error-600">{error}</p>}
+				{error && <p className="text-red-600">{error}</p>}
 				{message && <p className="text-brand">{message}</p>}
 				<button type="submit" className="w-full bg-brand text-white py-2 rounded font-bold mt-4" disabled={isLoading}>
 					{isLoading ? "Resetting..." : "Reset Password"}

@@ -91,10 +91,10 @@ export default function NoticesPage() {
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(notice)}>
-												<Pencil className="w-6 h-6 text-info-700" />
+												<Pencil className="w-6 h-6 text-brand" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(notice._id)}>
-												<Trash2 className="w-6 h-6 text-error-700" />
+												<Trash2 className="w-6 h-6 text-red-600" />
 											</Button>
 										</div>
 									</TableCell>
@@ -102,7 +102,7 @@ export default function NoticesPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={5} className="text-error-600">
+								<TableCell colSpan={5} className="text-red-600">
 									No notices found.
 								</TableCell>
 							</TableRow>

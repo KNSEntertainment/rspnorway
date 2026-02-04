@@ -11,7 +11,7 @@ export default async function BlogPostPage(props: { params: Promise<{ locale: st
 	if (!circular) notFound();
 
 	return (
-		<article className="container mx-auto px-4 mt-36 flex flex-col min-h-screen bg-neutral-50">
+		<article className="container mx-auto px-4 mt-36 flex flex-col min-h-screen bg-light">
 			<h1>{localize(circular.circularTitle, locale)}</h1>
 			<div
 				dangerouslySetInnerHTML={{

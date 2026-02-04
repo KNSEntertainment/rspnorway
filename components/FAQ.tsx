@@ -31,14 +31,14 @@ const FAQItem: React.FC<{ item: FAQItem }> = ({ item }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
-		<div className="border-b border-neutral-200 py-4">
+		<div className="border-b border-light py-4">
 			<button className="flex w-full justify-between items-center text-left" onClick={() => setIsOpen(!isOpen)}>
-				<span className="text-lg font-medium text-neutral-900">{item.question}</span>
-				<ArrowBigDown className={`w-5 h-5 text-neutral-500 transition-transform duration-200 ${isOpen ? "transform rotate-180" : ""}`} />
+				<span className="text-lg font-medium text-gray-900">{item.question}</span>
+				<ArrowBigDown className={`w-5 h-5 text-gray-900 transition-transform duration-200 ${isOpen ? "transform rotate-180" : ""}`} />
 			</button>
 			{isOpen && (
 				<div className="mt-2 pr-12">
-					<p className="text-base text-neutral-500">{item.answer}</p>
+					<p className="text-base text-gray-900">{item.answer}</p>
 				</div>
 			)}
 		</div>
@@ -48,8 +48,8 @@ const FAQItem: React.FC<{ item: FAQItem }> = ({ item }) => {
 const FAQ: React.FC = () => {
 	return (
 		<div className="max-w-3xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-			<h2 className="text-3xl font-extrabold text-neutral-900 sm:text-4xl">Frequently Asked Questions</h2>
-			<div className="mt-6 border-t border-neutral-200 pt-10">
+			<h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Frequently Asked Questions</h2>
+			<div className="mt-6 border-t border-light pt-10">
 				{faqData.map((item, index) => (
 					<FAQItem key={index} item={item} />
 				))}

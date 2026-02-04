@@ -122,7 +122,7 @@ const PhotoGallery = () => {
 				<div>
 					<header className="text-center mb-12">
 						<SectionHeader heading={t("title")} />
-						<p className="text-neutral-600 mt-4 text-lg max-w-2xl mx-auto">{t("description")}</p>
+						<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("description")}</p>
 					</header>
 
 					{/* Masonry Grid */}

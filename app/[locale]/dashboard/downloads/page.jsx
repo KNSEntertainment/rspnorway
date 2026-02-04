@@ -91,23 +91,23 @@ export default function DownloadsDashboardPage() {
 									<TableCell className="w-48 font-semibold">{doc.title}</TableCell>
 									<TableCell className="w-48">{doc.date}</TableCell>
 									<TableCell className="w-48">{doc.category}</TableCell>
-									<TableCell className="w-24">{doc.imageUrl ? <Image src={doc.imageUrl} width={64} height={64} alt={doc.title} className="w-16 h-16 rounded object-cover" /> : <span className="text-neutral-400">No Image</span>}</TableCell>
+									<TableCell className="w-24">{doc.imageUrl ? <Image src={doc.imageUrl} width={64} height={64} alt={doc.title} className="w-16 h-16 rounded object-cover" /> : <span className="text-gray-900">No Image</span>}</TableCell>
 									<TableCell className="w-24">
 										{doc.fileUrl ? (
-											<a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-info-600 underline">
+											<a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-brand underline">
 												Download
 											</a>
 										) : (
-											<span className="text-neutral-400">No File</span>
+											<span className="text-gray-900">No File</span>
 										)}
 									</TableCell>
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(doc)}>
-												<Pencil className="w-6 h-6 text-info-700" />
+												<Pencil className="w-6 h-6 text-brand" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(doc._id)}>
-												<Trash2 className="w-6 h-6 text-error-700" />
+												<Trash2 className="w-6 h-6 text-red-600" />
 											</Button>
 										</div>
 									</TableCell>
@@ -115,7 +115,7 @@ export default function DownloadsDashboardPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={6} className="text-error-600">
+								<TableCell colSpan={6} className="text-red-600">
 									No downloads found.
 								</TableCell>
 							</TableRow>

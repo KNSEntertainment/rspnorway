@@ -14,13 +14,13 @@ export default function HeroSection() {
 						</div>
 
 						{/* Main Heading */}
-						<h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-neutral-900 leading-tight">
+						<h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 leading-tight">
 							<span className="block">It is your</span>
 							<span className="block bg-gradient-to-r from-brand to-blue-600 bg-clip-text text-transparent">We will help you</span>
 						</h1>
 
 						{/* Description */}
-						<p className="text-neutral-600 text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">Dedicated to making travel as simple as possible, we help each and every one of our clients to find the best options for flights, hotels and car hires to book the perfect trip.</p>
+						<p className="text-gray-900 text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">Dedicated to making travel as simple as possible, we help each and every one of our clients to find the best options for flights, hotels and car hires to book the perfect trip.</p>
 
 						{/* CTA Button */}
 						<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -30,7 +30,7 @@ export default function HeroSection() {
 									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
 								</svg>
 							</Link>
-							<Link href="/about" className="inline-flex items-center justify-center px-8 py-4 bg-white text-neutral-900 rounded-xl font-semibold text-lg border-2 border-neutral-200 hover:border-brand hover:text-brand transform hover:-translate-y-1 transition-all duration-300">
+							<Link href="/about" className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-xl font-semibold text-lg border-2 border-light hover:border-brand hover:text-brand transform hover:-translate-y-1 transition-all duration-300">
 								Learn More
 							</Link>
 						</div>
@@ -38,18 +38,18 @@ export default function HeroSection() {
 						{/* Stats */}
 						<div className="flex flex-wrap gap-8 justify-center lg:justify-start pt-8">
 							<div>
-								<p className="text-3xl md:text-4xl font-bold text-neutral-900">500+</p>
-								<p className="text-neutral-600 text-sm">Happy Members</p>
+								<p className="text-3xl md:text-4xl font-bold text-gray-900">500+</p>
+								<p className="text-gray-900 text-sm">Happy Members</p>
 							</div>
-							<div className="h-12 w-px bg-neutral-300" />
+							<div className="h-12 w-px bg-light" />
 							<div>
-								<p className="text-3xl md:text-4xl font-bold text-neutral-900">50+</p>
-								<p className="text-neutral-600 text-sm">Events Hosted</p>
+								<p className="text-3xl md:text-4xl font-bold text-gray-900">50+</p>
+								<p className="text-gray-900 text-sm">Events Hosted</p>
 							</div>
-							<div className="h-12 w-px bg-neutral-300" />
+							<div className="h-12 w-px bg-light" />
 							<div>
-								<p className="text-3xl md:text-4xl font-bold text-neutral-900">10+</p>
-								<p className="text-neutral-600 text-sm">Years Active</p>
+								<p className="text-3xl md:text-4xl font-bold text-gray-900">10+</p>
+								<p className="text-gray-900 text-sm">Years Active</p>
 							</div>
 						</div>
 					</div>
@@ -70,8 +70,8 @@ export default function HeroSection() {
 											</svg>
 										</div>
 										<div>
-											<p className="text-2xl font-bold text-neutral-900">2K+</p>
-											<p className="text-sm text-neutral-600">Community</p>
+											<p className="text-2xl font-bold text-gray-900">2K+</p>
+											<p className="text-sm text-gray-900">Community</p>
 										</div>
 									</div>
 								</div>
@@ -85,8 +85,8 @@ export default function HeroSection() {
 											</svg>
 										</div>
 										<div>
-											<p className="text-2xl font-bold text-neutral-900">100%</p>
-											<p className="text-sm text-neutral-600">Verified</p>
+											<p className="text-2xl font-bold text-gray-900">100%</p>
+											<p className="text-sm text-gray-900">Verified</p>
 										</div>
 									</div>
 								</div>

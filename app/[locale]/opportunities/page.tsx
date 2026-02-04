@@ -24,7 +24,7 @@ const opportunitiesData = [
 		title: "Digital Activist",
 		shortDescription: "Amplify our message through social media and online campaigns",
 		icon: "📱",
-		color: "bg-brand-600",
+		color: "bg-brand",
 		gradient: "from-purple-400 to-purple-600",
 		fullDescription: "Digital Activists are the voice of RSP in the online world. You'll craft compelling narratives, engage with our community on social media, and help build RSP's digital presence across platforms. Your creativity and digital savvy will help us reach thousands.",
 		responsibilities: ["Create and schedule engaging social media content across platforms", "Monitor and respond to comments and messages on social channels", "Design graphics and videos for online campaigns", "Track social media analytics and optimize content strategy", "Participate in online activism campaigns and trending discussions", "Collaborate with the communications team on digital strategy"],
@@ -54,7 +54,7 @@ const opportunitiesData = [
 		title: "Fundraising Team",
 		shortDescription: "Support our mission through creative fundraising initiatives",
 		icon: "💰",
-		color: "bg-success-500",
+		color: "bg-secondary0",
 		gradient: "from-green-400 to-green-600",
 		fullDescription: "Fundraising Team members ensure RSP has the resources to achieve its mission. You'll develop creative fundraising campaigns, build relationships with donors, and organize events that generate support for our cause while engaging the community.",
 		responsibilities: ["Plan and execute fundraising events and campaigns", "Identify and cultivate relationships with potential donors", "Create compelling fundraising materials and appeals", "Manage donor databases and maintain records", "Thank and recognize donors appropriately", "Collaborate with finance team on budget planning"],
@@ -69,7 +69,7 @@ const opportunitiesData = [
 		title: "Youth Ambassador",
 		shortDescription: "Engage young Nepalis and drive youth participation",
 		icon: "🎓",
-		color: "bg-brand-600",
+		color: "bg-brand",
 		gradient: "from-orange-400 to-orange-600",
 		fullDescription: "Youth Ambassadors are the bridge between RSP and Nepal's future leaders. You'll engage with young Nepalis in Norway, organize campus activities, and ensure youth voices are heard in party decisions. Your energy will inspire the next generation.",
 		responsibilities: ["Organize youth-focused events, workshops, and discussions", "Build networks with student organizations and youth groups", "Recruit young members and volunteers", "Advocate for youth issues within RSP", "Manage youth social media channels", "Mentor younger members and new volunteers"],
@@ -114,22 +114,22 @@ function OpportunitiesPageInner() {
 	return (
 		<div className=" bg-gradient-to-br from-neutral-50 to-blue-50">
 			{/* Breadcrumb */}
-			<div className="bg-white border-b border-neutral-200">
+			<div className="bg-white border-b border-light">
 				<div className="max-w-7xl mx-auto px-4 py-4">
-					<div className="flex items-center text-sm text-neutral-600">
-						<Link href="/" className="hover:text-info-600">
+					<div className="flex items-center text-sm text-gray-900">
+						<Link href="/" className="hover:text-brand">
 							Home
 						</Link>
 						<svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 						</svg>
-						<Link href="/get-involved" className="hover:text-info-600">
+						<Link href="/get-involved" className="hover:text-brand">
 							Get Involved
 						</Link>
 						<svg className="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 						</svg>
-						<span className="text-neutral-900 font-medium">{selectedOpportunity.title}</span>
+						<span className="text-gray-900 font-medium">{selectedOpportunity.title}</span>
 					</div>
 				</div>
 			</div>
@@ -194,8 +194,8 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 			<div className="p-8">
 				{/* Overview */}
 				<section className="mb-8">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4">Overview</h2>
-					<p className="text-neutral-700 leading-relaxed text-lg">{opportunity.fullDescription}</p>
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">Overview</h2>
+					<p className="text-gray-900 leading-relaxed text-lg">{opportunity.fullDescription}</p>
 				</section>
 
 				{/* Key Information Cards */}
@@ -207,17 +207,17 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 
 				{/* Responsibilities */}
 				<section className="mb-8">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4 flex items-center">
+					<h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
 						<span className="text-3xl mr-3">📌</span>
 						Key Responsibilities
 					</h2>
 					<ul className="space-y-3">
 						{opportunity.responsibilities.map((resp: string, idx: number) => (
 							<li key={idx} className="flex items-start">
-								<svg className="w-6 h-6 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<svg className="w-6 h-6 text-secondary0 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
 								</svg>
-								<span className="text-neutral-700">{resp}</span>
+								<span className="text-gray-900">{resp}</span>
 							</li>
 						))}
 					</ul>
@@ -225,7 +225,7 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 
 				{/* Requirements */}
 				<section className="mb-8">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4 flex items-center">
+					<h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
 						<span className="text-3xl mr-3">✅</span>
 						Requirements
 					</h2>
@@ -235,7 +235,7 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 								<svg className="w-6 h-6 text-blue-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 									<path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
 								</svg>
-								<span className="text-neutral-700">{req}</span>
+								<span className="text-gray-900">{req}</span>
 							</li>
 						))}
 					</ul>
@@ -243,17 +243,17 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 
 				{/* Benefits */}
 				<section className="mb-8">
-					<h2 className="text-2xl font-bold text-neutral-900 mb-4 flex items-center">
+					<h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
 						<span className="text-3xl mr-3">🎁</span>
 						What You&apos;ll Gain
 					</h2>
 					<div className="grid md:grid-cols-2 gap-4">
 						{opportunity.benefits.map((benefit: string, idx: number) => (
 							<div key={idx} className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-								<svg className="w-5 h-5 text-info-600 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+								<svg className="w-5 h-5 text-brand mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
 									<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
 								</svg>
-								<span className="text-neutral-800 font-medium">{benefit}</span>
+								<span className="text-gray-900 font-medium">{benefit}</span>
 							</div>
 						))}
 					</div>
@@ -264,10 +264,10 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 					<h2 className="text-3xl font-bold mb-4">Ready to Make a Difference?</h2>
 					<p className="text-xl text-blue-100 mb-6">Join us in building a better Nepal. Your skills and passion can create real change.</p>
 					<div className="flex flex-wrap justify-center gap-4">
-						<button onClick={() => setShowApplyForm(!showApplyForm)} className="px-8 py-4 bg-white text-info-600 rounded-full font-bold text-lg hover:bg-info-50 transition-all transform hover:scale-105 shadow-lg">
+						<button onClick={() => setShowApplyForm(!showApplyForm)} className="px-8 py-4 bg-white text-brand rounded-full font-bold text-lg hover:bg-brand/10 transition-all transform hover:scale-105 shadow-lg">
 							Apply Now
 						</button>
-						<a href={`mailto:${opportunity.contact}`} className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-info-600 transition-all transform hover:scale-105">
+						<a href={`mailto:${opportunity.contact}`} className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white hover:text-brand transition-all transform hover:scale-105">
 							Ask Questions
 						</a>
 					</div>
@@ -275,8 +275,8 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 
 				{/* Quick Apply Form */}
 				{showApplyForm && (
-					<div className="mt-8 p-8 bg-neutral-50 rounded-xl border-2 border-blue-200">
-						<h3 className="text-2xl font-bold text-neutral-900 mb-6">Quick Application</h3>
+					<div className="mt-8 p-8 bg-light rounded-xl border-2 border-blue-200">
+						<h3 className="text-2xl font-bold text-gray-900 mb-6">Quick Application</h3>
 						<QuickApplyForm opportunity={opportunity} />
 					</div>
 				)}
@@ -289,8 +289,8 @@ function Sidebar({ opportunities, onSelect }: { opportunities: Opportunity[]; on
 	return (
 		<div className="space-y-4 sticky top-4">
 			<div className="bg-white rounded-2xl shadow-lg p-6">
-				<h3 className="text-xl font-bold text-neutral-900 mb-4 flex items-center">
-					<svg className="w-6 h-6 mr-2 text-info-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+					<svg className="w-6 h-6 mr-2 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
 					</svg>
 					Other Opportunities
@@ -306,7 +306,7 @@ function Sidebar({ opportunities, onSelect }: { opportunities: Opportunity[]; on
 			<div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white">
 				<h3 className="text-lg font-bold mb-3">Need Help Choosing?</h3>
 				<p className="text-blue-100 text-sm mb-4">Not sure which role fits you best? We&apos;re here to help!</p>
-				<Link href="/contact" className="block w-full bg-white text-info-600 text-center py-3 rounded-lg font-semibold hover:bg-info-50 transition-colors">
+				<Link href="/contact" className="block w-full bg-white text-brand text-center py-3 rounded-lg font-semibold hover:bg-brand/10 transition-colors">
 					Contact Us
 				</Link>
 			</div>
@@ -316,14 +316,14 @@ function Sidebar({ opportunities, onSelect }: { opportunities: Opportunity[]; on
 
 function OpportunityCard({ opportunity, onClick }: { opportunity: Opportunity; onClick: () => void }) {
 	return (
-		<div onClick={onClick} className="group cursor-pointer p-4 rounded-xl border-2 border-neutral-200 hover:border-blue-500 hover:shadow-lg transition-all bg-white">
+		<div onClick={onClick} className="group cursor-pointer p-4 rounded-xl border-2 border-light hover:border-blue-500 hover:shadow-lg transition-all bg-white">
 			<div className="flex items-start">
 				<div className={`${opportunity.color} w-12 h-12 rounded-lg flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform`}>{opportunity.icon}</div>
 				<div className="ml-3 flex-1">
-					<h4 className="font-bold text-neutral-900 group-hover:text-info-600 transition-colors mb-1">{opportunity.title}</h4>
-					<p className="text-sm text-neutral-600 line-clamp-2">{opportunity.shortDescription}</p>
+					<h4 className="font-bold text-gray-900 group-hover:text-brand transition-colors mb-1">{opportunity.title}</h4>
+					<p className="text-sm text-gray-900 line-clamp-2">{opportunity.shortDescription}</p>
 				</div>
-				<svg className="w-5 h-5 text-neutral-400 group-hover:text-info-600 group-hover:translate-x-1 transition-all ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg className="w-5 h-5 text-gray-900 group-hover:text-brand group-hover:translate-x-1 transition-all ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 				</svg>
 			</div>
@@ -333,10 +333,10 @@ function OpportunityCard({ opportunity, onClick }: { opportunity: Opportunity; o
 
 function InfoCard({ icon, label, value }: { icon: string; label: string; value: string }) {
 	return (
-		<div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-neutral-200">
+		<div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-light">
 			<div className="text-3xl mb-2">{icon}</div>
-			<div className="text-sm text-neutral-600 mb-1">{label}</div>
-			<div className="font-semibold text-neutral-900">{value}</div>
+			<div className="text-sm text-gray-900 mb-1">{label}</div>
+			<div className="font-semibold text-gray-900">{value}</div>
 		</div>
 	);
 }
@@ -356,10 +356,10 @@ function QuickApplyForm({ opportunity }: { opportunity: Opportunity }) {
 
 	return (
 		<div className="space-y-4">
-			<input type="text" placeholder="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
-			<input type="email" placeholder="Email Address" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
-			<input type="tel" placeholder="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
-			<textarea placeholder="Why are you interested in this role? (Optional)" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
+			<input type="text" placeholder="Full Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
+			<input type="email" placeholder="Email Address" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
+			<input type="tel" placeholder="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
+			<textarea placeholder="Why are you interested in this role? (Optional)" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
 			<button onClick={handleSubmit} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105">
 				Submit Application
 			</button>
