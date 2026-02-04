@@ -1,6 +1,14 @@
-import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Video, FileText, Bell, Layers, Users, Mail, DollarSign } from "lucide-react";
+import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Video, FileText, Bell, Layers, Users, Mail, DollarSign, LucideIcon } from "lucide-react";
 
-export const menuItems = [
+export interface MenuItem {
+	id: string;
+	label: string;
+	icon: LucideIcon;
+	color: string;
+	href: string;
+}
+
+export const menuItems: MenuItem[] = [
 	{ id: "dashboard", label: "Dashboard", icon: LayoutDashboard, color: "bg-brand", href: "/en/dashboard" },
 	{ id: "contactmessages", label: "Contact Messages", icon: Book, color: "bg-blue-600", href: "/en/dashboard/contactmessages" },
 	{ id: "memberships", label: "Memberships", icon: Users, color: "bg-purple-600", href: "/en/dashboard/memberships" },
