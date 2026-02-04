@@ -1,5 +1,4 @@
 import DonationForm from "@/components/DonationForm";
-import SectionHeader from "@/components/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Target, TrendingUp } from "lucide-react";
 
@@ -10,13 +9,13 @@ export const metadata = {
 
 export default function DonatePage() {
 	return (
-		<div className="min-h-screen pb-12 px-4">
+		<div className="min-h-screen py-12 px-4">
 			<div className="max-w-6xl mx-auto">
 				{/* Hero Section */}
-				<header className="text-center mb-12">
-					<SectionHeader heading="Support Us" />
-					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">Your generous contribution helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.</p>
-				</header>
+				<div className="text-center mb-12">
+					<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Support Our Mission</h1>
+					<p className="text-xl text-gray-600 max-w-3xl mx-auto">Your generous contribution helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.</p>
+				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
 					{/* Donation Form - Takes 2 columns */}

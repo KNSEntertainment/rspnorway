@@ -18,14 +18,9 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "Minimum donation amount is 50 NOK" }, { status: 400 });
 		}
 
-		// Validate required fields (allow anonymous donations)
-		if (!donorName) {
-			return NextResponse.json({ error: "Name is required" }, { status: 400 });
-		}
-
-		// For non-anonymous, email is required
-		if (!isAnonymous && !donorEmail) {
-			return NextResponse.json({ error: "Email is required for non-anonymous donations" }, { status: 400 });
+		// Validate required fields
+		if (!donorName || !donorEmail) {
+			return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
 		}
 
 		// Create donation record
@@ -59,7 +54,7 @@ export async function POST(request: Request) {
 			mode: "payment",
 			success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/en/donate/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/en/donate?canceled=true`,
-			customer_email: isAnonymous ? undefined : donorEmail,
+			customer_email: donorEmail,
 			metadata: {
 				donationId: donation._id.toString(),
 				donorName,

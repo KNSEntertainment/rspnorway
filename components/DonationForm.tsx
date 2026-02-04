@@ -41,18 +41,6 @@ export default function DonationForm() {
 			return;
 		}
 
-		// Validate email for non-anonymous donations
-		if (!isAnonymous && !donorEmail) {
-			toast.error("Email is required");
-			return;
-		}
-
-		// Validate name for non-anonymous donations
-		if (!isAnonymous && !donorName) {
-			toast.error("Name is required");
-			return;
-		}
-
 		setLoading(true);
 
 		try {
@@ -64,8 +52,8 @@ export default function DonationForm() {
 				body: JSON.stringify({
 					amount,
 					donorName: isAnonymous ? "Anonymous" : donorName,
-					donorEmail: isAnonymous ? "anonymous@rspnorway.no" : donorEmail,
-					donorPhone: isAnonymous ? "" : donorPhone,
+					donorEmail,
+					donorPhone,
 					message,
 					isAnonymous,
 				}),

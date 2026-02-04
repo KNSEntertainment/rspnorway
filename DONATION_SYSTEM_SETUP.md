@@ -40,7 +40,7 @@ Add these to your `.env.local` file:
 ```env
 # Stripe Configuration
 STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxx
-STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxx
 
 # Base URL (for redirects)
@@ -57,7 +57,7 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 2. Create an account or log in
 3. Go to **Developers** → **API keys**
 4. Copy:
-   - **Publishable key** → `STRIPE_PUBLISHABLE_KEY`
+   - **Publishable key** → `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
    - **Secret key** → `STRIPE_SECRET_KEY`
 
 ### 2. Configure Webhook (Important!)

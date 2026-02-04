@@ -90,7 +90,7 @@ export default function DonationSuccessPage() {
 					</div>
 
 					<div className="text-center pt-4 border-t border-gray-200">
-						<p className="text-sm text-gray-500">Questions? Contact us at info@rspnorway.org</p>
+						<p className="text-sm text-gray-500">Questions? Contact us at contact@rspnorway.no</p>
 					</div>
 				</CardContent>
 			</Card>
