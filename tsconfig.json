@@ -61,7 +61,10 @@
 		"app/[locale]/updates/page.jsx",
 		"app/[locale]/updates/page.jsx",
 		"app/[locale]/updates/page.jsx",
-		"components/FooterClient.jsx"
+		"components/FooterClient.jsx",
+		"components/DashboardMenuItems.js",
+		"app/[locale]/dashboard/layout.jsx",
+		"app/[locale]/dashboard/page.jsx"
 	],
 	"exclude": ["node_modules"]
 }
