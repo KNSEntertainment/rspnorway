@@ -101,7 +101,7 @@
 		"developer": "Hari Prasad Sanjel",
 		"address": "Oslo, Norway",
 		"phone": "96800984, 45921449, 47734203",
-		"phone_small_device": "96800984, 45921449"
+		"phone_small_device": "96800984"
 	},
 
 	"slider": {
@@ -169,7 +169,7 @@
 		"events_tab": "Events",
 		"notices_tab": "Notices",
 		"circulars_tab": "Circulars",
-		"learn_more": "Learn more",
+		"learn_more": "Read more",
 		"no_events": "No Events Scheduled",
 		"no_events_desc": "Check back soon for upcoming events!",
 		"read_more": "Read more",

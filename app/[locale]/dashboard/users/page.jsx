@@ -43,8 +43,6 @@ export default function UsersPage() {
 		mutate();
 	};
 
-	const handleCreateUser = () => {};
-
 	const filteredUsers = users.filter((user) => {
 		const matchesSearch = user.fullName?.toLowerCase().includes(search.toLowerCase()) || user.userName?.toLowerCase().includes(search.toLowerCase()) || user.email?.toLowerCase().includes(search.toLowerCase());
 		const matchesRole = roleFilter ? user.role === roleFilter : true;
@@ -108,8 +106,8 @@ export default function UsersPage() {
 						<option value="user">User</option>
 					</select>
 				</div>
-				<button onClick={handleCreateUser} className="bg-brand text-slate-200 font-bold px-4 py-2">
-					Register User
+				<button onClick={() => setOpenUserModal(!openUserModal)} className="bg-brand text-neutral-200 font-bold px-4 py-2">
+					{openUserModal ? "Cancel" : "Register User"}
 				</button>
 			</div>
 
@@ -131,6 +129,14 @@ export default function UsersPage() {
 					</button>
 				</div>
 			</div>
+
+			{/* Inline Form Section */}
+			{openUserModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-2xl font-bold text-neutral-900 mb-4">Register New User</h2>
+					<RegisterForm handleCloseUserModal={handleCloseUserModal} fetchUsers={users} />
+				</div>
+			)}
 
 			<div className=" bg-white rounded-lg shadow">
 				<Table>
@@ -158,7 +164,7 @@ export default function UsersPage() {
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(user._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+												<Trash2 className="w-6 h-6 text-error-700" />
 											</Button>
 											<Button variant="outline" size="sm" onClick={() => setEditUser(user)}>
 												Edit
@@ -179,37 +185,20 @@ export default function UsersPage() {
 				{/* Pagination Controls */}
 				{totalPages > 1 && (
 					<div className="flex justify-center items-center gap-2 py-4">
-						<button className="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+						<button className="px-3 py-1 rounded border bg-neutral-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
 							Prev
 						</button>
 						{Array.from({ length: totalPages }, (_, i) => (
-							<button key={i + 1} className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-red-800 text-white" : "bg-gray-100"}`} onClick={() => handlePageChange(i + 1)}>
+							<button key={i + 1} className={`px-3 py-1 rounded border ${currentPage === i + 1 ? "bg-red-800 text-white" : "bg-neutral-100"}`} onClick={() => handlePageChange(i + 1)}>
 								{i + 1}
 							</button>
 						))}
-						<button className="px-3 py-1 rounded border bg-gray-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+						<button className="px-3 py-1 rounded border bg-neutral-100 disabled:opacity-50" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
 							Next
 						</button>
 					</div>
 				)}
 			</div>
-
-			{openUserModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-96">
-						<h2 className="text-lg font-bold text-slate-200 bg-brand p-4 mb-6 text-center">Register User</h2>
-						<RegisterForm handleCloseUserModal={handleCloseUserModal} fetchUsers={users} />
-					</div>
-				</div>
-			)}
-			{editUser && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-96">
-						<h2 className="text-lg font-bold text-slate-200 bg-brand p-4 mb-6 text-center">Edit User</h2>
-						{/* <EditUserForm user={editUser} onClose={() => setEditUser(null)} onSuccess={mutate} /> */}
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

@@ -165,7 +165,7 @@ export default function Members() {
 		return (
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<div className="text-center py-20">
-					<p className="text-gray-500 text-lg">Loading members...</p>
+					<p className="text-neutral-500 text-lg">Loading members...</p>
 				</div>
 			</div>
 		);
@@ -177,12 +177,12 @@ export default function Members() {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<header className="text-center mb-12">
 					<SectionHeader heading="Executive Members Directory" />
-					{/* <p className="text-slate-600 mt-4 text-lg max-w-2xl mx-auto">Find leadership by department and committee</p> */}
+					{/* <p className="text-neutral-600 mt-4 text-lg max-w-2xl mx-auto">Find leadership by department and committee</p> */}
 				</header>
 
 				{members.length === 0 && (
 					<div className="text-center py-20">
-						<p className="text-gray-500 text-lg">No executive members found.</p>
+						<p className="text-neutral-500 text-lg">No executive members found.</p>
 					</div>
 				)}
 			</div>
@@ -192,22 +192,22 @@ export default function Members() {
 				{/* Search Bar */}
 				<div className="mb-8 bg-white rounded-lg shadow-sm p-6">
 					<div>
-						<label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+						<label htmlFor="search" className="block text-sm font-medium text-neutral-700 mb-2">
 							Search Members
 						</label>
 						<div className="relative">
-							<input type="text" id="search" placeholder="Search by name, email, phone, or position..." className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-							<Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+							<input type="text" id="search" placeholder="Search by name, email, phone, or position..." className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+							<Search className="absolute left-3 top-2.5 h-5 w-5 text-neutral-400" />
 						</div>
 					</div>
 				</div>
 
 				{/* Major Departments */}
 				<div className="mb-6">
-					<h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Departments</h3>
+					<h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-3">Departments</h3>
 					<div className="flex flex-wrap gap-2">
 						{departments.map((dept) => (
-							<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeDepartment === dept.name ? "border-blue-500 bg-blue-50 text-blue-600" : "bg-white border-gray-200 text-gray-700 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600"}`}>
+							<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeDepartment === dept.name ? "border-blue-500 bg-blue-50 text-info-600" : "bg-white border-neutral-200 text-neutral-700 hover:border-blue-500 hover:bg-info-50 hover:text-info-600"}`}>
 								{dept.name}
 							</button>
 						))}
@@ -217,10 +217,10 @@ export default function Members() {
 				{/* Subdepartments */}
 				{activeDepartment && getActiveDepartmentSubdepartments().length > 0 && (
 					<div className="mb-6">
-						<h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Subdepartments</h3>
+						<h3 className="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-3">Subdepartments</h3>
 						<div className="flex flex-wrap gap-2">
 							{getActiveDepartmentSubdepartments().map((subdept) => (
-								<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-blue-600" : "bg-gray-100 border-gray-300 text-gray-700 hover:bg-blue-100 hover:border-blue-400 hover:text-blue-600"}`}>
+								<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-info-600" : "bg-neutral-100 border-neutral-300 text-neutral-700 hover:bg-blue-100 hover:border-blue-400 hover:text-info-600"}`}>
 									{subdept}
 								</button>
 							))}
@@ -232,10 +232,10 @@ export default function Members() {
 				{(filters.department || filters.subdepartment) && (
 					<div className="mb-6">
 						<div className="flex flex-wrap items-center gap-2">
-							<span className="text-sm font-medium text-gray-600">Active Filters:</span>
+							<span className="text-sm font-medium text-neutral-600">Active Filters:</span>
 							<div className="flex flex-wrap gap-2">
 								{filters.department && (
-									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-info-700 rounded-full text-sm font-medium">
 										Department: {filters.department}
 										<button onClick={() => removeFilter("department")} className="hover:text-blue-900">
 											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -245,7 +245,7 @@ export default function Members() {
 									</span>
 								)}
 								{filters.subdepartment && (
-									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-info-700 rounded-full text-sm font-medium">
 										Subdept: {filters.subdepartment}
 										<button onClick={() => removeFilter("subdepartment")} className="hover:text-blue-900">
 											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,7 +255,7 @@ export default function Members() {
 									</span>
 								)}
 							</div>
-							<button onClick={clearAllFilters} className="text-sm text-blue-600 hover:text-blue-800 font-medium ml-2">
+							<button onClick={clearAllFilters} className="text-sm text-info-600 hover:text-info-700 font-medium ml-2">
 								Clear All
 							</button>
 						</div>
@@ -264,25 +264,25 @@ export default function Members() {
 
 				{/* Members Count */}
 				<div className="mb-4">
-					<p className="text-sm text-gray-600">
-						Showing <span className="font-semibold text-gray-900">{filteredMembers.length}</span> members
+					<p className="text-sm text-neutral-600">
+						Showing <span className="font-semibold text-neutral-900">{filteredMembers.length}</span> members
 					</p>
 				</div>
 
 				{/* Members Grid */}
 				{filteredMembers.length === 0 ? (
 					<div className="text-center py-12">
-						<svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 						</svg>
-						<h3 className="mt-2 text-lg font-medium text-gray-900">No members found</h3>
-						<p className="mt-1 text-gray-500">Try adjusting your search or filter criteria</p>
+						<h3 className="mt-2 text-lg font-medium text-neutral-900">No members found</h3>
+						<p className="mt-1 text-neutral-500">Try adjusting your search or filter criteria</p>
 					</div>
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{filteredMembers.map((member) => (
 							<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-								<div className="aspect-square overflow-hidden bg-gray-100">
+								<div className="aspect-square overflow-hidden bg-neutral-100">
 									{member.imageUrl ? (
 										<Image src={member.imageUrl} alt={member.name} width={600} height={600} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
 									) : (
@@ -292,8 +292,8 @@ export default function Members() {
 									)}
 								</div>
 								<div className="p-6">
-									<h3 className="text-2xl font-semibold text-gray-900 mb-1">{member.name}</h3>
-									{member.position && <p className="text-sm text-blue-600 font-medium mb-4">{member.position}</p>}
+									<h3 className="text-2xl font-semibold text-neutral-900 mb-1">{member.name}</h3>
+									{member.position && <p className="text-sm text-info-600 font-medium mb-4">{member.position}</p>}
 
 									<div className="space-y-3">
 										<div className="flex items-center gap-3">
@@ -301,8 +301,8 @@ export default function Members() {
 												<Phone className="w-5 h-5 text-white" />
 											</div>
 											<div>
-												<p className="text-xs text-gray-500 uppercase tracking-wide">Mobile</p>
-												<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-blue-600">
+												<p className="text-xs text-neutral-500 uppercase tracking-wide">Mobile</p>
+												<a href={`tel:${member.phone}`} className="text-neutral-900 hover:text-info-600">
 													{member.phone}
 												</a>
 											</div>
@@ -313,8 +313,8 @@ export default function Members() {
 												<Mail className="w-5 h-5 text-white" />
 											</div>
 											<div>
-												<p className="text-xs text-gray-500 uppercase tracking-wide">Email</p>
-												<a href={`mailto:${member.email}`} className="text-gray-900 hover:text-blue-600 text-sm break-all">
+												<p className="text-xs text-neutral-500 uppercase tracking-wide">Email</p>
+												<a href={`mailto:${member.email}`} className="text-neutral-900 hover:text-info-600 text-sm break-all">
 													{member.email}
 												</a>
 											</div>

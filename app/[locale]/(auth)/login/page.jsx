@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 
 const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) => (
 	<div className="relative">
-		<Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+		<Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" />
 		<Input id={id} name={name} value={value} onChange={onChange} {...props} className="pl-10" />
 	</div>
 ));
@@ -105,9 +105,9 @@ function AuthFormContent() {
 	}, []);
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+		<div className="min-h-screen flex items-center justify-center bg-neutral-100 p-4">
 			<Card className="w-full max-w-md mx-auto">
-				<CardHeader className="bg-brand text-slate-200 rounded-t-lg text-center">
+				<CardHeader className="bg-brand text-neutral-200 rounded-t-lg text-center">
 					<CardTitle className="text-2xl font-bold">{hasInvite ? t("set_password") : t("title")}</CardTitle>
 				</CardHeader>
 				<CardContent className="mt-6">
@@ -126,9 +126,9 @@ function AuthFormContent() {
 							<div className="space-y-2">
 								<Label htmlFor="set-password">{t("password")}</Label>
 								<div className="relative">
-									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+									<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" />
 									<Input id="set-password" name="password" type={showPassword ? "text" : "password"} placeholder={t("password_placeholder")} value={formData.password} onChange={handleInputChange} className="pl-10 pr-10" />
-									<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+									<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400">
 										{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 									</button>
 								</div>
@@ -158,9 +158,9 @@ function AuthFormContent() {
 										<div className="space-y-2">
 											<Label htmlFor="login-password">{t("password")}</Label>
 											<div className="relative">
-												<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+												<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" />
 												<Input id="login-password" name="password" type={showPassword ? "text" : "password"} placeholder={t("password_placeholder")} value={formData.password} onChange={handleInputChange} className="pl-10 pr-10" />
-												<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+												<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400">
 													{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 												</button>
 											</div>

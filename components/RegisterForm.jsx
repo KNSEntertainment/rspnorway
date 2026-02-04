@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 
 const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) => (
 	<div className="relative">
-		<Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+		<Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" />
 		<Input id={id} name={name} value={value} onChange={onChange} {...props} className="pl-10" />
 	</div>
 ));
@@ -84,7 +84,7 @@ const RegisterForm = ({ handleCloseUserModal }) => {
 			<div className="space-y-4">
 				<div className="space-y-2">
 					<Label htmlFor="register-role">User Role</Label>
-					<select id="register-role" name="role" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 px-3 py-2">
+					<select id="register-role" name="role" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} className="block w-full rounded-md border-neutral-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 px-3 py-2">
 						<option value="admin">Admin</option>
 						<option value="user">User</option>
 					</select>
@@ -105,15 +105,15 @@ const RegisterForm = ({ handleCloseUserModal }) => {
 				<div className="space-y-2">
 					<Label htmlFor="register-password">Password</Label>
 					<div className="relative">
-						<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+						<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400" />
 						<Input id="register-password" name="password" type={showPassword ? "text" : "password"} placeholder="Choose a password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="pl-10 pr-10" />
-						<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+						<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400">
 							{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 						</button>
 					</div>
 				</div>
 			</div>
-			{error && <p className="mt-2 text-red-600">{error}</p>}
+			{error && <p className="mt-2 text-error-600">{error}</p>}
 			<div className="mt-6 flex justify-between">
 				<Button type="submit" className="bg-brand hover:bg-red-800">
 					Register

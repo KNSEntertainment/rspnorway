@@ -57,7 +57,7 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 								My Profile
 							</Link>
 						)}
-						<button onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-3 px-5 py-3.5 text-red-600 hover:bg-red-50 w-full transition-all duration-200 font-medium">
+						<button onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-3 px-5 py-3.5 text-error-600 hover:bg-error-50 w-full transition-all duration-200 font-medium">
 							<LogOut size={18} />
 							Sign Out
 						</button>

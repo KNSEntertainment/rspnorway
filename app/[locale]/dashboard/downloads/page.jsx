@@ -53,16 +53,25 @@ export default function DownloadsDashboardPage() {
 
 	const handleCreate = () => {
 		setDownloadToEdit(null);
-		setOpenModal(true);
+		setOpenModal(!openModal);
 	};
 
 	return (
-		<div className="max-w-4xl">
-			<div className="text-right">
-				<button onClick={handleCreate} className="bg-brand text-slate-200 font-bold px-4 py-2">
-					Create Download
+		<div className="max-w-6xl">
+			<div className="flex justify-between items-center mb-4">
+				<h1 className="text-2xl font-bold">Manage Downloads</h1>
+				<button onClick={handleCreate} className="bg-brand text-neutral-200 font-bold px-4 py-2 rounded hover:bg-red-700 transition-colors">
+					{openModal ? "Cancel" : "Create Download"}
 				</button>
 			</div>
+
+			{/* Inline Form Section */}
+			{openModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-lg font-bold text-white bg-brand p-4 mb-4 text-center rounded">{downloadToEdit ? "Edit Download" : "Create Download"}</h2>
+					<DownloadForm handleCloseModal={handleCloseModal} downloadToEdit={downloadToEdit} />
+				</div>
+			)}
 			<div className="bg-white rounded-lg shadow">
 				<Table>
 					<TableHeader>
@@ -82,23 +91,23 @@ export default function DownloadsDashboardPage() {
 									<TableCell className="w-48 font-semibold">{doc.title}</TableCell>
 									<TableCell className="w-48">{doc.date}</TableCell>
 									<TableCell className="w-48">{doc.category}</TableCell>
-									<TableCell className="w-24">{doc.imageUrl ? <Image src={doc.imageUrl} width={64} height={64} alt={doc.title} className="w-16 h-16 rounded object-cover" /> : <span className="text-gray-400">No Image</span>}</TableCell>
+									<TableCell className="w-24">{doc.imageUrl ? <Image src={doc.imageUrl} width={64} height={64} alt={doc.title} className="w-16 h-16 rounded object-cover" /> : <span className="text-neutral-400">No Image</span>}</TableCell>
 									<TableCell className="w-24">
 										{doc.fileUrl ? (
-											<a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+											<a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-info-600 underline">
 												Download
 											</a>
 										) : (
-											<span className="text-gray-400">No File</span>
+											<span className="text-neutral-400">No File</span>
 										)}
 									</TableCell>
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(doc)}>
-												<Pencil className="w-6 h-6 text-blue-700" />
+												<Pencil className="w-6 h-6 text-info-700" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(doc._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+												<Trash2 className="w-6 h-6 text-error-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -106,7 +115,7 @@ export default function DownloadsDashboardPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={6} className="text-red-600">
+								<TableCell colSpan={6} className="text-error-600">
 									No downloads found.
 								</TableCell>
 							</TableRow>
@@ -114,14 +123,6 @@ export default function DownloadsDashboardPage() {
 					</TableBody>
 				</Table>
 			</div>
-			{openModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-96">
-						<h2 className="text-lg font-bold text-slate-200 bg-brand p-4 mb-6 text-center">{downloadToEdit ? "Edit Download" : "Create Download"}</h2>
-						<DownloadForm handleCloseModal={handleCloseModal} downloadToEdit={downloadToEdit} />
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

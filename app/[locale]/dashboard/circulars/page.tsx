@@ -90,24 +90,38 @@ export default function CircularsPage() {
 
 	return (
 		<div className="container mx-auto py-8 px-4">
+			{/* Header with Add Button */}
+			<div className="flex justify-between items-center mb-6">
+				<div>
+					<h1 className="text-3xl font-bold text-neutral-900">Circulars Management</h1>
+					<p className="text-neutral-600 mt-1">Create and manage circulars with multi-language support</p>
+				</div>
+				<Button onClick={() => setShowForm(!showForm)} className="gap-2 bg-brand hover:bg-brand/90">
+					{showForm ? (
+						"Cancel"
+					) : (
+						<>
+							<Plus className="h-4 w-4" /> Add Circular
+						</>
+					)}
+				</Button>
+			</div>
+
+			{/* Inline Form Section */}
+			{showForm && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{selectedCircular ? "Edit Circular" : "Add New Circular"}</h2>
+					<CircularForm circular={selectedCircular as Circular} onClose={handleCloseForm} onSuccess={handleFormSuccess} />
+				</div>
+			)}
+
+			{/* Circulars Table */}
 			<Card>
-				<CardHeader>
-					<div className="flex items-center justify-between">
-						<div>
-							<CardTitle className="text-3xl">Circulars Management</CardTitle>
-							<CardDescription className="mt-2">Create and manage circulars with multi-language support</CardDescription>
-						</div>
-						<Button onClick={() => setShowForm(true)} className="gap-2">
-							<Plus className="h-4 w-4" />
-							Add Circular
-						</Button>
-					</div>
-				</CardHeader>
-				<CardContent>
+				<CardContent className="pt-6">
 					{loading ? (
 						<div className="text-center py-8">Loading circulars...</div>
 					) : circulars.length === 0 ? (
-						<div className="text-center py-8 text-gray-500">No circulars found. Click &quot;Add Circular&quot; to create your first circular.</div>
+						<div className="text-center py-8 text-neutral-500">No circulars found. Click &quot;Add Circular&quot; to create your first circular.</div>
 					) : (
 						<Table>
 							<TableHeader>
@@ -147,8 +161,6 @@ export default function CircularsPage() {
 					)}
 				</CardContent>
 			</Card>
-
-			{showForm && <CircularForm circular={selectedCircular as Circular} onClose={handleCloseForm} onSuccess={handleFormSuccess} />}
 		</div>
 	);
 }

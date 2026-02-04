@@ -59,7 +59,7 @@ export default function FullWidthHero() {
 		/* The trick for True Full Width:
            w-screen + relative left-1/2 -translate-x-1/2 
         */
-		<div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 overflow-hidden bg-slate-900">
+		<div className="relative w-screen left-1/2 right-1/2 -translate-x-1/2 overflow-hidden bg-neutral-900">
 			<section className="relative h-[82vh] w-full flex items-center">
 				{/* Background Layer */}
 				<AnimatePresence mode="wait">
@@ -272,7 +272,7 @@ export default function FullWidthHero() {
 // 							</Button>
 // 						</Link>
 // 						<Link href={currentSlideData.secondaryLink} locale={locale}>
-// 							<Button className="bg-white text-black px-6 py-3 rounded-lg hover:bg-gray-200 transition-all duration-300">{currentSlideData.secondaryButton}</Button>
+// 							<Button className="bg-white text-black px-6 py-3 rounded-lg hover:bg-neutral-200 transition-all duration-300">{currentSlideData.secondaryButton}</Button>
 // 						</Link>
 // 					</motion.div>
 // 				</div>
@@ -323,7 +323,7 @@ export default function FullWidthHero() {
 // 					</h1>
 // 					<p class="text-lg text-blue-100 mb-10 leading-relaxed max-w-xl">Join us in our mission to transform Nepal through innovation, integrity, and grassroots empowerment. Your voice is the catalyst for change.</p>
 // 					<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-// 						<button class="bg-white text-brand px-8 py-4 rounded-lg font-bold hover:bg-blue-50 transition shadow-lg">Become a Member</button>
+// 						<button class="bg-white text-brand px-8 py-4 rounded-lg font-bold hover:bg-info-50 transition shadow-lg">Become a Member</button>
 // 						<button class="border-2 border-white/30 px-8 py-4 rounded-lg font-bold hover:bg-white/10 transition">View Manifest</button>
 // 					</div>
 // 				</div>

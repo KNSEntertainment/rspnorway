@@ -27,7 +27,7 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 			Link.configure({
 				openOnClick: false,
 				HTMLAttributes: {
-					class: "text-blue-600 underline",
+					class: "text-info-600 underline",
 				},
 			}),
 			Image,
@@ -173,32 +173,32 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 		if (!editor) return null;
 
 		return (
-			<div className="border border-b-0 rounded-t p-2 flex flex-wrap gap-1 bg-gray-50">
-				<button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={`p-1 rounded ${editor.isActive("bold") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Bold">
+			<div className="border border-b-0 rounded-t p-2 flex flex-wrap gap-1 bg-neutral-50">
+				<button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={`p-1 rounded ${editor.isActive("bold") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Bold">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
 						<path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={`p-1 rounded ${editor.isActive("italic") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Italic">
+				<button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={`p-1 rounded ${editor.isActive("italic") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Italic">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<line x1="19" y1="4" x2="10" y2="4"></line>
 						<line x1="14" y1="20" x2="5" y2="20"></line>
 						<line x1="15" y1="4" x2="9" y2="20"></line>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={`p-1 rounded ${editor.isActive("underline") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Underline">
+				<button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={`p-1 rounded ${editor.isActive("underline") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Underline">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
 						<line x1="4" y1="21" x2="20" y2="21"></line>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={`p-1 rounded ${editor.isActive("heading", { level: 2 }) ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Heading">
+				<button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={`p-1 rounded ${editor.isActive("heading", { level: 2 }) ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Heading">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<path d="M6 4v16M18 4v16M6 12h12"></path>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={`p-1 rounded ${editor.isActive("bulletList") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Bullet List">
+				<button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={`p-1 rounded ${editor.isActive("bulletList") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Bullet List">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<line x1="9" y1="6" x2="20" y2="6"></line>
 						<line x1="9" y1="12" x2="20" y2="12"></line>
@@ -208,7 +208,7 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 						<circle cx="4" cy="18" r="2"></circle>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`p-1 rounded ${editor.isActive("orderedList") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`} title="Numbered List">
+				<button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`p-1 rounded ${editor.isActive("orderedList") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`} title="Numbered List">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<line x1="10" y1="6" x2="21" y2="6"></line>
 						<line x1="10" y1="12" x2="21" y2="12"></line>
@@ -226,7 +226,7 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 							editor.chain().focus().setLink({ href: url }).run();
 						}
 					}}
-					className={`p-1 rounded ${editor.isActive("link") ? "bg-blue-100 text-blue-700 border border-blue-300" : "hover:bg-gray-100"}`}
+					className={`p-1 rounded ${editor.isActive("link") ? "bg-blue-100 text-info-700 border border-blue-300" : "hover:bg-neutral-100"}`}
 					title="Link"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -234,13 +234,13 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 						<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} className="p-1 rounded hover:bg-gray-100 disabled:opacity-50" title="Undo">
+				<button type="button" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()} className="p-1 rounded hover:bg-neutral-100 disabled:opacity-50" title="Undo">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<path d="M9 14 4 9l5-5"></path>
 						<path d="M4 9h12a4 4 0 0 1 0 8H9"></path>
 					</svg>
 				</button>
-				<button type="button" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} className="p-1 rounded hover:bg-gray-100 disabled:opacity-50" title="Redo">
+				<button type="button" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()} className="p-1 rounded hover:bg-neutral-100 disabled:opacity-50" title="Redo">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
 						<path d="m15 14 5-5-5-5"></path>
 						<path d="M20 9H8a4 4 0 0 0 0 8h7"></path>
@@ -252,7 +252,7 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-scroll">
-			{error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
+			{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
 			<div>
 				<label htmlFor="blogTitle" className="block mb-2 font-bold">
 					Blog Title
@@ -302,7 +302,7 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 				/>
 			</div>
 			<div className="grid grid-cols-2 gap-2">
-				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-slate-200 font-bold`}>
+				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-neutral-200 font-bold`}>
 					{submitting ? `${blogToEdit ? "Updating" : "Creating"} Blog...` : `${blogToEdit ? "Update" : "Create"} Blog`}
 				</button>
 				<Button variant="outline" onClick={handleCloseBlogModal}>

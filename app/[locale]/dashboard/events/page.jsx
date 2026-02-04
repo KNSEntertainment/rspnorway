@@ -45,16 +45,25 @@ export default function EventsPage() {
 
 	const handleCreateEvent = () => {
 		setEventToEdit(null);
-		setOpenEventModal(true);
+		setOpenEventModal(!openEventModal);
 	};
 
 	return (
 		<div className="w-full max-w-full px-2 sm:px-6">
-			<div className="flex flex-col sm:flex-row sm:justify-end items-stretch gap-2 mb-4">
-				<button onClick={handleCreateEvent} className="bg-brand text-slate-200 font-bold px-4 py-2 rounded w-full sm:w-auto text-center">
-					Create Event
+			<div className="flex flex-col sm:flex-row sm:justify-between items-stretch gap-2 mb-4">
+				<h1 className="text-2xl font-bold">Manage Events</h1>
+				<button onClick={handleCreateEvent} className="bg-brand text-neutral-200 font-bold px-4 py-2 rounded w-full sm:w-auto text-center hover:bg-red-700 transition-colors">
+					{openEventModal ? "Cancel" : "Create Event"}
 				</button>
 			</div>
+
+			{/* Inline Form Section */}
+			{openEventModal && (
+				<div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-base sm:text-lg font-bold text-white bg-brand p-2 sm:p-4 mb-4 text-center rounded">{eventToEdit ? "Edit Event" : "Create Event"}</h2>
+					<EventForm handleCloseEventModal={handleCloseEventModal} eventToEdit={eventToEdit} />
+				</div>
+			)}
 			<div className="bg-white rounded-lg shadow overflow-x-auto">
 				<Table className="min-w-[700px]">
 					<TableHeader>
@@ -83,10 +92,10 @@ export default function EventsPage() {
 									<TableCell>
 										<div className="flex flex-col sm:flex-row gap-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="w-8 h-8">
-												<Pencil className="w-5 h-5 text-blue-700" />
+												<Pencil className="w-5 h-5 text-info-700" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(event._id)} className="w-8 h-8">
-												<Trash2 className="w-5 h-5 text-red-700" />
+												<Trash2 className="w-5 h-5 text-error-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -102,14 +111,6 @@ export default function EventsPage() {
 					</TableBody>
 				</Table>
 			</div>
-			{openEventModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-2">
-					<div className="bg-white p-2 sm:p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-2xl mx-auto">
-						<h2 className="text-base sm:text-lg font-bold text-slate-200 bg-brand p-2 sm:p-4 mb-4 sm:mb-6 text-center">{eventToEdit ? "Edit Event" : "Create Event"}</h2>
-						<EventForm handleCloseEventModal={handleCloseEventModal} eventToEdit={eventToEdit} />
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

@@ -36,7 +36,7 @@ export default function SubscribersPage() {
 			<Card>
 				<CardHeader>
 					<CardTitle>
-						Total Subscribers: <span className="text-2xl font-bold text-brand bg-slate-100 px-2 py-1 rounded-full">{subscribers?.length}</span>
+						Total Subscribers: <span className="text-2xl font-bold text-brand bg-neutral-100 px-2 py-1 rounded-full">{subscribers?.length}</span>
 					</CardTitle>
 					<CardDescription>Manage and view your newsletter subscribers.</CardDescription>
 				</CardHeader>

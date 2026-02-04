@@ -17,12 +17,12 @@ export default function About() {
 					{/* Content with padding */}
 					<div className="grid grid-cols-1 md:grid-cols-2 justify-center items-center py-6 md:py-0">
 						<div className="px-6 py-4 md:px-12">
-							<h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 ">
+							<h2 className="text-3xl md:text-4xl font-bold mb-6 text-neutral-800 ">
 								{t("title").split(" ")[0]}
 								<span className="text-brand mt-1"> {t("title").split(" ").slice(1).join(" ")}</span>
 							</h2>
 
-							<div className="space-y-4 text-gray-700">
+							<div className="space-y-4 text-neutral-700">
 								<p className="text-lg">{t("description")}</p>
 							</div>
 

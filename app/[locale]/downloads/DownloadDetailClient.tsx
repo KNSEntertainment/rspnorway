@@ -67,7 +67,7 @@ export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Doc
 					)}
 				</div>
 				<h1 className="text-3xl font-bold mb-2">{doc.title}</h1>
-				<div className="flex items-center text-gray-500 mb-4">
+				<div className="flex items-center text-neutral-500 mb-4">
 					<Calendar size={18} className="mr-2" /> {doc.date}
 				</div>
 				<div className="flex gap-4 mb-4">
@@ -75,7 +75,7 @@ export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Doc
 						<Download size={20} /> Download
 					</button>
 					{isPdf && (
-						<button type="button" className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-brand rounded-lg font-semibold hover:bg-gray-300 transition-colors" onClick={() => setShowPreview((v) => !v)} aria-label={showPreview ? "Hide PDF preview" : "Show PDF preview"}>
+						<button type="button" className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-200 text-brand rounded-lg font-semibold hover:bg-neutral-300 transition-colors" onClick={() => setShowPreview((v) => !v)} aria-label={showPreview ? "Hide PDF preview" : "Show PDF preview"}>
 							<Eye size={20} /> {showPreview ? "Hide Preview" : "Preview"}
 						</button>
 					)}
@@ -102,8 +102,8 @@ export default function DownloadDetailClient({ doc, otherDownloads }: { doc: Doc
 								)}
 								<div className="flex-1 min-w-0">
 									<a href={`/${locale}/downloads/${item.id}`} className="block min-w-0">
-										<div className="font-semibold text-gray-900 truncate">{item.title}</div>
-										<div className="text-xs text-gray-500 truncate">{item.date}</div>
+										<div className="font-semibold text-neutral-900 truncate">{item.title}</div>
+										<div className="text-xs text-neutral-500 truncate">{item.date}</div>
 									</a>
 								</div>
 								<button type="button" className="p-1 rounded hover:bg-blue-100 focus:outline-none" title="Download" onClick={() => handleDownload(item.fileUrl, item.title)}>

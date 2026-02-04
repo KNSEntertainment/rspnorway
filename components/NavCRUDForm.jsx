@@ -146,7 +146,7 @@ export default function NavCRUDForm() {
 				{form.hasHref && (
 					<div className="flex flex-col gap-1">
 						<input name="href" value={form.href} onChange={handleChange} placeholder="Href" className="border p-1 mr-2" required={form.hasHref} />
-						<span className="text-xs text-gray-500">
+						<span className="text-xs text-neutral-500">
 							For homepage, use <b>/</b> as href.
 						</span>
 						{hrefError && <span className="text-xs text-red-500">{hrefError}</span>}
@@ -165,11 +165,11 @@ export default function NavCRUDForm() {
 					</div>
 				))}
 				<div className="mt-2">
-					<button type="submit" className="bg-green-500 text-white px-3 py-1 rounded mr-2">
+					<button type="submit" className="bg-success-500 text-white px-3 py-1 rounded mr-2">
 						{editingId ? "Update" : "Add"}
 					</button>
 					{editingId && (
-						<button type="button" onClick={handleCancel} className="bg-gray-300 px-3 py-1 rounded">
+						<button type="button" onClick={handleCancel} className="bg-neutral-300 px-3 py-1 rounded">
 							Cancel
 						</button>
 					)}

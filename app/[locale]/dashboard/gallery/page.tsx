@@ -45,7 +45,7 @@ export default function Page() {
 
 	const handleEdit = (item: GalleryItem) => {
 		setGalleryToEdit(item);
-		setOpenModal(true);
+		setOpenModal(!openModal);
 	};
 
 	const handleDelete = async (id: string) => {
@@ -84,7 +84,16 @@ export default function Page() {
 				</button>
 			</div>
 
-			{error && <div className="mb-4 p-4 bg-red-100 text-red-700 rounded text-center font-semibold">{error}</div>}
+			{error && <div className="mb-4 p-4 bg-error-100 text-error-700 rounded text-center font-semibold">{error}</div>}
+
+			{/* Inline Form Section */}
+			{openModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{galleryToEdit ? "Edit Gallery Item" : "Add New Gallery Item"}</h2>
+					<GalleryForm handleCloseGalleryModal={handleCloseGalleryModal} galleryToEdit={galleryToEdit} />
+				</div>
+			)}
+
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 				{gallery.map((item) => (
 					<div key={item._id} className="bg-white rounded shadow p-3 flex flex-col gap-2">
@@ -105,14 +114,6 @@ export default function Page() {
 					</div>
 				))}
 			</div>
-
-			{openModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-					<div className="bg-white p-4 rounded shadow-lg w-full max-w-lg mx-2">
-						<GalleryForm handleCloseGalleryModal={handleCloseGalleryModal} galleryToEdit={galleryToEdit} />
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

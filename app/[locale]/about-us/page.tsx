@@ -40,19 +40,19 @@ export default function AboutUs() {
 						<div className="space-y-6">
 							<div className="group">
 								<div className="relative pl-6 border-l-4 border-brand/30 hover:border-brand transition-all duration-300">
-									<p className="text-gray-700 leading-relaxed text-base md:text-lg">{t("about_description_1")}</p>
+									<p className="text-neutral-700 leading-relaxed text-base md:text-lg">{t("about_description_1")}</p>
 								</div>
 							</div>
 
 							<div className="group">
 								<div className="relative pl-6 border-l-4 border-blue-500/30 hover:border-blue-500 transition-all duration-300">
-									<p className="text-gray-700 leading-relaxed text-base md:text-lg">{t("about_description_2")}</p>
+									<p className="text-neutral-700 leading-relaxed text-base md:text-lg">{t("about_description_2")}</p>
 								</div>
 							</div>
 
 							<div className="group">
 								<div className="relative pl-6 border-l-4 border-indigo-500/30 hover:border-indigo-500 transition-all duration-300">
-									<p className="text-gray-700 leading-relaxed text-base md:text-lg">{t("about_description_3")}</p>
+									<p className="text-neutral-700 leading-relaxed text-base md:text-lg">{t("about_description_3")}</p>
 								</div>
 							</div>
 						</div>
@@ -66,8 +66,8 @@ export default function AboutUs() {
 									</svg>
 								</div>
 								<div>
-									<p className="text-2xl font-bold text-gray-900">200+</p>
-									<p className="text-sm text-gray-600">Members</p>
+									<p className="text-2xl font-bold text-neutral-900">200+</p>
+									<p className="text-sm text-neutral-600">Members</p>
 								</div>
 							</div>
 							<div className="flex items-center gap-3">
@@ -77,8 +77,8 @@ export default function AboutUs() {
 									</svg>
 								</div>
 								<div>
-									<p className="text-2xl font-bold text-gray-900">6+</p>
-									<p className="text-sm text-gray-600">Months Active</p>
+									<p className="text-2xl font-bold text-neutral-900">6+</p>
+									<p className="text-sm text-neutral-600">Months Active</p>
 								</div>
 							</div>
 						</div>
@@ -118,8 +118,8 @@ export default function AboutUs() {
 										</svg>
 									</div>
 									<div>
-										<p className="text-xs font-semibold text-gray-900">Community</p>
-										<p className="text-xs text-gray-600">Driven</p>
+										<p className="text-xs font-semibold text-neutral-900">Community</p>
+										<p className="text-xs text-neutral-600">Driven</p>
 									</div>
 								</div>
 							</div>
@@ -135,8 +135,8 @@ export default function AboutUs() {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 							</svg>
 						</div>
-						<p className="text-2xl font-bold text-gray-900">500+</p>
-						<p className="text-sm text-gray-600">Members</p>
+						<p className="text-2xl font-bold text-neutral-900">500+</p>
+						<p className="text-sm text-neutral-600">Members</p>
 					</div>
 					<div className="text-center">
 						<div className="w-16 h-16 mx-auto rounded-full bg-blue-500/10 flex items-center justify-center mb-2">
@@ -144,8 +144,8 @@ export default function AboutUs() {
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
 						</div>
-						<p className="text-2xl font-bold text-gray-900">10+</p>
-						<p className="text-sm text-gray-600">Years Active</p>
+						<p className="text-2xl font-bold text-neutral-900">10+</p>
+						<p className="text-sm text-neutral-600">Years Active</p>
 					</div>
 				</div>
 			</div>

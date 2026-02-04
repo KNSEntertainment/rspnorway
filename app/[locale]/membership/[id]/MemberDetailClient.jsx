@@ -8,7 +8,7 @@ export default function MemberDetailClient({ member }) {
 	if (!member) {
 		return (
 			<div className="flex items-center justify-center w-full min-h-screen bg-red-50 mt-24">
-				<p className="text-lg text-red-600">Member not found.</p>
+				<p className="text-lg text-error-600">Member not found.</p>
 			</div>
 		);
 	}
@@ -19,7 +19,7 @@ export default function MemberDetailClient({ member }) {
 			approved: {
 				icon: CheckCircle,
 				label: "Approved",
-				className: "bg-green-100 text-green-800 border-green-300",
+				className: "bg-success-100 text-success-700 border-green-300",
 			},
 			pending: {
 				icon: Clock,
@@ -29,7 +29,7 @@ export default function MemberDetailClient({ member }) {
 			blocked: {
 				icon: XCircle,
 				label: "Blocked",
-				className: "bg-red-100 text-red-800 border-red-300",
+				className: "bg-error-100 text-red-800 border-red-300",
 			},
 		};
 
@@ -50,7 +50,7 @@ export default function MemberDetailClient({ member }) {
 			active: {
 				icon: Award,
 				label: "Active Member",
-				className: "bg-blue-100 text-blue-800 border-blue-300",
+				className: "bg-blue-100 text-info-700 border-blue-300",
 			},
 			general: {
 				icon: Users,
@@ -80,7 +80,7 @@ export default function MemberDetailClient({ member }) {
 						<div className="flex flex-col md:flex-row items-center md:items-start gap-6 -mt-16 md:-mt-20">
 							{/* Profile Photo */}
 							<div className="relative">
-								<div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-gray-200">
+								<div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-neutral-200">
 									{member.profilePhoto ? (
 										<Image src={member.profilePhoto} alt={member.fullName} width={160} height={160} className="w-full h-full object-cover" />
 									) : (
@@ -93,8 +93,8 @@ export default function MemberDetailClient({ member }) {
 
 							{/* Name and Status */}
 							<div className="flex-1 text-center md:text-left mt-4 md:mt-8">
-								<h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{member.fullName}</h1>
-								<p className="text-lg text-gray-600 mb-4">{member.profession || "RSP Norway Member"}</p>
+								<h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-2">{member.fullName}</h1>
+								<p className="text-lg text-neutral-600 mb-4">{member.profession || "RSP Norway Member"}</p>
 								<div className="flex flex-wrap gap-3 justify-center md:justify-start">
 									{getStatusBadge(member.membershipStatus)}
 									{getMembershipTypeBadge(member.membershipType)}
@@ -123,38 +123,38 @@ export default function MemberDetailClient({ member }) {
 					{/* Contact Information */}
 					<Card className="shadow-md hover:shadow-lg transition-shadow">
 						<CardContent className="p-6">
-							<h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+							<h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
 								<Mail className="text-brand" size={24} />
 								Contact Information
 							</h2>
 							<div className="space-y-4">
 								<div className="flex items-start gap-3">
-									<Mail className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+									<Mail className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 									<div>
-										<p className="text-sm text-gray-600">Email</p>
+										<p className="text-sm text-neutral-600">Email</p>
 										<a href={`mailto:${member.email}`} className="text-brand hover:underline font-medium">
 											{member.email}
 										</a>
 									</div>
 								</div>
 								<div className="flex items-start gap-3">
-									<Phone className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+									<Phone className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 									<div>
-										<p className="text-sm text-gray-600">Phone</p>
-										<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand font-medium">
+										<p className="text-sm text-neutral-600">Phone</p>
+										<a href={`tel:${member.phone}`} className="text-neutral-900 hover:text-brand font-medium">
 											{member.phone}
 										</a>
 									</div>
 								</div>
 								<div className="flex items-start gap-3">
-									<MapPin className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+									<MapPin className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 									<div>
-										<p className="text-sm text-gray-600">Address</p>
-										<p className="text-gray-900 font-medium">{member.address}</p>
-										<p className="text-gray-700">
+										<p className="text-sm text-neutral-600">Address</p>
+										<p className="text-neutral-900 font-medium">{member.address}</p>
+										<p className="text-neutral-700">
 											{member.city}, {member.postalCode}
 										</p>
-										{member.province && <p className="text-gray-700">{member.province}</p>}
+										{member.province && <p className="text-neutral-700">{member.province}</p>}
 									</div>
 								</div>
 							</div>
@@ -164,40 +164,40 @@ export default function MemberDetailClient({ member }) {
 					{/* Personal Information */}
 					<Card className="shadow-md hover:shadow-lg transition-shadow">
 						<CardContent className="p-6">
-							<h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+							<h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
 								<User className="text-brand" size={24} />
 								Personal Information
 							</h2>
 							<div className="space-y-4">
 								<div className="flex items-start gap-3">
-									<Calendar className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+									<Calendar className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 									<div>
-										<p className="text-sm text-gray-600">Date of Birth</p>
-										<p className="text-gray-900 font-medium">{member.dateOfBirth}</p>
+										<p className="text-sm text-neutral-600">Date of Birth</p>
+										<p className="text-neutral-900 font-medium">{member.dateOfBirth}</p>
 									</div>
 								</div>
 								<div className="flex items-start gap-3">
-									<User className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+									<User className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 									<div>
-										<p className="text-sm text-gray-600">Gender</p>
-										<p className="text-gray-900 font-medium capitalize">{member.gender}</p>
+										<p className="text-sm text-neutral-600">Gender</p>
+										<p className="text-neutral-900 font-medium capitalize">{member.gender}</p>
 									</div>
 								</div>
 								{member.district && (
 									<div className="flex items-start gap-3">
-										<MapPin className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+										<MapPin className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 										<div>
-											<p className="text-sm text-gray-600">District</p>
-											<p className="text-gray-900 font-medium">{member.district}</p>
+											<p className="text-sm text-neutral-600">District</p>
+											<p className="text-neutral-900 font-medium">{member.district}</p>
 										</div>
 									</div>
 								)}
 								{member.profession && (
 									<div className="flex items-start gap-3">
-										<Briefcase className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+										<Briefcase className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 										<div>
-											<p className="text-sm text-gray-600">Profession</p>
-											<p className="text-gray-900 font-medium">{member.profession}</p>
+											<p className="text-sm text-neutral-600">Profession</p>
+											<p className="text-neutral-900 font-medium">{member.profession}</p>
 										</div>
 									</div>
 								)}
@@ -209,26 +209,26 @@ export default function MemberDetailClient({ member }) {
 					{(member.nationalMembershipNo || member.skills) && (
 						<Card className="shadow-md hover:shadow-lg transition-shadow">
 							<CardContent className="p-6">
-								<h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+								<h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
 									<IdCard className="text-brand" size={24} />
 									Membership Details
 								</h2>
 								<div className="space-y-4">
 									{member.nationalMembershipNo && (
 										<div className="flex items-start gap-3">
-											<IdCard className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+											<IdCard className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 											<div>
-												<p className="text-sm text-gray-600">National Membership No.</p>
-												<p className="text-gray-900 font-mono font-bold text-lg">{member.nationalMembershipNo}</p>
+												<p className="text-sm text-neutral-600">National Membership No.</p>
+												<p className="text-neutral-900 font-mono font-bold text-lg">{member.nationalMembershipNo}</p>
 											</div>
 										</div>
 									)}
 									{member.skills && (
 										<div className="flex items-start gap-3">
-											<Award className="text-gray-500 mt-1 flex-shrink-0" size={20} />
+											<Award className="text-neutral-500 mt-1 flex-shrink-0" size={20} />
 											<div>
-												<p className="text-sm text-gray-600">Skills</p>
-												<p className="text-gray-900 font-medium">{member.skills}</p>
+												<p className="text-sm text-neutral-600">Skills</p>
+												<p className="text-neutral-900 font-medium">{member.skills}</p>
 											</div>
 										</div>
 									)}
@@ -241,7 +241,7 @@ export default function MemberDetailClient({ member }) {
 					{member.volunteerInterest && member.volunteerInterest.length > 0 && (
 						<Card className="shadow-md hover:shadow-lg transition-shadow">
 							<CardContent className="p-6">
-								<h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+								<h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
 									<Heart className="text-brand" size={24} />
 									Volunteer Interests
 								</h2>

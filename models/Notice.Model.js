@@ -8,10 +8,14 @@ const NoticeSchema = new mongoose.Schema(
 			trim: true,
 		},
 		noticedate: {
+			type: Date,
+			required: false,
+			default: () => new Date(),
+		},
+		noticetime: {
 			type: String,
 			required: false,
 			trim: true,
-			default: () => new Date().toISOString(),
 		},
 		notice: {
 			type: String,

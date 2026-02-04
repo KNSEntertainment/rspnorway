@@ -124,7 +124,7 @@ const VideoGallery: React.FC = () => {
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
 			</div>
 		);
 	}
@@ -188,7 +188,7 @@ const VideoGallery: React.FC = () => {
 
 				<header className="text-center mb-12">
 					<SectionHeader heading={t("video_title")} />
-					<p className="text-slate-600 mt-4 text-lg max-w-2xl mx-auto">{t("video_description")}</p>
+					<p className="text-neutral-600 mt-4 text-lg max-w-2xl mx-auto">{t("video_description")}</p>
 				</header>
 
 				{/* Video Grid */}

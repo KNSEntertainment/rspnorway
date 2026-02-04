@@ -77,10 +77,10 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 					<h2 className="text-3xl font-bold text-center mb-6">{t.blogs_title}</h2>
 					{/* Navigation Arrows - Positioned absolutely at top right */}
 					<div className="hidden absolute top-6 right-0 md:flex gap-2">
-						<button onClick={() => scroll("left")} disabled={!canScrollLeft} className={`p-2 rounded-full shadow-md transition-all duration-200 ${canScrollLeft ? "bg-white hover:bg-brand hover:text-white text-gray-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`} aria-label="Scroll left">
+						<button onClick={() => scroll("left")} disabled={!canScrollLeft} className={`p-2 rounded-full shadow-md transition-all duration-200 ${canScrollLeft ? "bg-white hover:bg-brand hover:text-white text-neutral-700 cursor-pointer" : "bg-neutral-200 text-neutral-400 cursor-not-allowed"}`} aria-label="Scroll left">
 							<ChevronLeft className="w-5 h-5" />
 						</button>
-						<button onClick={() => scroll("right")} disabled={!canScrollRight} className={`p-2 rounded-full shadow-md transition-all duration-200 ${canScrollRight ? "bg-white hover:bg-brand hover:text-white text-gray-700 cursor-pointer" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`} aria-label="Scroll right">
+						<button onClick={() => scroll("right")} disabled={!canScrollRight} className={`p-2 rounded-full shadow-md transition-all duration-200 ${canScrollRight ? "bg-white hover:bg-brand hover:text-white text-neutral-700 cursor-pointer" : "bg-neutral-200 text-neutral-400 cursor-not-allowed"}`} aria-label="Scroll right">
 							<ChevronRight className="w-5 h-5" />
 						</button>
 					</div>
@@ -112,7 +112,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 									</div>
 									{/* Text: right on mobile, below on md+ */}
 									<div className="flex flex-col justify-center p-6 space-y-2 w-full">
-										<div className="flex items-center text-gray-500">
+										<div className="flex items-center text-neutral-500">
 											<Calendar className="w-4 h-4 mr-2" />
 											<span className="text-sm font-medium">{blog?.blogDate}</span>
 										</div>

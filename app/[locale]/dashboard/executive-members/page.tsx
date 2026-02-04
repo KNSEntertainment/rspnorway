@@ -40,7 +40,7 @@ export default function ExecutiveMembersAdmin() {
 
 	const handleAddMember = () => {
 		setMemberToEdit(null);
-		setShowModal(true);
+		setShowModal(!showModal);
 	};
 
 	const handleEditMember = (member: Member) => {
@@ -82,33 +82,34 @@ export default function ExecutiveMembersAdmin() {
 		<div className="container mx-auto px-4 py-8">
 			<div className="flex justify-between items-center mb-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900">Executive Members</h1>
-					<p className="text-gray-600 mt-1">Manage organization leadership</p>
+					<h1 className="text-3xl font-bold text-neutral-900">Executive Members</h1>
+					<p className="text-neutral-600 mt-1">Manage organization leadership</p>
 				</div>
 				<Button onClick={handleAddMember} className="bg-brand hover:bg-brand/90">
-					<Plus className="w-4 h-4 mr-2" />
-					Add Member
+					{showModal ? (
+						"Cancel"
+					) : (
+						<>
+							<Plus className="w-4 h-4 mr-2" />
+							Add Member
+						</>
+					)}
 				</Button>
 			</div>
 
+			{/* Inline Form Section */}
 			{showModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-					<div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-						<div className="p-6 border-b border-gray-200">
-							<h2 className="text-2xl font-bold text-gray-900">{memberToEdit ? "Edit Member" : "Add New Member"}</h2>
-						</div>
-						<div className="p-6">
-							<ExecutiveMemberForm handleCloseModal={handleCloseModal} memberToEdit={memberToEdit as unknown as null} />
-						</div>
-					</div>
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{memberToEdit ? "Edit Member" : "Add New Member"}</h2>
+					<ExecutiveMemberForm handleCloseModal={handleCloseModal} memberToEdit={memberToEdit as unknown as null} />
 				</div>
 			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{members.map((member: Member) => (
 					<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-						<div className="aspect-square overflow-hidden bg-gray-100">
-							{member.imageUrl ? (
+						<div className="aspect-square overflow-hidden bg-neutral-100">
+							{member.imageUrl && !member.imageUrl.startsWith("data:") ? (
 								<Image src={member.imageUrl} alt={member.name} width={400} height={400} className="w-full h-full object-cover" />
 							) : (
 								<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand to-blue-600">
@@ -118,26 +119,26 @@ export default function ExecutiveMembersAdmin() {
 						</div>
 
 						<div className="p-6">
-							<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+							<h3 className="text-xl font-bold text-neutral-900 mb-1">{member.name}</h3>
 							{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
 
 							<div className="space-y-2 mb-4">
-								<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-600 hover:text-brand text-sm">
+								<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-neutral-600 hover:text-brand text-sm">
 									<Phone className="w-4 h-4" />
 									{member.phone}
 								</a>
-								<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-600 hover:text-brand text-sm break-all">
+								<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-neutral-600 hover:text-brand text-sm break-all">
 									<Mail className="w-4 h-4" />
 									{member.email}
 								</a>
 							</div>
 
-							<div className="flex gap-2 pt-4 border-t border-gray-100">
+							<div className="flex gap-2 pt-4 border-t border-neutral-100">
 								<Button variant="outline" size="sm" onClick={() => handleEditMember(member)} className="flex-1">
 									<Edit className="w-4 h-4 mr-1" />
 									Edit
 								</Button>
-								<Button variant="outline" size="sm" onClick={() => handleDeleteMember(member._id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+								<Button variant="outline" size="sm" onClick={() => handleDeleteMember(member._id)} className="text-error-600 hover:text-error-700 hover:bg-error-50">
 									<Trash2 className="w-4 h-4 mr-1" />
 									Delete
 								</Button>
@@ -149,7 +150,7 @@ export default function ExecutiveMembersAdmin() {
 
 			{members.length === 0 && (
 				<div className="text-center py-12">
-					<p className="text-gray-500 text-lg mb-4">No executive members added yet.</p>
+					<p className="text-neutral-500 text-lg mb-4">No executive members added yet.</p>
 					<Button onClick={handleAddMember} className="bg-brand hover:bg-brand/90">
 						<Plus className="w-4 h-4 mr-2" />
 						Add Your First Member

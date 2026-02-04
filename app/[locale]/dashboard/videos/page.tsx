@@ -72,7 +72,7 @@ export default function VideosPage() {
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
-				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
 			</div>
 		);
 	}
@@ -85,18 +85,27 @@ export default function VideosPage() {
 					className="bg-brand text-white px-6 py-2 rounded-lg font-semibold hover:bg-red-800 flex items-center gap-2"
 					onClick={() => {
 						setVideoToEdit(null);
-						setOpenModal(true);
+						setOpenModal(!openModal);
 					}}
 				>
 					<VideoIcon size={20} />
-					Upload Video
+					{openModal ? "Cancel" : "Upload Video"}
 				</button>
 			</div>
-			{error && <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">{error}</div>}
+			{error && <div className="mb-4 p-4 bg-error-100 border border-error-500 text-error-700 rounded">{error}</div>}
+
+			{/* Inline Form Section */}
+			{openModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-2xl font-bold text-neutral-900 mb-4">{videoToEdit ? "Edit Video" : "Upload New Video"}</h2>
+					<VideoForm videoToEdit={videoToEdit as unknown as undefined} onClose={handleCloseModal} />
+				</div>
+			)}
+
 			{videos.length === 0 ? (
-				<div className="text-center py-12 bg-gray-50 rounded-lg">
-					<VideoIcon size={64} className="mx-auto text-gray-400 mb-4" />
-					<p className="text-gray-600 text-lg mb-4">No videos uploaded yet</p>
+				<div className="text-center py-12 bg-neutral-50 rounded-lg">
+					<VideoIcon size={64} className="mx-auto text-neutral-400 mb-4" />
+					<p className="text-neutral-600 text-lg mb-4">No videos uploaded yet</p>
 					<button className="bg-brand text-white px-6 py-2 rounded-lg hover:bg-red-800" onClick={() => setOpenModal(true)}>
 						Upload Your First Video
 					</button>
@@ -106,7 +115,7 @@ export default function VideosPage() {
 					{videos.map((video) => (
 						<div key={video._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
 							{/* Video Thumbnail/Preview */}
-							<div className="relative aspect-video bg-gray-900">
+							<div className="relative aspect-video bg-neutral-900">
 								{video.thumbnail ? <Image src={video.thumbnail} alt={video.title} width={400} height={225} className="w-full h-full object-cover" /> : <video src={video.url} className="w-full h-full object-cover" />}
 								{video.duration && <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded">{video.duration}</div>}
 							</div>
@@ -116,20 +125,20 @@ export default function VideosPage() {
 								<div className="flex items-start justify-between mb-2">
 									<div className="flex-1">
 										<h3 className="font-bold text-lg mb-1">{video.title}</h3>
-										<p className="text-sm text-gray-600">{video.category}</p>
-										{video.creator && <p className="text-xs text-gray-500 mt-1">by {video.creator}</p>}
+										<p className="text-sm text-neutral-600">{video.category}</p>
+										{video.creator && <p className="text-xs text-neutral-500 mt-1">by {video.creator}</p>}
 									</div>
 								</div>
 
-								{video.description && <p className="text-sm text-gray-600 mb-3 line-clamp-2">{video.description}</p>}
+								{video.description && <p className="text-sm text-neutral-600 mb-3 line-clamp-2">{video.description}</p>}
 
 								<div className="flex justify-between items-center pt-3 border-t">
-									<span className="text-xs text-gray-400">{new Date(video.createdAt).toLocaleDateString()}</span>
+									<span className="text-xs text-neutral-400">{new Date(video.createdAt).toLocaleDateString()}</span>
 									<div className="flex gap-2">
-										<button onClick={() => handleEdit(video)} className="p-2 text-blue-600 hover:bg-blue-50 rounded transition" title="Edit">
+										<button onClick={() => handleEdit(video)} className="p-2 text-info-600 hover:bg-info-50 rounded transition" title="Edit">
 											<Edit size={18} />
 										</button>
-										<button onClick={() => handleDelete(video._id)} className="p-2 text-red-600 hover:bg-red-50 rounded transition" title="Delete">
+										<button onClick={() => handleDelete(video._id)} className="p-2 text-error-600 hover:bg-error-50 rounded transition" title="Delete">
 											<Trash2 size={18} />
 										</button>
 									</div>
@@ -139,7 +148,6 @@ export default function VideosPage() {
 					))}
 				</div>
 			)}
-			{openModal && <VideoForm videoToEdit={videoToEdit as unknown as undefined} onClose={handleCloseModal} />}{" "}
 		</div>
 	);
 }

@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, BookOpen, Image as ImageIcon } from "lucide-react";
+import { Calendar, BookOpen, Image as ImageIcon, FileText, Download as DownloadIcon, Video as VideoIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -32,6 +32,10 @@ export default function SearchResultCard({ item, query }) {
 		Event: <Calendar className="w-5 h-5 text-green-500" />,
 		Gallery: <ImageIcon className="w-5 h-5 text-pink-500" />,
 		Notice: <BookOpen className="w-5 h-5 text-orange-500" />,
+		Blog: <BookOpen className="w-5 h-5 text-blue-500" />,
+		Circular: <FileText className="w-5 h-5 text-purple-500" />,
+		Download: <DownloadIcon className="w-5 h-5 text-teal-500" />,
+		Video: <VideoIcon className="w-5 h-5 text-red-500" />,
 		Page: <BookOpen className="w-5 h-5 text-cyan-500" />,
 	}[item.type];
 
@@ -39,7 +43,7 @@ export default function SearchResultCard({ item, query }) {
 		<div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col h-full">
 			<div className="flex items-center gap-2 px-4 pt-4">
 				{typeIcon}
-				<span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{item.type}</span>
+				<span className="text-xs font-semibold uppercase tracking-wide text-neutral-500">{item.type}</span>
 			</div>
 			{isValidImageUrl(item.image) && (
 				<div className="relative h-72 w-full mt-2">
@@ -47,10 +51,10 @@ export default function SearchResultCard({ item, query }) {
 				</div>
 			)}
 			<div className="p-4 flex-1 flex flex-col">
-				<h3 className="font-bold text-lg text-gray-900 mb-1 line-clamp-2">{highlight(item.title, query)}</h3>
-				{item.description && <p className="text-gray-600 text-sm line-clamp-3 mb-2">{highlight(item.description.replace(/<[^>]*>/g, ""), query)}</p>}
-				{item.meta && <p className="text-xs text-gray-500 mb-1">{item.meta}</p>}
-				{item.date && <p className="text-xs text-gray-400">{new Date(item.date).toLocaleDateString()}</p>}
+				<h3 className="font-bold text-lg text-neutral-900 mb-1 line-clamp-2">{highlight(item.title, query)}</h3>
+				{item.description && <p className="text-neutral-600 text-sm line-clamp-3 mb-2">{highlight(item.description.replace(/<[^>]*>/g, ""), query)}</p>}
+				{item.meta && <p className="text-xs text-neutral-500 mb-1">{item.meta}</p>}
+				{item.date && <p className="text-xs text-neutral-400">{new Date(item.date).toLocaleDateString()}</p>}
 				{item.url && <span className="mt-2 inline-block text-brand font-semibold text-sm hover:underline">{t("viewDetails")}</span>}
 			</div>
 		</div>

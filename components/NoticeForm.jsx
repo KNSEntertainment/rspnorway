@@ -5,6 +5,7 @@ export default function NoticeForm({ handleCloseNoticeModal, noticeToEdit = null
 	const [formData, setFormData] = useState({
 		noticetitle: "",
 		noticedate: "",
+		noticetime: "",
 		notice: "",
 		noticeimage: null,
 		createdBy: "Admin",
@@ -14,8 +15,16 @@ export default function NoticeForm({ handleCloseNoticeModal, noticeToEdit = null
 
 	useEffect(() => {
 		if (noticeToEdit) {
+			// Format date for input
+			let formattedDate = "";
+			if (noticeToEdit.noticedate) {
+				const date = new Date(noticeToEdit.noticedate);
+				formattedDate = date.toISOString().split("T")[0];
+			}
 			setFormData({
 				...noticeToEdit,
+				noticedate: formattedDate,
+				noticetime: noticeToEdit.noticetime || "",
 				noticeimage: null,
 			});
 		}
@@ -52,6 +61,7 @@ export default function NoticeForm({ handleCloseNoticeModal, noticeToEdit = null
 				setFormData({
 					noticetitle: "",
 					noticedate: "",
+					noticetime: "",
 					notice: "",
 					noticeimage: null,
 					createdBy: "Admin",
@@ -74,39 +84,54 @@ export default function NoticeForm({ handleCloseNoticeModal, noticeToEdit = null
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
-			{error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
-			<div>
-				<label htmlFor="noticetitle" className="block mb-2 font-bold">
-					Notice Title
-				</label>
-				<input type="text" id="noticetitle" value={formData.noticetitle} onChange={(e) => setFormData({ ...formData, noticetitle: e.target.value })} className="w-full p-2 border rounded" required />
+			{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					<label htmlFor="noticetitle" className="block mb-2 font-bold">
+						Notice Title
+					</label>
+					<input type="text" id="noticetitle" value={formData.noticetitle} onChange={(e) => setFormData({ ...formData, noticetitle: e.target.value })} className="w-full p-2 border rounded" required />
+				</div>
+				<div>
+					<label htmlFor="createdBy" className="block mb-2 font-bold">
+						Created By
+					</label>
+					<input type="text" id="createdBy" value={formData.createdBy} onChange={(e) => setFormData({ ...formData, createdBy: e.target.value })} className="w-full p-2 border rounded" required />
+				</div>
 			</div>
-			<div>
-				<label htmlFor="noticedate" className="block mb-2 font-bold">
-					Date{" "}
-				</label>
-				<input type="text" id="noticedate" value={formData.noticedate} onChange={(e) => setFormData({ ...formData, noticedate: e.target.value })} className="w-full p-2 border rounded" required />
+
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					<label htmlFor="noticedate" className="block mb-2 font-bold">
+						Date
+					</label>
+					<input type="date" id="noticedate" value={formData.noticedate} onChange={(e) => setFormData({ ...formData, noticedate: e.target.value })} className="w-full p-2 border rounded" required />
+				</div>
+				<div>
+					<label htmlFor="noticetime" className="block mb-2 font-bold">
+						Time (Optional)
+					</label>
+					<input type="time" id="noticetime" value={formData.noticetime} onChange={(e) => setFormData({ ...formData, noticetime: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
 			</div>
+
 			<div>
 				<label htmlFor="notice" className="block mb-2 font-bold">
 					Notice
 				</label>
-				<textarea id="notice" value={formData.notice} onChange={(e) => setFormData({ ...formData, notice: e.target.value })} className="w-full p-2 border rounded" rows="4" required></textarea>
+				<textarea id="notice" value={formData.notice} onChange={(e) => setFormData({ ...formData, notice: e.target.value })} className="w-full p-2 border rounded" rows="2" required></textarea>
 			</div>
+
 			<div>
 				<label htmlFor="noticeimage" className="block mb-2 font-bold">
 					Relevant Poster
 				</label>
 				<input type="file" id="noticeimage" onChange={(e) => setFormData({ ...formData, noticeimage: e.target.files[0] })} className="w-full p-2 border rounded" />
 			</div>
-			<div>
-				<label htmlFor="createdBy" className="block mb-2 font-bold">
-					Created By
-				</label>
-				<input type="text" id="createdBy" value={formData.createdBy} onChange={(e) => setFormData({ ...formData, createdBy: e.target.value })} className="w-full p-2 border rounded" required />
-			</div>
+
 			<div className="grid grid-cols-2 gap-2">
-				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-slate-200 font-bold`}>
+				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-neutral-200 font-bold`}>
 					{submitting ? `${noticeToEdit ? "Updating" : "Creating"} Notice...` : `${noticeToEdit ? "Update" : "Create"} Notice`}
 				</button>
 				<Button variant="outline" onClick={handleCloseNoticeModal}>

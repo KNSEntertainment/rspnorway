@@ -5,7 +5,7 @@ import Download from "@/models/Download.Model";
 export async function POST(request, context) {
 	try {
 		await connectDB();
-		const { id } = context.params;
+		const { id } = await context.params;
 		const updated = await Download.findByIdAndUpdate(id, { $inc: { downloadCount: 1 } }, { new: true });
 		if (!updated) {
 			return NextResponse.json({ success: false, error: "Download not found" }, { status: 404 });

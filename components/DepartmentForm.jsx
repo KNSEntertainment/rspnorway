@@ -90,17 +90,17 @@ export default function DepartmentForm({ handleCloseModal, departmentToEdit = nu
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
-			{error && <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">{error}</div>}
+			{error && <div className="p-3 bg-error-100 border border-error-500 text-error-700 rounded">{error}</div>}
 
 			<div>
-				<label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1">
 					Department Name *
 				</label>
-				<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
+				<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
 			</div>
 
 			<div>
-				<label className="block text-sm font-medium text-gray-700 mb-2">Subdepartments</label>
+				<label className="block text-sm font-medium text-neutral-700 mb-2">Subdepartments</label>
 				<div className="flex gap-2 mb-2">
 					<input
 						type="text"
@@ -113,7 +113,7 @@ export default function DepartmentForm({ handleCloseModal, departmentToEdit = nu
 							}
 						}}
 						placeholder="Enter subdepartment name"
-						className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
+						className="flex-1 px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand"
 					/>
 					<Button type="button" onClick={handleAddSubdepartment} className="bg-brand hover:bg-brand/90">
 						<Plus className="w-4 h-4" />
@@ -121,9 +121,9 @@ export default function DepartmentForm({ handleCloseModal, departmentToEdit = nu
 				</div>
 				<div className="space-y-2">
 					{formData.subdepartments.map((subdept, index) => (
-						<div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+						<div key={index} className="flex items-center justify-between bg-neutral-50 p-2 rounded">
 							<span className="text-sm">{subdept}</span>
-							<button type="button" onClick={() => handleRemoveSubdepartment(index)} className="text-red-500 hover:text-red-700">
+							<button type="button" onClick={() => handleRemoveSubdepartment(index)} className="text-red-500 hover:text-error-700">
 								<X className="w-4 h-4" />
 							</button>
 						</div>
@@ -132,15 +132,15 @@ export default function DepartmentForm({ handleCloseModal, departmentToEdit = nu
 			</div>
 
 			<div>
-				<label htmlFor="order" className="block text-sm font-medium text-gray-700 mb-1">
+				<label htmlFor="order" className="block text-sm font-medium text-neutral-700 mb-1">
 					Display Order
 				</label>
-				<input type="number" id="order" name="order" value={formData.order} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
+				<input type="number" id="order" name="order" value={formData.order} onChange={handleChange} className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
 			</div>
 
 			<div className="flex items-center">
-				<input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="w-4 h-4 text-brand border-gray-300 rounded focus:ring-brand" />
-				<label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
+				<input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="w-4 h-4 text-brand border-neutral-300 rounded focus:ring-brand" />
+				<label htmlFor="isActive" className="ml-2 text-sm text-neutral-700">
 					Active
 				</label>
 			</div>

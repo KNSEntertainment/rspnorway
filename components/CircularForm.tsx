@@ -151,119 +151,108 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 	};
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-			<div className="bg-white rounded-lg shadow-xl w-full max-w-4xl my-8 max-h-[90vh] flex flex-col">
-				<div className="flex items-center justify-between p-6 border-b flex-shrink-0">
-					<h2 className="text-2xl font-bold">{circular ? "Edit Circular" : "Add New Circular"}</h2>
-					<button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-						<X className="h-6 w-6" />
-					</button>
+		<form onSubmit={handleSubmit} className="space-y-6">
+			{/* English Fields */}
+			<div className="space-y-4 border-b pb-6">
+				<h3 className="text-lg font-semibold text-neutral-700">English</h3>
+				<div>
+					<Label htmlFor="title_en">Title (English) *</Label>
+					<Input id="title_en" required value={formData.circularTitle.en} onChange={(e) => handleInputChange("circularTitle", e.target.value, "en")} placeholder="Enter circular title in English" />
 				</div>
-
-				<form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
-					{/* English Fields */}
-					<div className="space-y-4 border-b pb-6">
-						<h3 className="text-lg font-semibold text-gray-700">English</h3>
-						<div>
-							<Label htmlFor="title_en">Title (English) *</Label>
-							<Input id="title_en" required value={formData.circularTitle.en} onChange={(e) => handleInputChange("circularTitle", e.target.value, "en")} placeholder="Enter circular title in English" />
-						</div>
-						<div>
-							<Label htmlFor="desc_en">Description (English)</Label>
-							<Textarea id="desc_en" rows={4} value={formData.circularDesc.en} onChange={(e) => handleInputChange("circularDesc", e.target.value, "en")} placeholder="Enter description in English" />
-						</div>
-						<div>
-							<Label htmlFor="author_en">Author (English)</Label>
-							<Input id="author_en" value={formData.circularAuthor.en} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "en")} placeholder="Enter author name in English" />
-						</div>
-					</div>
-
-					{/* Norwegian Fields */}
-					<div className="space-y-4 border-b pb-6">
-						<h3 className="text-lg font-semibold text-gray-700">Norwegian</h3>
-						<div>
-							<Label htmlFor="title_no">Title (Norwegian)</Label>
-							<Input id="title_no" value={formData.circularTitle.no} onChange={(e) => handleInputChange("circularTitle", e.target.value, "no")} placeholder="Enter circular title in Norwegian" />
-						</div>
-						<div>
-							<Label htmlFor="desc_no">Description (Norwegian)</Label>
-							<Textarea id="desc_no" rows={4} value={formData.circularDesc.no} onChange={(e) => handleInputChange("circularDesc", e.target.value, "no")} placeholder="Enter description in Norwegian" />
-						</div>
-						<div>
-							<Label htmlFor="author_no">Author (Norwegian)</Label>
-							<Input id="author_no" value={formData.circularAuthor.no} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "no")} placeholder="Enter author name in Norwegian" />
-						</div>
-					</div>
-
-					{/* Nepali Fields */}
-					<div className="space-y-4 border-b pb-6">
-						<h3 className="text-lg font-semibold text-gray-700">Nepali</h3>
-						<div>
-							<Label htmlFor="title_ne">Title (Nepali)</Label>
-							<Input id="title_ne" value={formData.circularTitle.ne} onChange={(e) => handleInputChange("circularTitle", e.target.value, "ne")} placeholder="Enter circular title in Nepali" />
-						</div>
-						<div>
-							<Label htmlFor="desc_ne">Description (Nepali)</Label>
-							<Textarea id="desc_ne" rows={4} value={formData.circularDesc.ne} onChange={(e) => handleInputChange("circularDesc", e.target.value, "ne")} placeholder="Enter description in Nepali" />
-						</div>
-						<div>
-							<Label htmlFor="author_ne">Author (Nepali)</Label>
-							<Input id="author_ne" value={formData.circularAuthor.ne} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "ne")} placeholder="Enter author name in Nepali" />
-						</div>
-					</div>
-
-					{/* Publication Settings */}
-					<div className="space-y-4 border-b pb-6">
-						<h3 className="text-lg font-semibold text-gray-700">Publication Settings</h3>
-						<div className="grid grid-cols-2 gap-4">
-							<div>
-								<Label htmlFor="status">Publication Status *</Label>
-								<Select value={formData.publicationStatus} onValueChange={(value) => handleInputChange("publicationStatus", value)}>
-									<SelectTrigger>
-										<SelectValue placeholder="Select status" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="draft">Draft</SelectItem>
-										<SelectItem value="published">Published</SelectItem>
-										<SelectItem value="archived">Archived</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-							<div>
-								<Label htmlFor="publishedAt">Published Date</Label>
-								<Input id="publishedAt" type="date" value={formData.circularPublishedAt} onChange={(e) => handleInputChange("circularPublishedAt", e.target.value)} />
-							</div>
-						</div>
-					</div>
-
-					{/* Images */}
-					<div className="space-y-4">
-						<h3 className="text-lg font-semibold text-gray-700">Images</h3>
-						<div className="grid grid-cols-2 gap-4">
-							<div>
-								<Label htmlFor="mainImage">Main Picture</Label>
-								<Input id="mainImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "main")} />
-								{mainImagePreview && <Image src={mainImagePreview} alt="Main preview" className="mt-2 w-full h-40 object-cover rounded" />}
-							</div>
-							<div>
-								<Label htmlFor="secondImage">Second Picture</Label>
-								<Input id="secondImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "second")} />
-								{secondImagePreview && <Image src={secondImagePreview} alt="Second preview" className="mt-2 w-full h-40 object-cover rounded" />}
-							</div>
-						</div>
-					</div>
-
-					{/* Actions */}
-					<div className="flex justify-end gap-3 pt-4 border-t">
-						<Button type="button" variant="outline" onClick={onClose} disabled={loading}>
-							Cancel
-						</Button>
-						<Button type="submit" disabled={loading}>
-							{loading ? "Saving..." : circular ? "Update Circular" : "Create Circular"}
-						</Button>
-					</div>
-				</form>
+				<div>
+					<Label htmlFor="desc_en">Description (English)</Label>
+					<Textarea id="desc_en" rows={4} value={formData.circularDesc.en} onChange={(e) => handleInputChange("circularDesc", e.target.value, "en")} placeholder="Enter description in English" />
+				</div>
+				<div>
+					<Label htmlFor="author_en">Author (English)</Label>
+					<Input id="author_en" value={formData.circularAuthor.en} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "en")} placeholder="Enter author name in English" />
+				</div>
 			</div>
-		</div>
+
+			{/* Norwegian Fields */}
+			<div className="space-y-4 border-b pb-6">
+				<h3 className="text-lg font-semibold text-neutral-700">Norwegian</h3>
+				<div>
+					<Label htmlFor="title_no">Title (Norwegian)</Label>
+					<Input id="title_no" value={formData.circularTitle.no} onChange={(e) => handleInputChange("circularTitle", e.target.value, "no")} placeholder="Enter circular title in Norwegian" />
+				</div>
+				<div>
+					<Label htmlFor="desc_no">Description (Norwegian)</Label>
+					<Textarea id="desc_no" rows={4} value={formData.circularDesc.no} onChange={(e) => handleInputChange("circularDesc", e.target.value, "no")} placeholder="Enter description in Norwegian" />
+				</div>
+				<div>
+					<Label htmlFor="author_no">Author (Norwegian)</Label>
+					<Input id="author_no" value={formData.circularAuthor.no} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "no")} placeholder="Enter author name in Norwegian" />
+				</div>
+			</div>
+
+			{/* Nepali Fields */}
+			<div className="space-y-4 border-b pb-6">
+				<h3 className="text-lg font-semibold text-neutral-700">Nepali</h3>
+				<div>
+					<Label htmlFor="title_ne">Title (Nepali)</Label>
+					<Input id="title_ne" value={formData.circularTitle.ne} onChange={(e) => handleInputChange("circularTitle", e.target.value, "ne")} placeholder="Enter circular title in Nepali" />
+				</div>
+				<div>
+					<Label htmlFor="desc_ne">Description (Nepali)</Label>
+					<Textarea id="desc_ne" rows={4} value={formData.circularDesc.ne} onChange={(e) => handleInputChange("circularDesc", e.target.value, "ne")} placeholder="Enter description in Nepali" />
+				</div>
+				<div>
+					<Label htmlFor="author_ne">Author (Nepali)</Label>
+					<Input id="author_ne" value={formData.circularAuthor.ne} onChange={(e) => handleInputChange("circularAuthor", e.target.value, "ne")} placeholder="Enter author name in Nepali" />
+				</div>
+			</div>
+
+			{/* Publication Settings */}
+			<div className="space-y-4 border-b pb-6">
+				<h3 className="text-lg font-semibold text-neutral-700">Publication Settings</h3>
+				<div className="grid grid-cols-2 gap-4">
+					<div>
+						<Label htmlFor="status">Publication Status *</Label>
+						<Select value={formData.publicationStatus} onValueChange={(value) => handleInputChange("publicationStatus", value)}>
+							<SelectTrigger>
+								<SelectValue placeholder="Select status" />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value="draft">Draft</SelectItem>
+								<SelectItem value="published">Published</SelectItem>
+								<SelectItem value="archived">Archived</SelectItem>
+							</SelectContent>
+						</Select>
+					</div>
+					<div>
+						<Label htmlFor="publishedAt">Published Date</Label>
+						<Input id="publishedAt" type="date" value={formData.circularPublishedAt} onChange={(e) => handleInputChange("circularPublishedAt", e.target.value)} />
+					</div>
+				</div>
+			</div>
+
+			{/* Images */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-semibold text-neutral-700">Images</h3>
+				<div className="grid grid-cols-2 gap-4">
+					<div>
+						<Label htmlFor="mainImage">Main Picture</Label>
+						<Input id="mainImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "main")} />
+						{mainImagePreview && <Image src={mainImagePreview} alt="Main preview" width={400} height={160} className="mt-2 w-full h-40 object-cover rounded" />}
+					</div>
+					<div>
+						<Label htmlFor="secondImage">Second Picture</Label>
+						<Input id="secondImage" type="file" accept="image/*" onChange={(e) => handleImageChange(e, "second")} />
+						{secondImagePreview && <Image src={secondImagePreview} alt="Second preview" width={400} height={160} className="mt-2 w-full h-40 object-cover rounded" />}
+					</div>
+				</div>
+			</div>
+
+			{/* Actions */}
+			<div className="flex justify-end gap-3 pt-4 border-t">
+				<Button type="button" variant="outline" onClick={onClose} disabled={loading}>
+					Cancel
+				</Button>
+				<Button type="submit" disabled={loading}>
+					{loading ? "Saving..." : circular ? "Update Circular" : "Create Circular"}
+				</Button>
+			</div>
+		</form>
 	);
 }

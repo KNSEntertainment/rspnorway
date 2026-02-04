@@ -57,10 +57,10 @@ export default function EventsPage() {
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(message._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+												<Trash2 className="w-6 h-6 text-error-700" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleReplyEmail(message.email)}>
-												<MessageCircleReply className="w-6 h-6 text-blue-700" />
+												<MessageCircleReply className="w-6 h-6 text-info-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -68,7 +68,7 @@ export default function EventsPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={5} className="text-left text-red-600">
+								<TableCell colSpan={5} className="text-left text-error-600">
 									No messages have been received yet via contact form.
 								</TableCell>
 							</TableRow>

@@ -42,15 +42,24 @@ export default function DashboardBlogClient({ blogs }) {
 
 	const handleCreateBlog = () => {
 		setBlogToEdit(null);
-		setOpenBlogModal(true);
+		setOpenBlogModal(!openBlogModal);
 	};
 	return (
 		<div className="max-w-6xl">
-			<div className="text-right">
-				<button onClick={handleCreateBlog} className="bg-brand text-slate-200 font-bold px-4 py-2">
-					Create Blog
+			<div className="flex justify-between items-center mb-4">
+				<h1 className="text-2xl font-bold">Manage Blogs</h1>
+				<button onClick={handleCreateBlog} className="bg-brand text-neutral-200 font-bold px-4 py-2 rounded hover:bg-red-700 transition-colors">
+					{openBlogModal ? "Cancel" : "Create Blog"}
 				</button>
 			</div>
+
+			{/* Inline Form Section */}
+			{openBlogModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-lg font-bold text-white bg-brand p-4 mb-4 text-center rounded">{blogToEdit ? "Edit Blog" : "Create Blog"}</h2>
+					<BlogForm handleCloseBlogModal={handleCloseBlogModal} fetchBlogs={blogs} blogToEdit={blogToEdit} />
+				</div>
+			)}
 			<div className="bg-white rounded-lg shadow">
 				<Table>
 					<TableHeader>
@@ -82,10 +91,10 @@ export default function DashboardBlogClient({ blogs }) {
 									<TableCell className="w-32">
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(blog)}>
-												<Pencil className="w-6 h-6 text-blue-700" />
+												<Pencil className="w-6 h-6 text-info-700" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(blog._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+												<Trash2 className="w-6 h-6 text-error-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -101,14 +110,6 @@ export default function DashboardBlogClient({ blogs }) {
 					</TableBody>
 				</Table>
 			</div>
-			{openBlogModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-[600px]">
-						<h2 className="text-lg font-bold text-slate-200 bg-brand p-4 mb-6 text-center">{blogToEdit ? "Edit Blog" : "Create Blog"}</h2>
-						<BlogForm handleCloseBlogModal={handleCloseBlogModal} fetchBlogs={blogs} blogToEdit={blogToEdit} />
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

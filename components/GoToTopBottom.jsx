@@ -24,7 +24,7 @@ const GoToTopButton = () => {
 	return (
 		<>
 			{isVisible && (
-				<button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white text-red-700 shadow-lg hover:bg-seekblue focus:outline-none focus:ring-2 focus:ring-seekblue focus:ring-offset-2">
+				<button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white text-error-700 shadow-lg hover:bg-seekblue focus:outline-none focus:ring-2 focus:ring-seekblue focus:ring-offset-2">
 					<ChevronUp size={20} />
 				</button>
 			)}

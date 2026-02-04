@@ -116,13 +116,13 @@ const PhotoGallery = () => {
 		<div>
 			{loading ? (
 				<div className="flex justify-center items-center min-h-screen">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
 				</div>
 			) : (
 				<div>
 					<header className="text-center mb-12">
 						<SectionHeader heading={t("title")} />
-						<p className="text-slate-600 mt-4 text-lg max-w-2xl mx-auto">{t("description")}</p>
+						<p className="text-neutral-600 mt-4 text-lg max-w-2xl mx-auto">{t("description")}</p>
 					</header>
 
 					{/* Masonry Grid */}
@@ -428,6 +428,8 @@ const PhotoGallery = () => {
 						<Image
 							src={`${selectedPhoto.url}?w=1200&q=90`}
 							alt={selectedPhoto.title}
+							width={1200}
+							height={800}
 							style={{
 								maxWidth: "70%",
 								maxHeight: "90vh",

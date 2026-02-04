@@ -19,11 +19,11 @@ export default function BlogPageClient({ blogData, blogsData }) {
 				<div className="flex gap-12 justify-center  md:mt-4">
 					<div className="flex gap-2">
 						<NotebookPen className=" mt-4 text-brand" />
-						<p className="mt-4 md:text-lg text-gray-700 max-w-3xl">{blog.blogAuthor ? blog.blogAuthor : "राष्ट्रिय स्वतन्त्र पार्टी"}</p>
+						<p className="mt-4 md:text-lg text-neutral-700 max-w-3xl">{blog.blogAuthor ? blog.blogAuthor : "राष्ट्रिय स्वतन्त्र पार्टी"}</p>
 					</div>
 					<div className="flex gap-2">
 						<Calendar className="mt-4 text-brand" />
-						<p className="mt-4 md:text-lg text-gray-700">{new Date(blog.createdAt).toISOString().slice(0, 10)}</p>
+						<p className="mt-4 md:text-lg text-neutral-700">{new Date(blog.createdAt).toISOString().slice(0, 10)}</p>
 					</div>
 				</div>
 				{/* Main Image */}
@@ -32,7 +32,7 @@ export default function BlogPageClient({ blogData, blogsData }) {
 				</div>
 				{/* Blog Content */}
 				<div className="mt-8">
-					<div className="text-md md:text-lg text-gray-700 leading-relaxed mt-6 mb-2 md:mb-6" dangerouslySetInnerHTML={{ __html: blog.blogDesc }} />
+					<div className="text-md md:text-lg text-neutral-700 leading-relaxed mt-6 mb-2 md:mb-6" dangerouslySetInnerHTML={{ __html: blog.blogDesc }} />
 					{blog.blogSecondPicture && (
 						<div className="mt-6">
 							<Image src={blog.blogSecondPicture} alt={blog?.blogTitle || "Blog Image"} width={900} height={500} className="w-full rounded-lg shadow-md" />

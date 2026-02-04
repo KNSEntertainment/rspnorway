@@ -46,17 +46,28 @@ export default function NoticesPage() {
 
 	const handleCreateNotice = () => {
 		setNoticeToEdit(null);
-		setOpenNoticeModal(true);
+		setOpenNoticeModal(!openNoticeModal);
 	};
 
 	return (
-		<div className="max-w-4xl">
-			<div className="text-right">
-				<button onClick={handleCreateNotice} className="bg-red-800 text-slate-200 font-bold px-4 py-2 my-4">
-					Create Notice
+		<div className="max-w-6xl">
+			<div className="flex justify-between items-center mb-4">
+				<h1 className="text-2xl font-bold">Manage Notices</h1>
+				<button onClick={handleCreateNotice} className="bg-red-800 text-neutral-200 font-bold px-4 py-2 rounded hover:bg-brand transition-colors">
+					{openNoticeModal ? "Cancel" : "Create Notice"}
 				</button>
 			</div>
-			<div className=" bg-white rounded-lg shadow">
+
+			{/* Inline Form Section */}
+			{openNoticeModal && (
+				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+					<h2 className="text-lg font-bold text-white bg-brand p-4 mb-4 text-center rounded">{noticeToEdit ? "Edit Notice" : "Create Notice"}</h2>
+					<NoticeForm handleCloseNoticeModal={handleCloseNoticeModal} noticeToEdit={noticeToEdit} fetchNotices={notices} />
+				</div>
+			)}
+
+			{/* Table Section */}
+			<div className="bg-white rounded-lg shadow">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -80,10 +91,10 @@ export default function NoticesPage() {
 									<TableCell>
 										<div className="flex space-x-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(notice)}>
-												<Pencil className="w-6 h-6 text-blue-700" />
+												<Pencil className="w-6 h-6 text-info-700" />
 											</Button>
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(notice._id)}>
-												<Trash2 className="w-6 h-6 text-red-700" />
+												<Trash2 className="w-6 h-6 text-error-700" />
 											</Button>
 										</div>
 									</TableCell>
@@ -91,7 +102,7 @@ export default function NoticesPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={5} className="text-red-600">
+								<TableCell colSpan={5} className="text-error-600">
 									No notices found.
 								</TableCell>
 							</TableRow>
@@ -99,14 +110,6 @@ export default function NoticesPage() {
 					</TableBody>
 				</Table>
 			</div>
-			{openNoticeModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-96">
-						<h2 className="text-lg font-bold text-slate-200 bg-brand p-4 mb-6 text-center">{noticeToEdit ? "Edit Notice" : "Create Notice"}</h2>
-						<NoticeForm handleCloseNoticeModal={handleCloseNoticeModal} noticeToEdit={noticeToEdit} fetchNotices={notices} />
-					</div>
-				</div>
-			)}
 		</div>
 	);
 }

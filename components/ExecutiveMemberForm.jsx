@@ -18,10 +18,6 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState("");
 
-	useEffect(() => {
-		fetchDepartments();
-	}, [fetchDepartments]);
-
 	const fetchDepartments = useCallback(async () => {
 		try {
 			const response = await fetch("/api/departments");
@@ -40,7 +36,11 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 		} catch (error) {
 			console.error("Error fetching departments:", error);
 		}
-	}, [memberToEdit]);
+	}, [memberToEdit?.department]);
+
+	useEffect(() => {
+		fetchDepartments();
+	}, [fetchDepartments]);
 
 	useEffect(() => {
 		if (memberToEdit) {
@@ -129,31 +129,31 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
 			{error && (
-				<div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+				<div className="bg-red-50 border border-red-200 text-error-700 px-4 py-3 rounded">
 					<p>{error}</p>
 				</div>
 			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div>
-					<label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="name" className="block text-sm font-medium text-neutral-700 mb-1">
 						Full Name *
 					</label>
-					<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="John Doe" />
+					<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="John Doe" />
 				</div>
 
 				<div>
-					<label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="position" className="block text-sm font-medium text-neutral-700 mb-1">
 						Position
 					</label>
-					<input type="text" id="position" name="position" value={formData.position} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="President" />
+					<input type="text" id="position" name="position" value={formData.position} onChange={handleChange} className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="President" />
 				</div>
 
 				<div>
-					<label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="department" className="block text-sm font-medium text-neutral-700 mb-1">
 						Department
 					</label>
-					<select id="department" name="department" value={formData.department} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand">
+					<select id="department" name="department" value={formData.department} onChange={handleChange} className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand">
 						<option value="">Select Department</option>
 						{departments.map((dept) => (
 							<option key={dept._id} value={dept.name}>
@@ -164,10 +164,10 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 				</div>
 
 				<div>
-					<label htmlFor="subdepartment" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="subdepartment" className="block text-sm font-medium text-neutral-700 mb-1">
 						Subdepartment
 					</label>
-					<select id="subdepartment" name="subdepartment" value={formData.subdepartment} onChange={handleChange} disabled={!formData.department || availableSubdepartments.length === 0} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-gray-100 disabled:cursor-not-allowed">
+					<select id="subdepartment" name="subdepartment" value={formData.subdepartment} onChange={handleChange} disabled={!formData.department || availableSubdepartments.length === 0} className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-neutral-100 disabled:cursor-not-allowed">
 						<option value="">Select Subdepartment</option>
 						{availableSubdepartments.map((subdept, index) => (
 							<option key={index} value={subdept}>
@@ -175,43 +175,43 @@ export default function ExecutiveMemberForm({ handleCloseModal, memberToEdit = n
 							</option>
 						))}
 					</select>
-					{formData.department && availableSubdepartments.length === 0 && <p className="text-xs text-gray-500 mt-1">No subdepartments available for this department</p>}
+					{formData.department && availableSubdepartments.length === 0 && <p className="text-xs text-neutral-500 mt-1">No subdepartments available for this department</p>}
 				</div>
 
 				<div>
-					<label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-1">
 						Phone Number *
 					</label>
-					<input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="+47 123 45 678" />
+					<input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange} required className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="+47 123 45 678" />
 				</div>
 
 				<div>
-					<label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
 						Email Address *
 					</label>
-					<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="john@example.com" />
+					<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="john@example.com" />
 				</div>
 
 				<div>
-					<label htmlFor="order" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="order" className="block text-sm font-medium text-neutral-700 mb-1">
 						Display Order
 					</label>
-					<input type="number" id="order" name="order" value={formData.order} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="0" />
-					<p className="text-xs text-gray-500 mt-1">Lower numbers appear first</p>
+					<input type="number" id="order" name="order" value={formData.order} onChange={handleChange} className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" placeholder="0" />
+					<p className="text-xs text-neutral-500 mt-1">Lower numbers appear first</p>
 				</div>
 
 				<div>
-					<label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
+					<label htmlFor="image" className="block text-sm font-medium text-neutral-700 mb-1">
 						Profile Picture
 					</label>
-					<input type="file" id="image" name="image" onChange={handleChange} accept="image/*" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
-					{memberToEdit?.imageUrl && <p className="text-xs text-gray-500 mt-1">Current image exists. Upload new image to replace.</p>}
+					<input type="file" id="image" name="image" onChange={handleChange} accept="image/*" className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand" />
+					{memberToEdit?.imageUrl && <p className="text-xs text-neutral-500 mt-1">Current image exists. Upload new image to replace.</p>}
 				</div>
 			</div>
 
 			<div className="flex items-center">
-				<input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="h-4 w-4 text-brand focus:ring-brand border-gray-300 rounded" />
-				<label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+				<input type="checkbox" id="isActive" name="isActive" checked={formData.isActive} onChange={handleChange} className="h-4 w-4 text-brand focus:ring-brand border-neutral-300 rounded" />
+				<label htmlFor="isActive" className="ml-2 block text-sm text-neutral-700">
 					Active (Display on website)
 				</label>
 			</div>

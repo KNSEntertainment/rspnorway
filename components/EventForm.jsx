@@ -130,7 +130,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 	return (
 		<div className="max-h-[calc(100vh-200px)] overflow-y-auto">
 			<form onSubmit={handleSubmit} className="space-y-1 grid grid-cols-1 md:grid-cols-2 gap-6">
-				{error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
+				{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
 				<div>
 					<label htmlFor="eventname" className="block mb-2 font-bold">
 						Name of Event
@@ -188,7 +188,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 					<input type="file" id="eventvideo" onChange={(e) => setFormData({ ...formData, eventvideo: e.target.files[0] })} className="w-full p-2 border rounded" />
 				</div>
 				<div className="grid gap-2">
-					<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-slate-200 font-bold`}>
+					<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-neutral-200 font-bold`}>
 						{submitting ? `${eventToEdit ? "Updating" : "Creating"} Event...` : `${eventToEdit ? "Update" : "Create"} Event`}
 					</button>
 					<Button variant="outline" onClick={handleCloseEventModal}>

@@ -95,7 +95,7 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">
-			{error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
+			{error && <div className="bg-error-100 border border-error-500 text-error-700 px-4 py-3 rounded">{error}</div>}
 			<div>
 				<label htmlFor="title" className="block mb-2 font-bold">
 					Title
@@ -127,7 +127,7 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 				<input type="file" id="image" accept="image/*" onChange={(e) => setFormData({ ...formData, image: e.target.files ? e.target.files[0] : null })} className="w-full p-2 border rounded" />
 			</div>
 			<div className="grid grid-cols-2 gap-2">
-				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-brand"} text-slate-200 font-bold`}>
+				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-blue-600 hover:bg-brand"} text-neutral-200 font-bold`}>
 					{submitting ? `${downloadToEdit ? "Updating..." : "Creating..."}` : `${downloadToEdit ? "Update" : "Create"} Download`}
 				</button>
 				<Button variant="outline" onClick={handleCloseModal}>
