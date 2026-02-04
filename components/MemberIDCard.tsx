@@ -19,10 +19,14 @@ interface MemberIDCardProps {
 		province?: string;
 		createdAt: string;
 	};
+	logo?: string;
 }
 
-export default function MemberIDCard({ memberData }: MemberIDCardProps) {
+export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
+
+	// Generate membership number from last 6 digits of _id
+	const membershipNumber = memberData._id.slice(-6).toUpperCase();
 
 	const handleDownload = async () => {
 		if (!cardRef.current) return;
@@ -62,8 +66,15 @@ export default function MemberIDCard({ memberData }: MemberIDCardProps) {
 		id: memberData._id,
 		name: memberData.fullName,
 		email: memberData.email,
-		membershipNo: memberData.nationalMembershipNo || "N/A",
+		membershipNo: membershipNumber,
 		verified: true,
+	});
+
+	// Format membership date
+	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
 	});
 
 	return (
@@ -91,8 +102,13 @@ export default function MemberIDCard({ memberData }: MemberIDCardProps) {
 								<h3 className="text-xs font-semibold tracking-wide">MEMBER ID CARD</h3>
 								<h2 className="text-sm font-bold mt-0.5">RSP Norway</h2>
 							</div>
-							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-								<span className="text-brand font-bold text-lg">RSP</span>
+							{/* Logo */}
+							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">
+								{logo ? (
+									<Image src={logo} alt="RSP Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" />
+								) : (
+									<span className="text-brand font-bold text-lg">RSP</span>
+								)}
 							</div>
 						</div>
 					</div>
@@ -131,12 +147,10 @@ export default function MemberIDCard({ memberData }: MemberIDCardProps) {
 							</div>
 
 							{/* Membership Number */}
-							{memberData.nationalMembershipNo && (
-								<div>
-									<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Membership No.</p>
-									<p className="text-sm font-bold text-brand">{memberData.nationalMembershipNo}</p>
-								</div>
-							)}
+							<div>
+								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Membership No.</p>
+								<p className="text-sm font-bold text-brand">{membershipNumber}</p>
+							</div>
 
 							{/* Two Column Layout */}
 							<div className="grid grid-cols-2 gap-2">
@@ -155,22 +169,25 @@ export default function MemberIDCard({ memberData }: MemberIDCardProps) {
 								)}
 							</div>
 
-							{/* Member Since */}
+							{/* Membership Date */}
 							<div>
-								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Since</p>
-								<p className="text-xs font-semibold text-gray-900">{new Date(memberData.createdAt).getFullYear()}</p>
+								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Membership Date</p>
+								<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
 							</div>
 						</div>
 					</div>
 
-					{/* Footer Section */}
+					{/* Footer Section with Signature */}
 					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-2">
 						<div className="flex items-center justify-between text-white">
 							<div className="flex items-center gap-1">
 								<div className="w-2 h-2 bg-white rounded-full"></div>
 								<p className="text-[10px] font-semibold">VERIFIED MEMBER</p>
 							</div>
-							<p className="text-[9px] font-medium">www.rspnorway.no</p>
+							<div className="text-right">
+								<div className="border-b border-white/50 w-20 mb-0.5"></div>
+								<p className="text-[8px] font-medium">President</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -224,10 +241,14 @@ export default function MemberIDCard({ memberData }: MemberIDCardProps) {
 					</div>
 
 					{/* Footer */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-2 text-center">
-						<p className="text-[10px] text-white font-semibold">
-							Issued: {new Date(memberData.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-						</p>
+					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-2">
+						<div className="flex items-center justify-between text-white">
+							<p className="text-[10px] font-semibold">Issued: {membershipDate}</p>
+							<div className="text-right">
+								<div className="border-b border-white/50 w-20 mb-0.5"></div>
+								<p className="text-[8px] font-medium">President</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

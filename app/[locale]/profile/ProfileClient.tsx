@@ -53,6 +53,7 @@ export default function ProfileClient({ translations: t }: Props) {
 	const [showSizeAlert, setShowSizeAlert] = useState(false);
 	const [alertFileInfo, setAlertFileInfo] = useState<{ name: string; size: number } | null>(null);
 	const [showIDCard, setShowIDCard] = useState(false);
+	const [logo, setLogo] = useState<string>("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { toast } = useToast();
 
@@ -82,6 +83,16 @@ export default function ProfileClient({ translations: t }: Props) {
 				})
 				.catch(() => setLoading(false));
 		}
+
+		// Fetch settings for logo
+		fetch("/api/settings")
+			.then((res) => res.json())
+			.then((data) => {
+				if (Array.isArray(data) && data.length > 0 && data[0].logo) {
+					setLogo(data[0].logo);
+				}
+			})
+			.catch((error) => console.error("Error fetching settings:", error));
 	}, [session, status, router]);
 
 	const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -449,6 +460,7 @@ export default function ProfileClient({ translations: t }: Props) {
 										province: membershipData.province,
 										createdAt: membershipData.createdAt,
 									}}
+									logo={logo}
 								/>
 							</CardContent>
 						)}
