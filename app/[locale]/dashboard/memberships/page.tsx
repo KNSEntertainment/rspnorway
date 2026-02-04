@@ -143,7 +143,7 @@ export default function MembershipsPage() {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-success0 text-white">
+					<Badge className="bg-success text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						Approved
 					</Badge>

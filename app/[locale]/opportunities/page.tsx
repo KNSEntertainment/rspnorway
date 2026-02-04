@@ -54,7 +54,7 @@ const opportunitiesData = [
 		title: "Fundraising Team",
 		shortDescription: "Support our mission through creative fundraising initiatives",
 		icon: "💰",
-		color: "bg-success0",
+		color: "bg-success",
 		gradient: "from-green-400 to-green-600",
 		fullDescription: "Fundraising Team members ensure RSP has the resources to achieve its mission. You'll develop creative fundraising campaigns, build relationships with donors, and organize events that generate support for our cause while engaging the community.",
 		responsibilities: ["Plan and execute fundraising events and campaigns", "Identify and cultivate relationships with potential donors", "Create compelling fundraising materials and appeals", "Manage donor databases and maintain records", "Thank and recognize donors appropriately", "Collaborate with finance team on budget planning"],

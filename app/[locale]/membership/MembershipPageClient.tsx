@@ -219,7 +219,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			<div className="bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center min-h-screen justify-center p-4">
 				<div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
 					<div className="w-20 h-20 bg-success rounded-full flex items-center justify-center mx-auto mb-6">
-						<svg className="w-10 h-10 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 						</svg>
 					</div>

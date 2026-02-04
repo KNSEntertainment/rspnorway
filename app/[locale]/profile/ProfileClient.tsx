@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { User, Mail, Phone, Calendar, Shield, LogOut, CheckCircle, Clock, XCircle, Users, Camera, Upload, AlertCircle } from "lucide-react";
+import { User, Mail, Phone, Calendar, Shield, LogOut, CheckCircle, Clock, XCircle, Users, Camera, Upload, AlertCircle, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import Image from "next/image";
 import { Membership } from "@/types";
+import MemberIDCard from "@/components/MemberIDCard";
 
 interface Translations {
 	title: string;
@@ -51,6 +52,7 @@ export default function ProfileClient({ translations: t }: Props) {
 	const [selectedFileSize, setSelectedFileSize] = useState<number | null>(null);
 	const [showSizeAlert, setShowSizeAlert] = useState(false);
 	const [alertFileInfo, setAlertFileInfo] = useState<{ name: string; size: number } | null>(null);
+	const [showIDCard, setShowIDCard] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { toast } = useToast();
 
@@ -190,7 +192,7 @@ export default function ProfileClient({ translations: t }: Props) {
 		switch (status) {
 			case "approved":
 				return (
-					<Badge className="bg-success0 text-white">
+					<Badge className="bg-success text-white">
 						<CheckCircle className="w-3 h-3 mr-1" />
 						{t.approved}
 					</Badge>
@@ -347,9 +349,9 @@ export default function ProfileClient({ translations: t }: Props) {
 									<div>{getStatusBadge(membershipData.membershipStatus)}</div>
 								</div>
 
-								<div className="space-y-2">
+								<div className="flex flex-col space-y-2">
 									<label className="text-sm font-semibold text-gray-900">{t.membershipType}</label>
-									<Badge variant="outline" className="capitalize text-base">
+									<Badge variant="outline" className="capitalize text-base w-fit">
 										{membershipData.membershipType === "general" ? t.general : t.active}
 									</Badge>
 								</div>
@@ -401,7 +403,7 @@ export default function ProfileClient({ translations: t }: Props) {
 										<label className="text-sm font-semibold text-gray-900">Areas of Interest</label>
 										<div className="flex flex-wrap gap-2 mt-2">
 											{membershipData.volunteerInterest.map((interest: string, index: number) => (
-												<Badge key={index} variant="secondary" className="text-sm">
+												<Badge key={index} variant="secondary" className="text-sm text-white">
 													{interest}
 												</Badge>
 											))}
@@ -410,6 +412,46 @@ export default function ProfileClient({ translations: t }: Props) {
 								)}
 							</div>
 						</CardContent>
+					</Card>
+				)}
+
+				{/* Member ID Card Section */}
+				{membershipData && membershipData.membershipStatus === "approved" && (
+					<Card className="mt-6 shadow-lg border-0">
+						<CardHeader>
+							<div className="flex items-center justify-between">
+								<CardTitle className="flex items-center text-2xl">
+									<CreditCard className="w-6 h-6 mr-2 text-brand" />
+									Member ID Card
+								</CardTitle>
+								<Button
+									onClick={() => setShowIDCard(!showIDCard)}
+									variant={showIDCard ? "default" : "outline"}
+									className={showIDCard ? "bg-brand hover:bg-brand/90" : "border-brand text-brand hover:bg-brand/10"}
+								>
+									<CreditCard className="w-4 h-4 mr-2" />
+									{showIDCard ? "Hide ID Card" : "Generate ID Card"}
+								</Button>
+							</div>
+						</CardHeader>
+						{showIDCard && (
+							<CardContent id="id-card-container">
+								<MemberIDCard
+									memberData={{
+										_id: membershipData._id || "",
+										fullName: session.user.fullName || "",
+										email: session.user.email || "",
+										phone: membershipData.phone,
+										profilePhoto: profilePhoto || undefined,
+										nationalMembershipNo: membershipData.nationalMembershipNo,
+										membershipType: membershipData.membershipType,
+										city: membershipData.city,
+										province: membershipData.province,
+										createdAt: membershipData.createdAt,
+									}}
+								/>
+							</CardContent>
+						)}
 					</Card>
 				)}
 			</div>
