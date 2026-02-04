@@ -6,9 +6,66 @@ export default {
 	theme: {
 		extend: {
 			colors: {
+				// Primary Brand Color - Your main theme color
 				brand: {
+					50: "#e6f6fd",
+					100: "#b3e5fa",
+					200: "#80d4f7",
+					300: "#4dc3f4",
+					400: "#1ab2f1",
+					500: "#0094da", // DEFAULT - Your current brand color
+					600: "#0077ae",
+					700: "#005a82",
+					800: "#003d57",
+					900: "#00202b",
 					DEFAULT: "#0094da",
 				},
+				
+				// Neutral/Gray - Simplified to essential shades
+				neutral: {
+					50: "#f9fafb",   // Light backgrounds
+					100: "#f3f4f6",  // Subtle backgrounds
+					200: "#e5e7eb",  // Borders, dividers
+					300: "#d1d5db",  // Disabled borders
+					400: "#9ca3af",  // Disabled text
+					500: "#6b7280",  // Muted text
+					600: "#4b5563",  // Secondary text
+					700: "#374151",  // Primary text
+					800: "#1f2937",  // Dark text
+					900: "#111827",  // Darkest text
+				},
+				
+				// Semantic Colors - Minimal set
+				success: {
+					50: "#f0fdf4",
+					100: "#dcfce7",
+					500: "#22c55e",
+					600: "#16a34a",
+					700: "#15803d",
+				},
+				error: {
+					50: "#fef2f2",
+					100: "#fee2e2",
+					500: "#ef4444",
+					600: "#dc2626",
+					700: "#b91c1c",
+				},
+				warning: {
+					50: "#fffbeb",
+					100: "#fef3c7",
+					500: "#f59e0b",
+					600: "#d97706",
+					700: "#b45309",
+				},
+				info: {
+					50: "#eff6ff",
+					100: "#dbeafe",
+					500: "#3b82f6",
+					600: "#2563eb",
+					700: "#1d4ed8",
+				},
+				
+				// Shadcn UI compatibility (keep these for component library)
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
 				card: {
