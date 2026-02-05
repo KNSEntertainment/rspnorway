@@ -1,4 +1,5 @@
 import DonationForm from "@/components/DonationForm";
+import SectionHeader from "@/components/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Target, TrendingUp } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -12,13 +13,14 @@ export default async function DonatePage() {
 	const t = await getTranslations("donate");
 
 	return (
-		<div className="min-h-screen py-12 px-4">
+		<div className="min-h-screen pb-12 px-4">
 			<div className="max-w-6xl mx-auto">
 				{/* Hero Section */}
-				<div className="text-center mb-12">
-					<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{t("hero_title")}</h1>
-					<p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("hero_description")}</p>
-				</div>
+
+				<header className="text-center mb-12">
+					<SectionHeader heading={t("hero_title")} />
+					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("hero_description")}</p>
+				</header>
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
 					{/* Donation Form - Takes 2 columns */}

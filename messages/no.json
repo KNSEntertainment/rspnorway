@@ -134,7 +134,8 @@
 		"circulars": "Sirkulærer",
 		"updates": "Oppdateringer",
 		"photos": "Fotoer",
-		"videos": "Videoer"
+		"videos": "Videoer",
+		"donate": "Doner"
 	},
 	"contact": {
 		"title": "Kontakt oss",
@@ -352,7 +353,7 @@
 		"loading": "Laster..."
 	},
 	"donate": {
-		"hero_title": "Støtt Vårt Oppdrag",
+		"hero_title": "Støtt Oss",
 		"hero_description": "Ditt generøse bidrag hjelper oss å gjøre en positiv forskjell i det nepalesiske samfunnet i Norge og støtte demokratiske verdier i Nepal.",
 		"impact_title": "Din Påvirkning",
 		"community_events": "Samfunnsarrangementer",
@@ -377,5 +378,24 @@
 		"faq_3_answer": "Ja, du kan velge å gjøre donasjonen din anonym ved å krysse av for det anonyme alternativet i skjemaet.",
 		"faq_4_question": "Hvordan vil donasjonen min bli brukt?",
 		"faq_4_answer": "Donasjonen din støtter samfunnsarrangementer, politisk påvirkningsarbeid, organisasjonsdrift og medlemstjenester."
+	},
+	"members": {
+		"title": "Katalog over Styremedlemmer",
+		"loading": "Laster medlemmer...",
+		"no_members_found": "Ingen styremedlemmer funnet.",
+		"search_label": "Søk Medlemmer",
+		"search_placeholder": "Søk etter navn, e-post, telefon eller stilling...",
+		"departments": "Avdelinger",
+		"subdepartments": "Underavdelinger",
+		"active_filters": "Aktive filtre:",
+		"filter_department": "Avdeling",
+		"filter_subdepartment": "Underavd",
+		"clear_all": "Fjern alle",
+		"showing": "Viser",
+		"members": "medlemmer",
+		"no_results": "Ingen medlemmer funnet",
+		"adjust_filters": "Prøv å justere søket eller filterkriteriene dine",
+		"mobile": "Mobil",
+		"email": "E-post"
 	}
 }

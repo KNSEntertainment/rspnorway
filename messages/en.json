@@ -133,7 +133,8 @@
 		"circulars": "Circulars",
 		"updates": "Updates",
 		"photos": "Photos",
-		"videos": "Videos"
+		"videos": "Videos",
+		"donate": "Donate"
 	},
 	"contact": {
 		"title": "Contact Us",
@@ -351,7 +352,7 @@
 		"loading": "Loading..."
 	},
 	"donate": {
-		"hero_title": "Support Our Mission",
+		"hero_title": "Support Us",
 		"hero_description": "Your generous contribution helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.",
 		"impact_title": "Your Impact",
 		"community_events": "Community Events",
@@ -376,5 +377,24 @@
 		"faq_3_answer": "Yes, you can choose to make your donation anonymous by checking the anonymous option in the form.",
 		"faq_4_question": "How will my donation be used?",
 		"faq_4_answer": "Your donation supports community events, political advocacy, organizational operations, and member services."
+	},
+	"members": {
+		"title": "Executive Members Directory",
+		"loading": "Loading members...",
+		"no_members_found": "No executive members found.",
+		"search_label": "Search Members",
+		"search_placeholder": "Search by name, email, phone, or position...",
+		"departments": "Departments",
+		"subdepartments": "Subdepartments",
+		"active_filters": "Active Filters:",
+		"filter_department": "Department",
+		"filter_subdepartment": "Subdept",
+		"clear_all": "Clear All",
+		"showing": "Showing",
+		"members": "members",
+		"no_results": "No members found",
+		"adjust_filters": "Try adjusting your search or filter criteria",
+		"mobile": "Mobile",
+		"email": "Email"
 	}
 }

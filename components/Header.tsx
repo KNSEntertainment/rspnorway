@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Search, X, ChevronDown, Phone, Mail } from "lucide-react";
+import { Menu, Search, X, ChevronDown, Phone, Mail, CoinsIcon } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import SearchModal from "@/components/SearchModal";
@@ -316,7 +316,7 @@ export default function Header() {
 
 						{/* Donate Button */}
 						<Link href="/donate" className="hidden md:flex items-center gap-2 px-4 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
-							Donate
+							<CoinsIcon className="w-5 h-5" /> {t("donate")}
 						</Link>
 
 						{user ? (

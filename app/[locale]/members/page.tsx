@@ -4,6 +4,7 @@ import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
 import { Phone, Mail, Search } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 
 interface Member {
 	_id: string;
@@ -32,6 +33,7 @@ interface Filters {
 }
 
 export default function Members() {
+	const t = useTranslations("members");
 	const [members, setMembers] = useState<Member[]>([]);
 	const [departments, setDepartments] = useState<Department[]>([]);
 	const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
@@ -165,7 +167,7 @@ export default function Members() {
 		return (
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 				<div className="text-center py-20">
-					<p className="text-gray-900 text-lg">Loading members...</p>
+					<p className="text-gray-900 text-lg">{t("loading")}</p>
 				</div>
 			</div>
 		);
@@ -176,13 +178,13 @@ export default function Members() {
 			{/* Basic Members Display */}
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<header className="text-center mb-12">
-					<SectionHeader heading="Executive Members Directory" />
+					<SectionHeader heading={t("title")} />
 					{/* <p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">Find leadership by department and committee</p> */}
 				</header>
 
 				{members.length === 0 && (
 					<div className="text-center py-20">
-						<p className="text-gray-900 text-lg">No executive members found.</p>
+						<p className="text-gray-900 text-lg">{t("no_members_found")}</p>
 					</div>
 				)}
 			</div>
@@ -193,10 +195,10 @@ export default function Members() {
 				<div className="mb-8 bg-white rounded-lg shadow-sm p-6">
 					<div>
 						<label htmlFor="search" className="block text-sm font-medium text-gray-900 mb-2">
-							Search Members
+							{t("search_label")}
 						</label>
 						<div className="relative">
-							<input type="text" id="search" placeholder="Search by name, email, phone, or position..." className="w-full pl-10 pr-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+							<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-10 pr-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
 							<Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-900" />
 						</div>
 					</div>
@@ -204,7 +206,7 @@ export default function Members() {
 
 				{/* Major Departments */}
 				<div className="mb-6">
-					<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Departments</h3>
+					<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t("departments")}</h3>
 					<div className="flex flex-wrap gap-2">
 						{departments.map((dept) => (
 							<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeDepartment === dept.name ? "border-blue-500 bg-blue-50 text-brand" : "bg-white border-light text-gray-900 hover:border-blue-500 hover:bg-brand/10 hover:text-brand"}`}>
@@ -217,7 +219,7 @@ export default function Members() {
 				{/* Subdepartments */}
 				{activeDepartment && getActiveDepartmentSubdepartments().length > 0 && (
 					<div className="mb-6">
-						<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Subdepartments</h3>
+						<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t("subdepartments")}</h3>
 						<div className="flex flex-wrap gap-2">
 							{getActiveDepartmentSubdepartments().map((subdept) => (
 								<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-brand" : "bg-light border-light text-gray-900 hover:bg-blue-100 hover:border-blue-400 hover:text-brand"}`}>
@@ -232,11 +234,11 @@ export default function Members() {
 				{(filters.department || filters.subdepartment) && (
 					<div className="mb-6">
 						<div className="flex flex-wrap items-center gap-2">
-							<span className="text-sm font-medium text-gray-900">Active Filters:</span>
+							<span className="text-sm font-medium text-gray-900">{t("active_filters")}</span>
 							<div className="flex flex-wrap gap-2">
 								{filters.department && (
 									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-brand rounded-full text-sm font-medium">
-										Department: {filters.department}
+										{t("filter_department")}: {filters.department}
 										<button onClick={() => removeFilter("department")} className="hover:text-blue-900">
 											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -246,7 +248,7 @@ export default function Members() {
 								)}
 								{filters.subdepartment && (
 									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-brand rounded-full text-sm font-medium">
-										Subdept: {filters.subdepartment}
+										{t("filter_subdepartment")}: {filters.subdepartment}
 										<button onClick={() => removeFilter("subdepartment")} className="hover:text-blue-900">
 											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -256,7 +258,7 @@ export default function Members() {
 								)}
 							</div>
 							<button onClick={clearAllFilters} className="text-sm text-brand hover:text-brand font-medium ml-2">
-								Clear All
+									{t("clear_all")}
 							</button>
 						</div>
 					</div>
@@ -265,7 +267,7 @@ export default function Members() {
 				{/* Members Count */}
 				<div className="mb-4">
 					<p className="text-sm text-gray-900">
-						Showing <span className="font-semibold text-gray-900">{filteredMembers.length}</span> members
+						{t("showing")} <span className="font-semibold text-gray-900">{filteredMembers.length}</span> {t("members")}
 					</p>
 				</div>
 
@@ -275,33 +277,34 @@ export default function Members() {
 						<svg className="mx-auto h-12 w-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
 						</svg>
-						<h3 className="mt-2 text-lg font-medium text-gray-900">No members found</h3>
-						<p className="mt-1 text-gray-900">Try adjusting your search or filter criteria</p>
+						<h3 className="mt-2 text-lg font-medium text-gray-900">{t("no_results")}</h3>
+						<p className="mt-1 text-gray-900">{t("adjust_filters")}</p>
 					</div>
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 						{filteredMembers.map((member) => (
 							<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-								<div className="aspect-square overflow-hidden bg-light">
+								<div className="w-full h-54 overflow-hidden flex justify-center items-center mt-4">
 									{member.imageUrl ? (
-										<Image src={member.imageUrl} alt={member.name} width={600} height={600} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+										<div className="flex flex-col">
+											<Image src={member.imageUrl} alt={member.name} width={600} height={600} className="w-32 h-32 my-4  rounded-full object-cover" />
+											<h3 className="text-2xl font-semibold text-gray-900 mb-1">{member.name}</h3>
+											{member.position && <p className="text-sm text-brand font-medium mb-4">{member.position}</p>}
+										</div>
 									) : (
-										<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800">
+										<div className="w-32 h-32 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800">
 											<span className="text-white text-8xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
 										</div>
 									)}
 								</div>
-								<div className="p-6">
-									<h3 className="text-2xl font-semibold text-gray-900 mb-1">{member.name}</h3>
-									{member.position && <p className="text-sm text-brand font-medium mb-4">{member.position}</p>}
-
+								<div className="p-6 bg-light">
 									<div className="space-y-3">
 										<div className="flex items-center gap-3">
 											<div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
 												<Phone className="w-5 h-5 text-white" />
 											</div>
 											<div>
-												<p className="text-xs text-gray-900 uppercase tracking-wide">Mobile</p>
+												<p className="text-xs text-gray-900 uppercase tracking-wide">{t("mobile")}</p>
 												<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand">
 													{member.phone}
 												</a>
@@ -313,7 +316,7 @@ export default function Members() {
 												<Mail className="w-5 h-5 text-white" />
 											</div>
 											<div>
-												<p className="text-xs text-gray-900 uppercase tracking-wide">Email</p>
+												<p className="text-xs text-gray-900 uppercase tracking-wide">{t("email")}</p>
 												<a href={`mailto:${member.email}`} className="text-gray-900 hover:text-brand text-sm break-all">
 													{member.email}
 												</a>
