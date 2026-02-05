@@ -1,11 +1,15 @@
 export interface Download {
 	id: string;
-	title: string;
+	title_en: string;
+	title_ne?: string;
+	title_no?: string;
 	date: string;
 	fileUrl: string;
 	imageUrl?: string;
 	category: string;
 	downloadCount: number;
+	// Legacy field
+	title?: string;
 }
 import { ObjectId } from "mongodb";
 

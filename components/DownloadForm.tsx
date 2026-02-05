@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 
 export type Download = {
 	_id: string;
-	title: string;
+	title_en: string;
+	title_ne?: string;
+	title_no?: string;
 	date: string;
 	category: string;
 	imageUrl?: string;
 	fileUrl?: string;
+	// Legacy field
+	title?: string;
 };
 
 export interface DownloadFormProps {
@@ -25,7 +29,9 @@ const getTodayString = () => {
 
 const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadToEdit }) => {
 	const [formData, setFormData] = useState({
-		title: "",
+		title_en: "",
+		title_ne: "",
+		title_no: "",
 		date: getTodayString(),
 		file: null as File | null,
 		image: null as File | null,
@@ -37,7 +43,11 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 	useEffect(() => {
 		if (downloadToEdit) {
 			setFormData({
-				...downloadToEdit,
+				title_en: downloadToEdit.title_en || downloadToEdit.title || "",
+				title_ne: downloadToEdit.title_ne || "",
+				title_no: downloadToEdit.title_no || "",
+				date: downloadToEdit.date,
+				category: downloadToEdit.category,
 				file: null,
 				image: null,
 			});
@@ -58,7 +68,11 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 				if (key === "file" || key === "image") {
 					if (formData[key]) form.append(key, formData[key] as File);
 				} else {
-					form.append(key, formData[key] as string);
+					const value = formData[key] as string;
+					// Only append non-empty strings
+					if (value && value.trim() !== "") {
+						form.append(key, value);
+					}
 				}
 			});
 			const url = downloadToEdit ? `/api/downloads/${downloadToEdit._id}` : "/api/downloads/create";
@@ -70,7 +84,7 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 			const result = await response.json();
 			if (!response.ok) throw new Error(result.error || `Failed to ${downloadToEdit ? "update" : "create"} Download`);
 			if (result.success) {
-				setFormData({ title: "", date: "", file: null, image: null, category: "" });
+				setFormData({ title_en: "", title_ne: "", title_no: "", date: "", file: null, image: null, category: "" });
 				const fileInput = document.getElementById("file") as HTMLInputElement;
 				if (fileInput) fileInput.value = "";
 				const imageInput = document.getElementById("image") as HTMLInputElement;
@@ -97,10 +111,31 @@ const DownloadForm: React.FC<DownloadFormProps> = ({ handleCloseModal, downloadT
 		<form onSubmit={handleSubmit} className="space-y-4">
 			{error && <div className="bg-red-50 border border-red-6000 text-red-600 px-4 py-3 rounded">{error}</div>}
 			<div>
-				<label htmlFor="title" className="block mb-2 font-bold">
-					Title
-				</label>
-				<input type="text" id="title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} className="w-full p-2 border rounded" required />
+				<label className="block mb-2 font-bold">Title (Multilingual)</label>
+
+				{/* English */}
+				<div className="mb-2">
+					<label htmlFor="title_en" className="block text-sm mb-1 text-gray-700">
+						English *
+					</label>
+					<input type="text" id="title_en" value={formData.title_en} onChange={(e) => setFormData({ ...formData, title_en: e.target.value })} className="w-full p-2 border rounded" placeholder="Enter title in English" required />
+				</div>
+
+				{/* Nepali */}
+				<div className="mb-2">
+					<label htmlFor="title_ne" className="block text-sm mb-1 text-gray-700">
+						Nepali (नेपाली)
+					</label>
+					<input type="text" id="title_ne" value={formData.title_ne} onChange={(e) => setFormData({ ...formData, title_ne: e.target.value })} className="w-full p-2 border rounded" placeholder="नेपालीमा शीर्षक प्रविष्ट गर्नुहोस्" />
+				</div>
+
+				{/* Norwegian */}
+				<div className="mb-2">
+					<label htmlFor="title_no" className="block text-sm mb-1 text-gray-700">
+						Norwegian (Norsk)
+					</label>
+					<input type="text" id="title_no" value={formData.title_no} onChange={(e) => setFormData({ ...formData, title_no: e.target.value })} className="w-full p-2 border rounded" placeholder="Skriv inn tittel på norsk" />
+				</div>
 			</div>
 			<div>
 				<label htmlFor="date" className="block mb-2 font-bold">

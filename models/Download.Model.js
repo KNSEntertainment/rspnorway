@@ -1,9 +1,23 @@
 import mongoose from "mongoose";
 const DownloadSchema = new mongoose.Schema(
 	{
-		title: {
+		// Multilingual title fields
+		title_en: {
 			type: String,
 			required: true,
+			trim: true,
+		},
+		title_ne: {
+			type: String,
+			trim: true,
+		},
+		title_no: {
+			type: String,
+			trim: true,
+		},
+		// Legacy field for backward compatibility
+		title: {
+			type: String,
 			trim: true,
 		},
 		date: {
@@ -48,7 +62,7 @@ const DownloadSchema = new mongoose.Schema(
 			default: 0,
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 export default mongoose.models.Download || mongoose.model("Download", DownloadSchema);

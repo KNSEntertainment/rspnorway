@@ -8,7 +8,9 @@ export async function PUT(request, context) {
 		await connectDB();
 		const { id } = await context.params;
 		const formData = await request.formData();
-		const title = formData.get("title");
+		const title_en = formData.get("title_en");
+		const title_ne = formData.get("title_ne");
+		const title_no = formData.get("title_no");
 		const date = formData.get("date");
 		const category = formData.get("category");
 		let fileUrl = formData.get("fileUrl");
@@ -39,7 +41,9 @@ export async function PUT(request, context) {
 		}
 
 		const update = {
-			...(title && { title }),
+			...(title_en && { title_en, title: title_en }), // Also update legacy title field
+			...(title_ne && { title_ne }),
+			...(title_no && { title_no }),
 			...(date && { date }),
 			...(category && { category }),
 			...(fileUrl && { fileUrl }),

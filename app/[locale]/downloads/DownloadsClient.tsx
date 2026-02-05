@@ -9,12 +9,16 @@ import { useLocale } from "next-intl";
 
 interface Document {
 	id: string;
-	title: string;
+	title_en: string;
+	title_ne?: string;
+	title_no?: string;
 	date: string;
 	fileUrl: string;
 	imageUrl?: string;
 	category: string;
 	downloadCount: number;
+	// Legacy field
+	title?: string;
 }
 
 interface DownloadsClientProps {
@@ -40,31 +44,40 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 	const [selectedCategory, setSelectedCategory] = useState(translations.all);
 	const [showMobileFilter, setShowMobileFilter] = useState(false);
 	const locale = useLocale();
+
+	// Helper function to get localized title
+	const getLocalizedTitle = (doc: Document) => {
+		const key = `title_${locale}` as keyof Document;
+		return (doc[key] as string) || doc.title_en || doc.title || "Untitled";
+	};
+
 	const categories = useMemo(() => {
 		return [translations.all, ...Array.from(new Set(documents.map((d) => d.category)))];
 	}, [documents, translations.all]);
 
 	const filteredDocuments = useMemo(() => {
 		return documents.filter((doc) => {
-			const matchesSearch = doc.title.toLowerCase().includes(searchQuery.toLowerCase());
+			const localizedTitle = getLocalizedTitle(doc);
+			const matchesSearch = localizedTitle.toLowerCase().includes(searchQuery.toLowerCase());
 			const matchesCategory = selectedCategory === translations.all || doc.category === selectedCategory;
 
 			return matchesSearch && matchesCategory;
 		});
 	}, [documents, searchQuery, selectedCategory, translations.all]);
 
-	const handleDownload = async (fileUrl: string, title: string, id?: string) => {
+	const handleDownload = async (doc: Document) => {
+		const localizedTitle = getLocalizedTitle(doc);
 		let ext = ".pdf";
-		const match = fileUrl.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
+		const match = doc.fileUrl.match(/\.([a-zA-Z0-9]+)(?:\?|$)/);
 		if (match) ext = "." + match[1];
 
-		const safeTitle = title.replace(/[\\/:*?"<>|\r\n]+/g, "_") + ext;
+		const safeTitle = localizedTitle.replace(/[\\/:*?"<>|\r\n]+/g, "_") + ext;
 
-		if (id) {
-			fetch(`/api/downloads/${id}/increment`, { method: "POST" });
+		if (doc.id) {
+			fetch(`/api/downloads/${doc.id}/increment`, { method: "POST" });
 		}
 
-		const response = await fetch(fileUrl);
+		const response = await fetch(doc.fileUrl);
 		const blob = await response.blob();
 		const url = URL.createObjectURL(blob);
 
@@ -81,12 +94,12 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 			{/* Main Content */}
 			<div className="">
 				{/* Search and Filter Bar */}
-				<div className=" p-2 md:p-6 mb-4 md:mb-8">
-					<div className="flex flex-col md:flex-row gap-2 md:gap-4">
+				<div className=" p-2 md:p-6 mb-4 md:mb-8 ">
+					<div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center">
 						{/* Search Input + Filter Icon for mobile */}
 						<div className="flex items-center w-full md:flex-1 min-w-0 relative">
 							<Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-900" size={20} />
-							<input type="text" placeholder={translations.searchPlaceholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 border border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+							<input type="text" placeholder={translations.searchPlaceholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-12 pr-4 py-3 border border-brand/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
 							{/* Filter icon for mobile */}{" "}
 							<button type="button" className="ml-2 md:hidden flex items-center justify-center p-2 rounded-lg bg-light hover:bg-light focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Show filter categories" onClick={() => setShowMobileFilter((v) => !v)}>
 								<Filter size={22} className="text-gray-900" />
@@ -133,7 +146,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 							<div key={doc.id} className="flex bg-white rounded-lg shadow-sm md:shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-h-[224px] group">
 								{" "}
 								{doc.imageUrl && doc.imageUrl.trim() !== "" ? (
-									<Image src={doc.imageUrl} alt={doc.title} width={350} height={350} className="text-white hidden lg:block object-fill w-36 lg:w-36 h-full" />
+									<Image src={doc.imageUrl} alt={doc.title_en} width={350} height={350} className="text-white hidden lg:block object-fill w-36 lg:w-36 h-full" />
 								) : (
 									<div className="hidden lg:flex w-48 h-full items-center justify-center bg-brand">
 										{" "}
@@ -152,7 +165,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 									{" "}
 									<span className="px-3 py-1 w-fit bg-blue-100 text-brand text-xs font-semibold rounded-full mb-3">{doc.category}</span>
 									<Link href={`/${locale}/downloads/${doc.id}`} className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">
-										{doc.title}
+										{getLocalizedTitle(doc)}
 									</Link>
 									<div className="flex items-center text-sm text-gray-900 mb-4">
 										{" "}
@@ -163,7 +176,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 										{/* Action Buttons */}{" "}
 										<div className="flex gap-3 w-fit">
 											{" "}
-											<button onClick={() => handleDownload(doc.fileUrl, doc.title, doc.id)} className="flex-1 flex items-center justify-center gap-2 px-4 md:px-4 py-1 md:py-2 bg-brand text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-md">
+											<button onClick={() => handleDownload(doc)} className="flex-1 flex items-center justify-center gap-2 px-4 md:px-4 py-1 md:py-2 bg-brand text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-md">
 												{" "}
 												<Download size={18} /> {translations.download}{" "}
 											</button>{" "}

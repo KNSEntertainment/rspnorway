@@ -7,13 +7,15 @@ export async function POST(request) {
 	try {
 		await connectDB();
 		const formData = await request.formData();
-		const title = formData.get("title");
+		const title_en = formData.get("title_en");
+		const title_ne = formData.get("title_ne");
+		const title_no = formData.get("title_no");
 		const date = formData.get("date");
 		const category = formData.get("category");
 		const file = formData.get("file");
 		const image = formData.get("image");
 
-		if (!title || !date || !category || !file) {
+		if (!title_en || !date || !category || !file) {
 			return NextResponse.json({ success: false, error: "Missing required fields." }, { status: 400 });
 		}
 
@@ -30,7 +32,10 @@ export async function POST(request) {
 		}
 
 		const download = await Download.create({
-			title,
+			title_en,
+			...(title_ne && { title_ne }),
+			...(title_no && { title_no }),
+			title: title_en, // Legacy field for backward compatibility
 			date,
 			category,
 			fileUrl,
