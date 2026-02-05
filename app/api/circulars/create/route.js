@@ -49,16 +49,12 @@ export async function POST(request) {
 
 		let mainPictureUrl = "";
 		if (circularMainPicture) {
-			const uploadResult = await uploadToCloudinary(circularMainPicture, "circulars");
-			mainPictureUrl = uploadResult?.secure_url || "";
-		}
+		mainPictureUrl = await uploadToCloudinary(circularMainPicture, "circulars");
+	}
 
-		let secondPictureUrl = "";
-		if (circularSecondPicture) {
-			const uploadResult = await uploadToCloudinary(circularSecondPicture, "circulars");
-			secondPictureUrl = uploadResult?.secure_url || "";
-		}
-
+	let secondPictureUrl = "";
+	if (circularSecondPicture) {
+		secondPictureUrl = await uploadToCloudinary(circularSecondPicture, "circulars");
 		const circular = await Circular.create({
 			slug,
 			circularTitle,

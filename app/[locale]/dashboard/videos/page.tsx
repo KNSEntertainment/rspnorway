@@ -116,7 +116,7 @@ export default function VideosPage() {
 						<div key={video._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
 							{/* Video Thumbnail/Preview */}
 							<div className="relative aspect-video bg-neutral-900">
-								{video.thumbnail ? <Image src={video.thumbnail} alt={video.title} width={400} height={225} className="w-full h-full object-cover" /> : <video src={video.url} className="w-full h-full object-cover" />}
+								{video.thumbnail ? <Image src={video.thumbnail} alt={video.title} width={400} height={225} className="w-full h-full object-cover object-top" /> : <video src={video.url} className="w-full h-full object-cover object-top" />}
 								{video.duration && <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded">{video.duration}</div>}
 							</div>
 

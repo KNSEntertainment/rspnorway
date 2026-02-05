@@ -17,14 +17,13 @@ async function deleteFromCloudinary(url) {
 }
 
 export async function PUT(request, { params }) {
-	const { id } = params;
+	const { id } = await params;
 
 	try {
 		await connectDB();
 		const formData = await request.formData();
 		const galleryData = {};
 		const mediaFiles = formData.getAll("media");
-		// const classId = formData.get("classId");
 
 		for (const [key, value] of formData.entries()) {
 			if (key !== "media") {
@@ -47,11 +46,11 @@ export async function PUT(request, { params }) {
 			galleryData.media = await Promise.all(mediaFiles.map(async (file) => await uploadToCloudinary(file, "gallery_images")));
 		}
 
-		if (!galleryData.category && (classDoc || existingGallery.classLabel)) {
-			galleryData.category = classDoc?.name || existingGallery.classLabel;
-		}
-		if (!galleryData.alt) {
-			galleryData.alt = classDoc?.name || galleryData.category || existingGallery.alt;
+		// Keep alt for backward compatibility
+		if (galleryData.alt_en) {
+			galleryData.alt = galleryData.alt_en;
+		} else if (galleryData.category && !galleryData.alt) {
+			galleryData.alt = galleryData.category;
 		}
 
 		const updatedGallery = await Gallery.findByIdAndUpdate(id, galleryData, { new: true });

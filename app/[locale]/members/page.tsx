@@ -2,7 +2,7 @@
 
 import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
-import { Phone, Mail, Search } from "lucide-react";
+import { Phone, Mail, Search, X, Filter, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 
@@ -45,19 +45,18 @@ export default function Members() {
 	});
 	const [activeDepartment, setActiveDepartment] = useState<string | null>(null);
 	const [activeSubdepartment, setActiveSubdepartment] = useState<string | null>(null);
+	const [showMobileFilters, setShowMobileFilters] = useState(false);
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-				const timestamp = new Date().getTime(); // Cache busting
+				const timestamp = new Date().getTime();
 
-				// Fetch members
 				const membersResponse = await fetch(`${baseUrl}/api/executive-members?t=${timestamp}`, {
 					cache: "no-store",
 				});
 
-				// Fetch departments
 				const departmentsResponse = await fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
 					cache: "no-store",
 				});
@@ -65,13 +64,20 @@ export default function Members() {
 				if (membersResponse.ok) {
 					const membersData = await membersResponse.json();
 					setMembers(membersData);
-					setFilteredMembers(membersData);
 				}
 
 				if (departmentsResponse.ok) {
 					const departmentsData = await departmentsResponse.json();
 					if (departmentsData.success) {
-						setDepartments(departmentsData.departments);
+						const depts = departmentsData.departments;
+						setDepartments(depts);
+
+						// Auto-select first department on initial load
+						if (depts.length > 0) {
+							const firstDept = depts[0].name;
+							setActiveDepartment(firstDept);
+							setFilters((prev) => ({ ...prev, department: firstDept }));
+						}
 					}
 				}
 			} catch (error) {
@@ -90,17 +96,14 @@ export default function Members() {
 	const applyFilters = useCallback(() => {
 		let filtered = [...members];
 
-		// Department filter
 		if (filters.department) {
 			filtered = filtered.filter((m) => m.department === filters.department);
 		}
 
-		// Subdepartment filter
 		if (filters.subdepartment) {
 			filtered = filtered.filter((m) => m.subdepartment === filters.subdepartment);
 		}
 
-		// Quick filter
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
 			filtered = filtered.filter((m) => m.name.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.phone.includes(searchLower) || (m.position && m.position.toLowerCase().includes(searchLower)));
@@ -115,7 +118,6 @@ export default function Members() {
 
 	const selectDepartment = (deptName: string) => {
 		if (activeDepartment === deptName) {
-			// Deselect if clicking the same department
 			setActiveDepartment(null);
 			setActiveSubdepartment(null);
 			setFilters({ ...filters, department: null, subdepartment: null });
@@ -163,161 +165,225 @@ export default function Members() {
 		return dept?.subdepartments || [];
 	};
 
+	const hasActiveFilters = filters.department || filters.subdepartment || filters.search;
+
 	if (loading) {
 		return (
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-				<div className="text-center py-20">
-					<p className="text-gray-900 text-lg">{t("loading")}</p>
+			<div className="min-h-screen flex items-center justify-center">
+				<div className="text-center">
+					<div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand border-r-transparent mb-4"></div>
+					<p className="text-gray-700 text-lg">{t("loading")}</p>
 				</div>
 			</div>
 		);
 	}
 
 	return (
-		<div>
-			{/* Basic Members Display */}
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<header className="text-center mb-12">
+		<div className="min-h-screen bg-gray-50">
+			{/* Header Section */}
+			<div className="bg-white border-b border-gray-200">
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
 					<SectionHeader heading={t("title")} />
-					{/* <p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">Find leadership by department and committee</p> */}
-				</header>
-
-				{members.length === 0 && (
-					<div className="text-center py-20">
-						<p className="text-gray-900 text-lg">{t("no_members_found")}</p>
-					</div>
-				)}
+				</div>
 			</div>
 
-			{/* Filtered Members Directory */}
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-				{/* Search Bar */}
-				<div className="mb-8 bg-white rounded-lg shadow-sm p-6">
-					<div>
-						<label htmlFor="search" className="block text-sm font-medium text-gray-900 mb-2">
-							{t("search_label")}
-						</label>
-						<div className="relative">
-							<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-10 pr-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-							<Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-900" />
-						</div>
-					</div>
-				</div>
-
-				{/* Major Departments */}
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+				{/* Search and Filter Toggle */}
 				<div className="mb-6">
-					<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t("departments")}</h3>
-					<div className="flex flex-wrap gap-2">
-						{departments.map((dept) => (
-							<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-6 py-3 rounded-lg border-2 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${activeDepartment === dept.name ? "border-blue-500 bg-blue-50 text-brand" : "bg-white border-light text-gray-900 hover:border-blue-500 hover:bg-brand/10 hover:text-brand"}`}>
-								{dept.name}
-							</button>
-						))}
+					<div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+						<div className="flex flex-col sm:flex-row gap-4">
+							{/* Search Input */}
+							<div className="flex-1">
+								<label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
+									{t("search_label")}
+								</label>
+								<div className="relative">
+									<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+									<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+									{filters.search && (
+										<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+											<X className="h-5 w-5" />
+										</button>
+									)}
+								</div>
+							</div>
+
+							{/* Mobile Filter Toggle */}
+							<div className="sm:hidden">
+								<label className="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
+								<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors">
+									<Filter className="h-5 w-5" />
+									<span>Filters</span>
+									{hasActiveFilters && <span className="bg-white text-brand rounded-full px-2 py-0.5 text-xs font-semibold">{[filters.department, filters.subdepartment].filter(Boolean).length}</span>}
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 
-				{/* Subdepartments */}
-				{activeDepartment && getActiveDepartmentSubdepartments().length > 0 && (
-					<div className="mb-6">
-						<h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t("subdepartments")}</h3>
-						<div className="flex flex-wrap gap-2">
-							{getActiveDepartmentSubdepartments().map((subdept) => (
-								<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-brand" : "bg-light border-light text-gray-900 hover:bg-blue-100 hover:border-blue-400 hover:text-brand"}`}>
-									{subdept}
+				{/* Filters Section - Desktop and Mobile */}
+				<div className={`mb-6 ${showMobileFilters ? "block" : "hidden sm:block"}`}>
+					<div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+						<div className="flex items-center justify-between mb-4">
+							<h3 className="text-lg font-semibold text-gray-900">{t("filters")}</h3>
+							{hasActiveFilters && (
+								<button onClick={clearAllFilters} className="text-sm text-brand hover:text-blue-700 font-medium">
+									{t("clear_all")}
 								</button>
-							))}
+							)}
 						</div>
-					</div>
-				)}
 
-				{/* Active Filters */}
-				{(filters.department || filters.subdepartment) && (
+						{/* Departments */}
+						<div className="mb-6">
+							<div className="flex items-center justify-between mb-3">
+								<h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("departments")}</h3>
+							</div>
+							<div className="relative">
+								<div className="flex overflow-x-auto gap-2 sm:gap-3 pb-2 scroll-smooth hide-scrollbar snap-x snap-mandatory">
+									{departments.map((dept) => (
+										<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-4 py-3 rounded-lg border-2 transition-all duration-200 font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-brand whitespace-nowrap flex-shrink-0 snap-start ${activeDepartment === dept.name ? "border-brand bg-blue-50 text-brand shadow-sm" : "bg-white border-gray-200 text-gray-700 hover:border-brand hover:bg-blue-50 hover:text-brand"}`}>
+											{dept.name}
+										</button>
+									))}
+								</div>
+								{departments.length > 3 && (
+									<div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none flex items-center justify-end pr-2">
+										<ChevronRight className="w-5 h-5 text-gray-400" />
+									</div>
+								)}
+							</div>
+						</div>
+
+						{/* Subdepartments */}
+						{activeDepartment && getActiveDepartmentSubdepartments().length > 0 && (
+							<div className="pt-4 border-t border-gray-200">
+								<div className="flex items-center justify-between mb-3">
+									<h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("subdepartments")}</h3>
+								</div>
+								<div className="relative">
+									<div className="flex overflow-x-auto gap-2 pb-2 scroll-smooth hide-scrollbar snap-x snap-mandatory">
+										{getActiveDepartmentSubdepartments().map((subdept) => (
+											<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-3 sm:px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium whitespace-nowrap flex-shrink-0 snap-start ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-brand" : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-brand"}`}>
+												{subdept}
+											</button>
+										))}
+									</div>
+									{getActiveDepartmentSubdepartments().length > 4 && (
+										<div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none flex items-center justify-end pr-2">
+											<ChevronRight className="w-5 h-5 text-gray-400" />
+										</div>
+									)}
+								</div>
+							</div>
+						)}
+					</div>
+
+					<style jsx>{`
+						.hide-scrollbar::-webkit-scrollbar {
+							display: none;
+						}
+						.hide-scrollbar {
+							-ms-overflow-style: none;
+							scrollbar-width: none;
+						}
+					`}</style>
+				</div>
+
+				{/* Showing Members Count */}
+				<div className="mb-6">
+					<div className="bg-white rounded-lg shadow-sm px-6 py-4">
+						<p className="text-gray-700 text-sm font-medium">
+							{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {t("members")}
+						</p>
+					</div>
+				</div>
+
+				{/* Active Filters Pills */}
+				{hasActiveFilters && (
 					<div className="mb-6">
-						<div className="flex flex-wrap items-center gap-2">
-							<span className="text-sm font-medium text-gray-900">{t("active_filters")}</span>
-							<div className="flex flex-wrap gap-2">
+						<div className="bg-white rounded-lg shadow-sm p-4">
+							<div className="flex flex-wrap items-center gap-2">
+								<span className="text-sm font-medium text-gray-700">{t("active_filters")}:</span>
 								{filters.department && (
-									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-brand rounded-full text-sm font-medium">
-										{t("filter_department")}: {filters.department}
-										<button onClick={() => removeFilter("department")} className="hover:text-blue-900">
-											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-											</svg>
+									<span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-brand rounded-full text-sm font-medium">
+										{filters.department}
+										<button onClick={() => removeFilter("department")} className="hover:text-blue-900 transition-colors" aria-label="Remove department filter">
+											<X className="w-4 h-4" />
 										</button>
 									</span>
 								)}
 								{filters.subdepartment && (
-									<span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-brand rounded-full text-sm font-medium">
-										{t("filter_subdepartment")}: {filters.subdepartment}
-										<button onClick={() => removeFilter("subdepartment")} className="hover:text-blue-900">
-											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-											</svg>
+									<span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-brand rounded-full text-sm font-medium">
+										{filters.subdepartment}
+										<button onClick={() => removeFilter("subdepartment")} className="hover:text-blue-900 transition-colors" aria-label="Remove subdepartment filter">
+											<X className="w-4 h-4" />
 										</button>
 									</span>
 								)}
 							</div>
-							<button onClick={clearAllFilters} className="text-sm text-brand hover:text-brand font-medium ml-2">
-									{t("clear_all")}
-							</button>
 						</div>
 					</div>
 				)}
 
-				{/* Members Count */}
-				<div className="mb-4">
-					<p className="text-sm text-gray-900">
-						{t("showing")} <span className="font-semibold text-gray-900">{filteredMembers.length}</span> {t("members")}
-					</p>
-				</div>
-
 				{/* Members Grid */}
 				{filteredMembers.length === 0 ? (
-					<div className="text-center py-12">
-						<svg className="mx-auto h-12 w-12 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-						</svg>
-						<h3 className="mt-2 text-lg font-medium text-gray-900">{t("no_results")}</h3>
-						<p className="mt-1 text-gray-900">{t("adjust_filters")}</p>
+					<div className="bg-white rounded-lg shadow-sm p-12 text-center">
+						<div className="max-w-md mx-auto">
+							<svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+							</svg>
+							<h3 className="text-xl font-semibold text-gray-900 mb-2">{t("no_results")}</h3>
+							<p className="text-gray-600 mb-6">{t("adjust_filters")}</p>
+							{hasActiveFilters && (
+								<button onClick={clearAllFilters} className="px-6 py-2.5 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+									{t("clear_all")}
+								</button>
+							)}
+						</div>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 						{filteredMembers.map((member) => (
-							<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-								<div className="w-full h-54 overflow-hidden flex justify-center items-center mt-4">
-									{member.imageUrl ? (
-										<div className="flex flex-col">
-											<Image src={member.imageUrl} alt={member.name} width={600} height={600} className="w-32 h-32 my-4  rounded-full object-cover" />
-											<h3 className="text-2xl font-semibold text-gray-900 mb-1">{member.name}</h3>
-											{member.position && <p className="text-sm text-brand font-medium mb-4">{member.position}</p>}
-										</div>
-									) : (
-										<div className="w-32 h-32 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800">
-											<span className="text-white text-8xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
-										</div>
-									)}
+							<div key={member._id} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
+								{/* Member Header with Image/Avatar */}
+								<div className="bg-gradient-to-br from-blue-50 to-white p-6 text-center border-b border-gray-100">
+									<div className="flex justify-center mb-4">
+										{member.imageUrl ? (
+											<Image src={member.imageUrl} alt={member.name} width={128} height={128} className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-lg" />
+										) : (
+											<div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 border-4 border-white shadow-lg">
+												<span className="text-white text-4xl sm:text-5xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
+											</div>
+										)}
+									</div>
+									<h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 line-clamp-2">{member.name}</h3>
+									{member.position && <p className="text-sm font-medium text-brand line-clamp-2">{member.position}</p>}
 								</div>
-								<div className="p-6 bg-light">
-									<div className="space-y-3">
-										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+
+								{/* Contact Information */}
+								<div className="p-4 sm:p-6 bg-gray-50 flex-1">
+									<div className="space-y-4">
+										{/* Phone */}
+										<div className="flex items-start gap-3">
+											<div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
 												<Phone className="w-5 h-5 text-white" />
 											</div>
-											<div>
-												<p className="text-xs text-gray-900 uppercase tracking-wide">{t("mobile")}</p>
-												<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand">
+											<div className="flex-1 min-w-0">
+												<p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t("mobile")}</p>
+												<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand transition-colors font-medium break-all">
 													{member.phone}
 												</a>
 											</div>
 										</div>
 
-										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+										{/* Email */}
+										<div className="flex items-start gap-3">
+											<div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
 												<Mail className="w-5 h-5 text-white" />
 											</div>
-											<div>
-												<p className="text-xs text-gray-900 uppercase tracking-wide">{t("email")}</p>
-												<a href={`mailto:${member.email}`} className="text-gray-900 hover:text-brand text-sm break-all">
+											<div className="flex-1 min-w-0">
+												<p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t("email")}</p>
+												<a href={`mailto:${member.email}`} className="text-gray-900 hover:text-brand transition-colors text-sm break-all">
 													{member.email}
 												</a>
 											</div>

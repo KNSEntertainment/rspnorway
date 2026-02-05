@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import { X, Heart, Share2, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Grid3x3, LayoutGrid, Folder, Image as ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
@@ -20,11 +20,24 @@ interface Photo {
 	photographer: string;
 }
 
+interface Album {
+	name: string;
+	count: number;
+	coverImage: string;
+	photos: Photo[];
+}
+
+type ViewMode = "albums" | "all";
+
 const PhotoGallery = () => {
 	const t = useTranslations("gallery");
 	const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 	const [photos, setPhotos] = useState<Photo[]>([]);
+	const [albums, setAlbums] = useState<Album[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [viewMode, setViewMode] = useState<ViewMode>("albums");
+	const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+	const [displayPhotos, setDisplayPhotos] = useState<Photo[]>([]);
 
 	useEffect(() => {
 		const fetchPhotos = async () => {
@@ -46,6 +59,26 @@ const PhotoGallery = () => {
 				);
 
 				setPhotos(transformedPhotos);
+
+				// Group photos by category (album)
+				const albumsMap = new Map<string, Photo[]>();
+				transformedPhotos.forEach((photo) => {
+					if (!albumsMap.has(photo.category)) {
+						albumsMap.set(photo.category, []);
+					}
+					albumsMap.get(photo.category)?.push(photo);
+				});
+
+				// Create album objects
+				const albumsArray: Album[] = Array.from(albumsMap.entries()).map(([name, photos]) => ({
+					name,
+					count: photos.length,
+					coverImage: photos[0]?.url || "",
+					photos,
+				}));
+
+				setAlbums(albumsArray);
+				setDisplayPhotos(transformedPhotos);
 			} catch (error) {
 				console.error("Failed to fetch photos:", error);
 			} finally {
@@ -56,27 +89,31 @@ const PhotoGallery = () => {
 		fetchPhotos();
 	}, []);
 
-	// Navigation functions
-	// const getCurrentPhotoIndex = () => {
-	// 	if (!selectedPhoto) return -1;
-	// 	return photos.findIndex((photo) => photo.id === selectedPhoto.id);
-	// };
+	// Update display photos based on selected album
+	useEffect(() => {
+		if (selectedAlbum) {
+			const album = albums.find((a) => a.name === selectedAlbum);
+			setDisplayPhotos(album?.photos || []);
+		} else {
+			setDisplayPhotos(photos);
+		}
+	}, [selectedAlbum, albums, photos]);
 
 	const navigateToPhoto = useCallback(
 		(direction: "prev" | "next") => {
 			if (!selectedPhoto) return;
-			const currentIndex = photos.findIndex((photo) => photo.id === selectedPhoto.id);
+			const currentIndex = displayPhotos.findIndex((photo) => photo.id === selectedPhoto.id);
 			if (currentIndex === -1) return;
 
 			let newIndex;
 			if (direction === "prev") {
-				newIndex = currentIndex === 0 ? photos.length - 1 : currentIndex - 1;
+				newIndex = currentIndex === 0 ? displayPhotos.length - 1 : currentIndex - 1;
 			} else {
-				newIndex = currentIndex === photos.length - 1 ? 0 : currentIndex + 1;
+				newIndex = currentIndex === displayPhotos.length - 1 ? 0 : currentIndex + 1;
 			}
-			setSelectedPhoto(photos[newIndex]);
+			setSelectedPhoto(displayPhotos[newIndex]);
 		},
-		[selectedPhoto, photos],
+		[selectedPhoto, displayPhotos],
 	);
 
 	// Keyboard navigation
@@ -98,530 +135,287 @@ const PhotoGallery = () => {
 		window.addEventListener("keydown", handleKeyPress);
 		return () => window.removeEventListener("keydown", handleKeyPress);
 	}, [selectedPhoto, navigateToPhoto]);
-	// const images = gallery.flatMap((item) => (item.media || []).map((src) => ({ src, alt: item.alt || "Gallery image" })));
 
-	// Sample photos - replace with your database data
-	// const photos = [
-	// 	{ id: 1, url: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba", title: "Golden Hour", category: "Nature", photographer: "Alex River" },
-	// 	{ id: 2, url: "https://images.unsplash.com/photo-1682687221038-404cb8830901", title: "Urban Dreams", category: "Architecture", photographer: "Maya Chen" },
-	// 	{ id: 3, url: "https://images.unsplash.com/photo-1682687221080-5cb261c645cb", title: "Serenity", category: "Landscape", photographer: "Jordan Blake" },
-	// 	{ id: 4, url: "https://images.unsplash.com/photo-1682687982501-1e58ab814714", title: "City Lights", category: "Urban", photographer: "Sam Torres" },
-	// 	{ id: 5, url: "https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d", title: "Minimalist", category: "Abstract", photographer: "Riley Park" },
+	const handleAlbumClick = (albumName: string) => {
+		setSelectedAlbum(albumName);
+		setViewMode("all");
+	};
 
-	// 	{ id: 8, url: "https://images.unsplash.com/photo-1682687218147-9806132dc697", title: "Mountain Peak", category: "Landscape", photographer: "Drew Knight" },
-	// 	{ id: 9, url: "https://images.unsplash.com/photo-1682687220063-4742bd7fd538", title: "Geometric", category: "Architecture", photographer: "Morgan Lee" },
-	// ];
+	const handleBackToAlbums = () => {
+		setSelectedAlbum(null);
+		setViewMode("albums");
+	};
+
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center min-h-screen bg-gray-50">
+				<div className="text-center">
+					<div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand border-r-transparent mb-4"></div>
+					<p className="text-gray-600 text-lg">{t("loading")}</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
-		<div>
-			{loading ? (
-				<div className="flex justify-center items-center min-h-screen">
-					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
+		<div className="min-h-screen bg-gray-50">
+			{/* Header Section */}
+			<div className="bg-white border-b border-gray-200">
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
+					<SectionHeader heading={t("title")} />
+					<p className="text-gray-600 mt-3 text-base sm:text-lg max-w-2xl mx-auto text-center">{t("description")}</p>
+
+					{/* View Controls */}
+					<div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+						{selectedAlbum && (
+							<button onClick={handleBackToAlbums} className="flex items-center gap-2 px-4 py-2 text-brand hover:text-blue-700 font-medium transition-colors">
+								<ChevronLeft className="w-5 h-5" />
+								Back to Albums
+							</button>
+						)}
+
+						{!selectedAlbum && (
+							<div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
+								<button onClick={() => setViewMode("albums")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "albums" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
+									<Folder className="w-4 h-4" />
+									<span className="text-sm font-medium">{t("Albums")}</span>
+								</button>
+								<button onClick={() => setViewMode("all")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "all" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
+									<LayoutGrid className="w-4 h-4" />
+									<span className="text-sm font-medium">{t("All Photos")}</span>
+								</button>
+							</div>
+						)}
+
+						<div className="text-sm text-gray-600 font-medium">
+							{selectedAlbum ? (
+								<span>
+									{displayPhotos.length} {t("photos")} in <span className="text-brand">{selectedAlbum}</span>
+								</span>
+							) : (
+								<span>
+									{albums.length} {t("Albums_Small")} · {photos.length} {t("photos")}
+								</span>
+							)}
+						</div>
+					</div>
 				</div>
-			) : (
-				<div>
-					<header className="text-center mb-12">
-						<SectionHeader heading={t("title")} />
-						<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("description")}</p>
-					</header>
+			</div>
 
-					{/* Masonry Grid */}
-					<div
-						style={{
-							display: "grid",
-							gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-							gap: "24px",
-							gridAutoFlow: "dense",
-						}}
-					>
-						{photos.map((photo: Photo, index: number) => {
-							const isLarge = index % 5 === 0;
-							const isTall = index % 7 === 0;
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+				{/* Albums View */}
+				{viewMode === "albums" && !selectedAlbum && (
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+						{albums.map((album) => (
+							<div key={album.name} onClick={() => handleAlbumClick(album.name)} className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer">
+								{/* Album Cover */}
+								<div className="relative h-64 overflow-hidden bg-gray-100">
+									<Image src={album.coverImage} alt={album.name} width={600} height={400} className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" />
+									<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-							return (
+									{/* Photo Count Badge */}
+									<div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
+										<ImageIcon className="w-4 h-4 text-brand" />
+										<span className="text-sm font-semibold text-gray-900">{album.count}</span>
+									</div>
+								</div>
+
+								{/* Album Info */}
+								<div className="p-5">
+									<h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand transition-colors">{album.name}</h3>
+									<p className="text-gray-600 text-sm">
+										{album.count} {album.count === 1 ? "photo" : "photos"}
+									</p>
+
+									{/* Preview Thumbnails */}
+									<div className="mt-4 flex gap-2">
+										{album.photos.slice(0, 4).map((photo, idx) => (
+											<div key={photo.id} className="w-12 h-12 rounded-lg overflow-hidden border-2 border-white shadow-sm">
+												<Image src={photo.url} alt={photo.title} width={48} height={48} className="w-full h-full object-cover object-top" />
+											</div>
+										))}
+										{album.count > 4 && <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">+{album.count - 4}</div>}
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+				)}
+
+				{/* Photos Grid View */}
+				{(viewMode === "all" || selectedAlbum) && displayPhotos.length > 0 && (
+					<div>
+						{selectedAlbum && (
+							<div className="mb-8 text-center">
+								<h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{selectedAlbum}</h2>
+								<p className="text-gray-600">Explore {displayPhotos.length} beautiful moments</p>
+							</div>
+						)}
+
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+							{displayPhotos.map((photo, index) => (
 								<div
 									key={photo.id}
 									onClick={() => setSelectedPhoto(photo)}
+									className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer aspect-square"
 									style={{
-										gridColumn: isLarge ? "span 2" : "span 1",
-										gridRow: isTall ? "span 2" : "span 1",
-										position: "relative",
-										borderRadius: "16px",
-										overflow: "hidden",
-										cursor: "pointer",
-										aspectRatio: isLarge ? "16/9" : isTall ? "9/16" : "4/3",
-										animation: `fadeInUp 0.6s ease-out ${index * 0.1}s backwards`,
-										transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-										boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.transform = "translateY(-8px) scale(1.02)";
-										e.currentTarget.style.boxShadow = "0 20px 60px rgba(0, 0, 0, 0.5)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.transform = "translateY(0) scale(1)";
-										e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.3)";
+										animationDelay: `${index * 0.05}s`,
 									}}
 								>
-									{/* Image */}
-									<Image
-										src={`${photo.url}?w=800&q=80`}
-										alt={photo.title}
-										width={400}
-										height={400}
-										style={{
-											width: "100%",
-											height: "100%",
-											objectFit: "cover",
-											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.transform = "scale(1.1)";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.transform = "scale(1)";
-										}}
-									/>
+									{/* Photo */}
+									<div className="relative w-full h-full overflow-hidden">
+										<Image src={photo.url} alt={photo.title} width={400} height={400} className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500" />
 
-									{/* Gradient Overlay */}
-									<div
-										style={{
-											position: "absolute",
-											inset: 0,
-											background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%)",
-											opacity: 0,
-											transition: "opacity 0.4s ease",
-										}}
-										className="overlay"
-									/>
+										{/* Overlay */}
+										<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-									{/* Info */}
-									<div
-										style={{
-											position: "absolute",
-											bottom: 0,
-											left: 0,
-											right: 0,
-											padding: "24px",
-											transform: "translateY(20px)",
-											opacity: 0,
-											transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-										}}
-										className="info"
-									>
-										<div
-											style={{
-												fontSize: "0.75rem",
-												color: "#4ECDC4",
-												fontFamily: '"DM Sans", sans-serif',
-												fontWeight: 600,
-												textTransform: "uppercase",
-												letterSpacing: "0.1em",
-												marginBottom: "8px",
-											}}
-										>
-											{photo.category}
+										{/* Info */}
+										<div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+											<p className="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-1">{photo.category}</p>
+											<h3 className="text-white font-bold text-lg line-clamp-2">{photo.title}</h3>
 										</div>
-										<h3
-											style={{
-												fontFamily: '"Playfair Display", serif',
-												fontSize: "1.5rem",
-												fontWeight: 700,
-												color: "white",
-												marginBottom: "8px",
-												lineHeight: 1.2,
-											}}
-										>
-											{photo.title}
-										</h3>
-										<p
-											style={{
-												fontFamily: '"DM Sans", sans-serif',
-												fontSize: "0.875rem",
-												color: "#aaa",
-												fontStyle: "italic",
-											}}
-										>
-											by {photo.photographer}
-										</p>
 									</div>
 
-									{/* Like Button */}
-									<button
-										style={{
-											position: "absolute",
-											top: "16px",
-											right: "16px",
-											width: "44px",
-											height: "44px",
-											borderRadius: "50%",
-											border: "none",
-											background: "rgba(255, 107, 107, 0.95)",
-											backdropFilter: "blur(10px)",
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											cursor: "pointer",
-											opacity: 0,
-											transform: "scale(0.8)",
-											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-											zIndex: 2,
-										}}
-										className="like-btn"
-										onMouseEnter={(e) => {
-											e.currentTarget.style.transform = "scale(1.1)";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.transform = "scale(1)";
-										}}
-									>
-										<Heart
-											size={20}
-											fill="none"
-											color="white"
-											style={{
-												transition: "all 0.2s ease",
-											}}
-										/>
-									</button>
+									{/* Hover Icon */}
+									<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+										<div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+											<Grid3x3 className="w-8 h-8 text-white" />
+										</div>
+									</div>
 								</div>
-							);
-						})}
+							))}
+						</div>
 					</div>
-				</div>
-			)}
+				)}
+
+				{/* Empty State */}
+				{displayPhotos.length === 0 && (
+					<div className="text-center py-20">
+						<div className="inline-block p-6 bg-gray-100 rounded-full mb-4">
+							<ImageIcon className="w-16 h-16 text-gray-400" />
+						</div>
+						<h3 className="text-2xl font-bold text-gray-900 mb-2">No Photos Yet</h3>
+						<p className="text-gray-600">Photos will appear here once they are uploaded.</p>
+					</div>
+				)}
+			</div>
 
 			{/* Lightbox Modal */}
 			{selectedPhoto && (
-				<div
-					style={{
-						position: "fixed",
-						inset: 0,
-						background: "rgba(0, 0, 0, 0.96)",
-						backdropFilter: "blur(20px)",
-						zIndex: 1000,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						padding: "40px",
-						animation: "fadeIn 0.3s ease-out",
-					}}
-					onClick={() => setSelectedPhoto(null)}
-				>
-					<button
-						onClick={() => setSelectedPhoto(null)}
-						style={{
-							position: "absolute",
-							top: "24px",
-							right: "24px",
-							width: "48px",
-							height: "48px",
-							borderRadius: "50%",
-							border: "none",
-							background: "rgba(255, 255, 255, 0.1)",
-							backdropFilter: "blur(10px)",
-							color: "white",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							cursor: "pointer",
-							transition: "all 0.3s ease",
-							zIndex: 1001,
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
-							e.currentTarget.style.transform = "rotate(90deg)";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-							e.currentTarget.style.transform = "rotate(0deg)";
-						}}
-					>
-						<X size={24} />
+				<div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 flex items-center justify-center p-4 sm:p-6 animate-fadeIn" onClick={() => setSelectedPhoto(null)}>
+					{/* Close Button */}
+					<button onClick={() => setSelectedPhoto(null)} className="absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:rotate-90 z-10" aria-label="Close">
+						<X className="w-6 h-6" />
 					</button>
 
-					{/* Left Arrow */}
+					{/* Navigation Buttons */}
 					<button
 						onClick={(e) => {
 							e.stopPropagation();
 							navigateToPhoto("prev");
 						}}
-						style={{
-							position: "absolute",
-							left: "24px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							width: "56px",
-							height: "56px",
-							borderRadius: "50%",
-							border: "none",
-							background: "rgba(255, 255, 255, 0.1)",
-							backdropFilter: "blur(10px)",
-							color: "white",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							cursor: "pointer",
-							transition: "all 0.3s ease",
-							zIndex: 1001,
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
-							e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-							e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-						}}
+						className="hidden sm:flex absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full items-center justify-center text-white transition-all hover:scale-110 z-10"
+						aria-label="Previous photo"
 					>
-						<ChevronLeft size={28} />
+						<ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
 					</button>
 
-					{/* Right Arrow */}
 					<button
 						onClick={(e) => {
 							e.stopPropagation();
 							navigateToPhoto("next");
 						}}
-						style={{
-							position: "absolute",
-							right: "24px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							width: "56px",
-							height: "56px",
-							borderRadius: "50%",
-							border: "none",
-							background: "rgba(255, 255, 255, 0.1)",
-							backdropFilter: "blur(10px)",
-							color: "white",
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							cursor: "pointer",
-							transition: "all 0.3s ease",
-							zIndex: 1001,
-						}}
-						onMouseEnter={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
-							e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-						}}
-						onMouseLeave={(e) => {
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-							e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-						}}
+						className="hidden sm:flex absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full items-center justify-center text-white transition-all hover:scale-110 z-10"
+						aria-label="Next photo"
 					>
-						<ChevronRight size={28} />
+						<ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
 					</button>
 
-					<div
-						onClick={(e) => e.stopPropagation()}
-						style={{
-							maxWidth: "1200px",
-							maxHeight: "90vh",
-							display: "flex",
-							gap: "48px",
-							alignItems: "center",
-							animation: "scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-						}}
-					>
-						<Image
-							src={`${selectedPhoto.url}?w=1200&q=90`}
-							alt={selectedPhoto.title}
-							width={1200}
-							height={800}
-							style={{
-								maxWidth: "70%",
-								maxHeight: "90vh",
-								objectFit: "contain",
-								borderRadius: "12px",
-								boxShadow: "0 24px 80px rgba(0, 0, 0, 0.6)",
+					{/* Mobile Navigation */}
+					<div className="sm:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 z-10">
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								navigateToPhoto("prev");
 							}}
-						/>
-
-						<div
-							style={{
-								flex: 1,
-								color: "white",
-							}}
+							className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white"
+							aria-label="Previous photo"
 						>
-							<div
-								style={{
-									fontSize: "0.875rem",
-									color: "#4ECDC4",
-									fontFamily: '"DM Sans", sans-serif',
-									fontWeight: 600,
-									textTransform: "uppercase",
-									letterSpacing: "0.1em",
-									marginBottom: "16px",
-								}}
-							>
-								{selectedPhoto.category}
+							<ChevronLeft className="w-6 h-6" />
+						</button>
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								navigateToPhoto("next");
+							}}
+							className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white"
+							aria-label="Next photo"
+						>
+							<ChevronRight className="w-6 h-6" />
+						</button>
+					</div>
+
+					{/* Image Container */}
+					<div onClick={(e) => e.stopPropagation()} className="relative max-w-7xl w-full h-full flex items-center justify-center animate-scaleIn">
+						<div className="relative w-full h-full flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+							{/* Image */}
+							<div className="relative flex-1 w-full h-full max-h-[60vh] sm:max-h-[85vh] flex items-center justify-center">
+								<Image src={selectedPhoto.url} alt={selectedPhoto.title} width={1200} height={800} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" priority />
 							</div>
 
-							<h2
-								style={{
-									fontFamily: '"Playfair Display", serif',
-									fontSize: "3rem",
-									fontWeight: 700,
-									marginBottom: "16px",
-									lineHeight: 1.1,
-								}}
-							>
-								{selectedPhoto.title}
-							</h2>
+							{/* Info Panel - Desktop */}
+							<div className="hidden sm:block w-full sm:w-80 bg-white/5 backdrop-blur-md rounded-xl p-6 text-white border border-white/10">
+								<p className="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-3">{selectedPhoto.category}</p>
+								<h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">{selectedPhoto.title}</h2>
+								<p className="text-gray-300 text-sm mb-6 italic">Photography by {selectedPhoto.photographer}</p>
 
-							<p
-								style={{
-									fontFamily: '"DM Sans", sans-serif',
-									fontSize: "1.125rem",
-									color: "#aaa",
-									fontStyle: "italic",
-									marginBottom: "40px",
-								}}
-							>
-								Photography by {selectedPhoto.photographer}
-							</p>
+								{/* Photo Counter */}
+								<div className="pt-4 border-t border-white/10">
+									<p className="text-sm text-gray-400">
+										Photo {displayPhotos.findIndex((p) => p.id === selectedPhoto.id) + 1} of {displayPhotos.length}
+									</p>
+								</div>
+							</div>
 
-							<div
-								style={{
-									display: "flex",
-									gap: "12px",
-								}}
-							>
-								<button
-									style={{
-										padding: "14px 24px",
-										borderRadius: "12px",
-										border: "2px solid rgba(255, 255, 255, 0.2)",
-										background: "rgba(255, 255, 255, 0.05)",
-										color: "white",
-										fontFamily: '"DM Sans", sans-serif',
-										fontSize: "0.875rem",
-										fontWeight: 600,
-										cursor: "pointer",
-										display: "flex",
-										alignItems: "center",
-										gap: "8px",
-										transition: "all 0.3s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-										e.currentTarget.style.transform = "translateY(-2px)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-										e.currentTarget.style.transform = "translateY(0)";
-									}}
-								>
-									<Share2 size={18} /> Share
-								</button>
-
-								<button
-									style={{
-										padding: "14px 24px",
-										borderRadius: "12px",
-										border: "2px solid rgba(255, 255, 255, 0.2)",
-										background: "rgba(255, 255, 255, 0.05)",
-										color: "white",
-										fontFamily: '"DM Sans", sans-serif',
-										fontSize: "0.875rem",
-										fontWeight: 600,
-										cursor: "pointer",
-										display: "flex",
-										alignItems: "center",
-										gap: "8px",
-										transition: "all 0.3s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-										e.currentTarget.style.transform = "translateY(-2px)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-										e.currentTarget.style.transform = "translateY(0)";
-									}}
-								>
-									<Download size={18} /> Download
-								</button>
+							{/* Info Panel - Mobile */}
+							<div className="sm:hidden absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 pt-16">
+								<p className="text-xs text-blue-400 font-semibold uppercase tracking-wider mb-2">{selectedPhoto.category}</p>
+								<h2 className="text-xl font-bold text-white leading-tight">{selectedPhoto.title}</h2>
 							</div>
 						</div>
 					</div>
 				</div>
 			)}
 
-			<style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap');
+			<style jsx>{`
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+					}
+					to {
+						opacity: 1;
+					}
+				}
 
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
+				@keyframes scaleIn {
+					from {
+						opacity: 0;
+						transform: scale(0.95);
+					}
+					to {
+						opacity: 1;
+						transform: scale(1);
+					}
+				}
 
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
+				.animate-fadeIn {
+					animation: fadeIn 0.2s ease-out;
+				}
 
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-
-        div:hover > .overlay {
-          opacity: 1;
-        }
-
-        div:hover > .info {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        div:hover > .like-btn {
-          opacity: 1;
-          transform: scale(1);
-        }
-
-        @media (max-width: 768px) {
-          div[style*="gridColumn"] {
-            grid-column: span 1 !important;
-            grid-row: span 1 !important;
-          }
-        }
-      `}</style>
+				.animate-scaleIn {
+					animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				}
+			`}</style>
 		</div>
 	);
 };

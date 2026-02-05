@@ -32,13 +32,13 @@ const LanguageSelector = ({ isScrolled = false }: { isScrolled?: boolean }) => {
               transition-all duration-200 font-medium text-xs
               hover:scale-105 active:scale-95
               focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand/50
-              ${lang.code === locale ? (isScrolled ? "bg-white/20 text-white scale-105" : "bg-brand/10 text-brand scale-105") : isScrolled ? "text-white/80 hover:bg-white/10 hover:text-white" : "text-gray-900 hover:bg-light"}
+              ${lang.code === locale ? "bg-brand/20 text-brand scale-105" : "text-gray-900 hover:bg-brand/5"}
             `}
 					>
 						<Flag country={lang.flag} size={14} />
 						<span className="leading-none">{lang.label}</span>
 					</button>
-					{idx < LANGUAGES.length - 1 && <span className={`text-xs ${isScrolled ? "text-white/50" : "text-neutral-300"}`}>|</span>}
+					{idx < LANGUAGES.length - 1 && <span className="text-xs text-gray-400">|</span>}
 				</React.Fragment>
 			))}
 		</div>

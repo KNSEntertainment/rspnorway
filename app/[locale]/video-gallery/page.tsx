@@ -1,29 +1,58 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Play, Pause, Volume2, VolumeX, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Play, Pause, Volume2, VolumeX, X, ChevronLeft, ChevronRight, Video } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 
 interface Video {
 	_id: string;
 	url: string;
 	thumbnail?: string;
-	title: string;
+	title_en: string;
+	title_ne?: string;
+	title_no?: string;
 	category: string;
 	duration?: string;
-	creator: string;
+	creator_en: string;
+	creator_ne?: string;
+	description_en?: string;
+	description_ne?: string;
+	description_no?: string;
+	isYouTube?: boolean;
+	// Legacy fields for backward compatibility
+	title?: string;
+	creator?: string;
 	description?: string;
 }
 
 const VideoGallery: React.FC = () => {
 	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 	const [playingId, setPlayingId] = useState<string | null>(null);
-	const [isMuted, setIsMuted] = useState<boolean>(true);
+	const [isMuted, setIsMuted] = useState<boolean>(false);
 	const [videos, setVideos] = useState<Video[]>([]);
 	const [loading, setLoading] = useState(true);
 	const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 	const modalVideoRef = useRef<HTMLVideoElement | null>(null);
 	const t = useTranslations("gallery");
+	const locale = useLocale();
+
+	// Helper functions to get localized content
+	const getLocalizedTitle = (video: Video) => {
+		const key = `title_${locale}` as keyof Video;
+		return (video[key] as string) || video.title_en || video.title || "Untitled";
+	};
+
+	const getLocalizedCreator = (video: Video) => {
+		if (locale === "ne") {
+			return video.creator_ne || video.creator_en || video.creator || "RSP Norway";
+		}
+		return video.creator_en || video.creator || "RSP Norway";
+	};
+
+	const getLocalizedDescription = (video: Video) => {
+		const key = `description_${locale}` as keyof Video;
+		return (video[key] as string) || video.description_en || video.description || "";
+	};
 
 	// Fetch videos from database
 	useEffect(() => {
@@ -226,40 +255,48 @@ const VideoGallery: React.FC = () => {
 									e.currentTarget.style.boxShadow = "0 10px 40px rgba(0, 0, 0, 0.4)";
 								}}
 							>
-								{/* Video Element */}
-								<video
-									ref={(el) => {
-										videoRefs.current[video._id] = el;
-									}}
-									src={video.url}
-									poster={video.thumbnail}
-									loop
-									muted={isMuted}
-									playsInline
-									style={{
-										width: "100%",
-										height: "100%",
-										objectFit: "cover",
-										transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.transform = "scale(1.05)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.transform = "scale(1)";
-									}}
-								/>
-
-								{/* Gradient Overlays */}
-								<div
-									style={{
-										position: "absolute",
-										inset: 0,
-										background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 40%, rgba(0,0,0,0.3) 100%)",
-										transition: "opacity 0.4s ease",
-									}}
-									className="video-overlay"
-								/>
+								{/* Conditional rendering for YouTube vs uploaded videos */}
+								{video.isYouTube ? (
+									<img
+										src={video.thumbnail}
+										alt={getLocalizedTitle(video)}
+										style={{
+											width: "100%",
+											height: "100%",
+											objectFit: "cover",
+											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = "scale(1.05)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = "scale(1)";
+										}}
+									/>
+								) : (
+									<video
+										ref={(el) => {
+											videoRefs.current[video._id] = el;
+										}}
+										src={video.url}
+										poster={video.thumbnail}
+										loop
+										muted={isMuted}
+										playsInline
+										style={{
+											width: "100%",
+											height: "100%",
+											objectFit: "cover",
+											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = "scale(1.05)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = "scale(1)";
+										}}
+									/>
+								)}
 
 								{/* Duration Badge */}
 								<div
@@ -281,40 +318,42 @@ const VideoGallery: React.FC = () => {
 									{video.duration || "N/A"}
 								</div>
 
-								{/* Play/Pause Button */}
-								<button
-									onClick={(e) => togglePlay(video._id, e)}
-									style={{
-										position: "absolute",
-										top: "50%",
-										left: "50%",
-										transform: "translate(-50%, -50%)",
-										width: "80px",
-										height: "80px",
-										borderRadius: "50%",
-										border: "3px solid white",
-										background: isPlaying ? "rgba(0, 0, 0, 0.6)" : "rgba(138, 43, 226, 0.9)",
-										backdropFilter: "blur(10px)",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										cursor: "pointer",
-										opacity: isPlaying ? 0 : 1,
-										transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-										zIndex: 2,
-									}}
-									className="play-btn"
-									onMouseEnter={(e) => {
-										e.currentTarget.style.transform = "translate(-50%, -50%) scale(1.15)";
-										e.currentTarget.style.background = "rgba(138, 43, 226, 1)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)";
-										e.currentTarget.style.background = isPlaying ? "rgba(0, 0, 0, 0.6)" : "rgba(138, 43, 226, 0.9)";
-									}}
-								>
-									{isPlaying ? <Pause size={32} color="white" fill="white" /> : <Play size={32} color="white" fill="white" style={{ marginLeft: "4px" }} />}
-								</button>
+								{/* Play/Pause Button - Hide for YouTube videos */}
+								{!video.isYouTube && (
+									<button
+										onClick={(e) => togglePlay(video._id, e)}
+										style={{
+											position: "absolute",
+											top: "50%",
+											left: "50%",
+											transform: "translate(-50%, -50%)",
+											width: "80px",
+											height: "80px",
+											borderRadius: "50%",
+											border: "3px solid white",
+											background: isPlaying ? "rgba(0, 0, 0, 0.6)" : "rgba(138, 43, 226, 0.9)",
+											backdropFilter: "blur(10px)",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											cursor: "pointer",
+											opacity: isPlaying ? 0 : 1,
+											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+											zIndex: 2,
+										}}
+										className="play-btn"
+										onMouseEnter={(e) => {
+											e.currentTarget.style.transform = "translate(-50%, -50%) scale(1.15)";
+											e.currentTarget.style.background = "rgba(138, 43, 226, 1)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)";
+											e.currentTarget.style.background = isPlaying ? "rgba(0, 0, 0, 0.6)" : "rgba(138, 43, 226, 0.9)";
+										}}
+									>
+										{isPlaying ? <Pause size={32} color="white" fill="white" /> : <Play size={32} color="white" fill="white" style={{ marginLeft: "4px" }} />}
+									</button>
+								)}
 
 								{/* Video Info */}
 								<div
@@ -354,7 +393,7 @@ const VideoGallery: React.FC = () => {
 											letterSpacing: "0.05em",
 										}}
 									>
-										{video.title}
+										{getLocalizedTitle(video)}
 									</h3>
 									<p
 										style={{
@@ -363,7 +402,7 @@ const VideoGallery: React.FC = () => {
 											color: "#999",
 										}}
 									>
-										Created by {video.creator}
+										Created by {getLocalizedCreator(video)}
 									</p>
 								</div>
 							</div>
@@ -516,18 +555,37 @@ const VideoGallery: React.FC = () => {
 								marginBottom: "32px",
 							}}
 						>
-							<video
-								ref={modalVideoRef}
-								src={selectedVideo.url}
-								controls
-								autoPlay
-								muted={isMuted}
-								style={{
-									width: "100%",
-									display: "block",
-									background: "#000",
-								}}
-							/>
+							{selectedVideo.isYouTube ? (
+								<iframe
+									src={selectedVideo.url}
+									title={getLocalizedTitle(selectedVideo)}
+									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+									allowFullScreen
+									style={{
+										width: "100%",
+										maxHeight: "70vh",
+										aspectRatio: "16/9",
+										display: "block",
+										background: "#000",
+										border: "none",
+									}}
+								/>
+							) : (
+								<video
+									ref={modalVideoRef}
+									src={selectedVideo.url}
+									controls
+									autoPlay
+									muted={isMuted}
+									style={{
+										width: "100%",
+										maxHeight: "70vh",
+										height: "auto",
+										display: "block",
+										background: "#000",
+									}}
+								/>
+							)}
 						</div>
 
 						{/* Video Details */}
@@ -565,10 +623,11 @@ const VideoGallery: React.FC = () => {
 										letterSpacing: "0.02em",
 									}}
 								>
-									{selectedVideo.title}
+									{getLocalizedTitle(selectedVideo)}
 								</h2>
 
-								<p
+								<div
+									className="flex items-center gap-2"
 									style={{
 										fontFamily: '"Space Mono", monospace',
 										fontSize: "1rem",
@@ -576,8 +635,8 @@ const VideoGallery: React.FC = () => {
 										marginBottom: "24px",
 									}}
 								>
-									Created by {selectedVideo.creator}
-								</p>
+									<Video className="w-5 h-5 text-brand" /> {getLocalizedCreator(selectedVideo)}
+								</div>
 							</div>
 
 							<div
@@ -587,32 +646,35 @@ const VideoGallery: React.FC = () => {
 									alignItems: "center",
 								}}
 							>
-								<button
-									onClick={() => setIsMuted(!isMuted)}
-									style={{
-										width: "48px",
-										height: "48px",
-										borderRadius: "12px",
-										border: "2px solid rgba(255, 255, 255, 0.2)",
-										background: "rgba(255, 255, 255, 0.05)",
-										color: "white",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										cursor: "pointer",
-										transition: "all 0.3s ease",
-									}}
-									onMouseEnter={(e) => {
-										e.currentTarget.style.background = "rgba(138, 43, 226, 0.3)";
-										e.currentTarget.style.borderColor = "rgba(138, 43, 226, 0.5)";
-									}}
-									onMouseLeave={(e) => {
-										e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
-										e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
-									}}
-								>
-									{isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />}
-								</button>
+								{/* Hide mute button for YouTube videos */}
+								{!selectedVideo.isYouTube && (
+									<button
+										onClick={() => setIsMuted(!isMuted)}
+										style={{
+											width: "48px",
+											height: "48px",
+											borderRadius: "12px",
+											border: "2px solid rgba(255, 255, 255, 0.2)",
+											background: "rgba(255, 255, 255, 0.05)",
+											color: "white",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											cursor: "pointer",
+											transition: "all 0.3s ease",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.background = "rgba(138, 43, 226, 0.3)";
+											e.currentTarget.style.borderColor = "rgba(138, 43, 226, 0.5)";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+											e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
+										}}
+									>
+										{isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />}
+									</button>
+								)}
 
 								<div
 									style={{

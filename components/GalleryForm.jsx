@@ -6,7 +6,9 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 	const [formData, setFormData] = useState({
 		media: [],
 		category: "",
-		alt: "",
+		alt_en: "",
+		alt_ne: "",
+		alt_no: "",
 	});
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState("");
@@ -16,7 +18,9 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 			setFormData({
 				media: [],
 				category: galleryToEdit.category || "",
-				alt: galleryToEdit.alt || galleryToEdit.category,
+				alt_en: galleryToEdit.alt_en || galleryToEdit.alt || "",
+				alt_ne: galleryToEdit.alt_ne || "",
+				alt_no: galleryToEdit.alt_no || "",
 			});
 		}
 	}, [galleryToEdit]);
@@ -38,7 +42,9 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 		try {
 			const form = new FormData();
 			form.append("category", formData.category);
-			form.append("alt", formData.category);
+			form.append("alt_en", formData.alt_en);
+			form.append("alt_ne", formData.alt_ne);
+			form.append("alt_no", formData.alt_no);
 
 			formData.media.forEach((file) => {
 				form.append("media", file);
@@ -61,7 +67,9 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 				setFormData({
 					media: [],
 					category: "",
-					alt: "",
+					alt_en: "",
+					alt_ne: "",
+					alt_no: "",
 				});
 				alert(`Gallery item ${galleryToEdit ? "updated" : "created"} successfully!`);
 				handleCloseGalleryModal();
@@ -84,11 +92,33 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 				</label>
 				<input type="file" id="media" multiple onChange={handleFileChange} className="w-full p-2 border rounded" accept="image/*" required={!galleryToEdit} />
 			</div>
+
 			<div>
 				<label htmlFor="category" className="block mb-2 font-bold">
 					Enter Tag - meaningful category for images
 				</label>
 				<input type="text" id="category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g. Field trip" required={!formData.classId} />
+			</div>
+
+			<div>
+				<label htmlFor="alt_en" className="block mb-2 font-bold">
+					Album Title (English)
+				</label>
+				<input type="text" id="alt_en" value={formData.alt_en} onChange={(e) => setFormData({ ...formData, alt_en: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g. Annual Conference 2025" required />
+			</div>
+
+			<div>
+				<label htmlFor="alt_ne" className="block mb-2 font-bold">
+					Album Title (Nepali - नेपाली)
+				</label>
+				<input type="text" id="alt_ne" value={formData.alt_ne} onChange={(e) => setFormData({ ...formData, alt_ne: e.target.value })} className="w-full p-2 border rounded" placeholder="उदा. वार्षिक सम्मेलन २०२५" required />
+			</div>
+
+			<div>
+				<label htmlFor="alt_no" className="block mb-2 font-bold">
+					Album Title (Norwegian - Norsk)
+				</label>
+				<input type="text" id="alt_no" value={formData.alt_no} onChange={(e) => setFormData({ ...formData, alt_no: e.target.value })} className="w-full p-2 border rounded" placeholder="f.eks. Årlig konferanse 2025" required />
 			</div>
 
 			<div className="grid grid-cols-2 gap-2">

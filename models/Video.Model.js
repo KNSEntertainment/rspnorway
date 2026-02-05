@@ -2,15 +2,25 @@ import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema(
 	{
-		url: { type: String, required: true }, // Cloudinary video URL
+		url: { type: String, required: true }, // Cloudinary video URL or YouTube URL
 		thumbnail: { type: String, required: false }, // Cloudinary thumbnail/poster URL
-		title: { type: String, required: true },
+		title_en: { type: String, required: true },
+		title_ne: { type: String, required: false },
+		title_no: { type: String, required: false },
 		category: { type: String, required: true },
 		duration: { type: String, required: false }, // e.g., "2:45"
-		description: { type: String, required: false },
-		creator: { type: String, default: "RSP Norway" },
+		description_en: { type: String, required: false },
+		description_ne: { type: String, required: false },
+		description_no: { type: String, required: false },
+		creator_en: { type: String, default: "RSP Norway" },
+		creator_ne: { type: String, default: "आरएसपी नर्वे" },
+		isYouTube: { type: Boolean, default: false }, // Flag to indicate if it's a YouTube video
 		uploadedBy: { type: String, required: false }, // Admin user who uploaded
 		isActive: { type: Boolean, default: true },
+		// Legacy fields for backward compatibility
+		title: { type: String, required: false },
+		description: { type: String, required: false },
+		creator: { type: String, required: false },
 	},
 	{ timestamps: true },
 );

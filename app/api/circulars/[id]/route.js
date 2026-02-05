@@ -88,8 +88,7 @@ export async function PUT(request, { params }) {
 					await cloudinary.v2.uploader.destroy(mainPictureId);
 				}
 			}
-			const uploadResult = await uploadToCloudinary(formData.get("circularMainPicture"), "circulars");
-			circularMainPictureUrl = uploadResult?.secure_url || "";
+			circularMainPictureUrl = await uploadToCloudinary(formData.get("circularMainPicture"), "circulars");
 		}
 
 		if (formData.get("circularSecondPicture")) {
@@ -99,8 +98,7 @@ export async function PUT(request, { params }) {
 					await cloudinary.v2.uploader.destroy(secondPictureId);
 				}
 			}
-			const uploadResult = await uploadToCloudinary(formData.get("circularSecondPicture"), "circulars");
-			circularSecondPictureUrl = uploadResult?.secure_url || "";
+			circularSecondPictureUrl = await uploadToCloudinary(formData.get("circularSecondPicture"), "circulars");
 		}
 
 		existingCircular.circularTitle = circularTitle;
