@@ -1,20 +1,23 @@
 import DonationForm from "@/components/DonationForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Target, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
 	title: "Donate - RSP Norway",
 	description: "Support RSP Norway with your generous donation",
 };
 
-export default function DonatePage() {
+export default async function DonatePage() {
+	const t = await getTranslations("donate");
+
 	return (
 		<div className="min-h-screen py-12 px-4">
 			<div className="max-w-6xl mx-auto">
 				{/* Hero Section */}
 				<div className="text-center mb-12">
-					<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Support Our Mission</h1>
-					<p className="text-xl text-gray-600 max-w-3xl mx-auto">Your generous contribution helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.</p>
+					<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{t("hero_title")}</h1>
+					<p className="text-xl text-gray-600 max-w-3xl mx-auto">{t("hero_description")}</p>
 				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
@@ -27,7 +30,7 @@ export default function DonatePage() {
 					<div className="space-y-6">
 						<Card className="border-0 shadow-lg">
 							<CardContent className="pt-6">
-								<h3 className="text-xl font-bold text-gray-900 mb-4">Your Impact</h3>
+								<h3 className="text-xl font-bold text-gray-900 mb-4">{t("impact_title")}</h3>
 								<div className="space-y-4">
 									<div className="flex gap-3">
 										<div className="flex-shrink-0">
@@ -36,8 +39,8 @@ export default function DonatePage() {
 											</div>
 										</div>
 										<div>
-											<h4 className="font-semibold text-gray-900">Community Events</h4>
-											<p className="text-sm text-gray-600">Support cultural programs and community gatherings</p>
+											<h4 className="font-semibold text-gray-900">{t("community_events")}</h4>
+											<p className="text-sm text-gray-600">{t("community_events_desc")}</p>
 										</div>
 									</div>
 
@@ -48,8 +51,8 @@ export default function DonatePage() {
 											</div>
 										</div>
 										<div>
-											<h4 className="font-semibold text-gray-900">Political Advocacy</h4>
-											<p className="text-sm text-gray-600">Fund campaigns and awareness programs</p>
+											<h4 className="font-semibold text-gray-900">{t("political_advocacy")}</h4>
+											<p className="text-sm text-gray-600">{t("political_advocacy_desc")}</p>
 										</div>
 									</div>
 
@@ -60,8 +63,8 @@ export default function DonatePage() {
 											</div>
 										</div>
 										<div>
-											<h4 className="font-semibold text-gray-900">Organizational Growth</h4>
-											<p className="text-sm text-gray-600">Expand our reach and strengthen our movement</p>
+											<h4 className="font-semibold text-gray-900">{t("organizational_growth")}</h4>
+											<p className="text-sm text-gray-600">{t("organizational_growth_desc")}</p>
 										</div>
 									</div>
 
@@ -72,8 +75,8 @@ export default function DonatePage() {
 											</div>
 										</div>
 										<div>
-											<h4 className="font-semibold text-gray-900">Member Support</h4>
-											<p className="text-sm text-gray-600">Resources and assistance for our members</p>
+											<h4 className="font-semibold text-gray-900">{t("member_support")}</h4>
+											<p className="text-sm text-gray-600">{t("member_support_desc")}</p>
 										</div>
 									</div>
 								</div>
@@ -82,23 +85,23 @@ export default function DonatePage() {
 
 						<Card className="border-0 shadow-lg bg-gradient-to-br from-brand to-blue-700 text-white">
 							<CardContent className="pt-6">
-								<h3 className="text-xl font-bold mb-3">Why Donate?</h3>
+								<h3 className="text-xl font-bold mb-3">{t("why_donate")}</h3>
 								<ul className="space-y-2 text-sm">
 									<li className="flex items-start gap-2">
 										<span className="text-white/80">✓</span>
-										<span>100% of donations go directly to our programs</span>
+										<span>{t("why_donate_1")}</span>
 									</li>
 									<li className="flex items-start gap-2">
 										<span className="text-white/80">✓</span>
-										<span>Transparent financial reporting</span>
+										<span>{t("why_donate_2")}</span>
 									</li>
 									<li className="flex items-start gap-2">
 										<span className="text-white/80">✓</span>
-										<span>Secure payment through Stripe</span>
+										<span>{t("why_donate_3")}</span>
 									</li>
 									<li className="flex items-start gap-2">
 										<span className="text-white/80">✓</span>
-										<span>Email receipt for tax purposes</span>
+										<span>{t("why_donate_4")}</span>
 									</li>
 								</ul>
 							</CardContent>
@@ -109,23 +112,23 @@ export default function DonatePage() {
 				{/* FAQ Section */}
 				<Card className="border-0 shadow-lg">
 					<CardContent className="pt-6">
-						<h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Frequently Asked Questions</h3>
+						<h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t("faq_title")}</h3>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<div>
-								<h4 className="font-semibold text-gray-900 mb-2">Is my donation secure?</h4>
-								<p className="text-sm text-gray-600">Yes, all payments are processed securely through Stripe, a trusted payment platform used by millions worldwide.</p>
+								<h4 className="font-semibold text-gray-900 mb-2">{t("faq_1_question")}</h4>
+								<p className="text-sm text-gray-600">{t("faq_1_answer")}</p>
 							</div>
 							<div>
-								<h4 className="font-semibold text-gray-900 mb-2">Will I receive a receipt?</h4>
-								<p className="text-sm text-gray-600">Yes, you will receive an email receipt immediately after your donation is processed.</p>
+								<h4 className="font-semibold text-gray-900 mb-2">{t("faq_2_question")}</h4>
+								<p className="text-sm text-gray-600">{t("faq_2_answer")}</p>
 							</div>
 							<div>
-								<h4 className="font-semibold text-gray-900 mb-2">Can I donate anonymously?</h4>
-								<p className="text-sm text-gray-600">Yes, you can choose to make your donation anonymous by checking the anonymous option in the form.</p>
+								<h4 className="font-semibold text-gray-900 mb-2">{t("faq_3_question")}</h4>
+								<p className="text-sm text-gray-600">{t("faq_3_answer")}</p>
 							</div>
 							<div>
-								<h4 className="font-semibold text-gray-900 mb-2">How will my donation be used?</h4>
-								<p className="text-sm text-gray-600">Your donation supports community events, political advocacy, organizational operations, and member services.</p>
+								<h4 className="font-semibold text-gray-900 mb-2">{t("faq_4_question")}</h4>
+								<p className="text-sm text-gray-600">{t("faq_4_answer")}</p>
 							</div>
 						</div>
 					</CardContent>

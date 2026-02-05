@@ -349,5 +349,32 @@
 		"general": "General",
 		"active": "Active",
 		"loading": "Loading..."
+	},
+	"donate": {
+		"hero_title": "Support Our Mission",
+		"hero_description": "Your generous contribution helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.",
+		"impact_title": "Your Impact",
+		"community_events": "Community Events",
+		"community_events_desc": "Support cultural programs and community gatherings",
+		"political_advocacy": "Political Advocacy",
+		"political_advocacy_desc": "Fund campaigns and awareness programs",
+		"organizational_growth": "Organizational Growth",
+		"organizational_growth_desc": "Expand our reach and strengthen our movement",
+		"member_support": "Member Support",
+		"member_support_desc": "Resources and assistance for our members",
+		"why_donate": "Why Donate?",
+		"why_donate_1": "100% of donations go directly to our programs",
+		"why_donate_2": "Transparent financial reporting",
+		"why_donate_3": "Secure payment through Stripe",
+		"why_donate_4": "Email receipt for tax purposes",
+		"faq_title": "Frequently Asked Questions",
+		"faq_1_question": "Is my donation secure?",
+		"faq_1_answer": "Yes, all payments are processed securely through Stripe, a trusted payment platform used by millions worldwide.",
+		"faq_2_question": "Will I receive a receipt?",
+		"faq_2_answer": "Yes, you will receive an email receipt immediately after your donation is processed.",
+		"faq_3_question": "Can I donate anonymously?",
+		"faq_3_answer": "Yes, you can choose to make your donation anonymous by checking the anonymous option in the form.",
+		"faq_4_question": "How will my donation be used?",
+		"faq_4_answer": "Your donation supports community events, political advocacy, organizational operations, and member services."
 	}
 }

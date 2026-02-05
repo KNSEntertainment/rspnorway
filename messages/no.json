@@ -350,5 +350,32 @@
 		"general": "Generell",
 		"active": "Aktiv",
 		"loading": "Laster..."
+	},
+	"donate": {
+		"hero_title": "Støtt Vårt Oppdrag",
+		"hero_description": "Ditt generøse bidrag hjelper oss å gjøre en positiv forskjell i det nepalesiske samfunnet i Norge og støtte demokratiske verdier i Nepal.",
+		"impact_title": "Din Påvirkning",
+		"community_events": "Samfunnsarrangementer",
+		"community_events_desc": "Støtt kulturelle programmer og samfunnssamlinger",
+		"political_advocacy": "Politisk Påvirkningsarbeid",
+		"political_advocacy_desc": "Finansier kampanjer og bevissthetsprogrammer",
+		"organizational_growth": "Organisasjonsvekst",
+		"organizational_growth_desc": "Utvid vår rekkevidde og styrk vår bevegelse",
+		"member_support": "Medlemsstøtte",
+		"member_support_desc": "Ressurser og assistanse for våre medlemmer",
+		"why_donate": "Hvorfor Donere?",
+		"why_donate_1": "100% av donasjoner går direkte til våre programmer",
+		"why_donate_2": "Transparent finansiell rapportering",
+		"why_donate_3": "Sikker betaling gjennom Stripe",
+		"why_donate_4": "E-postkvittering for skatteformål",
+		"faq_title": "Ofte Stilte Spørsmål",
+		"faq_1_question": "Er donasjonen min sikker?",
+		"faq_1_answer": "Ja, alle betalinger behandles sikkert gjennom Stripe, en pålitelig betalingsplattform som brukes av millioner over hele verden.",
+		"faq_2_question": "Vil jeg motta en kvittering?",
+		"faq_2_answer": "Ja, du vil motta en e-postkvittering umiddelbart etter at donasjonen din er behandlet.",
+		"faq_3_question": "Kan jeg donere anonymt?",
+		"faq_3_answer": "Ja, du kan velge å gjøre donasjonen din anonym ved å krysse av for det anonyme alternativet i skjemaet.",
+		"faq_4_question": "Hvordan vil donasjonen min bli brukt?",
+		"faq_4_answer": "Donasjonen din støtter samfunnsarrangementer, politisk påvirkningsarbeid, organisasjonsdrift og medlemstjenester."
 	}
 }
