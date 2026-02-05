@@ -56,7 +56,6 @@ export default function DashboardBlogClient({ blogs }) {
 			{/* Inline Form Section */}
 			{openBlogModal && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-lg font-bold text-white bg-brand p-4 mb-4 text-center rounded">{blogToEdit ? "Edit Blog" : "Create Blog"}</h2>
 					<BlogForm handleCloseBlogModal={handleCloseBlogModal} fetchBlogs={blogs} blogToEdit={blogToEdit} />
 				</div>
 			)}

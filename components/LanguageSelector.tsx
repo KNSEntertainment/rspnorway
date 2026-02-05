@@ -9,7 +9,7 @@ const LANGUAGES: { code: string; flag: "np" | "no" | "gb"; label: string }[] = [
 	{ code: "en", flag: "gb", label: "EN" },
 ];
 
-const LanguageSelector = ({ isScrolled = false }: { isScrolled?: boolean }) => {
+const LanguageSelector = () => {
 	const locale = useLocale();
 	const router = useRouter();
 	const pathname = usePathname();

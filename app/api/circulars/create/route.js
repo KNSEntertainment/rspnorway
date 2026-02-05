@@ -49,24 +49,25 @@ export async function POST(request) {
 
 		let mainPictureUrl = "";
 		if (circularMainPicture) {
-		mainPictureUrl = await uploadToCloudinary(circularMainPicture, "circulars");
-	}
+			mainPictureUrl = await uploadToCloudinary(circularMainPicture, "circulars");
+		}
 
-	let secondPictureUrl = "";
-	if (circularSecondPicture) {
-		secondPictureUrl = await uploadToCloudinary(circularSecondPicture, "circulars");
-		const circular = await Circular.create({
-			slug,
-			circularTitle,
-			circularDesc,
-			circularAuthor,
-			circularMainPicture: mainPictureUrl,
-			circularSecondPicture: secondPictureUrl,
-			publicationStatus,
-			circularPublishedAt: circularPublishedAt ? new Date(circularPublishedAt) : null,
-		});
+		let secondPictureUrl = "";
+		if (circularSecondPicture) {
+			secondPictureUrl = await uploadToCloudinary(circularSecondPicture, "circulars");
+			const circular = await Circular.create({
+				slug,
+				circularTitle,
+				circularDesc,
+				circularAuthor,
+				circularMainPicture: mainPictureUrl,
+				circularSecondPicture: secondPictureUrl,
+				publicationStatus,
+				circularPublishedAt: circularPublishedAt ? new Date(circularPublishedAt) : null,
+			});
 
-		return NextResponse.json({ success: true, circular }, { status: 201 });
+			return NextResponse.json({ success: true, circular }, { status: 201 });
+		}
 	} catch (error) {
 		console.error("Error in API route:", error);
 		return NextResponse.json({ success: false, error: error.message }, { status: 500 });

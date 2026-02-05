@@ -184,6 +184,9 @@
 		"description": "Explore our gallery filled with memories from our events and activities.",
 		"video_title": "Video Gallery",
 		"video_description": "Explore our gallery filled with memories from our events and activities.",
+		"videoGalleryTitle": "Video Gallery",
+		"viewAllVideos": "View All Videos",
+		"noVideos": "No videos available",
 		"load_more": "Load More",
 		"zoom_in": "Zoom In",
 		"photo": "photo",
@@ -218,7 +221,8 @@
 		"mission_title": "Our Mission",
 		"mission_description": "To provide quality education and foster a nurturing environment for students to thrive academically and personally.",
 		"vision_title": "Our Vision",
-		"vision_description": "To be a leading educational institution recognized for excellence in teaching, innovation, and community engagement."
+		"vision_description": "To be a leading educational institution recognized for excellence in teaching, innovation, and community engagement.",
+		"values_title": "What We Stand For"
 	},
 	"about": {
 		"title": "Welcome to RSP Norway",

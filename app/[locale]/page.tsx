@@ -3,6 +3,7 @@ import About from "@/components/About";
 import { Metadata } from "next";
 import Blogs from "@/components/Blogs";
 import Gallery from "@/components/Gallery";
+import VideoGallery from "@/components/VideoGallery";
 // import HeroSection from "@/components/HeroSection";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function LandingPage() {
 			<About />
 			<Blogs />
 			<Gallery />
+			<VideoGallery />
 		</main>
 	);
 }

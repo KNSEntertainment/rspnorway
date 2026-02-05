@@ -9,17 +9,21 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 	const [formData, setFormData] = useState({
-		blogTitle: "",
-		blogDesc: "",
-		// blogAuthor: "",
+		blogTitle_en: "",
+		blogTitle_ne: "",
+		blogTitle_no: "",
+		blogDesc_en: "",
+		blogDesc_ne: "",
+		blogDesc_no: "",
 		blogMainPicture: null,
 		blogSecondPicture: null,
 		blogDate: "",
 	});
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState("");
+	const [activeTab, setActiveTab] = useState("en");
 
-	const editor = useEditor({
+	const editor_en = useEditor({
 		extensions: [
 			StarterKit.configure({
 				paragraph: true,
@@ -33,12 +37,12 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 			Image,
 			Underline,
 			Placeholder.configure({
-				placeholder: "Start writing your blog content here...",
+				placeholder: "Start writing your blog content in English...",
 			}),
 		],
-		content: formData.blogDesc,
+		content: formData.blogDesc_en,
 		onUpdate: ({ editor }) => {
-			setFormData({ ...formData, blogDesc: editor.getHTML() });
+			setFormData({ ...formData, blogDesc_en: editor.getHTML() });
 		},
 		editorProps: {
 			attributes: {
@@ -47,19 +51,89 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 		},
 	});
 
+	const editor_ne = useEditor({
+		extensions: [
+			StarterKit.configure({
+				paragraph: true,
+			}),
+			Link.configure({
+				openOnClick: false,
+				HTMLAttributes: {
+					class: "text-brand underline",
+				},
+			}),
+			Image,
+			Underline,
+			Placeholder.configure({
+				placeholder: "नेपालीमा ब्लग सामग्री लेख्नुहोस्...",
+			}),
+		],
+		content: formData.blogDesc_ne,
+		onUpdate: ({ editor }) => {
+			setFormData({ ...formData, blogDesc_ne: editor.getHTML() });
+		},
+		editorProps: {
+			attributes: {
+				class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none w-full p-2 min-h-[200px]",
+			},
+		},
+	});
+
+	const editor_no = useEditor({
+		extensions: [
+			StarterKit.configure({
+				paragraph: true,
+			}),
+			Link.configure({
+				openOnClick: false,
+				HTMLAttributes: {
+					class: "text-brand underline",
+				},
+			}),
+			Image,
+			Underline,
+			Placeholder.configure({
+				placeholder: "Skriv blogginnholdet ditt på norsk...",
+			}),
+		],
+		content: formData.blogDesc_no,
+		onUpdate: ({ editor }) => {
+			setFormData({ ...formData, blogDesc_no: editor.getHTML() });
+		},
+		editorProps: {
+			attributes: {
+				class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none w-full p-2 min-h-[200px]",
+			},
+		},
+	});
+
+	const editor = activeTab === "en" ? editor_en : activeTab === "ne" ? editor_ne : editor_no;
+
 	useEffect(() => {
 		if (blogToEdit) {
 			setFormData({
-				...blogToEdit,
+				blogTitle_en: blogToEdit.blogTitle_en || blogToEdit.blogTitle || "",
+				blogTitle_ne: blogToEdit.blogTitle_ne || "",
+				blogTitle_no: blogToEdit.blogTitle_no || "",
+				blogDesc_en: blogToEdit.blogDesc_en || blogToEdit.blogDesc || "",
+				blogDesc_ne: blogToEdit.blogDesc_ne || "",
+				blogDesc_no: blogToEdit.blogDesc_no || "",
+				blogDate: blogToEdit.blogDate || "",
 				blogMainPicture: null,
 				blogSecondPicture: null,
 			});
 
-			if (editor && blogToEdit.blogDesc) {
-				editor.commands.setContent(blogToEdit.blogDesc);
+			if (editor_en && blogToEdit.blogDesc_en) {
+				editor_en.commands.setContent(blogToEdit.blogDesc_en || blogToEdit.blogDesc || "");
+			}
+			if (editor_ne && blogToEdit.blogDesc_ne) {
+				editor_ne.commands.setContent(blogToEdit.blogDesc_ne || "");
+			}
+			if (editor_no && blogToEdit.blogDesc_no) {
+				editor_no.commands.setContent(blogToEdit.blogDesc_no || "");
 			}
 		}
-	}, [blogToEdit, editor]);
+	}, [blogToEdit, editor_en, editor_ne, editor_no]);
 
 	useEffect(() => {
 		const style = document.createElement("style");
@@ -146,17 +220,20 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 
 			if (result.success) {
 				setFormData({
-					blogTitle: "",
-					blogDesc: "",
-					// blogAuthor: "",
+					blogTitle_en: "",
+					blogTitle_ne: "",
+					blogTitle_no: "",
+					blogDesc_en: "",
+					blogDesc_ne: "",
+					blogDesc_no: "",
 					blogMainPicture: null,
 					blogSecondPicture: null,
 					blogDate: "",
 				});
 
-				if (editor) {
-					editor.commands.setContent("");
-				}
+				if (editor_en) editor_en.commands.setContent("");
+				if (editor_ne) editor_ne.commands.setContent("");
+				if (editor_no) editor_no.commands.setContent("");
 
 				alert(`Blog ${blogToEdit ? "updated" : "created"} successfully!`);
 				handleCloseBlogModal();
@@ -251,55 +328,121 @@ export default function BlogForm({ handleCloseBlogModal, blogToEdit = null }) {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-scroll">
+		<form onSubmit={handleSubmit} className="space-y-4">
 			{error && <div className="bg-red-50 border border-red-6000 text-red-600 px-4 py-3 rounded">{error}</div>}
-			<div>
-				<label htmlFor="blogTitle" className="block mb-2 font-bold">
-					Blog Title
-				</label>
-				<input type="text" id="blogTitle" value={formData.blogTitle} onChange={(e) => setFormData({ ...formData, blogTitle: e.target.value })} className="w-full p-2 border rounded" required />
-			</div>
-			<div>
-				<label htmlFor="blogDesc" className="block mb-2 font-bold">
-					Blog Description
-				</label>
-				<div className="border rounded overflow-hidden">
-					<RichTextToolbar />
-					<EditorContent editor={editor} className="border-t" />
+
+			{/* Shared Fields Section - Always Visible */}
+			<div className="space-y-4 pb-4 border-b-2 border-gray-200">
+				<div>
+					<label htmlFor="blogDate" className="block mb-2 font-bold">
+						Blog Date
+					</label>
+					<input
+						type="date"
+						id="blogDate"
+						value={formData.blogDate}
+						onChange={(e) => {
+							console.log("Selected date:", e.target.value);
+							setFormData({ ...formData, blogDate: e.target.value });
+						}}
+						className="w-full p-2 border rounded"
+					/>
+				</div>
+
+				<div>
+					<label htmlFor="blogMainPicture" className="block mb-2 font-bold">
+						Blog Main Picture
+					</label>
+					<input type="file" id="blogMainPicture" onChange={(e) => setFormData({ ...formData, blogMainPicture: e.target.files[0] })} className="w-full p-2 border rounded" />
+				</div>
+
+				<div>
+					<label htmlFor="blogSecondPicture" className="block mb-2 font-bold">
+						Blog Second Picture
+					</label>
+					<input type="file" id="blogSecondPicture" onChange={(e) => setFormData({ ...formData, blogSecondPicture: e.target.files[0] })} className="w-full p-2 border rounded" />
 				</div>
 			</div>
-			{/* <div>
-				<label htmlFor="blogAuthor" className="block mb-2 font-bold">
-					Blog Author
-				</label>
-				<input type="text" id="blogAuthor" value={formData.blogAuthor} onChange={(e) => setFormData({ ...formData, blogAuthor: e.target.value })} className="w-full p-2 border rounded" />
-			</div> */}
-			<div>
-				<label htmlFor="blogMainPicture" className="block mb-2 font-bold">
-					Blog Main Picture
-				</label>
-				<input type="file" id="blogMainPicture" onChange={(e) => setFormData({ ...formData, blogMainPicture: e.target.files[0] })} className="w-full p-2 border rounded" />
-			</div>
-			<div>
-				<label htmlFor="blogSecondPicture" className="block mb-2 font-bold">
-					Blog Second Picture
-				</label>
-				<input type="file" id="blogSecondPicture" onChange={(e) => setFormData({ ...formData, blogSecondPicture: e.target.files[0] })} className="w-full p-2 border rounded" />
-			</div>
-			<div>
-				<label htmlFor="blogDate" className="block mb-2 font-bold">
-					Blog Date
-				</label>
-				<input
-					type="date"
-					id="blogDate"
-					value={formData.blogDate}
-					onChange={(e) => {
-						console.log("Selected date:", e.target.value); // Debug
-						setFormData({ ...formData, blogDate: e.target.value });
-					}}
-					className="w-full p-2 border rounded"
-				/>
+
+			{/* Language-Specific Content Section */}
+			<div className="space-y-4">
+				<h3 className="text-lg font-bold text-gray-700">Language-Specific Content</h3>
+
+				{/* Language Tabs */}
+				<div className="flex gap-2 border-b">
+					<button type="button" onClick={() => setActiveTab("en")} className={`px-4 py-2 font-semibold ${activeTab === "en" ? "border-b-2 border-brand text-brand" : "text-gray-600"}`}>
+						English *
+					</button>
+					<button type="button" onClick={() => setActiveTab("ne")} className={`px-4 py-2 font-semibold ${activeTab === "ne" ? "border-b-2 border-brand text-brand" : "text-gray-600"}`}>
+						Nepali (नेपाली)
+					</button>
+					<button type="button" onClick={() => setActiveTab("no")} className={`px-4 py-2 font-semibold ${activeTab === "no" ? "border-b-2 border-brand text-brand" : "text-gray-600"}`}>
+						Norwegian (Norsk)
+					</button>
+				</div>
+
+				{/* English Fields */}
+				{activeTab === "en" && (
+					<>
+						<div>
+							<label htmlFor="blogTitle_en" className="block mb-2 font-bold">
+								Blog Title (English) *
+							</label>
+							<input type="text" id="blogTitle_en" value={formData.blogTitle_en} onChange={(e) => setFormData({ ...formData, blogTitle_en: e.target.value })} className="w-full p-2 border rounded" placeholder="Enter blog title in English" required />
+						</div>
+						<div>
+							<label htmlFor="blogDesc_en" className="block mb-2 font-bold">
+								Blog Description (English) *
+							</label>
+							<div className="border rounded overflow-hidden">
+								<RichTextToolbar />
+								<EditorContent editor={editor_en} className="border-t" />
+							</div>
+						</div>
+					</>
+				)}
+
+				{/* Nepali Fields */}
+				{activeTab === "ne" && (
+					<>
+						<div>
+							<label htmlFor="blogTitle_ne" className="block mb-2 font-bold">
+								Blog Title (Nepali)
+							</label>
+							<input type="text" id="blogTitle_ne" value={formData.blogTitle_ne} onChange={(e) => setFormData({ ...formData, blogTitle_ne: e.target.value })} className="w-full p-2 border rounded" placeholder="नेपालीमा ब्लग शीर्षक प्रविष्ट गर्नुहोस्" />
+						</div>
+						<div>
+							<label htmlFor="blogDesc_ne" className="block mb-2 font-bold">
+								Blog Description (Nepali)
+							</label>
+							<div className="border rounded overflow-hidden">
+								<RichTextToolbar />
+								<EditorContent editor={editor_ne} className="border-t" />
+							</div>
+						</div>
+					</>
+				)}
+
+				{/* Norwegian Fields */}
+				{activeTab === "no" && (
+					<>
+						<div>
+							<label htmlFor="blogTitle_no" className="block mb-2 font-bold">
+								Blog Title (Norwegian)
+							</label>
+							<input type="text" id="blogTitle_no" value={formData.blogTitle_no} onChange={(e) => setFormData({ ...formData, blogTitle_no: e.target.value })} className="w-full p-2 border rounded" placeholder="Skriv inn bloggtittel på norsk" />
+						</div>
+						<div>
+							<label htmlFor="blogDesc_no" className="block mb-2 font-bold">
+								Blog Description (Norwegian)
+							</label>
+							<div className="border rounded overflow-hidden">
+								<RichTextToolbar />
+								<EditorContent editor={editor_no} className="border-t" />
+							</div>
+						</div>
+					</>
+				)}
 			</div>
 			<div className="grid grid-cols-2 gap-2">
 				<button type="submit" disabled={submitting} className={`w-full p-1.5 rounded ${submitting ? "bg-neutral-400 cursor-not-allowed" : "bg-red-600 hover:bg-brand"} text-neutral-200 font-bold`}>

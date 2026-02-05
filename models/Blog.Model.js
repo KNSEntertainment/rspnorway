@@ -2,14 +2,41 @@ import mongoose from "mongoose";
 
 const blogSchema = new mongoose.Schema(
 	{
-		blogTitle: {
+		// Multilingual title fields
+		blogTitle_en: {
 			type: String,
 			required: true,
 			trim: true,
 		},
-		blogDesc: {
+		blogTitle_ne: {
+			type: String,
+			trim: true,
+		},
+		blogTitle_no: {
+			type: String,
+			trim: true,
+		},
+		// Multilingual description fields
+		blogDesc_en: {
 			type: String,
 			required: true,
+			trim: true,
+		},
+		blogDesc_ne: {
+			type: String,
+			trim: true,
+		},
+		blogDesc_no: {
+			type: String,
+			trim: true,
+		},
+		// Legacy fields for backward compatibility
+		blogTitle: {
+			type: String,
+			trim: true,
+		},
+		blogDesc: {
+			type: String,
 			trim: true,
 		},
 		blogAuthor: {
@@ -30,7 +57,7 @@ const blogSchema = new mongoose.Schema(
 	},
 	{
 		timestamps: true,
-	}
+	},
 );
 
 export default mongoose.models.Blog || mongoose.model("Blog", blogSchema);

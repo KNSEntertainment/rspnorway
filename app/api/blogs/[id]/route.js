@@ -58,9 +58,12 @@ export async function PUT(request, { params }) {
 		}
 
 		// Update text fields
-		const blogTitle = formData.get("blogTitle") || existingBlog.blogTitle;
-		const blogDesc = formData.get("blogDesc") || existingBlog.blogDesc;
-		// const blogAuthor = formData.get("blogAuthor") || existingBlog.blogAuthor;
+		const blogTitle_en = formData.get("blogTitle_en") || existingBlog.blogTitle_en || existingBlog.blogTitle;
+		const blogTitle_ne = formData.get("blogTitle_ne") || existingBlog.blogTitle_ne;
+		const blogTitle_no = formData.get("blogTitle_no") || existingBlog.blogTitle_no;
+		const blogDesc_en = formData.get("blogDesc_en") || existingBlog.blogDesc_en || existingBlog.blogDesc;
+		const blogDesc_ne = formData.get("blogDesc_ne") || existingBlog.blogDesc_ne;
+		const blogDesc_no = formData.get("blogDesc_no") || existingBlog.blogDesc_no;
 		const blogDate = formData.get("blogDate") || existingBlog.blogDate;
 
 		// Handle images
@@ -86,9 +89,14 @@ export async function PUT(request, { params }) {
 		}
 
 		// Update the blog in the database
-		existingBlog.blogTitle = blogTitle;
-		existingBlog.blogDesc = blogDesc;
-		// existingBlog.blogAuthor = blogAuthor;
+		existingBlog.blogTitle_en = blogTitle_en;
+		existingBlog.blogTitle_ne = blogTitle_ne;
+		existingBlog.blogTitle_no = blogTitle_no;
+		existingBlog.blogDesc_en = blogDesc_en;
+		existingBlog.blogDesc_ne = blogDesc_ne;
+		existingBlog.blogDesc_no = blogDesc_no;
+		existingBlog.blogTitle = blogTitle_en; // Legacy field
+		existingBlog.blogDesc = blogDesc_en; // Legacy field
 		existingBlog.blogDate = blogDate;
 		existingBlog.blogMainPicture = blogMainPictureUrl;
 		existingBlog.blogSecondPicture = blogSecondPictureUrl;

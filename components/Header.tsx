@@ -281,7 +281,7 @@ export default function Header() {
 						<SocialMediaLinks />
 					</div>
 					<div className="flex items-center gap-4">
-						<LanguageSelector isScrolled={isScrolled} />
+						<LanguageSelector />
 					</div>
 				</div>
 			</section>

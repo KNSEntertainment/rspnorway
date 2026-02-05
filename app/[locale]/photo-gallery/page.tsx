@@ -229,7 +229,7 @@ const PhotoGallery = () => {
 
 									{/* Preview Thumbnails */}
 									<div className="mt-4 flex gap-2">
-										{album.photos.slice(0, 4).map((photo, idx) => (
+										{album.photos.slice(0, 4).map((photo) => (
 											<div key={photo.id} className="w-12 h-12 rounded-lg overflow-hidden border-2 border-white shadow-sm">
 												<Image src={photo.url} alt={photo.title} width={48} height={48} className="w-full h-full object-cover object-top" />
 											</div>

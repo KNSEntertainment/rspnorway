@@ -3,8 +3,16 @@ import Image from "next/image";
 import React from "react";
 import { useLocale } from "next-intl";
 
-function BlogSidebar({ blogs }) {
-	const locale = useLocale();
+function BlogSidebar({ blogs, locale: propLocale }) {
+	const hookLocale = useLocale();
+	const locale = propLocale || hookLocale;
+
+	const getLocalizedTitle = (blog) => {
+		if (!blog) return "";
+		if (locale === "ne" && blog.blogTitle_ne) return blog.blogTitle_ne;
+		if (locale === "no" && blog.blogTitle_no) return blog.blogTitle_no;
+		return blog.blogTitle_en || blog.blogTitle || "";
+	};
 	return (
 		<div className="space-y-6 md:sticky md:top-36 bg-light h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
 			{/* Share Box */}
@@ -17,10 +25,10 @@ function BlogSidebar({ blogs }) {
 						blogs.map((relBlog) => (
 							<Link href={`/${locale}/blogs/${relBlog._id}`} key={relBlog._id} className="flex space-x-4 group border-b pb-4 last:border-0 last:pb-0">
 								<div className="relative w-16 h-16 flex-shrink-0">
-									<Image src={relBlog?.blogMainPicture || "Image"} alt={relBlog.blogTitle || "Blog Title"} width={64} height={64} className="object-cover rounded-md" />
+									<Image src={relBlog?.blogMainPicture || "Image"} alt={getLocalizedTitle(relBlog) || "Blog Title"} width={64} height={64} className="object-cover rounded-md" />
 								</div>
 								<div>
-									<h4 className="font-medium text-gray-900 group-hover:text-brand transition duration-200">{relBlog.blogTitle}</h4>
+									<h4 className="font-medium text-gray-900 group-hover:text-brand transition duration-200">{getLocalizedTitle(relBlog)}</h4>
 									<p className="text-sm text-gray-900">{relBlog?.blogDate ? new Date(relBlog.blogDate).toISOString().slice(0, 10) : ""}</p>
 								</div>
 							</Link>

@@ -15,9 +15,22 @@ import { ObjectId } from "mongodb";
 
 export interface Blog {
 	_id: ObjectId;
-	blogTitle: string;
+	blogTitle_en: string;
+	blogTitle_ne?: string;
+	blogTitle_no?: string;
+	blogTitle?: string; // Legacy field
+	blogDesc_en: string;
+	blogDesc_ne?: string;
+	blogDesc_no?: string;
+	blogDesc?: string; // Legacy field
 	blogDate: string;
-	// Add other properties as needed
+	blogAuthor?: string;
+	blogMainPicture: string;
+	blogSecondPicture?: string;
+	blogContent?: string;
+	blogContent_en?: string;
+	blogContent_ne?: string;
+	blogContent_no?: string;
 }
 
 export interface Event {

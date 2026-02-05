@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Pause, Volume2, VolumeX, X, ChevronLeft, ChevronRight, Video } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
+import Image from "next/image";
 
 interface Video {
 	_id: string;
@@ -49,10 +50,10 @@ const VideoGallery: React.FC = () => {
 		return video.creator_en || video.creator || "RSP Norway";
 	};
 
-	const getLocalizedDescription = (video: Video) => {
-		const key = `description_${locale}` as keyof Video;
-		return (video[key] as string) || video.description_en || video.description || "";
-	};
+	// const getLocalizedDescription = (video: Video) => {
+	// 	const key = `description_${locale}` as keyof Video;
+	// 	return (video[key] as string) || video.description_en || video.description || "";
+	// };
 
 	// Fetch videos from database
 	useEffect(() => {
@@ -257,8 +258,8 @@ const VideoGallery: React.FC = () => {
 							>
 								{/* Conditional rendering for YouTube vs uploaded videos */}
 								{video.isYouTube ? (
-									<img
-										src={video.thumbnail}
+									<Image
+										src={video.thumbnail || "/ghanti.jpg"}
 										alt={getLocalizedTitle(video)}
 										style={{
 											width: "100%",

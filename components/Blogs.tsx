@@ -8,13 +8,22 @@ export default async function Blogs() {
 
 	const blogs = (blogsRaw || []).map((blog) => ({
 		_id: blog._id,
+		blogTitle_en: blog.blogTitle_en,
+		blogTitle_ne: blog.blogTitle_ne,
+		blogTitle_no: blog.blogTitle_no,
 		blogTitle: blog.blogTitle,
+		blogDesc_en: blog.blogDesc_en,
+		blogDesc_ne: blog.blogDesc_ne,
+		blogDesc_no: blog.blogDesc_no,
+		blogDesc: blog.blogDesc,
 		blogDate: blog.blogDate,
 		blogMainPicture: blog.blogMainPicture,
-		blogDesc: blog.blogDesc,
 		blogAuthor: blog.blogAuthor,
 		blogSecondPicture: blog.blogSecondPicture,
 		blogContent: blog.blogContent,
+		blogContent_en: blog.blogContent_en,
+		blogContent_ne: blog.blogContent_ne,
+		blogContent_no: blog.blogContent_no,
 	}));
 
 	const blogsNorm = normalizeDocs(blogs);

@@ -16,8 +16,12 @@ export async function POST(request) {
 		const formData = await request.formData();
 		console.log("Received form data: ", formData);
 
-		const blogTitle = formData.get("blogTitle");
-		const blogDesc = formData.get("blogDesc");
+		const blogTitle_en = formData.get("blogTitle_en");
+		const blogTitle_ne = formData.get("blogTitle_ne");
+		const blogTitle_no = formData.get("blogTitle_no");
+		const blogDesc_en = formData.get("blogDesc_en");
+		const blogDesc_ne = formData.get("blogDesc_ne");
+		const blogDesc_no = formData.get("blogDesc_no");
 		const blogAuthor = formData.get("blogAuthor");
 		const blogDate = formData.get("blogDate");
 		console.log("Received blogDate:", blogDate);
@@ -33,8 +37,8 @@ export async function POST(request) {
 		}
 
 		// Validate required fields
-		if (!blogTitle || !blogDesc || !blogMainPicture || !blogDate) {
-			return NextResponse.json({ success: false, error: "Either title, description, main image or date is/are missing" }, { status: 400 });
+		if (!blogTitle_en || !blogDesc_en || !blogMainPicture || !blogDate) {
+			return NextResponse.json({ success: false, error: "English title, description, main image or date is missing" }, { status: 400 });
 		}
 
 		// Save the files to the uploads directory
@@ -44,8 +48,14 @@ export async function POST(request) {
 		// Save blog to MongoDB
 		console.log("Creating blog in database");
 		const blog = await Blog.create({
-			blogTitle,
-			blogDesc,
+			blogTitle_en,
+			...(blogTitle_ne && { blogTitle_ne }),
+			...(blogTitle_no && { blogTitle_no }),
+			blogDesc_en,
+			...(blogDesc_ne && { blogDesc_ne }),
+			...(blogDesc_no && { blogDesc_no }),
+			blogTitle: blogTitle_en, // Legacy field
+			blogDesc: blogDesc_en, // Legacy field
 			blogAuthor,
 			blogMainPicture: blogMainPictureUrl,
 			blogSecondPicture: blogSecondPictureUrl,

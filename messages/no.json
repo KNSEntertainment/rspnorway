@@ -185,6 +185,9 @@
 		"description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
 		"video_title": "Video Galleri",
 		"video_description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
+		"videoGalleryTitle": "Videogalleri",
+		"viewAllVideos": "Se alle videoer",
+		"noVideos": "Ingen videoer tilgjengelig",
 		"load_more": "Last inn mer",
 		"zoom_in": "Zoom inn",
 		"photo": "bilde",
@@ -219,7 +222,8 @@
 		"mission_title": "Vår Misjon",
 		"mission_description": "RSP Norways misjon er å styrke det nepalske samfunnet som bor i Norge sosialt, kulturelt og utdanningsmessig. Vi er forpliktet til å tilby våre medlemmer støtte, veiledning og muligheter slik at de kan nå sitt fulle potensial.",
 		"vision_title": "Vår Visjon",
-		"vision_description": "Vi forestiller oss et inkluderende og styrket nepalsk samfunn som trives i Norge, hvor våre medlemmer er sosialt aktive, feirer sin kulturelle arv med stolthet, og vokser både personlig og kollektivt. Vår visjon er et samfunn hvor hver enkelt blir respektert, støttet og lykkes."
+		"vision_description": "Vi forestiller oss et inkluderende og styrket nepalsk samfunn som trives i Norge, hvor våre medlemmer er sosialt aktive, feirer sin kulturelle arv med stolthet, og vokser både personlig og kollektivt. Vår visjon er et samfunn hvor hver enkelt blir respektert, støttet og lykkes.",
+		"values_title": "Hva vi står for"
 	},
 	"about": {
 		"title": "Velkommen til RSP Norway",
