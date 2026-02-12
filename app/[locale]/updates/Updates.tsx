@@ -377,8 +377,8 @@ export default function UpdatesClient({ events, notices, circulars, translations
 
 	// Main Page - Events, Notices and Circulars Grid
 	return (
-		<div className="px-4 pb-8">
-			<div className="text-center mb-8 md:mb-12">
+		<div className="px-4">
+			<div className="text-center md:mb-12">
 				<SectionHeader heading={t.title} />
 				<p className="text-gray-900 max-w-3xl mx-auto text-lg">{t.description}</p>
 			</div>
@@ -403,7 +403,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 			{activeTab === "events" && (
 				<div className="animate-fadeIn">
 					{sortedEvents && sortedEvents.length > 0 ? (
-						<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
 							{sortedEvents.map((event) => {
 								const { day, month } = formatEventDate(event.eventdate);
 								return (
@@ -418,7 +418,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 											)}
 										</div> */}
 										<CardContent className="p-4 md:p-6 bg-gray-50/90">
-											<h3 className="text-sm md:text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text -brand transition-colors">{event.eventname}</h3>
+											<h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text -brand transition-colors">{event.eventname}</h3>
 											<div className="flex items-center gap-4 mb-4">
 												<div className="  text-brand rounded-lg p-3 shadow-lg text-center md:min-w-[70px]">
 													<div className="text-md md:text-3xl font-bold">{day}</div>
@@ -487,7 +487,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 												<Calendar className="w-3 h-3 text-brand" />
 												<p className="text-brand text-xs font-medium">{formatDate(notice.noticedate)}</p>
 											</div>
-											<h3 className="text-2xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
+											<h3 className="text-lg md:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
 											<button className="mt-4 inline-flex items-center text-sm text-brand font-medium group-hover:text-brand">
 												{t.read_more}
 												<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -515,7 +515,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 						<div className="grid md:grid-cols-2 gap-8">
 							{sortedCirculars.map((circular) => (
 								<Card key={circular._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none" onClick={() => setSelectedCircular(circular)}>
-									<div className="flex gap-4 p-4">
+									<div className="flex items-center gap-4 p-4">
 										<div className="relative w-32 h-32 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg overflow-hidden">
 											{circular.circularMainPicture ? (
 												<Image src={circular.circularMainPicture} alt={circular.circularTitle[locale] || circular.circularTitle["en"]} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-500" />
@@ -531,7 +531,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 												<Calendar className="w-3 h-3 text-brand" />
 												<p className="text-brand text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
 											</div>
-											<h3 className="text-2xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}</h3>
+											<h3 className="text-lg md:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}</h3>
 										</div>
 									</div>
 								</Card>

@@ -234,7 +234,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 
 	return (
 		<section id="blog" className="bg-gradient-to-br from-brand-100 to-gray-100">
-			<div className="container mx-auto px-4 py-12">
+			<div className="container mx-auto px-4 md:py-12">
 				<div className="relative mb-8">
 					<h2 className="text-3xl md:text-4xl font-bold text-center mb-2">{t.blogs_title}</h2>
 					<div className="w-24 h-1 bg-brand mx-auto rounded-full"></div>

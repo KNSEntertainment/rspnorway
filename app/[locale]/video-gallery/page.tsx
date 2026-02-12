@@ -262,8 +262,6 @@ const VideoGallery: React.FC = () => {
 										src={video.thumbnail || "/ghanti.jpg"}
 										alt={getLocalizedTitle(video)}
 										style={{
-											width: "100%",
-											height: "100%",
 											objectFit: "cover",
 											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
 										}}
@@ -285,8 +283,6 @@ const VideoGallery: React.FC = () => {
 										muted={isMuted}
 										playsInline
 										style={{
-											width: "100%",
-											height: "100%",
 											objectFit: "cover",
 											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
 										}}

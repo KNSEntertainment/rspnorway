@@ -81,7 +81,7 @@ export default function DonationForm() {
 					<Heart className="w-8 h-8" />
 					<div>
 						<CardTitle className="text-2xl">Support RSP Norway</CardTitle>
-						<CardDescription className="text-white/90">Your contribution helps us make a difference</CardDescription>
+						<CardDescription className="text-white/90">Your contribution makes a difference</CardDescription>
 					</div>
 				</div>
 			</CardHeader>
@@ -92,7 +92,7 @@ export default function DonationForm() {
 						<label className="block text-sm font-semibold text-gray-900 mb-3">Select Amount (NOK)</label>
 						<div className="grid grid-cols-3 gap-3">
 							{PRESET_AMOUNTS.map((presetAmount) => (
-								<button key={presetAmount} type="button" onClick={() => handlePresetClick(presetAmount)} className={`py-3 px-4 rounded-lg border-2 font-semibold transition-all ${amount === presetAmount && !customAmount ? "border-brand bg-brand text-white" : "border-gray-300 text-gray-900 hover:border-brand"}`}>
+								<button key={presetAmount} type="button" onClick={() => handlePresetClick(presetAmount)} className={`text-sm md:text-xl py-3 px-2 md:px-4 rounded-lg border-2 font-semibold transition-all ${amount === presetAmount && !customAmount ? "border-brand bg-brand text-white" : "border-gray-300 text-gray-900 hover:border-brand"}`}>
 									{presetAmount} NOK
 								</button>
 							))}

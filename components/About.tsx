@@ -47,7 +47,7 @@ export default function About() {
 
 			{/* Call to Actions */}
 			<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6 }}>
-				<header className="text-center my-12">
+				<header className="text-center md:mt-12">
 					<SectionHeader heading={t("cta_title")} />
 				</header>{" "}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">

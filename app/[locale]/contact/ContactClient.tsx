@@ -249,7 +249,7 @@ export default function ContactPageClient({ settings, translations: t }: Props) 
 					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t.description}</p>
 				</header>
 
-				<div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-light">
+				<div className="bg-white rounded-3xl shadow-md md:shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-light">
 					{/* Left: Contact Information (The "Official" Sidebar) */}
 					<aside className="lg:w-1/3 bg-brand/90 p-8 md:p-12 text-white relative overflow-hidden">
 						{/* Decorative Circle */}

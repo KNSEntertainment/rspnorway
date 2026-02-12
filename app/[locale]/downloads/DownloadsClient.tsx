@@ -143,7 +143,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 				{filteredDocuments.length && filteredDocuments.length > 0 ? (
 					<div className="sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-12">
 						{filteredDocuments.map((doc) => (
-							<div key={doc.id} className="flex bg-white rounded-lg shadow-sm md:shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-h-[224px] group">
+							<div key={doc.id} className="flex bg-gray-100 rounded-lg shadow-sm md:shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden max-h-[224px] group">
 								{" "}
 								{doc.imageUrl && doc.imageUrl.trim() !== "" ? (
 									<Image src={doc.imageUrl} alt={doc.title_en} width={350} height={350} className="text-white hidden lg:block object-fill w-36 lg:w-36 h-full" />
