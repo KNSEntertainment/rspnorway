@@ -20,7 +20,7 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 		<>
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]" onClick={() => closeMenu()} style={{ top: 0, left: 0, right: 0, bottom: 0 }} />
 			<motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.3, ease: "easeOut" }} className="fixed top-0 bottom-0 right-0 w-[75%] max-w-md bg-gradient-to-br from-brand via-brand to-emerald-600 z-[110] overflow-y-auto" style={{ height: "100vh" }}>
-				<div className="pt-12 px-8 h-full min-h-full flex flex-col">
+				<div className="pt-8 px-8 h-full min-h-full flex flex-col">
 					<nav className="flex flex-col gap-2" role="navigation">
 						{navItems.map((item, idx) => (
 							<motion.div key={item.href} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1, duration: 0.3 }}>
@@ -31,8 +31,8 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 						))}
 					</nav>
 
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.3 }} className="mt-12 pt-4 border-t border-white/20">
-						<p className="text-white/90 text-lg font-medium mb-4 px-6">Contact Us</p>
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.3 }} className="mt-6 pt-4 border-t border-white/20">
+						<p className="text-white/90 text-lg font-medium mb-4 px-6">{t("contact")}</p>
 						<a href="tel:+4796800984" className="block px-6 text-white hover:bg-white/10 rounded-xl transition-all duration-200">
 							📞 {tr("phone_small_device")}
 						</a>
@@ -40,16 +40,16 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 							✉️ info@rspnorway.org
 						</a>
 					</motion.div>
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.3 }} className="mt-8 pt-4 border-t border-white/20">
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.3 }} className="mt-6 pt-4 border-t border-white/20">
 						<div className="px-6">
-							<p className="text-white/90 text-lg font-medium mb-4">Follow Us</p>
+							<p className="text-white/90 text-lg font-medium mb-4">{t("follow_us")}</p>
 
 							<SocialMediaLinks />
 						</div>
 					</motion.div>
 					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.3 }} className="mt-8 px-6 space-y-3">
 						<Link href={`/${locale}/donate`} onClick={() => closeMenu()} className="flex items-center justify-center gap-2 w-full px-4 py-3 text-center text-lg font-bold text-white bg-success rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
-							Donate
+							{t("donate") || "Donate Now"}
 						</Link>
 						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-3 text-center text-lg font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
 							{t("become_a_member") || "Become Member"}
@@ -57,8 +57,8 @@ const MobileMenu = ({ navItems, closeMenu }: MobileMenuProps) => {
 					</motion.div>
 				</div>
 			</motion.div>
-			<button onClick={() => closeMenu()} className="fixed top-6 right-6 z-[120] hover:bg-white/10 backdrop-blur-md rounded-full p-1 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
-				<X size={24} />
+			<button onClick={() => closeMenu()} className="fixed top-4 right-4 z-[120] hover:bg-white/10 backdrop-blur-md rounded-full p-1 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+				<X size={24} className="text-gray-100 shadow-sm" />
 			</button>
 		</>
 	);

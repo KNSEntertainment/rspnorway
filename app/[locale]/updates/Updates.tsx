@@ -230,7 +230,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 						<div className="lg:col-span-2">
 							<Card className="shadow-2xl border-none bg-white overflow-hidden">
 								<CardContent className="p-8">
-									<h1 className="text-4xl font-bold text-gray-900 mb-4">{selectedNotice.noticetitle}</h1>
+									<h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">{selectedNotice.noticetitle}</h1>
 
 									<div className="flex items-center gap-4 mb-8">
 										<div className="flex items-center gap-2">
@@ -308,9 +308,9 @@ export default function UpdatesClient({ events, notices, circulars, translations
 						<div className="lg:col-span-2">
 							<Card className="shadow-2xl border-none bg-white overflow-hidden">
 								<CardContent className="p-8">
-									<h1 className="text-4xl font-bold text-gray-900 mb-4">{selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"] || "Circular"}</h1>
+									<h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4">{selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"] || "Circular"}</h1>
 
-									<div className="flex gap-4 mb-6 md:mb-12">
+									<div className="flex flex-col md:flex-row gap-1 md:gap-4 mb-6 md:mb-12">
 										{selectedCircular.circularAuthor && selectedCircular.circularAuthor[locale] && (
 											<p className="flex items-center  gap-2 text-gray-900 text-lg">
 												<Pencil className="w-5 h-5 text-brand" /> {selectedCircular.circularAuthor[locale]}
@@ -417,7 +417,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 												</div>
 											)}
 										</div> */}
-										<CardContent className="p-4 md:p-6 bg-gray-50/90">
+										<CardContent className="p-4 md:p-6 bg-gradient-to-r from-brand/5 via-white to-brand/5">
 											<h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text -brand transition-colors">{event.eventname}</h3>
 											<div className="flex items-center gap-4 mb-4">
 												<div className="  text-brand rounded-lg p-3 shadow-lg text-center md:min-w-[70px]">
