@@ -60,9 +60,9 @@ export default function VideoGallery() {
 
 	const getLocalizedCreator = (video: Video) => {
 		if (locale === "ne") {
-			return video.creator_ne || video.creator_en || video.creator || "RSP Norway";
+			return video.creator_ne || video.creator_en || video.creator || "PNSB-Norway";
 		}
-		return video.creator_en || video.creator || "RSP Norway";
+		return video.creator_en || video.creator || "PNSB-Norway";
 	};
 
 	const getYouTubeThumbnail = (url: string) => {

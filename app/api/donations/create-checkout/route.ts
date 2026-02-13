@@ -43,8 +43,8 @@ export async function POST(request: Request) {
 					price_data: {
 						currency: "nok",
 						product_data: {
-							name: "Donation to RSP Norway",
-							description: message || "Support for RSP Norway activities",
+							name: "Donation to PNSB-Norway",
+							description: message || "Support for PNSB-Norway activities",
 						},
 						unit_amount: amount * 100, // Convert to øre (smallest currency unit)
 					},

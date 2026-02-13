@@ -6,13 +6,13 @@ import { getPublishedCirculars } from "@/lib/data/circulars";
 import { normalizeDocs } from "@/lib/utils";
 
 export const metadata = {
-	title: "Updates | RSP Norway",
-	description: "Stay informed with the latest updates from RSP Norway. Get updates on events, announcements, and important information for our community.",
+	title: "Updates | PNSB-Norway",
+	description: "Stay informed with the latest updates from PNSB-Norway. Get updates on events, announcements, and important information for our community.",
 	openGraph: {
-		title: "Updates | RSP Norway",
-		description: "Stay informed with the latest updates from RSP Norway. Get updates on events, announcements, and important information for our community.",
+		title: "Updates | PNSB-Norway",
+		description: "Stay informed with the latest updates from PNSB-Norway. Get updates on events, announcements, and important information for our community.",
 		url: "/updates",
-		siteName: "RSP Norway",
+		siteName: "PNSB-Norway",
 		type: "website",
 	},
 };

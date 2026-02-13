@@ -293,10 +293,10 @@ export default function Header() {
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
-							<Image src="/rsp-norway-logo.png" alt="RSP Norway" width={48} height={48} className="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" fetchPriority="high" priority />
+							<Image src="/rsp-norway-logo.png" alt="PNSB-Norway" width={48} height={48} className="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" fetchPriority="high" priority />
 						</div>
 						<div className="flex flex-col leading-3">
-							<span className="hidden md:block text-xl font-bold text-white">{t("rsp")}</span>
+							<span className="hidden md:block text-xl font-bold text-white">{t("pnsb")}</span>
 							<span className="hidden md:block text-md text-white">{t("norway")}</span>
 						</div>
 					</Link>

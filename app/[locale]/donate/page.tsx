@@ -5,8 +5,8 @@ import { Heart, Users, Target, TrendingUp } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 export const metadata = {
-	title: "Donate - RSP Norway",
-	description: "Support RSP Norway with your generous donation",
+	title: "Donate - PNSB-Norway",
+	description: "Support PNSB-Norway with your generous donation",
 };
 
 export default async function DonatePage() {

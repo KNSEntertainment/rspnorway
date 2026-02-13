@@ -2,7 +2,7 @@ import ProfileClient from "./ProfileClient";
 import { getTranslations } from "next-intl/server";
 
 export const metadata = {
-	title: "My Profile | RSP Norway",
+	title: "My Profile | PNSB-Norway",
 	description: "View and manage your profile information",
 };
 

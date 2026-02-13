@@ -94,7 +94,7 @@ export default function MemberDetailClient({ member }) {
 							{/* Name and Status */}
 							<div className="flex-1 text-center md:text-left mt-4 md:mt-8">
 								<h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{member.fullName}</h1>
-								<p className="text-lg text-gray-900 mb-4">{member.profession || "RSP Norway Member"}</p>
+								<p className="text-lg text-gray-900 mb-4">{member.profession || "PNSB-Norway Member"}</p>
 								<div className="flex flex-wrap gap-3 justify-center md:justify-start">
 									{getStatusBadge(member.membershipStatus)}
 									{getMembershipTypeBadge(member.membershipType)}

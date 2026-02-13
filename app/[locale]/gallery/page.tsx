@@ -5,13 +5,13 @@ import { Metadata } from "next";
 import VideoGallery from "@/components/VideoGallery";
 
 export const metadata: Metadata = {
-	title: "Gallery | RSP Norway",
-	description: "Explore the gallery of RSP Norway, showcasing our events, community, and memorable moments. See the vibrant life of our organization through photos and videos.",
+	title: "Gallery | PNSB-Norway",
+	description: "Explore the gallery of PNSB-Norway, showcasing our events, community, and memorable moments. See the vibrant life of our organization through photos and videos.",
 	openGraph: {
-		title: "Gallery | RSP Norway",
-		description: "Explore the gallery of RSP Norway, showcasing our events, community, and memorable moments. See the vibrant life of our organization through photos and videos.",
+		title: "Gallery | PNSB-Norway",
+		description: "Explore the gallery of PNSB-Norway, showcasing our events, community, and memorable moments. See the vibrant life of our organization through photos and videos.",
 		url: "/gallery",
-		siteName: "RSP Norway",
+		siteName: "PNSB-Norway",
 		type: "website",
 	},
 };

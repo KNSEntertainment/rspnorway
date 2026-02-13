@@ -208,7 +208,7 @@ export default function FullWidthHero() {
 // 	return (
 // 		<div className="relative left-1/2 right-1/2 w-screen max-h-screen max-w-none -translate-x-1/2">
 // 			<Head>
-// 				<title>RSP Norway</title>
+// 				<title>PNSB-Norway</title>
 // 			</Head>
 
 // 			{/* Hero Section */}
@@ -237,7 +237,7 @@ export default function FullWidthHero() {
 // 						}}
 // 						transition={{ duration: 1.2, ease: "easeInOut" }}
 // 					>
-// 						<Image src={slide.image} alt={`RSP Norway Slide ${index + 1}`} width={600} height={600} className="w-full h-full object-cover" priority={index === 0} fetchPriority="high" />
+// 						<Image src={slide.image} alt={`PNSB-Norway Slide ${index + 1}`} width={600} height={600} className="w-full h-full object-cover" priority={index === 0} fetchPriority="high" />
 // 					</motion.div>
 // 				))}
 

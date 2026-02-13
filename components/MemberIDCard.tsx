@@ -98,12 +98,12 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-4">
 						<div className="flex items-center justify-between">
 							<div>
-								<h2 className="text-xl font-bold mt-0.5">RSP Norway</h2>
+								<h2 className="text-xl font-bold mt-0.5">PNSB-Norway</h2>
 								<h3 className="text-xs font-semibold tracking-wide">MEMBER ID CARD</h3>
 								<p className="text-[10px] text-white font-semibold">Membership No. {membershipNumber}</p>
 							</div>
 							{/* Logo */}
-							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">{logo ? <Image src={logo} alt="RSP Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" /> : <span className="text-brand font-bold text-lg">RSP</span>}</div>
+							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">{logo ? <Image src={logo} alt="PNSB-Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" /> : <span className="text-brand font-bold text-lg">RSP</span>}</div>
 						</div>
 					</div>
 
@@ -219,13 +219,13 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 								<li>This card is non-transferable</li>
 								<li>Report lost or stolen cards immediately</li>
 								<li>Valid for active memberships only</li>
-								<li>Present this card at RSP Norway events</li>
+								<li>Present this card at PNSB-Norway events</li>
 							</ul>
 						</div>
 
 						{/* Organization Info */}
 						<div className="border-t border-light pt-3">
-							<p className="text-[10px] font-bold text-brand mb-1">RSP Norway</p>
+							<p className="text-[10px] font-bold text-brand mb-1">PNSB-Norway</p>
 							<p className="text-[9px] text-gray-600">Rastriya Swatantra Party - Norway Chapter</p>
 							<p className="text-[9px] text-gray-600 mt-1">www.rspnorway.org</p>
 							<p className="text-[9px] text-gray-600">info@rspnorway.org</p>

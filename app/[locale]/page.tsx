@@ -7,13 +7,13 @@ import VideoGallery from "@/components/VideoGallery";
 // import HeroSection from "@/components/HeroSection";
 
 export const metadata: Metadata = {
-	title: "Home | RSP Norway",
-	description: "Welcome to RSP Norway. Explore our latest news, events, and gallery showcasing our vibrant community.",
+	title: "Home | PNSB-Norway",
+	description: "Welcome to PNSB-Norway. Explore our latest news, events, and gallery showcasing our vibrant community.",
 	openGraph: {
-		title: "Home | RSP Norway",
-		description: "Welcome to RSP Norway. Explore our latest news, events, and gallery showcasing our vibrant community.",
+		title: "Home | PNSB-Norway",
+		description: "Welcome to PNSB-Norway. Explore our latest news, events, and gallery showcasing our vibrant community.",
 		url: "/",
-		siteName: "RSP Norway",
+		siteName: "PNSB-Norway",
 		type: "website",
 	},
 };

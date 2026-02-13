@@ -36,7 +36,7 @@ export async function POST(req) {
 		const description_en = formData.get("description_en");
 		const description_ne = formData.get("description_ne");
 		const description_no = formData.get("description_no");
-		const creator_en = formData.get("creator_en") || "RSP Norway";
+		const creator_en = formData.get("creator_en") || "PNSB-Norway";
 		const creator_ne = formData.get("creator_ne") || "आरएसपी नर्वे";
 
 		if (!title_en || !category) {

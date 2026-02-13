@@ -5,13 +5,13 @@ import { getSettings } from "@/lib/data/settings";
 import { normalizeDocs } from "@/lib/utils";
 
 export const metadata: Metadata = {
-	title: "Contact Us | RSP Norway",
-	description: "Get in touch with RSP Norway. Find our contact details and send us a message. We're here to assist you with any inquiries or support you need.",
+	title: "Contact Us | PNSB-Norway",
+	description: "Get in touch with PNSB-Norway. Find our contact details and send us a message. We're here to assist you with any inquiries or support you need.",
 	openGraph: {
-		title: "Contact Us | RSP Norway",
-		description: "Get in touch with RSP Norway. Find our contact details and send us a message. We're here to assist you with any inquiries or support you need.",
+		title: "Contact Us | PNSB-Norway",
+		description: "Get in touch with PNSB-Norway. Find our contact details and send us a message. We're here to assist you with any inquiries or support you need.",
 		url: "/contact",
-		siteName: "RSP Norway",
+		siteName: "PNSB-Norway",
 		type: "website",
 	},
 };

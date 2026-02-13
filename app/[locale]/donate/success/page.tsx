@@ -61,7 +61,7 @@ export default function DonationSuccessPage() {
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="text-brand">✓</span>
-								<span>Your donation will directly support RSP Norway&apos;s programs</span>
+								<span>Your donation will directly support PNSB-Norway&apos;s programs</span>
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="text-brand">✓</span>

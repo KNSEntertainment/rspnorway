@@ -80,7 +80,7 @@ export default function DonationForm() {
 				<div className="flex items-center gap-3">
 					<Heart className="w-8 h-8" />
 					<div>
-						<CardTitle className="text-2xl">Support RSP Norway</CardTitle>
+						<CardTitle className="text-2xl">Support PNSB-Norway</CardTitle>
 						<CardDescription className="text-white/90">Your contribution makes a difference</CardDescription>
 					</div>
 				</div>
@@ -164,7 +164,7 @@ export default function DonationForm() {
 						)}
 					</Button>
 
-					<p className="text-xs text-center text-gray-500">Secure payment powered by Stripe. Your donation supports RSP Norway&apos;s mission and activities.</p>
+					<p className="text-xs text-center text-gray-500">Secure payment powered by Stripe. Your donation supports PNSB-Norway&apos;s mission and activities.</p>
 				</form>
 			</CardContent>
 		</Card>

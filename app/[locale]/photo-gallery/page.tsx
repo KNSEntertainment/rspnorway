@@ -54,7 +54,7 @@ const PhotoGallery = () => {
 						url: url,
 						title: item.alt || `${item.category} Photo`,
 						category: item.category,
-						photographer: "RSP Norway",
+						photographer: "PNSB-Norway",
 					})),
 				);
 

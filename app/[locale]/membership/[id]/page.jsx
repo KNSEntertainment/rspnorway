@@ -39,22 +39,22 @@ export async function generateMetadata({ params }) {
 
 		if (!member) {
 			return {
-				title: "Member Not Found | RSP Norway",
+				title: "Member Not Found | PNSB-Norway",
 			};
 		}
 
 		return {
-			title: `${member.fullName} | RSP Norway Membership`,
+			title: `${member.fullName} | PNSB-Norway Membership`,
 			description: `View the membership profile of ${member.fullName} from ${member.city}, ${member.province || "Norway"}`,
 			openGraph: {
-				title: `${member.fullName} | RSP Norway`,
+				title: `${member.fullName} | PNSB-Norway`,
 				description: `Member profile: ${member.profession || member.membershipType}`,
 				images: member.profilePhoto ? [member.profilePhoto] : [],
 			},
 		};
 	} catch {
 		return {
-			title: "Member Profile | RSP Norway",
+			title: "Member Profile | PNSB-Norway",
 		};
 	}
 }

@@ -35,7 +35,7 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 		description_en: videoToEdit?.description_en || "",
 		description_ne: videoToEdit?.description_ne || "",
 		description_no: videoToEdit?.description_no || "",
-		creator_en: videoToEdit?.creator_en || "RSP Norway",
+		creator_en: videoToEdit?.creator_en || "PNSB-Norway",
 		creator_ne: videoToEdit?.creator_ne || "आरएसपी नर्वे",
 		youtubeUrl: videoToEdit?.isYouTube ? videoToEdit?.url : "",
 	});
@@ -281,7 +281,7 @@ export default function VideoForm({ videoToEdit, onClose }: VideoFormProps) {
 			{/* Creator - English */}
 			<div>
 				<label className="block text-sm font-medium text-gray-900 mb-2">Creator/Author (English)</label>
-				<input type="text" name="creator_en" value={formData.creator_en} onChange={handleInputChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="RSP Norway" />
+				<input type="text" name="creator_en" value={formData.creator_en} onChange={handleInputChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent" placeholder="PNSB-Norway" />
 			</div>
 
 			{/* Creator - Nepali */}

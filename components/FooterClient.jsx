@@ -95,7 +95,7 @@ export default function FooterClient({ settings, t }) {
 							</Link>
 						</nav>
 
-						<div className="text-md text-gray-900 text-center md:text-right">{t.copyright || `© ${new Date().getFullYear()} RSP Norway. All rights reserved.`}</div>
+						<div className="text-md text-gray-900 text-center md:text-right">{t.copyright || `© ${new Date().getFullYear()} PNSB-Norway. All rights reserved.`}</div>
 					</div>
 
 					{/* Developer Credit */}

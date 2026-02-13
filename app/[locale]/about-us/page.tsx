@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import AboutUsClient from "./AboutUsClient";
 
 export const metadata: Metadata = {
-	title: "About Us | RSP Norway",
-	description: "Learn more about RSP Norway, our mission, vision, and the community we serve. Discover our story and values.",
+	title: "About Us | PNSB-Norway",
+	description: "Learn more about PNSB-Norway, our mission, vision, and the community we serve. Discover our story and values.",
 	openGraph: {
-		title: "About Us | RSP Norway",
-		description: "Learn more about RSP Norway, our mission, vision, and the community we serve. Discover our story and values.",
+		title: "About Us | PNSB-Norway",
+		description: "Learn more about PNSB-Norway, our mission, vision, and the community we serve. Discover our story and values.",
 		url: "/about-us",
-		siteName: "RSP Norway",
+		siteName: "PNSB-Norway",
 		type: "website",
 	},
 };

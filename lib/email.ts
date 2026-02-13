@@ -48,10 +48,10 @@ export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeE
 	const setupUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/en/set-password?token=${setupToken}`;
 
 	const mailOptions = {
-		from: `"RSP Norway" <${process.env.EMAIL_USER}>`,
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
 		to: email,
-		subject: "Welcome to RSP Norway - Set Your Password",
-		text: `Hello ${name},\n\nWelcome to RSP Norway! Your membership has been approved.\n\nPlease set your password by clicking the link below:\n${setupUrl}\n\nThis link is valid for 24 hours.\n\nBest regards,\nRSP Norway Team`,
+		subject: "Welcome to PNSB-Norway - Set Your Password",
+		text: `Hello ${name},\n\nWelcome to PNSB-Norway! Your membership has been approved.\n\nPlease set your password by clicking the link below:\n${setupUrl}\n\nThis link is valid for 24 hours.\n\nBest regards,\nPNSB-Norway Team`,
 		html: `
 			<!DOCTYPE html>
 			<html>
@@ -68,11 +68,11 @@ export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeE
 			<body>
 				<div class="container">
 					<div class="header">
-						<h1>Welcome to RSP Norway!</h1>
+						<h1>Welcome to PNSB-Norway!</h1>
 					</div>
 					<div class="content">
 						<p>Hello <strong>${name}</strong>,</p>
-						<p>Congratulations! Your membership application has been approved. We're excited to have you as part of the RSP Norway community.</p>
+						<p>Congratulations! Your membership application has been approved. We're excited to have you as part of the PNSB-Norway community.</p>
 						<p>To complete your account setup, please set your password by clicking the button below:</p>
 						<center>
 							<a href="${setupUrl}" class="button">Set Your Password</a>
@@ -88,7 +88,7 @@ export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeE
 							<li>Stay connected with the community</li>
 						</ul>
 						<p>If you have any questions, feel free to reach out to us.</p>
-						<p>Best regards,<br><strong>RSP Norway Team</strong></p>
+						<p>Best regards,<br><strong>PNSB-Norway Team</strong></p>
 					</div>
 					<div class="footer">
 						<p>This is an automated email. Please do not reply to this message.</p>
@@ -120,10 +120,10 @@ type sendDonationThankYouEmail = {
 };
 export async function sendDonationThankYouEmail({ name, email, amount, currency, transactionId, date, message }: sendDonationThankYouEmail) {
 	const mailOptions = {
-		from: `"RSP Norway" <${process.env.EMAIL_USER}>`,
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
 		to: email,
-		subject: "Thank You for Your Generous Donation - RSP Norway",
-		text: `Dear ${name},\n\nThank you for your generous donation of ${amount} ${currency} to RSP Norway!\n\nYour support helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.\n\nDonation Details:\nAmount: ${amount} ${currency}\nTransaction ID: ${transactionId}\nDate: ${date}\n${message ? `\nYour Message: ${message}` : ""}\n\nYour contribution will be used to support:\n- Community events and cultural programs\n- Political advocacy and awareness campaigns\n- Organizational growth and outreach\n- Member support and resources\n\nWe will send you a detailed receipt shortly for your records.\n\nWith gratitude,\nRSP Norway Team`,
+		subject: "Thank You for Your Generous Donation - PNSB-Norway",
+		text: `Dear ${name},\n\nThank you for your generous donation of ${amount} ${currency} to PNSB-Norway!\n\nYour support helps us make a positive impact in the Nepali community in Norway and support democratic values in Nepal.\n\nDonation Details:\nAmount: ${amount} ${currency}\nTransaction ID: ${transactionId}\nDate: ${date}\n${message ? `\nYour Message: ${message}` : ""}\n\nYour contribution will be used to support:\n- Community events and cultural programs\n- Political advocacy and awareness campaigns\n- Organizational growth and outreach\n- Member support and resources\n\nWe will send you a detailed receipt shortly for your records.\n\nWith gratitude,\nPNSB-Norway Team`,
 		html: `
 			<!DOCTYPE html>
 			<html>
@@ -230,12 +230,12 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 						<p>This email serves as your donation receipt. Please keep it for your records. If you need any additional documentation, please don't hesitate to contact us.</p>
 
 						<p>With deep appreciation and gratitude,</p>
-						<p><strong>RSP Norway Team</strong><br>
+						<p><strong>PNSB-Norway Team</strong><br>
 						<a href="mailto:${process.env.EMAIL_USER}" style="color: #0094da;">info@rspnorway.org</a><br>
 						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #0094da;">www.rspnorway.org</a></p>
 					</div>
 					<div class="footer">
-						<p>RSP Norway - Rastriya Swatantra Party Norway Chapter</p>
+						<p>PNSB-Norway - Rastriya Swatantra Party Norway Chapter</p>
 						<p>This is an automated receipt. Please keep it for your records.</p>
 						<p style="color: #999; margin-top: 10px;">Questions? Contact us at ${process.env.EMAIL_USER}</p>
 					</div>
