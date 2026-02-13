@@ -87,7 +87,7 @@
 	},
 	"footer": {
 		"about_us": "About Us",
-		"about_description": "राष्ट्रिय स्वतन्त्र पार्टी (रास्वपा) सबै नेपालीको समतामूलक उन्नतिप्रति कटिवद्ध सामाजिक न्यायसहितको उदार अर्थतन्त्रमा विश्वास गर्ने बहुलवादी लोकतान्त्रिक पार्टी हो। यसको ध्येय वैयक्तिक स्वतन्त्रता र मौलिक हकको प्रत्याभूतिपूर्वक पूर्ण लोकतान्त्रिक गणतन्त्रात्मक शासन प्रणाली भित्र विधिमा आधारित जवाफदेहीपूर्ण असल शासन मार्फत समन्यायिक समावेशी समाज निर्माण गर्नु हो।",
+		"about_description": "Prawas Nepali Samparka Bibhag, Norway is a non-profit organization established in 2025 to bring together Nepalese people living in Norway. We are a community built on the values of brotherhood, mutual support, and cultural pride.",
 		"logo_head": "RSP Norway",
 		"logo_alt": "Event Experience",
 		"tagline": "Together we can",
@@ -171,7 +171,7 @@
 		"events_tab": "Events",
 		"notices_tab": "Notices",
 		"circulars_tab": "Circulars",
-		"learn_more": "Read more",
+		"view_detail": "View Detail",
 		"no_events": "No Events Scheduled",
 		"no_events_desc": "Check back soon for upcoming events!",
 		"read_more": "Read more",
@@ -216,13 +216,13 @@
 	},
 	"about-us": {
 		"title": "About Us",
-		"about_description_1": "RSP Norway is dedicated to empowering the Nepali community residing in Norway socially, culturally, and educationally. We are committed to providing our members with support, guidance, and opportunities to help them reach their full potential.",
-		"about_description_2": "We strive to create a welcoming and inclusive environment where every individual feels valued and inspired to contribute to the community's growth and well-being.",
-		"about_description_3": "Our commitment extends beyond individual empowerment to fostering a strong, united community that celebrates its heritage while embracing the future.",
+		"about_description_1": "Prawas Nepali Samparka Bibhag, Norway is a non-profit organization established in 2025 to bring together Nepalese people living in Norway. We are a community built on the values of brotherhood, mutual support, and cultural pride.",
+		"about_description_2": "Living far from home can be challenging, but together we create a home away from home. Our organization serves as a bridge - connecting our members to their Nepalese roots while helping them integrate and thrive in Norwegian society. We celebrate our rich cultural heritage through festivals, programs, and traditions, while also embracing the opportunities and values that Norway offers.",
+		"about_description_3": "We believe in the power of community. Whether it's celebrating Dashain together, supporting a family in need, or sharing knowledge between our two cultures, we stand united. Our members come from different backgrounds and regions of Nepal, but we are bound by a common goal: to preserve our identity, support one another, and contribute positively to both Nepalese and Norwegian societies.",
 		"mission_title": "Our Mission",
-		"mission_description": "To provide quality education and foster a nurturing environment for students to thrive academically and personally.",
+		"mission_description": "Our mission is to unite and empower the Nepalese community in Norway.",
 		"vision_title": "Our Vision",
-		"vision_description": "To be a leading educational institution recognized for excellence in teaching, innovation, and community engagement.",
+		"vision_description": "A thriving, connected Nepalese community in Norway where every member feels supported, valued, and proud of their heritage - while contributing as active, integrated members of Norwegian society.",
 		"values_title": "What We Stand For"
 	},
 	"about": {
@@ -236,14 +236,21 @@
 		"stat_cities": "Cities Reached",
 		"stat_impacted": "Lives Impacted",
 		"values_title": "What We Stand For",
-		"value_advocacy_title": "Political Advocacy",
-		"value_advocacy_desc": "Promoting democratic values and political awareness in our community.",
-		"value_community_title": "Community Building",
-		"value_community_desc": "Connecting Nepalis across Norway through cultural and social programs.",
-		"value_democratic_title": "Democratic Values",
-		"value_democratic_desc": "Supporting democratic principles and good governance in Nepal.",
-		"value_support_title": "Member Support",
-		"value_support_desc": "Providing resources and assistance to help members thrive.",
+		"value_cultural_preservation_title": "Cultural Preservation",
+		"value_cultural_preservation_desc": "Preserving our heritage by celebrating Nepalese festivals and promoting our language, culture, religion, traditions, norms, and values for current and future generations.",
+
+		"value_community_brotherhood_title": "Community Brotherhood",
+		"value_community_brotherhood_desc": "Building a supportive network where community members help each other through life’s challenges and celebrate successes together.",
+
+		"value_social_integration_title": "Social Integration",
+		"value_social_integration_desc": "Encouraging meaningful participation in Norwegian society while maintaining strong connections to our Nepalese identity.",
+
+		"value_humanitarian_support_title": "Humanitarian Support",
+		"value_humanitarian_support_desc": "Providing financial assistance and community aid during emergencies, natural disasters, and times of need, both in Norway and in Nepal.",
+
+		"value_knowledge_exchange_title": "Knowledge & Cultural Exchange",
+		"value_knowledge_exchange_desc": "Sharing knowledge, experiences, and positive aspects of Norwegian society with our community and with people in Nepal for mutual growth and understanding.",
+
 		"cta_title": "Get Started Today",
 		"cta_member_title": "Become a Member",
 		"cta_member_desc": "Join our growing community and make your voice heard.",

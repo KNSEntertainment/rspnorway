@@ -47,8 +47,7 @@ interface Translations {
 	other_events: string;
 	other_notices: string;
 	other_circulars: string;
-	learn_more: string;
-	read_more: string;
+	view_detail: string;
 	no_events: string;
 	no_events_desc: string;
 	no_notices: string;
@@ -444,7 +443,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 
 											<div className="pt-1 md:pt-4 border-t border-neutral-100">
 												<span className="text -brand font-medium text-sm group-hover:text -brand inline-flex items-center">
-													{t.learn_more}
+													{t.view_detail}
 													<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 													</svg>
@@ -489,7 +488,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 											</div>
 											<h3 className="text-lg md:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
 											<button className="mt-4 inline-flex items-center text-sm text-brand font-medium group-hover:text-brand">
-												{t.read_more}
+												{t.view_detail}
 												<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 												</svg>

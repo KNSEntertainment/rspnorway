@@ -1,90 +1,3 @@
-// "use client";
-// import { MapPin, Mail, Phone, Facebook, Instagram } from "lucide-react";
-// import Link from "next/link";
-// import Image from "next/image";
-
-// export default function FooterClient({ settings, t }) {
-// 	return (
-// 		<footer className="bg-gradient-to-t to-blue-50 from-transparent text-black pt-12 pb-8">
-// 			{/* Main Footer Content */}
-// 			<div className="container mx-auto px-4">
-// 				{/* Four Column Layout */}
-// 				<div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-6">
-// 					{/* About Column */}
-// 					<div className="space-y-4">
-// 						<h3 className="text-xl font-semibold relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-brand">{t.about_us}</h3>
-// 						<p className="leading-relaxed">{t.about_description}</p>
-// 					</div>
-// 					{/* Logo and Tagline */}
-// 					<div className="flex flex-col w-full justify-center">
-// 						<div className="flex flex-col w-full justify-center items-start md:items-center">
-// 							<Image src={settings?.[0]?.companyLogo || "/rsp-norway-logo.png"} alt={t.logo_alt} width={100} height={100} className="w-24 object-cover mb-4" />
-// 							<h2 className="text-2xl font-bold text-center">{t.logo_head}</h2>
-// 							<p className="text-center max-w-md">{t.tagline}</p>
-// 						</div>
-// 					</div>
-
-// 					{/* Contact Column */}
-// 					<div className="space-y-8">
-// 						<h3 className="text-xl font-semibold relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-brand">{t.contact_details}</h3>
-// 						<div className="space-y-3">
-// 							<div className="flex items-start space-x-3 group">
-// 								<MapPin className="h-5 w-5 text-brand mt-1 flex-shrink-0 group-hover:text-black" />
-// 								<p className=" hover:text-brand transition-colors">{t.address}</p>
-// 							</div>
-
-// 							<div className="flex items-center space-x-3 group">
-// 								<Mail className="h-5 w-5 text-brand flex-shrink-0 group-hover:text-black" />
-// 								<a href={`mailto:${settings?.[0]?.email}`} className=" hover:text-brand transition-colors">
-// 									{settings?.[0]?.email}
-// 								</a>
-// 							</div>
-
-// 							<div className="flex items-center space-x-3 group">
-// 								<Phone className="h-5 w-5 text-brand flex-shrink-0 group-hover:text-black" />
-// 								<a href="#" className=" hover:text-brand transition-colors">
-// 									{t.phone}
-// 								</a>
-// 							</div>
-// 							<div className="flex items-center space-x-3 group">
-// 								<Facebook className="h-5 w-5 text-brand flex-shrink-0 group-hover:text-black" />
-// 								<a href={settings?.[0]?.facebook} target="_blank" rel="noopener noreferrer" className=" hover:text-brand transition-colors underline" aria-label="Facebook">
-// 									{t.facebook}
-// 								</a>
-// 							</div>
-// 							<div className="flex items-center space-x-3 group">
-// 								<Instagram className="h-5 w-5 text-brand flex-shrink-0 group-hover:text-black" />
-// 								<a href={settings?.[0]?.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-brand group-hover:text-brand transition-colors underline" aria-label="Instagram">
-// 									{t.instagram}
-// 								</a>
-// 							</div>
-// 						</div>
-// 					</div>
-// 				</div>
-
-// 				{/* Links Row */}
-// 				<nav className=" flex flex-col md:flex-row md:justify-between border-t border-light pt-1">
-// 					<ul className="flex space-x-4 justify-between mb-4 md:mb-0">
-// 						<li className="text-gray-900 hover:text-brand transition-colors text-sm">
-// 							<Link href="/en/terms-and-conditions">{t.terms}</Link>
-// 						</li>
-// 						<li className="text-gray-900 hover:text-brand transition-colors text-sm">
-// 							<Link href="/en/privacy-policy">{t.privacy}</Link>
-// 						</li>
-// 					</ul>
-// 					<div className="text-gray-900 text-sm">{t.copyright || `© ${new Date().getFullYear()} RSP Norway. All rights reserved.`}</div>
-// 					<div className="text-gray-900 text-sm">
-// 						<span>{t.developed_by}</span>
-// 						<a href="https://harisanjel.com.np" target="_blank" rel="noopener noreferrer" className="font-semibold ml-1">
-// 							{t.developer}
-// 						</a>
-// 					</div>
-// 				</nav>
-// 			</div>
-// 		</footer>
-// 	);
-// }
-
 "use client";
 import { MapPin, Mail, Phone, Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
@@ -109,14 +22,14 @@ export default function FooterClient({ settings, t }) {
 							<span className="w-1 h-5 bg-brand rounded-full"></span>
 							{t.about_us}
 						</h3>
-						<p className="text-sm text-gray-900 leading-relaxed">{t.about_description}</p>
+						<p className="text-md md:text-xl text-gray-900 leading-relaxed">{t.about_description}</p>
 					</div>
 
 					{/* Logo Column - Desktop Only */}
 					<div className="hidden md:flex flex-col items-center justify-start text-center">
 						<Image src={settings?.[0]?.companyLogo || "/rsp-norway-logo.png"} alt={t.logo_alt} width={100} height={100} className="w-24 h-24 object-contain mb-4" />
 						<h2 className="text-2xl font-bold text-gray-900 mb-2">{t.logo_head}</h2>
-						<p className="text-sm text-gray-900 max-w-md leading-relaxed">{t.tagline}</p>
+						<p className="text-md text-gray-900 max-w-md leading-relaxed">{t.tagline}</p>
 					</div>
 
 					{/* Contact Column */}
@@ -125,28 +38,28 @@ export default function FooterClient({ settings, t }) {
 							<span className="w-1 h-5 bg-brand rounded-full"></span>
 							{t.contact_details}
 						</h3>
-						<div className="space-y-3">
+						<div className="space-y-1">
 							{/* Address */}
 							<div className="flex items-start gap-3 group">
 								<MapPin className="h-4 w-4 text-brand mt-0.5 flex-shrink-0 transition-transform group-hover:scale-110" />
-								<p className="text-sm text-gray-900 leading-relaxed">{t.address}</p>
+								<p className="text-md md:text-xl text-gray-900 leading-relaxed">{t.address}</p>
 							</div>
 
 							{/* Email */}
 							<a href={`mailto:${settings?.[0]?.email}`} className="flex items-center gap-3 group hover:translate-x-1 transition-transform">
 								<Mail className="h-4 w-4 text-brand flex-shrink-0 transition-transform group-hover:scale-110" />
-								<span className="text-sm text-gray-900 hover:text-brand transition-colors">{settings?.[0]?.email}</span>
+								<span className="text-md md:text-xl text-gray-900 hover:text-brand transition-colors">{settings?.[0]?.email}</span>
 							</a>
 
 							{/* Phone */}
 							<a href={`tel:${t.phone}`} className="flex items-center gap-3 group hover:translate-x-1 transition-transform">
 								<Phone className="h-4 w-4 text-brand flex-shrink-0 transition-transform group-hover:scale-110" />
-								<span className="text-sm text-gray-900 hover:text-brand transition-colors">{t.phone}</span>
+								<span className="text-md md:text-xl text-gray-900 hover:text-brand transition-colors">{t.phone}</span>
 							</a>
 
 							{/* Social Media */}
 							<div className="pt-2 border-t border-light">
-								<p className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-3">Follow Us</p>
+								<p className="text-md font-semibold text-gray-900 uppercase tracking-wider mb-3">Follow Us</p>
 								<div className="flex gap-4">
 									{settings?.[0]?.facebook && (
 										<a href={settings[0].facebook} target="_blank" rel="noopener noreferrer" className="group" aria-label="Facebook">
@@ -173,20 +86,20 @@ export default function FooterClient({ settings, t }) {
 					{/* Links - Mobile Stacked, Desktop Row */}
 					<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
 						<nav className="flex flex-wrap gap-4 justify-center md:justify-start">
-							<Link href="/en/terms-and-conditions" className="text-xs text-gray-900 hover:text-brand transition-colors">
+							<Link href="/en/terms-and-conditions" className="text-md text-gray-900 hover:text-brand transition-colors">
 								{t.terms}
 							</Link>
 							<span className="text-neutral-300 hidden md:inline">•</span>
-							<Link href="/en/privacy-policy" className="text-xs text-gray-900 hover:text-brand transition-colors">
+							<Link href="/en/privacy-policy" className="text-md text-gray-900 hover:text-brand transition-colors">
 								{t.privacy}
 							</Link>
 						</nav>
 
-						<div className="text-xs text-gray-900 text-center md:text-right">{t.copyright || `© ${new Date().getFullYear()} RSP Norway. All rights reserved.`}</div>
+						<div className="text-md text-gray-900 text-center md:text-right">{t.copyright || `© ${new Date().getFullYear()} RSP Norway. All rights reserved.`}</div>
 					</div>
 
 					{/* Developer Credit */}
-					<div className="text-xs text-gray-900 text-center md:text-right">
+					<div className="text-md text-gray-900 text-center md:text-right">
 						<span>{t.developed_by} </span>
 						<a href="https://harisanjel.com.np" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand hover:underline transition-all">
 							{t.developer}

@@ -1,6 +1,6 @@
 "use client";
 
-import { HandHeart, Megaphone, MessageCirclePlusIcon, Target, Users } from "lucide-react";
+import { Globe, HandHeart, Landmark, MessageCirclePlusIcon, RefreshCcw, Users } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
@@ -11,10 +11,11 @@ export default function AboutUsClient() {
 	const ta = useTranslations("about");
 
 	const values = [
-		{ icon: Target, title: ta("value_advocacy_title"), description: ta("value_advocacy_desc") },
-		{ icon: Users, title: ta("value_community_title"), description: ta("value_community_desc") },
-		{ icon: Megaphone, title: ta("value_democratic_title"), description: ta("value_democratic_desc") },
-		{ icon: HandHeart, title: ta("value_support_title"), description: ta("value_support_desc") },
+		{ icon: Landmark, title: ta("value_cultural_preservation_title"), description: ta("value_cultural_preservation_desc") },
+		{ icon: Users, title: ta("value_community_brotherhood_title"), description: ta("value_community_brotherhood_desc") },
+		{ icon: Globe, title: ta("value_social_integration_title"), description: ta("value_social_integration_desc") },
+		{ icon: HandHeart, title: ta("value_humanitarian_support_title"), description: ta("value_humanitarian_support_desc") },
+		{ icon: RefreshCcw, title: ta("value_knowledge_exchange_title"), description: ta("value_knowledge_exchange_desc") },
 	];
 
 	return (
@@ -151,12 +152,13 @@ export default function AboutUsClient() {
 			</div>
 
 			<section className="h-auto flex flex-col md:flex-row items-center rounded-lg mt-4 md:mt-12 md:p-12 py-4 md:gap-12">
-				<div className="flex text-black p-4 lg:px-16 border border-1 border-brand rounded-3xl mx-6">
+				<div className="flex text-black p-4 lg:px-8 border border-1 border-brand rounded-3xl mx-6">
 					<MessageCirclePlusIcon className="w-8 h-8 text-brand mr-4 flex-shrink-0" />
 					<div>
 						<h2 className="text-xl md:text-2xl font-bold mb-4">
 							{t("mission_title").split(" ")[0]} <span className="text-brand leading-tight">{t("mission_title").split(" ")[1]}</span>
 						</h2>
+						{/* We envision a future where our children understand their roots, our traditions remain vibrant, and our community serves as a model of cultural preservation and successful integration. Through unity, compassion, and shared purpose, we strive to make a positive difference in the lives of Nepalese people both in Norway and in Nepal */}
 						<p className="text-lg mb-4">{t("mission_description")}</p>
 					</div>
 				</div>
@@ -175,16 +177,19 @@ export default function AboutUsClient() {
 				<header className="text-center mb-12">
 					<SectionHeader heading={t("values_title")} />
 				</header>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-					{values.map((value, index) => (
-						<motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }} className="bg-light rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300">
-							<div className="w-12 h-12 mb-4 bg-brand rounded-lg flex items-center justify-center">
-								<value.icon className="w-6 h-6 text-white" />
-							</div>
-							<h4 className="text-lg font-semibold text-gray-900 mb-2">{value.title}</h4>
-							<p className="text-gray-600 text-sm">{value.description}</p>
-						</motion.div>
-					))}
+
+				<div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+					<div className="flex gap-6" style={{ minWidth: "fit-content" }}>
+						{values.map((value, index) => (
+							<motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }} className="bg-light rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300 w-[85vw] sm:w-[45vw] lg:w-[calc(33.333%-16px)] flex-shrink-0">
+								<div className="w-12 h-12 mb-4 bg-brand rounded-lg flex items-center justify-center">
+									<value.icon className="w-6 h-6 text-white" />
+								</div>
+								<h4 className="text-lg font-semibold text-gray-900 mb-2">{value.title}</h4>
+								<p className="text-gray-600 text-sm">{value.description}</p>
+							</motion.div>
+						))}
+					</div>
 				</div>
 			</motion.div>
 		</main>

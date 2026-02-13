@@ -39,7 +39,7 @@ export default async function UpdatesPage({ params }) {
 		other_events: t("other_events"),
 		other_notices: t("other_notices"),
 		other_circulars: t("other_circulars"),
-		learn_more: t("learn_more"),
+		view_detail: t("view_detail"),
 		read_more: t("read_more"),
 		no_events: t("no_events"),
 		no_events_desc: t("no_events_desc"),
