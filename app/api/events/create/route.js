@@ -55,7 +55,6 @@ export async function POST(request) {
 			eventtime,
 			classId: classId || null,
 			classLabel: classLabel || "",
-			createdBy: creatorEmail,
 			eventposterUrl,
 			eventposter2Url,
 			eventposter3Url,

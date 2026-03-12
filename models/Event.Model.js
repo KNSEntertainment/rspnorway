@@ -5,7 +5,6 @@ const eventSchema = new mongoose.Schema({
 	eventdescription: { type: String, required: false },
 	eventvenue: { type: String, required: false },
 	eventdate: { type: String, required: false },
-	createdBy: { type: String, default: "" },
 	eventtime: { type: String, required: false },
 	eventposterUrl: { type: String, required: true },
 	eventposter2Url: { type: String, required: false },
