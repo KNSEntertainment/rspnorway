@@ -18,7 +18,7 @@ async function deleteFromCloudinary(url) {
 		// Delete the file from Cloudinary
 		const publicId = url.split("/").pop().split(".")[0];
 		console.log("Deleting Cloudinary publicId:", publicId);
-		const result = await cloudinary.uploader.destroy(`magic_chalk_event_images/${publicId}`);
+		const result = await cloudinary.uploader.destroy(`rspnorway_event_images/${publicId}`);
 		console.log("Cloudinary deletion result:", result);
 		if (result.result !== "ok" && result.result !== "not_found") {
 			throw new Error(`Failed to delete resource: ${result.result}`);

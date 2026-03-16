@@ -20,8 +20,6 @@ export async function POST(request) {
 		const eventvenue = formData.get("eventvenue");
 		const eventdate = formData.get("eventdate");
 		const eventtime = formData.get("eventtime");
-		const classId = formData.get("classId");
-		const classLabel = formData.get("classLabel");
 		const eventposter = formData.get("eventposter");
 		if (!eventposter || typeof eventposter.arrayBuffer !== "function") {
 			return NextResponse.json({ success: false, error: "Invalid file upload for eventposter" }, { status: 400 });
@@ -40,10 +38,10 @@ export async function POST(request) {
 		const formattedDate = eventdate ? new Date(eventdate).toISOString().split("T")[0] : "";
 
 		// Upload images to Cloudinary
-		const eventposterUrl = await uploadToCloudinary(eventposter, "magic_chalk_event_images");
-		const eventposter2Url = eventposter2 ? await uploadToCloudinary(eventposter2, "magic_chalk_event_images") : null;
-		const eventposter3Url = eventposter3 ? await uploadToCloudinary(eventposter3, "magic_chalk_event_images") : null;
-		const eventvideoUrl = eventvideo ? await uploadToCloudinary(eventvideo, "magic_chalk_event_images") : null;
+		const eventposterUrl = await uploadToCloudinary(eventposter, "rspnorway_event_images");
+		const eventposter2Url = eventposter2 ? await uploadToCloudinary(eventposter2, "rspnorway_event_images") : null;
+		const eventposter3Url = eventposter3 ? await uploadToCloudinary(eventposter3, "rspnorway_event_images") : null;
+		const eventvideoUrl = eventvideo ? await uploadToCloudinary(eventvideo, "rspnorway_event_images") : null;
 
 		// Save event to MongoDB
 		console.log("Creating event in database");
@@ -53,8 +51,6 @@ export async function POST(request) {
 			eventvenue,
 			eventdate: formattedDate,
 			eventtime,
-			classId: classId || null,
-			classLabel: classLabel || "",
 			eventposterUrl,
 			eventposter2Url,
 			eventposter3Url,

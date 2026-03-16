@@ -1,12 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
-export default function EventForm({ handleCloseEventModal, eventToEdit = null, classOptions = [], defaultClassId = "" }) {
-	const defaultClassLabel = useMemo(() => {
-		const match = classOptions.find((cls) => String(cls.id || cls._id || cls.value || "") === String(defaultClassId)) || classOptions[0];
-		return match?.name || match?.label || "";
-	}, [classOptions, defaultClassId]);
-
+export default function EventForm({ handleCloseEventModal, eventToEdit = null }) {
 	const toSafeString = (value) => (value === null || value === undefined ? "" : String(value));
 
 	const [formData, setFormData] = useState({
@@ -15,8 +10,6 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 		eventvenue: "",
 		eventdate: "",
 		eventtime: "",
-		classId: defaultClassId || "",
-		classLabel: defaultClassLabel || "",
 		eventposter: null,
 		eventposter2: null,
 		eventposter3: null,
@@ -28,8 +21,6 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 	useEffect(() => {
 		if (eventToEdit) {
 			const eventDateValue = eventToEdit.eventdate ? String(eventToEdit.eventdate).split("T")[0] : "";
-			const eventClassId = eventToEdit.classId?._id || eventToEdit.classId || "";
-			const eventClassLabel = eventToEdit.classLabel || eventToEdit.classId?.name || "";
 			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime"];
 			const sanitizedStrings = stringKeys.reduce((acc, key) => {
 				acc[key] = toSafeString(eventToEdit[key]);
@@ -39,8 +30,6 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 				...prev,
 				...sanitizedStrings,
 				eventdate: eventDateValue,
-				classId: toSafeString(eventClassId),
-				classLabel: toSafeString(eventClassLabel),
 				eventposter: null,
 				eventposter2: null,
 				eventposter3: null,
@@ -49,14 +38,6 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 		}
 	}, [eventToEdit]);
 
-	useEffect(() => {
-		if (eventToEdit || (!defaultClassId && formData.classId)) return;
-		const match = classOptions.find((cls) => String(cls.id || cls._id || cls.value || "") === String(defaultClassId)) || classOptions[0];
-		if (match) {
-			setFormData((prev) => ({ ...prev, classId: match.id || match._id || match.value || "", classLabel: match.name || match.label || "" }));
-		}
-	}, [classOptions, defaultClassId, eventToEdit, formData.classId]);
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setError("");
@@ -64,8 +45,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 
 		try {
 			const form = new FormData();
-			const selectedClassLabel = formData.classLabel || (formData.classId ? classOptions.find((cls) => String(cls.id || cls._id || cls.value || "") === String(formData.classId))?.name || classOptions.find((cls) => String(cls.id || cls._id || cls.value || "") === String(formData.classId))?.label || "" : "");
-			const payload = { ...formData, classLabel: selectedClassLabel };
+			const payload = { ...formData };
 			Object.keys(payload).forEach((key) => {
 				if (payload[key]) {
 					form.append(key, payload[key]);
@@ -92,8 +72,6 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null, c
 					eventvenue: "",
 					eventdate: "",
 					eventtime: "",
-					classId: defaultClassId || "",
-					classLabel: defaultClassLabel || "",
 					eventposter: null,
 					eventposter2: null,
 					eventposter3: null,

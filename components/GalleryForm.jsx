@@ -97,7 +97,7 @@ export default function GalleryForm({ handleCloseGalleryModal, galleryToEdit }) 
 				<label htmlFor="category" className="block mb-2 font-bold">
 					Enter Tag - meaningful category for images
 				</label>
-				<input type="text" id="category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g. Field trip" required={!formData.classId} />
+				<input type="text" id="category" value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g. Field trip" />
 			</div>
 
 			<div>
