@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Calendar, MapPin, Clock, Bell, FileText, Pencil } from "lucide-react";
+import { Calendar, MapPin, Clock, Bell, FileText, Pencil, Calendar1 } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 
 interface Event {
@@ -13,6 +13,8 @@ interface Event {
 	eventvenue?: string;
 	eventdescription?: string;
 	eventposterUrl?: string;
+	eventposter2Url?: string;
+	eventposter3Url?: string;
 }
 
 interface Notice {
@@ -65,7 +67,6 @@ interface Props {
 }
 
 export default function UpdatesClient({ events, notices, circulars, translations: t, locale }: Props) {
-	const [activeTab, setActiveTab] = useState("events");
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 	const [selectedCircular, setSelectedCircular] = useState<Circular | null>(null);
@@ -101,6 +102,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	// Event Detail View
 	if (selectedEvent) {
 		const { day, month } = formatEventDate(selectedEvent.eventdate);
+		const eventImages = [selectedEvent.eventposterUrl, selectedEvent.eventposter2Url, selectedEvent.eventposter3Url].filter(Boolean) as string[];
 		return (
 			<div className="min-h-screen bg-light">
 				<div className="container max-w-7xl mx-auto px-4 py-8">
@@ -145,8 +147,8 @@ export default function UpdatesClient({ events, notices, circulars, translations
 								<CardContent className="p-6 md:p-8">
 									{/* Event Poster */}
 									<div className="relative w-full overflow-hidden">
-										{selectedEvent.eventposterUrl ? (
-											<Image src={selectedEvent.eventposterUrl} alt={selectedEvent.eventname} width={1200} height={800} className="w-full h-auto object-contain" priority />
+										{eventImages.length > 0 ? (
+											<Image src={eventImages[0]} alt={selectedEvent.eventname} width={1200} height={800} className="w-full h-auto object-contain" priority />
 										) : (
 											<div className="flex items-center justify-center h-full">
 												<Calendar className="w-24 h-24 text-neutral-300" />
@@ -172,6 +174,17 @@ export default function UpdatesClient({ events, notices, circulars, translations
 											</div>
 										)}
 									</div>
+
+									{/* Remaining Event Images */}
+									{eventImages.length > 1 && (
+										<div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+											{eventImages.slice(1).map((url, index) => (
+												<div key={`${url}-${index}`} className="relative w-full overflow-hidden rounded-lg border border-neutral-100 bg-white">
+													<Image src={url} alt={`${selectedEvent.eventname} ${index + 2}`} width={600} height={400} className="w-full h-auto object-contain" />
+												</div>
+											))}
+										</div>
+									)}
 								</CardContent>
 							</Card>
 						</div>
@@ -382,67 +395,50 @@ export default function UpdatesClient({ events, notices, circulars, translations
 				<p className="text-gray-900 max-w-3xl mx-auto text-lg">{t.description}</p>
 			</div>
 
-			<div className="flex justify-center mb-12 md:mb-12">
-				<div className="inline-flex rounded-lg bg-light p-1">
-					<button onClick={() => setActiveTab("events")} className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition-all duration-300 ${activeTab === "events" ? "bg-gradient-to-r from-blue-400 to-brand  text-white shadow-lg" : "text-gray-900 hover:text-gray-900"}`}>
-						<Calendar className="w-5 h-5 inline mr-2" />
-						{t.events_tab}
-					</button>
-					<button onClick={() => setActiveTab("notices")} className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition-all duration-300 ${activeTab === "notices" ? "bg-gradient-to-r from-brand to-blue-400  text-white shadow-lg" : "text-gray-900 hover:text-gray-900"}`}>
-						<Bell className="w-5 h-5 inline mr-2" />
-						{t.notices_tab}
-					</button>
-					<button onClick={() => setActiveTab("circulars")} className={`px-4 py-1.5 text-sm rounded-lg font-semibold transition-all duration-300 ${activeTab === "circulars" ? "bg-gradient-to-r from-blue-400 to-brand  text-white shadow-lg" : "text-gray-900 hover:text-gray-900"}`}>
-						<FileText className="w-5 h-5 inline mr-2" />
-						{t.circulars_tab}
-					</button>
-				</div>
-			</div>
-
-			{activeTab === "events" && (
-				<div className="animate-fadeIn">
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+				{/* Events Column */}
+				<div className="space-y-4">
+					<div className="flex items-center gap-2">
+						<Calendar className="w-5 h-5 text-brand" />
+						<h2 className="text-lg font-bold text-gray-900">{t.events_tab}</h2>
+					</div>
 					{sortedEvents && sortedEvents.length > 0 ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+						<div className="space-y-4">
 							{sortedEvents.map((event) => {
-								const { day, month } = formatEventDate(event.eventdate);
 								return (
-									<Card key={event._id} className="md:mx-4 group cursor-pointer md:hover:shadow-2xl md:transition-all md:duration-300 hover:-translate-y-1 overflow-hidden border-none" onClick={() => setSelectedEvent(event)}>
-										{/* <div className="relative h-2 overflow-hidden">
-											{event.eventposterUrl ? (
-												<Image src={event.eventposterUrl} alt={event.eventname} fill className="object-cover object-top md:group-hover:scale-110 md:transition-transform md:duration-500" />
-											) : (
-												<div className="flex items-center justify-center h-full">
-													<Calendar className="w-12 md:w-20 h-12 md:h-20" />
-												</div>
-											)}
-										</div> */}
-										<CardContent className="p-4 md:p-6 bg-gradient-to-r from-brand/5 via-white to-brand/5">
-											<h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text -brand transition-colors">{event.eventname}</h3>
-											<div className="flex items-center gap-4 mb-4">
-												<div className="  text-brand rounded-lg p-3 shadow-lg text-center md:min-w-[70px]">
-													<div className="text-md md:text-3xl font-bold">{day}</div>
-													<div className="text-xs uppercase tracking-wider">{month}</div>
-												</div>
-												<div className="space-y-1 md:space-y-2 text-sm text-gray-900">
-													{event.eventtime && (
-														<div className="flex items-center gap-2">
-															<Clock className="w-4 h-4" />
-															<span>{event.eventtime}</span>
-														</div>
-													)}
-													{event.eventvenue && (
-														<div className="flex items-center gap-2">
-															<MapPin className="w-4 h-4 text -brand" />
-															<span className="line-clamp-1">{event.eventvenue}</span>
-														</div>
-													)}
+									<Card key={event._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-white to-brand/20" onClick={() => setSelectedEvent(event)}>
+										<CardContent className="p-4 bg-gradient-to-r from-brand/10 via-brand/5 to-brand/10">
+											<div className="flex gap-4 items-center">
+												<Image src={event.eventposterUrl || "/ghanti.png"} alt={event.eventname} width={400} height={400} className="w-36 h-36 object-cover rounded-md mb-3" />
+
+												<div className="flex flex-col">
+													<h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand transition-colors">{event.eventname}</h3>
+
+													<div className="flex items-center gap-2">
+														<Calendar1 className="w-4 h-4  text-brand" />
+														<span>{event.eventdate}</span>
+													</div>
+													<div className="space-y-1 text-sm text-gray-900">
+														{event.eventtime && (
+															<div className="flex items-center gap-2">
+																<Clock className="w-4 h-4  text-brand" />
+																<span>{event.eventtime}</span>
+															</div>
+														)}
+														{event.eventvenue && (
+															<div className="flex items-center gap-2">
+																<MapPin className="w-4 h-4 text-brand" />
+																<span className="line-clamp-1">{event.eventvenue}</span>
+															</div>
+														)}
+													</div>
 												</div>
 											</div>
 
 											{event.eventdescription && <p className="text-gray-900 mt-2 line-clamp-3 text-sm leading-relaxed">{event.eventdescription}</p>}
 
-											<div className="pt-1 md:pt-4 border-t border-neutral-100">
-												<span className="text -brand font-medium text-sm group-hover:text -brand inline-flex items-center">
+											<div className="pt-3 border-t border-neutral-100">
+												<span className="text-brand font-medium text-sm inline-flex items-center">
 													{t.view_detail}
 													<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -455,28 +451,31 @@ export default function UpdatesClient({ events, notices, circulars, translations
 							})}
 						</div>
 					) : (
-						<div className="text-center py-20">
-							<Calendar className="w-24 h-24 text-neutral-300 mx-auto mb-4" />
-							<h3 className="text-2xl font-medium text-gray-900 mb-2">{t.no_events}</h3>
-							<p className="text-gray-900">{t.no_events_desc}</p>
+						<div className="text-center py-10">
+							<Calendar className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_events}</h3>
+							<p className="text-gray-900 text-sm">{t.no_events_desc}</p>
 						</div>
 					)}
 				</div>
-			)}
 
-			{activeTab === "notices" && (
-				<div className="animate-fadeIn">
+				{/* Notices Column */}
+				<div className="space-y-4">
+					<div className="flex items-center gap-2">
+						<Bell className="w-5 h-5 text-brand" />
+						<h2 className="text-lg font-bold text-gray-900">{t.notices_tab}</h2>
+					</div>
 					{sortedNotices && sortedNotices.length > 0 ? (
-						<div className="grid md:grid-cols-2 gap-8">
+						<div className="space-y-4">
 							{sortedNotices.map((notice) => (
 								<Card key={notice._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none" onClick={() => setSelectedNotice(notice)}>
 									<div className="flex items-center gap-4 p-4">
-										<div className="relative w-32 h-32 flex-shrink-0 bg-gradient-to-br from-brand to-emerald-100 rounded-lg overflow-hidden">
+										<div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-brand to-emerald-100 rounded-lg overflow-hidden">
 											{notice.noticeimage ? (
 												<Image src={notice.noticeimage} alt={notice.noticetitle} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-500" />
 											) : (
 												<div className="flex items-center justify-center h-full">
-													<Bell className="w-12 h-12 text-brand" />
+													<Bell className="w-10 h-10 text-brand" />
 												</div>
 											)}
 										</div>
@@ -486,8 +485,8 @@ export default function UpdatesClient({ events, notices, circulars, translations
 												<Calendar className="w-3 h-3 text-brand" />
 												<p className="text-brand text-xs font-medium">{formatDate(notice.noticedate)}</p>
 											</div>
-											<h3 className="text-lg md:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
-											<button className="mt-4 inline-flex items-center text-sm text-brand font-medium group-hover:text-brand">
+											<h3 className="text-base font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
+											<button className="mt-3 inline-flex items-center text-sm text-brand font-medium group-hover:text-brand">
 												{t.view_detail}
 												<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -499,28 +498,31 @@ export default function UpdatesClient({ events, notices, circulars, translations
 							))}
 						</div>
 					) : (
-						<div className="text-center py-20">
-							<Bell className="w-24 h-24 text-neutral-300 mx-auto mb-4" />
-							<h3 className="text-2xl font-medium text-gray-900 mb-2">{t.no_notices}</h3>
-							<p className="text-gray-900">{t.no_notices_desc}</p>
+						<div className="text-center py-10">
+							<Bell className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_notices}</h3>
+							<p className="text-gray-900 text-sm">{t.no_notices_desc}</p>
 						</div>
 					)}
 				</div>
-			)}
 
-			{activeTab === "circulars" && (
-				<div className="animate-fadeIn">
+				{/* Circulars Column */}
+				<div className="space-y-4">
+					<div className="flex items-center gap-2">
+						<FileText className="w-5 h-5 text-brand" />
+						<h2 className="text-lg font-bold text-gray-900">{t.circulars_tab}</h2>
+					</div>
 					{sortedCirculars && sortedCirculars.length > 0 ? (
-						<div className="grid md:grid-cols-2 gap-8">
+						<div className="space-y-4">
 							{sortedCirculars.map((circular) => (
-								<Card key={circular._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none" onClick={() => setSelectedCircular(circular)}>
+								<Card key={circular._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-brand/5 to-brand/20" onClick={() => setSelectedCircular(circular)}>
 									<div className="flex items-center gap-4 p-4">
-										<div className="relative w-32 h-32 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg overflow-hidden">
+										<div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg overflow-hidden">
 											{circular.circularMainPicture ? (
 												<Image src={circular.circularMainPicture} alt={circular.circularTitle[locale] || circular.circularTitle["en"]} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-500" />
 											) : (
 												<div className="flex items-center justify-center h-full">
-													<FileText className="w-12 h-12 text-brand" />
+													<FileText className="w-10 h-10 text-brand" />
 												</div>
 											)}
 										</div>
@@ -530,21 +532,21 @@ export default function UpdatesClient({ events, notices, circulars, translations
 												<Calendar className="w-3 h-3 text-brand" />
 												<p className="text-brand text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
 											</div>
-											<h3 className="text-lg md:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}</h3>
+											<h3 className="text-base font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}</h3>
 										</div>
 									</div>
 								</Card>
 							))}
 						</div>
 					) : (
-						<div className="text-center py-20">
-							<FileText className="w-24 h-24 text-neutral-300 mx-auto mb-4" />
-							<h3 className="text-2xl font-medium text-gray-900 mb-2">{t.no_circulars}</h3>
-							<p className="text-gray-900">{t.no_circulars_desc}</p>
+						<div className="text-center py-10">
+							<FileText className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_circulars}</h3>
+							<p className="text-gray-900 text-sm">{t.no_circulars_desc}</p>
 						</div>
 					)}
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }

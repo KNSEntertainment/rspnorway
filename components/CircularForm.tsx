@@ -89,7 +89,7 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 				setMainImagePreview(URL.createObjectURL(file));
 			} else {
 				setSecondImage(file);
-				setSecondImagePreview(URL.createObjectURL(file));
+			setSecondImagePreview(URL.createObjectURL(file));
 			}
 		}
 	};
@@ -99,6 +99,13 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 		setLoading(true);
 
 		try {
+			const hasAnyTitle = Boolean(formData.circularTitle.en || formData.circularTitle.no || formData.circularTitle.ne);
+			if (!hasAnyTitle) {
+				alert("Please add a title in at least one language.");
+				setLoading(false);
+				return;
+			}
+
 			const data = new FormData();
 
 			// Add localized fields
@@ -155,8 +162,8 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 			<div className="space-y-4 border-b pb-6">
 				<h3 className="text-lg font-semibold text-gray-900">English</h3>
 				<div>
-					<Label htmlFor="title_en">Title (English) *</Label>
-					<Input id="title_en" required value={formData.circularTitle.en} onChange={(e) => handleInputChange("circularTitle", e.target.value, "en")} placeholder="Enter circular title in English" />
+					<Label htmlFor="title_en">Title (English)</Label>
+					<Input id="title_en" value={formData.circularTitle.en} onChange={(e) => handleInputChange("circularTitle", e.target.value, "en")} placeholder="Enter circular title in English" />
 				</div>
 				<div>
 					<Label htmlFor="desc_en">Description (English)</Label>

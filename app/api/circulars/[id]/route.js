@@ -55,27 +55,39 @@ export async function PUT(request, { params }) {
 			return NextResponse.json({ success: false, error: "Circular not found" }, { status: 404 });
 		}
 
+		const getLocalized = (mapLike, key) => {
+			if (!mapLike) return "";
+			if (typeof mapLike.get === "function") return mapLike.get(key) || "";
+			return mapLike[key] || "";
+		};
+
+		const getField = (name, fallback) => {
+			if (!formData.has(name)) return fallback;
+			const value = formData.get(name);
+			return value === null || value === undefined ? fallback : value.toString();
+		};
+
 		// Update multi-language fields
 		const circularTitle = {
-			en: formData.get("circularTitle_en")?.toString() || existingCircular.circularTitle?.en || "",
-			no: formData.get("circularTitle_no")?.toString() || existingCircular.circularTitle?.no || "",
-			ne: formData.get("circularTitle_ne")?.toString() || existingCircular.circularTitle?.ne || "",
+			en: getField("circularTitle_en", getLocalized(existingCircular.circularTitle, "en")),
+			no: getField("circularTitle_no", getLocalized(existingCircular.circularTitle, "no")),
+			ne: getField("circularTitle_ne", getLocalized(existingCircular.circularTitle, "ne")),
 		};
 
 		const circularDesc = {
-			en: formData.get("circularDesc_en")?.toString() || existingCircular.circularDesc?.en || "",
-			no: formData.get("circularDesc_no")?.toString() || existingCircular.circularDesc?.no || "",
-			ne: formData.get("circularDesc_ne")?.toString() || existingCircular.circularDesc?.ne || "",
+			en: getField("circularDesc_en", getLocalized(existingCircular.circularDesc, "en")),
+			no: getField("circularDesc_no", getLocalized(existingCircular.circularDesc, "no")),
+			ne: getField("circularDesc_ne", getLocalized(existingCircular.circularDesc, "ne")),
 		};
 
 		const circularAuthor = {
-			en: formData.get("circularAuthor_en")?.toString() || existingCircular.circularAuthor?.en || "",
-			no: formData.get("circularAuthor_no")?.toString() || existingCircular.circularAuthor?.no || "",
-			ne: formData.get("circularAuthor_ne")?.toString() || existingCircular.circularAuthor?.ne || "",
+			en: getField("circularAuthor_en", getLocalized(existingCircular.circularAuthor, "en")),
+			no: getField("circularAuthor_no", getLocalized(existingCircular.circularAuthor, "no")),
+			ne: getField("circularAuthor_ne", getLocalized(existingCircular.circularAuthor, "ne")),
 		};
 
-		const publicationStatus = formData.get("publicationStatus")?.toString() || existingCircular.publicationStatus;
-		const circularPublishedAt = formData.get("circularPublishedAt")?.toString() || existingCircular.circularPublishedAt;
+		const publicationStatus = getField("publicationStatus", existingCircular.publicationStatus);
+		const circularPublishedAt = getField("circularPublishedAt", existingCircular.circularPublishedAt);
 
 		// Handle images
 		let circularMainPictureUrl = existingCircular.circularMainPicture;
@@ -105,7 +117,8 @@ export async function PUT(request, { params }) {
 		existingCircular.circularDesc = circularDesc;
 		existingCircular.circularAuthor = circularAuthor;
 		existingCircular.publicationStatus = publicationStatus;
-		existingCircular.circularPublishedAt = circularPublishedAt ? new Date(circularPublishedAt) : null;
+		const publishedAtDate = circularPublishedAt ? new Date(circularPublishedAt) : null;
+		existingCircular.circularPublishedAt = publishedAtDate && !Number.isNaN(publishedAtDate.getTime()) ? publishedAtDate : null;
 		existingCircular.circularMainPicture = circularMainPictureUrl;
 		existingCircular.circularSecondPicture = circularSecondPictureUrl;
 

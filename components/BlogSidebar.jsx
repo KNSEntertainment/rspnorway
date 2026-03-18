@@ -14,18 +14,18 @@ function BlogSidebar({ blogs, locale: propLocale }) {
 		return blog.blogTitle_en || blog.blogTitle || "";
 	};
 	return (
-		<div className="space-y-6 md:sticky md:top-36 bg-light h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
+		<div className="space-y-6 md:sticky md:top-36 h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
 			{/* Share Box */}
 
 			{/* Other Blogs */}
-			<div className="rounded-lg shadow-sm p-6">
+			<div className="rounded-lg p-6">
 				<h3 className="text-lg font-semibold text-gray-900 mb-4">Blogs</h3>
 				<div className="space-y-4">
 					{blogs &&
 						blogs.map((relBlog) => (
 							<Link href={`/${locale}/blogs/${relBlog._id}`} key={relBlog._id} className="flex space-x-4 group border-b pb-4 last:border-0 last:pb-0">
-								<div className="relative w-16 h-16 flex-shrink-0">
-									<Image src={relBlog?.blogMainPicture || "Image"} alt={getLocalizedTitle(relBlog) || "Blog Title"} width={64} height={64} className="object-cover rounded-md" />
+								<div className="relative w-16 h-16 flex-shrink-0 overflow-hidden rounded-md">
+									<Image src={relBlog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(relBlog) || "Blog Title"} fill sizes="64px" className="object-cover" />
 								</div>
 								<div>
 									<h4 className="font-medium text-gray-900 group-hover:text-brand transition duration-200">{getLocalizedTitle(relBlog)}</h4>

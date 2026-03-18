@@ -38,29 +38,53 @@ export async function PUT(request, { params }) {
 		const formData = await request.formData();
 		const eventId = id;
 
-		const eventData = {};
-		for (const [key, value] of formData.entries()) {
-			if (key !== "eventposter" && key !== "eventposter2" && key !== "eventposter3" && key !== "eventvideo") {
-				eventData[key] = value;
-			}
-		}
-
 		const event = await Event.findById(eventId);
 		if (!event) {
 			return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 });
 		}
 
-		// Handle video update and deletion
-		const eventvideo = formData.get("eventvideo");
-		if (eventvideo && eventvideo.size > 0) {
-			if (event.eventvideoUrl) {
-				console.log("Old video URL:", event.eventvideoUrl);
-				await deleteFromCloudinary(event.eventvideoUrl);
+		const eventData = {};
+		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime"];
+		for (const key of textKeys) {
+			if (formData.has(key)) {
+				const value = formData.get(key);
+				if (key === "eventdate") {
+					eventData.eventdate = value ? new Date(String(value)).toISOString().split("T")[0] : "";
+				} else if (value !== null && value !== undefined) {
+					eventData[key] = String(value);
+				}
 			}
-			eventData.eventvideoUrl = await uploadToCloudinary(eventvideo, "rspnorway_event_images");
 		}
 
-		// Handle other uploads similarly...
+		const handleUpload = async (formKey, urlField) => {
+			const file = formData.get(formKey);
+			if (file && typeof file.arrayBuffer === "function" && file.size > 0) {
+				if (event[urlField]) {
+					await deleteFromCloudinary(event[urlField]);
+				}
+				eventData[urlField] = await uploadToCloudinary(file, "rspnorway_event_images");
+			}
+		};
+
+		await handleUpload("eventposter", "eventposterUrl");
+		await handleUpload("eventposter2", "eventposter2Url");
+		await handleUpload("eventposter3", "eventposter3Url");
+		await handleUpload("eventvideo", "eventvideoUrl");
+
+		const removeEventPoster2 = formData.get("removeEventPoster2") === "true";
+		const removeEventPoster3 = formData.get("removeEventPoster3") === "true";
+
+		const handleRemove = async (removeFlag, urlField) => {
+			if (!removeFlag) return;
+			if (eventData[urlField]) return;
+			if (event[urlField]) {
+				await deleteFromCloudinary(event[urlField]);
+				eventData[urlField] = null;
+			}
+		};
+
+		await handleRemove(removeEventPoster2, "eventposter2Url");
+		await handleRemove(removeEventPoster3, "eventposter3Url");
 
 		const updatedEvent = await Event.findByIdAndUpdate(eventId, eventData, { new: true });
 

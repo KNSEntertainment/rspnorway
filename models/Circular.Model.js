@@ -27,7 +27,7 @@ const circularSchema = new mongoose.Schema(
 		},
 
 		circularPublishedAt: {
-			Date,
+			type: Date,
 		},
 	},
 	{

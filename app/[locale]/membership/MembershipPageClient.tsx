@@ -73,6 +73,36 @@ interface Props {
 	locale: string;
 }
 
+interface AddressSuggestion {
+	id: string;
+	label: string;
+	addressLine: string;
+	city: string;
+	postalCode: string;
+}
+
+interface GeoapifyProperties {
+	place_id?: string | number;
+	formatted?: string;
+	street?: string;
+	housenumber?: string;
+	city?: string;
+	town?: string;
+	village?: string;
+	municipality?: string;
+	county?: string;
+	postcode?: string;
+}
+
+interface GeoapifyFeature {
+	id?: string | number;
+	properties?: GeoapifyProperties;
+}
+
+interface GeoapifyResponse {
+	features?: GeoapifyFeature[];
+}
+
 export default function MembershipPageClient({ translations: t, locale }: Props) {
 	const [formData, setFormData] = useState({
 		fullName: "",
@@ -96,6 +126,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 
 	const [submitted, setSubmitted] = useState(false);
 	const [emailError, setEmailError] = useState("");
+	const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
+	const [addressLoading, setAddressLoading] = useState(false);
+	const [addressError, setAddressError] = useState("");
+	const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+	const [locating, setLocating] = useState(false);
+	const geoapifyKey = process.env.NEXT_PUBLIC_GEOAPIFY_KEY;
 
 	// Cascading dropdown state
 	const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
@@ -136,6 +172,141 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		} else {
 			setFormData({ ...formData, [name]: value });
 		}
+	};
+
+	const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setFormData({ ...formData, address: value });
+		setAddressError("");
+		setActiveSuggestionIndex(-1);
+	};
+
+	useEffect(() => {
+		if (!geoapifyKey) {
+			setAddressSuggestions([]);
+			return;
+		}
+		if (!formData.address || formData.address.trim().length < 3) {
+			setAddressSuggestions([]);
+			return;
+		}
+
+		const controller = new AbortController();
+		const timer = setTimeout(async () => {
+			try {
+				setAddressLoading(true);
+				const text = encodeURIComponent(formData.address.trim());
+				const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${text}&filter=countrycode:no&type=street&limit=5&apiKey=${geoapifyKey}`;
+				const res = await fetch(url, { signal: controller.signal });
+				if (!res.ok) {
+					throw new Error("Failed to fetch address suggestions");
+				}
+				const data = (await res.json()) as GeoapifyResponse;
+				const suggestions: AddressSuggestion[] = (data.features || []).map((feature: GeoapifyFeature) => {
+					const props = feature.properties || {};
+					const addressLine =
+						[props.street, props.housenumber].filter(Boolean).join(" ").trim() || props.formatted || "";
+					const city = props.city || props.town || props.village || props.municipality || props.county || "";
+					const postalCode = props.postcode || "";
+					return {
+						id: props.place_id?.toString() || feature?.id?.toString() || `${addressLine}-${postalCode}`,
+						label: props.formatted || addressLine || "Unknown address",
+						addressLine: addressLine || props.formatted || "",
+						city,
+						postalCode,
+					};
+				});
+				setAddressSuggestions(suggestions);
+				setActiveSuggestionIndex(suggestions.length > 0 ? 0 : -1);
+			} catch (err: unknown) {
+				if (!(err instanceof Error) || err.name !== "AbortError") {
+					setAddressError("Could not load address suggestions.");
+				}
+			} finally {
+				setAddressLoading(false);
+			}
+		}, 350);
+
+		return () => {
+			clearTimeout(timer);
+			controller.abort();
+		};
+	}, [formData.address, geoapifyKey]);
+
+	const applySuggestion = (item: AddressSuggestion) => {
+		setFormData((prev) => ({
+			...prev,
+			address: item.addressLine || item.label,
+			city: item.city || prev.city,
+			postalCode: item.postalCode || prev.postalCode,
+		}));
+		setAddressSuggestions([]);
+		setActiveSuggestionIndex(-1);
+	};
+
+	const handleAddressKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (addressSuggestions.length === 0) return;
+
+		if (e.key === "ArrowDown") {
+			e.preventDefault();
+			setActiveSuggestionIndex((prev) => (prev + 1) % addressSuggestions.length);
+		} else if (e.key === "ArrowUp") {
+			e.preventDefault();
+			setActiveSuggestionIndex((prev) => (prev - 1 + addressSuggestions.length) % addressSuggestions.length);
+		} else if (e.key === "Enter") {
+			if (activeSuggestionIndex >= 0) {
+				e.preventDefault();
+				applySuggestion(addressSuggestions[activeSuggestionIndex]);
+			}
+		} else if (e.key === "Escape") {
+			setAddressSuggestions([]);
+			setActiveSuggestionIndex(-1);
+		}
+	};
+
+	const handleUseMyLocation = () => {
+		if (!geoapifyKey) {
+			setAddressError("Address lookup is not available.");
+			return;
+		}
+		if (!navigator.geolocation) {
+			setAddressError("Geolocation is not supported in this browser.");
+			return;
+		}
+		setLocating(true);
+		setAddressError("");
+		navigator.geolocation.getCurrentPosition(
+			async (pos) => {
+				try {
+					const { latitude, longitude } = pos.coords;
+					const url = `https://api.geoapify.com/v1/geocode/reverse?lat=${latitude}&lon=${longitude}&type=street&format=geojson&apiKey=${geoapifyKey}`;
+					const res = await fetch(url);
+					if (!res.ok) throw new Error("Failed to reverse geocode location");
+					const data = await res.json();
+					const props = data?.features?.[0]?.properties || {};
+					const addressLine = [props.street, props.housenumber].filter(Boolean).join(" ").trim() || props.formatted || "";
+					const city = props.city || props.town || props.village || props.municipality || props.county || "";
+					const postalCode = props.postcode || "";
+					setFormData((prev) => ({
+						...prev,
+						address: addressLine || prev.address,
+						city: city || prev.city,
+						postalCode: postalCode || prev.postalCode,
+					}));
+					setAddressSuggestions([]);
+					setActiveSuggestionIndex(-1);
+				} catch {
+					setAddressError("Could not fetch your address.");
+				} finally {
+					setLocating(false);
+				}
+			},
+			() => {
+				setAddressError("Unable to access your location.");
+				setLocating(false);
+			},
+			{ enableHighAccuracy: true, timeout: 8000 }
+		);
 	};
 
 	const handleEmailBlur = async () => {
@@ -212,6 +383,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			volunteerInterest: [],
 			agreeTerms: false,
 		});
+		setAddressSuggestions([]);
+		setAddressError("");
+		setActiveSuggestionIndex(-1);
 	};
 
 	if (submitted) {
@@ -325,7 +499,49 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 								<label className="block text-sm font-medium text-gray-900 mb-2">
 									{t.street_address} <span className="text-red-500">*</span>
 								</label>
-								<input type="text" name="address" value={formData.address} onChange={handleChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder={t.street_address_ph} />
+								<div className="relative">
+									<input
+										type="text"
+										name="address"
+										value={formData.address}
+										onChange={handleAddressChange}
+										onKeyDown={handleAddressKeyDown}
+										className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder={t.street_address_ph}
+										autoComplete="off"
+									/>
+									<div className="mt-2">
+										<button
+											type="button"
+											onClick={handleUseMyLocation}
+											disabled={locating}
+											className={`text-sm font-medium px-3 py-1.5 rounded border border-light bg-white hover:bg-light transition-colors ${locating ? "opacity-60 cursor-not-allowed" : ""}`}
+										>
+											{locating ? "Locating..." : "Use my current location"}
+										</button>
+									</div>
+									{addressLoading && <div className="absolute right-3 top-2.5 text-xs text-gray-500">Loading…</div>}
+									{addressError && <p className="text-xs text-red-600 mt-1">{addressError}</p>}
+									{addressSuggestions.length > 0 && (
+										<ul className="absolute z-20 mt-1 w-full bg-white border border-light rounded-lg shadow-lg max-h-60 overflow-auto">
+											{addressSuggestions.map((item, index) => (
+												<li
+													key={item.id}
+													className={`px-3 py-2 text-sm text-gray-900 cursor-pointer ${index === activeSuggestionIndex ? "bg-light" : "hover:bg-light"}`}
+													onMouseDown={(e) => {
+														e.preventDefault();
+														applySuggestion(item);
+													}}
+												>
+													<div className="font-medium">{item.label}</div>
+													<div className="text-xs text-gray-600">
+														{[item.postalCode, item.city].filter(Boolean).join(" ")}
+													</div>
+												</li>
+											))}
+										</ul>
+									)}
+								</div>
 							</div>
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">
@@ -418,11 +634,11 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			</div>
 
 			{/* Contact Info */}
-			<div className="mt-12 bg-gradient-to-r from-blue-400 to-brand text-white p-8 text-center">
+			<div className="mt-12 md:rounded-2xl bg-gradient-to-r from-blue-400 to-brand text-white p-8 text-center">
 				<h3 className="text-2xl font-bold mb-4">{t.need_help}</h3>
 				<p className="mb-6 font-medium text-lg">{t.contact_us_any_questions}</p>
 				<div className="flex flex-wrap justify-center gap-4">
-					<a href="mailto:info@rspnorway.org" className="inline-flex items-center px-6 py-3 bg-white text-brand rounded-lg font-semibold hover:bg-brand/10 transition-colors">
+					<a href="mailto:info@rspnorway.org" className="inline-flex items-center px-6 py-3 bg-white text-brand rounded-lg font-semibold hover:translate-y-[-2px] transition-colors">
 						<svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
 						</svg>

@@ -6,7 +6,6 @@ import { useTranslations, useLocale } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useRouter } from "@/i18n/navigation";
 import Link from "next/link";
 
 interface Video {
@@ -29,9 +28,9 @@ interface Video {
 export default function VideoGallery() {
 	const tg = useTranslations("gallery");
 	const locale = useLocale();
-	const router = useRouter();
 	const [videos, setVideos] = useState<Video[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
 	// Fetch videos
 	useEffect(() => {
@@ -70,6 +69,11 @@ export default function VideoGallery() {
 		return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : "";
 	};
 
+	const getYouTubeEmbed = (url: string) => {
+		const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([^&\n?#]+)/)?.[1];
+		return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : "";
+	};
+
 	return (
 		<section className="container mx-auto px-4 md:py-12">
 			<div className="text-center mb-8">
@@ -85,26 +89,32 @@ export default function VideoGallery() {
 			) : videos.length > 0 ? (
 				<>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						{videos.map((video, index) => (
-							<motion.div key={video._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} className="group w-full h-full relative aspect-video rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onClick={() => router.push(`/${locale}/video-gallery`)}>
-								{/* Thumbnail */}
-								<div className="relative w-full h-full">
-									{video.isYouTube ? <Image src={getYouTubeThumbnail(video.url) || "/ghanti.jpeg"} alt={getLocalizedTitle(video)} fill className="object-cover group-hover:scale-105 transition-transform duration-500" /> : <video src={video.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />} {/* Dark overlay */}
-									<div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-300"></div>
-									{/* Play button */}
-									<div className="absolute inset-0 flex items-center justify-center">
-										<div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-xl">
-											<Play className="w-8 h-8 md:w-10 md:h-10 text-brand ml-1" fill="currentColor" />
+						{videos.map((video, index) => {
+							const isActive = activeVideoId === video._id;
+							return (
+								<motion.div key={video._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.1 }} className="group w-full h-full relative aspect-video rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer" onClick={() => setActiveVideoId(isActive ? null : video._id)}>
+									{/* Thumbnail */}
+									<div className="relative w-full h-full">
+										{video.isYouTube ? isActive ? <iframe src={getYouTubeEmbed(video.url)} title={getLocalizedTitle(video)} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen /> : <Image src={getYouTubeThumbnail(video.url) || "/ghanti.jpeg"} alt={getLocalizedTitle(video)} fill className="object-cover group-hover:scale-105 transition-transform duration-500" /> : isActive ? <video src={video.url} className="w-full h-full object-cover" controls autoPlay /> : <video src={video.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />}
+										{/* Dark overlay */}
+										{!isActive && <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors duration-300"></div>}
+										{/* Play button */}
+										{!isActive && (
+											<div className="absolute inset-0 flex items-center justify-center">
+												<div className="w-16 h-16 md:w-20 md:h-20 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-xl">
+													<Play className="w-8 h-8 md:w-10 md:h-10 text-brand ml-1" fill="currentColor" />
+												</div>
+											</div>
+										)}
+										{/* Video info overlay */}
+										<div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
+											<h3 className="text-white font-bold text-lg mb-1 line-clamp-2">{getLocalizedTitle(video)}</h3>
+											<p className="text-white/90 text-sm">{getLocalizedCreator(video)}</p>
 										</div>
 									</div>
-									{/* Video info overlay */}
-									<div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
-										<h3 className="text-white font-bold text-lg mb-1 line-clamp-2">{getLocalizedTitle(video)}</h3>
-										<p className="text-white/90 text-sm">{getLocalizedCreator(video)}</p>
-									</div>
-								</div>
-							</motion.div>
-						))}
+								</motion.div>
+							);
+						})}
 					</div>
 
 					{/* View All Button */}

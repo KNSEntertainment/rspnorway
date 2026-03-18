@@ -272,7 +272,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 							// Featured blog - large, spans full height on desktop
 							return (
 								<div key={blog._id} className="lg:row-span-3 group bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-2xl cursor-pointer" onClick={() => handleNavigation(blog._id)}>
-									<div className="relative h-96 lg:h-full overflow-hidden">
+									<div className="relative h-64 sm:h-80 lg:h-96 overflow-hidden">
 										<Image src={blog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(blog)} fill className="object-cover object-top transition-transform duration-700 group-hover:scale-105" />
 										<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
 										<div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 text-white">
@@ -280,8 +280,8 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 												<Calendar className="w-4 h-4 mr-2" />
 												<span className="text-sm font-medium">{blog?.blogDate}</span>
 											</div>
-											<h3 className="text-2xl lg:text-3xl font-bold mb-4 line-clamp-2">{getLocalizedTitle(blog)}</h3>
-											<button
+											<h3 className="text-2xl lg:text-3xl font-bold hover:text-cyan-500 line-clamp-2">{getLocalizedTitle(blog)}</h3>
+											{/* <button
 												className="inline-flex items-center text-white font-semibold bg-brand/80 hover:bg-brand px-6 py-2.5 rounded-lg group-hover:gap-2 transition-all duration-300"
 												onClick={(e) => {
 													e.stopPropagation();
@@ -290,7 +290,7 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 											>
 												Read More
 												<ArrowRight className="w-4 h-4 ml-1 group-hover:ml-2 transition-all duration-300" />
-											</button>
+											</button> */}
 										</div>
 									</div>
 								</div>
@@ -300,8 +300,8 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 							return (
 								<div key={blog._id} className="group bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl cursor-pointer" onClick={() => handleNavigation(blog._id)}>
 									<div className="flex h-full">
-										<div className="relative w-1/5 overflow-hidden flex-shrink-0">
-											<Image src={blog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(blog)} width={300} height={300} className="object-cover object-top w-full h-32" />
+										<div className="relative w-1/5 h-32 overflow-hidden flex-shrink-0">
+											<Image src={blog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(blog)} fill className="object-cover object-top" />
 										</div>
 										<div className="flex flex-col justify-between p-4 lg:p-5 w-3/5">
 											<div>

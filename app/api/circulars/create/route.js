@@ -22,6 +22,9 @@ export async function POST(request) {
 			no: formData.get("circularTitle_no")?.toString() || "",
 			ne: formData.get("circularTitle_ne")?.toString() || "",
 		};
+		if (!circularTitle.en && !circularTitle.no && !circularTitle.ne) {
+			return NextResponse.json({ success: false, error: "At least one title is required" }, { status: 400 });
+		}
 
 		const circularDesc = {
 			en: formData.get("circularDesc_en")?.toString() || "",
@@ -42,32 +45,37 @@ export async function POST(request) {
 
 		// Generate slug from English title (fallback to first available language)
 		const titleForSlug = circularTitle.en || circularTitle.no || circularTitle.ne || "circular";
-		const slug = titleForSlug
+		let slug = titleForSlug
 			.toLowerCase()
 			.replace(/[^a-z0-9]+/g, "-")
 			.replace(/(^-|-$)+/g, "");
+		if (!slug) {
+			slug = `circular-${Date.now()}`;
+		}
 
 		let mainPictureUrl = "";
-		if (circularMainPicture) {
+		if (circularMainPicture && typeof circularMainPicture.arrayBuffer === "function") {
 			mainPictureUrl = await uploadToCloudinary(circularMainPicture, "circulars");
 		}
 
 		let secondPictureUrl = "";
-		if (circularSecondPicture) {
+		if (circularSecondPicture && typeof circularSecondPicture.arrayBuffer === "function") {
 			secondPictureUrl = await uploadToCloudinary(circularSecondPicture, "circulars");
-			const circular = await Circular.create({
-				slug,
-				circularTitle,
-				circularDesc,
-				circularAuthor,
-				circularMainPicture: mainPictureUrl,
-				circularSecondPicture: secondPictureUrl,
-				publicationStatus,
-				circularPublishedAt: circularPublishedAt ? new Date(circularPublishedAt) : null,
-			});
-
-			return NextResponse.json({ success: true, circular }, { status: 201 });
 		}
+
+		const publishedAt = circularPublishedAt ? new Date(circularPublishedAt) : null;
+		const circular = await Circular.create({
+			slug,
+			circularTitle,
+			circularDesc,
+			circularAuthor,
+			circularMainPicture: mainPictureUrl || null,
+			circularSecondPicture: secondPictureUrl || null,
+			publicationStatus,
+			circularPublishedAt: publishedAt && !Number.isNaN(publishedAt.getTime()) ? publishedAt : null,
+		});
+
+		return NextResponse.json({ success: true, circular }, { status: 201 });
 	} catch (error) {
 		console.error("Error in API route:", error);
 		return NextResponse.json({ success: false, error: error.message }, { status: 500 });

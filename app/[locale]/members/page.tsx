@@ -182,66 +182,67 @@ export default function Members() {
 		<div className="min-h-screen bg-gray-50">
 			{/* Header Section */}
 			<div className="bg-white border-b border-gray-200">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
 					<SectionHeader heading={t("title")} />
 				</div>
 			</div>
 
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 				{/* Search and Filter Toggle */}
-				<div className="mb-6">
-					<div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-						<div className="flex flex-col sm:flex-row gap-4">
+				<div className="mb-3">
+					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
+						<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
 							{/* Search Input */}
 							<div className="flex-1">
-								<label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
-									{t("search_label")}
-								</label>
 								<div className="relative">
-									<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-									<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+									<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+									<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
 									{filters.search && (
-										<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-											<X className="h-5 w-5" />
+										<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+											<X className="h-4 w-4" />
 										</button>
 									)}
 								</div>
 							</div>
 
-							{/* Mobile Filter Toggle */}
-							<div className="sm:hidden">
-								<label className="block text-sm font-medium text-gray-700 mb-2">&nbsp;</label>
-								<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors">
-									<Filter className="h-5 w-5" />
+							{/* Filter Toggle */}
+							<div className="flex items-center gap-2">
+								<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="inline-flex items-center gap-2 px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+									<Filter className="h-4 w-4" />
 									<span>Filters</span>
 									{hasActiveFilters && <span className="bg-white text-brand rounded-full px-2 py-0.5 text-xs font-semibold">{[filters.department, filters.subdepartment].filter(Boolean).length}</span>}
 								</button>
+								{hasActiveFilters && (
+									<button onClick={clearAllFilters} className="text-sm text-brand hover:text-blue-700 font-medium">
+										{t("clear_all")}
+									</button>
+								)}
+							</div>
+
+							{/* Members Count */}
+							<div className="text-sm text-gray-700 sm:ml-auto">
+								{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {t("members")}
 							</div>
 						</div>
 					</div>
 				</div>
 
 				{/* Filters Section - Desktop and Mobile */}
-				<div className={`mb-6 ${showMobileFilters ? "block" : "hidden sm:block"}`}>
-					<div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-lg font-semibold text-gray-900">{t("filters")}</h3>
-							{hasActiveFilters && (
-								<button onClick={clearAllFilters} className="text-sm text-brand hover:text-blue-700 font-medium">
-									{t("clear_all")}
-								</button>
-							)}
+				<div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
+					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
+						<div className="flex items-center justify-between mb-3">
+							<h3 className="text-sm font-semibold text-gray-900">{t("filters")}</h3>
 						</div>
 
 						{/* Departments */}
-						<div className="mb-6">
+						<div className="mb-4">
 							<div className="flex items-center justify-between mb-3">
 								<h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">{t("departments")}</h3>
 							</div>
 							<div className="relative">
 								<div className="flex overflow-x-auto gap-2 sm:gap-3 pb-2 scroll-smooth hide-scrollbar snap-x snap-mandatory">
 									{departments.map((dept) => (
-										<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-4 py-3 rounded-lg border-2 transition-all duration-200 font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-brand whitespace-nowrap flex-shrink-0 snap-start ${activeDepartment === dept.name ? "border-brand bg-blue-50 text-brand shadow-sm" : "bg-white border-gray-200 text-gray-700 hover:border-brand hover:bg-blue-50 hover:text-brand"}`}>
+										<button key={dept._id} onClick={() => selectDepartment(dept.name)} className={`px-3 py-2 rounded-lg border transition-all duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-brand whitespace-nowrap flex-shrink-0 snap-start ${activeDepartment === dept.name ? "border-brand bg-blue-50 text-brand shadow-sm" : "bg-white border-gray-200 text-gray-700 hover:border-brand hover:bg-blue-50 hover:text-brand"}`}>
 											{dept.name}
 										</button>
 									))}
@@ -263,7 +264,7 @@ export default function Members() {
 								<div className="relative">
 									<div className="flex overflow-x-auto gap-2 pb-2 scroll-smooth hide-scrollbar snap-x snap-mandatory">
 										{getActiveDepartmentSubdepartments().map((subdept) => (
-											<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-3 sm:px-4 py-2 rounded-lg border transition-all duration-200 text-sm font-medium whitespace-nowrap flex-shrink-0 snap-start ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-brand" : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-brand"}`}>
+											<button key={subdept} onClick={() => selectSubdepartment(subdept)} className={`px-3 py-2 rounded-lg border transition-all duration-200 text-sm font-medium whitespace-nowrap flex-shrink-0 snap-start ${activeSubdepartment === subdept ? "bg-blue-100 border-blue-400 text-brand" : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-brand"}`}>
 												{subdept}
 											</button>
 										))}
@@ -289,19 +290,10 @@ export default function Members() {
 					`}</style>
 				</div>
 
-				{/* Showing Members Count */}
-				<div className="mb-6">
-					<div className="bg-white rounded-lg shadow-sm px-6 py-4">
-						<p className="text-gray-700 text-sm font-medium">
-							{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {t("members")}
-						</p>
-					</div>
-				</div>
-
 				{/* Active Filters Pills */}
 				{hasActiveFilters && (
-					<div className="mb-6">
-						<div className="bg-white rounded-lg shadow-sm p-4">
+					<div className="mb-4">
+						<div className="bg-white rounded-lg shadow-sm px-4 py-3">
 							<div className="flex flex-wrap items-center gap-2">
 								<span className="text-sm font-medium text-gray-700">{t("active_filters")}:</span>
 								{filters.department && (

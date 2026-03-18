@@ -1,7 +1,7 @@
 // app/downloads/DownloadsClient.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Download, FileText, Calendar, Search, Filter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -46,10 +46,10 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 	const locale = useLocale();
 
 	// Helper function to get localized title
-	const getLocalizedTitle = (doc: Document) => {
+	const getLocalizedTitle = useCallback((doc: Document) => {
 		const key = `title_${locale}` as keyof Document;
 		return (doc[key] as string) || doc.title_en || doc.title || "Untitled";
-	};
+	}, [locale]);
 
 	const categories = useMemo(() => {
 		return [translations.all, ...Array.from(new Set(documents.map((d) => d.category)))];
@@ -63,7 +63,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 
 			return matchesSearch && matchesCategory;
 		});
-	}, [documents, searchQuery, selectedCategory, translations.all]);
+	}, [documents, searchQuery, selectedCategory, translations.all, getLocalizedTitle]);
 
 	const handleDownload = async (doc: Document) => {
 		const localizedTitle = getLocalizedTitle(doc);

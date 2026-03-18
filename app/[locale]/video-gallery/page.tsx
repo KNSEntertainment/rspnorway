@@ -50,6 +50,11 @@ const VideoGallery: React.FC = () => {
 		return video.creator_en || video.creator || "PNSB-Norway";
 	};
 
+	const getYouTubeAutoplayUrl = (url: string) => {
+		if (!url) return url;
+		return url.includes("?") ? `${url}&autoplay=1` : `${url}?autoplay=1`;
+	};
+
 	// const getLocalizedDescription = (video: Video) => {
 	// 	const key = `description_${locale}` as keyof Video;
 	// 	return (video[key] as string) || video.description_en || video.description || "";
@@ -261,6 +266,8 @@ const VideoGallery: React.FC = () => {
 									<Image
 										src={video.thumbnail || "/ghanti.jpg"}
 										alt={getLocalizedTitle(video)}
+										fill
+										sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
 										style={{
 											objectFit: "cover",
 											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -554,7 +561,7 @@ const VideoGallery: React.FC = () => {
 						>
 							{selectedVideo.isYouTube ? (
 								<iframe
-									src={selectedVideo.url}
+									src={getYouTubeAutoplayUrl(selectedVideo.url)}
 									title={getLocalizedTitle(selectedVideo)}
 									allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 									allowFullScreen
