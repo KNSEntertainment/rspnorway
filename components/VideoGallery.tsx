@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import ViewAllButton from "@/components/ViewAllButton";
 
 interface Video {
 	_id: string;
@@ -75,8 +75,8 @@ export default function VideoGallery() {
 	};
 
 	return (
-		<section className="container mx-auto px-4 md:py-12">
-			<div className="text-center mb-8">
+		<section className="container mx-auto px-4 py-12">
+			<div className="text-center mb-6 md:mb-8">
 				<SectionHeader heading={tg("videoGalleryTitle")} />
 			</div>
 
@@ -120,12 +120,7 @@ export default function VideoGallery() {
 					{/* View All Button */}
 
 					<div className="flex justify-center mt-8">
-						<Link href={`/${locale}/video-gallery`} className="inline-flex items-center px-6 py-3 font-medium text-sm rounded-lg bg-brand text-white hover:bg-brand/90 transition-colors duration-200 shadow-md hover:shadow-lg">
-							{tg("viewAllVideos")}
-							<svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-								<path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-							</svg>
-						</Link>
+						<ViewAllButton href={`/${locale}/video-gallery`} label={tg("viewAllVideos")} />
 					</div>
 				</>
 			) : (

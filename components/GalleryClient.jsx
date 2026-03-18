@@ -32,6 +32,7 @@ export default function GalleryClient({ images }) {
 	}, {});
 
 	const albumsArray = Object.values(albums);
+	const isSingleAlbum = albumsArray.length === 1;
 
 	const checkScrollPosition = () => {
 		if (scrollContainerRef.current) {
@@ -92,12 +93,12 @@ export default function GalleryClient({ images }) {
 			</div>
 
 			{/* Horizontal Scroll Layout */}
-			<div ref={scrollContainerRef} className="flex overflow-x-auto gap-6 pb-4 scroll-smooth snap-x snap-mandatory hide-scrollbar mt-12">
+			<div ref={scrollContainerRef} className={`flex overflow-x-auto gap-6 pb-4 scroll-smooth snap-x snap-mandatory hide-scrollbar mt-12 ${isSingleAlbum ? "justify-center" : ""}`}>
 				{albumsArray.map((album, i) => (
-					<div key={i} className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:translate-y-[-4px] cursor-pointer border border-gray-200 hover:border-brand flex-shrink-0 w-80 snap-start" onClick={() => handleAlbumClick(album)}>
+					<div key={i} className="group relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:translate-y-[-4px] cursor-pointer border border-gray-200 hover:border-brand flex-shrink-0 w-[85vw] sm:w-80 snap-start" onClick={() => handleAlbumClick(album)}>
 						{/* Folder Icon Background */}
 						<div className="absolute top-4 right-4 z-10">
-							<div className="bg-brand/10 backdrop-blur-sm p-2 rounded-lg group-hover:bg-brand/20 transition-colors">
+							<div className="bg-white backdrop-blur-sm p-1.5 rounded-lg">
 								<Folder className="w-5 h-5 text-brand" />
 							</div>
 						</div>

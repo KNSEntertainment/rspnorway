@@ -26,6 +26,7 @@ export default async function Footer() {
 		terms: t("terms"),
 		privacy: t("privacy"),
 		copyright: t("copyright", { year }),
+		follow_us: t("follow_us"),
 	};
 
 	return <FooterClient settings={settingsNorm} t={translations} />;

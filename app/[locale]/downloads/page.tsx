@@ -22,7 +22,9 @@ export default async function DownloadsPage() {
 
 	return (
 		<section className="px-4">
-			<SectionHeader heading={t("title")} />
+			<div className="mb-6 md:mb-8">
+				<SectionHeader heading={t("title")} />
+			</div>
 
 			<DownloadsClient
 				documents={downloads}

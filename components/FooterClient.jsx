@@ -1,5 +1,5 @@
 "use client";
-import { MapPin, Mail, Phone, Facebook, Instagram } from "lucide-react";
+import { MapPin, Mail, Phone, Facebook, Instagram, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -58,9 +58,13 @@ export default function FooterClient({ settings, t }) {
 							</a>
 
 							{/* Social Media */}
-							<div className="pt-2 border-t border-light">
-								<p className="text-md font-semibold text-gray-900 uppercase tracking-wider mb-3">Follow Us</p>
-								<div className="flex gap-4">
+							<div className="pt-6 border-t border-light">
+								<h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+									<span className="w-1 h-5 bg-brand rounded-full"></span>
+									{t.follow_us}
+								</h3>
+
+								<div className="flex gap-2 mt-2">
 									{settings?.[0]?.facebook && (
 										<a href={settings[0].facebook} target="_blank" rel="noopener noreferrer" className="group" aria-label="Facebook">
 											<div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand transition-colors">
@@ -70,7 +74,7 @@ export default function FooterClient({ settings, t }) {
 									)}
 									{settings?.[0]?.instagram && (
 										<a href={settings[0].instagram} target="_blank" rel="noopener noreferrer" className="group" aria-label="Instagram">
-											<div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand transition-colors">
+											<div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-purple-500 transition-colors">
 												<Instagram className="h-4 w-4 text-brand group-hover:text-white transition-colors" />
 											</div>
 										</a>
@@ -82,16 +86,17 @@ export default function FooterClient({ settings, t }) {
 				</div>
 
 				{/* Bottom Bar */}
-				<div className="border-t border-light pt-6 mt-8">
+				<div className="border-t border-zinc-200 pt-6 mt-8">
 					{/* Links - Mobile Stacked, Desktop Row */}
-					<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-4">
-						<nav className="flex flex-wrap gap-4 justify-center md:justify-start">
+					<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2 md:gap-4 mb-4">
+						<nav className="flex flex-wrap gap-4 justify-between md:justify-start">
 							<Link href="/en/terms-and-conditions" className="text-md text-gray-900 hover:text-brand transition-colors">
 								{t.terms}
+								<ArrowUpRight className="h-3 w-3 inline-block ml-1" />
 							</Link>
 							<span className="text-neutral-300 hidden md:inline">•</span>
 							<Link href="/en/privacy-policy" className="text-md text-gray-900 hover:text-brand transition-colors">
-								{t.privacy}
+								{t.privacy} <ArrowUpRight className="h-3 w-3 inline-block ml-1" />
 							</Link>
 						</nav>
 
@@ -99,7 +104,7 @@ export default function FooterClient({ settings, t }) {
 					</div>
 
 					{/* Developer Credit */}
-					<div className="text-md text-gray-900 text-center md:text-right">
+					<div className="text-sm text-gray-900 text-center md:text-right">
 						<span>{t.developed_by} </span>
 						<a href="https://harisanjel.com.np" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand hover:underline transition-all">
 							{t.developer}

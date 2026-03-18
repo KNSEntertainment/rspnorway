@@ -17,7 +17,7 @@ export default async function DonatePage() {
 			<div className="max-w-6xl mx-auto">
 				{/* Hero Section */}
 
-				<header className="text-center mb-12">
+				<header className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={t("hero_title")} />
 					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("hero_description")}</p>
 				</header>

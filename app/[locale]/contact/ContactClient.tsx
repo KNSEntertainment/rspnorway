@@ -244,7 +244,7 @@ export default function ContactPageClient({ settings, translations: t }: Props) 
 	return (
 		<main className="pb-16">
 			<div className="container mx-auto px-4 max-w-7xl">
-				<header className="text-center mb-12">
+				<header className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={t.title} />
 					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t.description}</p>
 				</header>

@@ -42,12 +42,12 @@ export default function About() {
 	];
 
 	return (
-		<section id="about" className="container mx-auto w-full px-4 pb-12 md:pb-20">
+		<section id="about" className="container mx-auto w-full px-4">
 			{/* Value Propositions */}
 
 			{/* Call to Actions */}
 			<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6 }}>
-				<header className="text-center md:mt-12">
+				<header className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={t("cta_title")} />
 				</header>{" "}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">

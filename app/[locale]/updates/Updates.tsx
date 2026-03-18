@@ -70,6 +70,11 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 	const [selectedCircular, setSelectedCircular] = useState<Circular | null>(null);
+	const [mobileOpen, setMobileOpen] = useState({
+		events: true,
+		notices: false,
+		circulars: false,
+	});
 
 	const sortedEvents = events?.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()) || [];
 	const sortedNotices = notices?.sort((a, b) => new Date(b.noticedate).getTime() - new Date(a.noticedate).getTime()) || [];
@@ -390,20 +395,34 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	// Main Page - Events, Notices and Circulars Grid
 	return (
 		<div className="px-4">
-			<div className="text-center md:mb-12">
+			<div className="text-center mb-6 md:mb-8">
 				<SectionHeader heading={t.title} />
 				<p className="text-gray-900 max-w-3xl mx-auto text-lg">{t.description}</p>
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
 				{/* Events Column */}
-				<div className="space-y-4">
-					<div className="flex items-center gap-2">
-						<Calendar className="w-5 h-5 text-brand" />
-						<h2 className="text-lg font-bold text-gray-900">{t.events_tab}</h2>
-					</div>
+				<div className="space-y-4 mt-4 lg:mt-0">
+					<button
+						type="button"
+						onClick={() => setMobileOpen((prev) => ({ ...prev, events: !prev.events }))}
+						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
+						aria-expanded={mobileOpen.events}
+					>
+						<div className="flex items-center gap-2">
+							<Calendar className="w-5 h-5 text-brand" />
+							<h2 className="text-lg font-bold text-gray-900">{t.events_tab}</h2>
+						</div>
+						<svg
+							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.events ? "rotate-180" : ""}`}
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+						</svg>
+					</button>
 					{sortedEvents && sortedEvents.length > 0 ? (
-						<div className="space-y-4">
+						<div className={`${mobileOpen.events ? "block" : "hidden"} lg:block space-y-4`}>
 							{sortedEvents.map((event) => {
 								return (
 									<Card key={event._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-white to-brand/20" onClick={() => setSelectedEvent(event)}>
@@ -451,7 +470,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 							})}
 						</div>
 					) : (
-						<div className="text-center py-10">
+						<div className={`${mobileOpen.events ? "block" : "hidden"} lg:block text-center py-10`}>
 							<Calendar className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
 							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_events}</h3>
 							<p className="text-gray-900 text-sm">{t.no_events_desc}</p>
@@ -461,12 +480,26 @@ export default function UpdatesClient({ events, notices, circulars, translations
 
 				{/* Notices Column */}
 				<div className="space-y-4">
-					<div className="flex items-center gap-2">
-						<Bell className="w-5 h-5 text-brand" />
-						<h2 className="text-lg font-bold text-gray-900">{t.notices_tab}</h2>
-					</div>
+					<button
+						type="button"
+						onClick={() => setMobileOpen((prev) => ({ ...prev, notices: !prev.notices }))}
+						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
+						aria-expanded={mobileOpen.notices}
+					>
+						<div className="flex items-center gap-2">
+							<Bell className="w-5 h-5 text-brand" />
+							<h2 className="text-lg font-bold text-gray-900">{t.notices_tab}</h2>
+						</div>
+						<svg
+							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.notices ? "rotate-180" : ""}`}
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+						</svg>
+					</button>
 					{sortedNotices && sortedNotices.length > 0 ? (
-						<div className="space-y-4">
+						<div className={`${mobileOpen.notices ? "block" : "hidden"} lg:block space-y-4`}>
 							{sortedNotices.map((notice) => (
 								<Card key={notice._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none" onClick={() => setSelectedNotice(notice)}>
 									<div className="flex items-center gap-4 p-4">
@@ -498,7 +531,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 							))}
 						</div>
 					) : (
-						<div className="text-center py-10">
+						<div className={`${mobileOpen.notices ? "block" : "hidden"} lg:block text-center py-10`}>
 							<Bell className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
 							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_notices}</h3>
 							<p className="text-gray-900 text-sm">{t.no_notices_desc}</p>
@@ -508,12 +541,26 @@ export default function UpdatesClient({ events, notices, circulars, translations
 
 				{/* Circulars Column */}
 				<div className="space-y-4">
-					<div className="flex items-center gap-2">
-						<FileText className="w-5 h-5 text-brand" />
-						<h2 className="text-lg font-bold text-gray-900">{t.circulars_tab}</h2>
-					</div>
+					<button
+						type="button"
+						onClick={() => setMobileOpen((prev) => ({ ...prev, circulars: !prev.circulars }))}
+						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
+						aria-expanded={mobileOpen.circulars}
+					>
+						<div className="flex items-center gap-2">
+							<FileText className="w-5 h-5 text-brand" />
+							<h2 className="text-lg font-bold text-gray-900">{t.circulars_tab}</h2>
+						</div>
+						<svg
+							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.circulars ? "rotate-180" : ""}`}
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
+							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+						</svg>
+					</button>
 					{sortedCirculars && sortedCirculars.length > 0 ? (
-						<div className="space-y-4">
+						<div className={`${mobileOpen.circulars ? "block" : "hidden"} lg:block space-y-4`}>
 							{sortedCirculars.map((circular) => (
 								<Card key={circular._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-brand/5 to-brand/20" onClick={() => setSelectedCircular(circular)}>
 									<div className="flex items-center gap-4 p-4">
@@ -539,7 +586,7 @@ export default function UpdatesClient({ events, notices, circulars, translations
 							))}
 						</div>
 					) : (
-						<div className="text-center py-10">
+						<div className={`${mobileOpen.circulars ? "block" : "hidden"} lg:block text-center py-10`}>
 							<FileText className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
 							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_circulars}</h3>
 							<p className="text-gray-900 text-sm">{t.no_circulars_desc}</p>

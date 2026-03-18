@@ -20,7 +20,9 @@ export default function AboutUsClient() {
 
 	return (
 		<main className="px-4">
-			<SectionHeader heading={t("title")} />
+			<div className="mb-6 md:mb-8">
+				<SectionHeader heading={t("title")} />
+			</div>
 
 			<div className="relative overflow-hidden">
 				{/* Decorative Background Elements */}
@@ -174,7 +176,7 @@ export default function AboutUsClient() {
 				</div>
 			</section>
 			<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="mb-16">
-				<header className="text-center mb-12">
+				<header className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={t("values_title")} />
 				</header>
 

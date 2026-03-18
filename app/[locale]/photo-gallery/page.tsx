@@ -161,12 +161,12 @@ const PhotoGallery = () => {
 		<div className="min-h-screen bg-gray-50">
 			{/* Header Section */}
 			<div className="bg-white border-b border-gray-200">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-12">
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
 					<SectionHeader heading={t("title")} />
 					<p className="text-gray-600 mt-3 text-base sm:text-lg max-w-2xl mx-auto text-center">{t("description")}</p>
 
 					{/* View Controls */}
-					<div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+					<div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
 						{selectedAlbum && (
 							<button onClick={handleBackToAlbums} className="flex items-center gap-2 px-4 py-2 text-brand hover:text-blue-700 font-medium transition-colors">
 								<ChevronLeft className="w-5 h-5" />

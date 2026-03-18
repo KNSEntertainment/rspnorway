@@ -90,7 +90,7 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 						</div>
 
 						{/* Right Side - Form */}
-						<div className="p-12">
+						<div className="p-4 md:p-12">
 							<div className="space-y-6">
 								<div>
 									<label className="block text-sm font-semibold text-gray-900 mb-3">{tr.fullName}</label>

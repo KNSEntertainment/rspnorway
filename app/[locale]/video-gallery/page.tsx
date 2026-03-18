@@ -221,7 +221,7 @@ const VideoGallery: React.FC = () => {
 			<div>
 				{/* Header */}
 
-				<header className="text-center mb-12">
+				<header className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={t("video_title")} />
 					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("video_description")}</p>
 				</header>
