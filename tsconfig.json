@@ -67,6 +67,6 @@
 		"components/DashboardMenuItems.js",
 		"app/[locale]/dashboard/layout.jsx",
 		"app/[locale]/dashboard/page.jsx"
-	],
+, "next.config.mjs"	],
 	"exclude": ["node_modules"]
 }
