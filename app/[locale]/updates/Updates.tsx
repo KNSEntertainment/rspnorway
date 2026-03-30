@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Calendar, MapPin, Clock, Bell, FileText, Pencil, Calendar1 } from "lucide-react";
+import { Calendar, MapPin, Clock, Bell, FileText, Pencil } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 
 interface Event {
@@ -70,11 +70,11 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 	const [selectedCircular, setSelectedCircular] = useState<Circular | null>(null);
-	const [mobileOpen, setMobileOpen] = useState({
-		events: true,
-		notices: false,
-		circulars: false,
-	});
+	// const [mobileOpen, setMobileOpen] = useState({
+	// 	events: true,
+	// 	notices: false,
+	// 	circulars: false,
+	// });
 
 	const sortedEvents = events?.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()) || [];
 	const sortedNotices = notices?.sort((a, b) => new Date(b.noticedate).getTime() - new Date(a.noticedate).getTime()) || [];
@@ -392,206 +392,274 @@ export default function UpdatesClient({ events, notices, circulars, translations
 		);
 	}
 
-	// Main Page - Events, Notices and Circulars Grid
+	// Main Page - Modern Layout with Enhanced Design
 	return (
-		<div className="px-4">
-			<div className="text-center mb-6 md:mb-8">
-				<SectionHeader heading={t.title} />
-				<p className="text-gray-900 max-w-3xl mx-auto text-lg">{t.description}</p>
-			</div>
-
-			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-				{/* Events Column */}
-				<div className="space-y-4 mt-4 lg:mt-0">
-					<button
-						type="button"
-						onClick={() => setMobileOpen((prev) => ({ ...prev, events: !prev.events }))}
-						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
-						aria-expanded={mobileOpen.events}
-					>
-						<div className="flex items-center gap-2">
-							<Calendar className="w-5 h-5 text-brand" />
-							<h2 className="text-lg font-bold text-gray-900">{t.events_tab}</h2>
-						</div>
-						<svg
-							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.events ? "rotate-180" : ""}`}
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
-						</svg>
-					</button>
-					{sortedEvents && sortedEvents.length > 0 ? (
-						<div className={`${mobileOpen.events ? "block" : "hidden"} lg:block space-y-4`}>
-							{sortedEvents.map((event) => {
-								return (
-									<Card key={event._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-white to-brand/20" onClick={() => setSelectedEvent(event)}>
-										<CardContent className="p-4 bg-gradient-to-r from-brand/10 via-brand/5 to-brand/10">
-											<div className="flex gap-4 items-center">
-												<Image src={event.eventposterUrl || "/ghanti.png"} alt={event.eventname} width={400} height={400} className="w-36 h-36 object-cover rounded-md mb-3" />
-
-												<div className="flex flex-col">
-													<h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand transition-colors">{event.eventname}</h3>
-
-													<div className="flex items-center gap-2">
-														<Calendar1 className="w-4 h-4  text-brand" />
-														<span>{event.eventdate}</span>
-													</div>
-													<div className="space-y-1 text-sm text-gray-900">
-														{event.eventtime && (
-															<div className="flex items-center gap-2">
-																<Clock className="w-4 h-4  text-brand" />
-																<span>{event.eventtime}</span>
-															</div>
-														)}
-														{event.eventvenue && (
-															<div className="flex items-center gap-2">
-																<MapPin className="w-4 h-4 text-brand" />
-																<span className="line-clamp-1">{event.eventvenue}</span>
-															</div>
-														)}
-													</div>
-												</div>
-											</div>
-
-											{event.eventdescription && <p className="text-gray-900 mt-2 line-clamp-3 text-sm leading-relaxed">{event.eventdescription}</p>}
-
-											<div className="pt-3 border-t border-neutral-100">
-												<span className="text-brand font-medium text-sm inline-flex items-center">
-													{t.view_detail}
-													<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-													</svg>
-												</span>
-											</div>
-										</CardContent>
-									</Card>
-								);
-							})}
-						</div>
-					) : (
-						<div className={`${mobileOpen.events ? "block" : "hidden"} lg:block text-center py-10`}>
-							<Calendar className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_events}</h3>
-							<p className="text-gray-900 text-sm">{t.no_events_desc}</p>
-						</div>
-					)}
+		<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
+			<div className="container mx-auto px-4 py-8 lg:py-12">
+				{/* Header Section */}
+				<div className="text-center mb-12">
+					<SectionHeader heading={t.title} />
+					<p className="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed mt-4">{t.description} </p>
+					
+			
 				</div>
 
-				{/* Notices Column */}
-				<div className="space-y-4">
-					<button
-						type="button"
-						onClick={() => setMobileOpen((prev) => ({ ...prev, notices: !prev.notices }))}
-						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
-						aria-expanded={mobileOpen.notices}
-					>
-						<div className="flex items-center gap-2">
-							<Bell className="w-5 h-5 text-brand" />
-							<h2 className="text-lg font-bold text-gray-900">{t.notices_tab}</h2>
-						</div>
-						<svg
-							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.notices ? "rotate-180" : ""}`}
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
-						</svg>
-					</button>
-					{sortedNotices && sortedNotices.length > 0 ? (
-						<div className={`${mobileOpen.notices ? "block" : "hidden"} lg:block space-y-4`}>
-							{sortedNotices.map((notice) => (
-								<Card key={notice._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none" onClick={() => setSelectedNotice(notice)}>
-									<div className="flex items-center gap-4 p-4">
-										<div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-brand to-emerald-100 rounded-lg overflow-hidden">
-											{notice.noticeimage ? (
-												<Image src={notice.noticeimage} alt={notice.noticetitle} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-500" />
-											) : (
-												<div className="flex items-center justify-center h-full">
-													<Bell className="w-10 h-10 text-brand" />
-												</div>
-											)}
+				{/* Content Grid - All Sections Visible */}
+				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+					{/* Events Column */}
+					<div className="animate-fadeIn" style={{ animationDelay: '100ms' }}>
+						<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+							<div className="bg-gradient-to-r from-brand to-brand/80 p-6">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-3">
+										<div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+											<Calendar className="w-6 h-6 text-white" />
 										</div>
-
-										<div className="flex-1 min-w-0">
-											<div className="flex items-center gap-2 mb-2">
-												<Calendar className="w-3 h-3 text-brand" />
-												<p className="text-brand text-xs font-medium">{formatDate(notice.noticedate)}</p>
-											</div>
-											<h3 className="text-base font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{notice.noticetitle}</h3>
-											<button className="mt-3 inline-flex items-center text-sm text-brand font-medium group-hover:text-brand">
-												{t.view_detail}
-												<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-												</svg>
-											</button>
-										</div>
+										<h2 className="text-xl font-bold text-white">{t.events_tab}</h2>
 									</div>
-								</Card>
-							))}
-						</div>
-					) : (
-						<div className={`${mobileOpen.notices ? "block" : "hidden"} lg:block text-center py-10`}>
-							<Bell className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_notices}</h3>
-							<p className="text-gray-900 text-sm">{t.no_notices_desc}</p>
-						</div>
-					)}
-				</div>
-
-				{/* Circulars Column */}
-				<div className="space-y-4">
-					<button
-						type="button"
-						onClick={() => setMobileOpen((prev) => ({ ...prev, circulars: !prev.circulars }))}
-						className="flex w-full items-center justify-between gap-2 rounded-lg bg-white px-4 py-3 shadow-sm lg:shadow-none lg:bg-transparent lg:px-0 lg:py-0"
-						aria-expanded={mobileOpen.circulars}
-					>
-						<div className="flex items-center gap-2">
-							<FileText className="w-5 h-5 text-brand" />
-							<h2 className="text-lg font-bold text-gray-900">{t.circulars_tab}</h2>
-						</div>
-						<svg
-							className={`h-5 w-5 text-gray-500 transition-transform lg:hidden ${mobileOpen.circulars ? "rotate-180" : ""}`}
-							viewBox="0 0 20 20"
-							fill="currentColor"
-						>
-							<path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
-						</svg>
-					</button>
-					{sortedCirculars && sortedCirculars.length > 0 ? (
-						<div className={`${mobileOpen.circulars ? "block" : "hidden"} lg:block space-y-4`}>
-							{sortedCirculars.map((circular) => (
-								<Card key={circular._id} className="group cursor-pointer hover:shadow-xl transition-all duration-300 overflow-hidden border-none bg-gradient-to-r from-brand/20 via-brand/5 to-brand/20" onClick={() => setSelectedCircular(circular)}>
-									<div className="flex items-center gap-4 p-4">
-										<div className="relative w-24 h-24 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg overflow-hidden">
-											{circular.circularMainPicture ? (
-												<Image src={circular.circularMainPicture} alt={circular.circularTitle[locale] || circular.circularTitle["en"]} fill className="object-cover object-top group-hover:scale-110 transition-transform duration-500" />
-											) : (
-												<div className="flex items-center justify-center h-full">
-													<FileText className="w-10 h-10 text-brand" />
-												</div>
-											)}
-										</div>
-
-										<div className="flex-1 min-w-0">
-											<div className="flex items-center gap-2 mb-2">
-												<Calendar className="w-3 h-3 text-brand" />
-												<p className="text-brand text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
-											</div>
-											<h3 className="text-base font-bold text-gray-900 line-clamp-2 group-hover:text-brand transition-colors">{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}</h3>
-										</div>
+									<div className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+										<span className="text-white font-bold">{sortedEvents.length}</span>
 									</div>
-								</Card>
-							))}
+								</div>
+							</div>
+							
+							<div className="p-6">
+								{sortedEvents && sortedEvents.length > 0 ? (
+									<div className="space-y-4">
+										{sortedEvents.map((event, index) => {
+											const { day, month } = formatEventDate(event.eventdate);
+											return (
+												<div 
+													key={event._id} 
+													className="group cursor-pointer rounded-xl border border-gray-200 hover:border-brand hover:shadow-lg transition-all duration-300 overflow-hidden bg-gradient-to-r from-gray-50 to-white hover:from-brand/5 hover:to-white"
+													onClick={() => setSelectedEvent(event)}
+													style={{ animationDelay: `${index * 100}ms` }}
+												>
+													<div className="p-4">
+														<div className="flex gap-4">
+															<div className="flex-shrink-0">
+																<div className="bg-gradient-to-br from-brand to-brand/80 text-white rounded-xl p-3 text-center min-w-[60px] shadow-md">
+																	<div className="text-xl font-bold leading-none">{day}</div>
+																	<div className="text-xs uppercase mt-1 opacity-90">{month}</div>
+																</div>
+															</div>
+															<div className="flex-1 min-w-0">
+																<h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-brand transition-colors">
+																	{event.eventname}
+																</h3>
+																<div className="space-y-1 text-sm text-gray-600">
+																	{event.eventtime && (
+																		<div className="flex items-center gap-2">
+																			<Clock className="w-4 h-4 text-brand flex-shrink-0" />
+																			<span>{event.eventtime}</span>
+																		</div>
+																	)}
+																	{event.eventvenue && (
+																		<div className="flex items-center gap-2">
+																			<MapPin className="w-4 h-4 text-brand flex-shrink-0" />
+																			<span className="line-clamp-1">{event.eventvenue}</span>
+																		</div>
+																	)}
+																</div>
+															</div>
+														</div>
+														{event.eventposterUrl && (
+															<div className="mt-3 relative h-32 rounded-lg overflow-hidden">
+																<Image 
+																	src={event.eventposterUrl} 
+																	alt={event.eventname} 
+																	fill 
+																	className="object-cover group-hover:scale-105 transition-transform duration-500" 
+																/>
+															</div>
+														)}
+														<div className="mt-3 pt-3 border-t border-gray-100">
+															<span className="text-brand font-medium text-sm inline-flex items-center group-hover:gap-2 transition-all">
+																{t.view_detail}
+																<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+																	<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+																</svg>
+															</span>
+														</div>
+													</div>
+												</div>
+											);
+										})}
+									</div>
+								) : (
+									<div className="text-center py-12">
+										<div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+											<Calendar className="w-10 h-10 text-gray-400" />
+										</div>
+										<h3 className="text-lg font-medium text-gray-900 mb-2">{t.no_events}</h3>
+										<p className="text-gray-600 text-sm">{t.no_events_desc}</p>
+									</div>
+								)}
+							</div>
 						</div>
-					) : (
-						<div className={`${mobileOpen.circulars ? "block" : "hidden"} lg:block text-center py-10`}>
-							<FileText className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-							<h3 className="text-lg font-medium text-gray-900 mb-1">{t.no_circulars}</h3>
-							<p className="text-gray-900 text-sm">{t.no_circulars_desc}</p>
+					</div>
+
+					{/* Notices Column */}
+					<div className="animate-fadeIn" style={{ animationDelay: '200ms' }}>
+						<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+							<div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-6">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-3">
+										<div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+											<Bell className="w-6 h-6 text-white" />
+										</div>
+										<h2 className="text-xl font-bold text-white">{t.notices_tab}</h2>
+									</div>
+									<div className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+										<span className="text-white font-bold">{sortedNotices.length}</span>
+									</div>
+								</div>
+							</div>
+							
+							<div className="p-6">
+								{sortedNotices && sortedNotices.length > 0 ? (
+									<div className="space-y-4">
+										{sortedNotices.map((notice, index) => (
+											<div 
+												key={notice._id} 
+												className="group cursor-pointer rounded-xl border border-gray-200 hover:border-emerald-500 hover:shadow-lg transition-all duration-300 overflow-hidden bg-gradient-to-r from-gray-50 to-white hover:from-emerald-50 hover:to-white"
+												onClick={() => setSelectedNotice(notice)}
+												style={{ animationDelay: `${index * 100}ms` }}
+											>
+												<div className="p-4">
+													<div className="flex gap-4">
+														<div className="relative w-20 h-20 flex-shrink-0 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-lg overflow-hidden">
+															{notice.noticeimage ? (
+																<Image 
+																	src={notice.noticeimage} 
+																	alt={notice.noticetitle} 
+																	fill 
+																	className="object-cover group-hover:scale-110 transition-transform duration-500" 
+																/>
+															) : (
+																<div className="flex items-center justify-center h-full">
+																	<Bell className="w-8 h-8 text-emerald-500" />
+																</div>
+															)}
+														</div>
+														<div className="flex-1 min-w-0">
+															<div className="flex items-center gap-2 mb-2">
+																<Calendar className="w-3 h-3 text-emerald-500" />
+																<p className="text-emerald-600 text-xs font-medium uppercase tracking-wider">{formatDate(notice.noticedate)}</p>
+															</div>
+															<h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+																{notice.noticetitle}
+															</h3>
+															<p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">{notice.notice}</p>
+														</div>
+													</div>
+													<div className="mt-3 pt-3 border-t border-gray-100">
+														<span className="text-emerald-600 font-medium text-sm inline-flex items-center group-hover:gap-2 transition-all">
+															{t.view_detail}
+															<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+																<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+															</svg>
+														</span>
+													</div>
+												</div>
+											</div>
+										))}
+									</div>
+								) : (
+									<div className="text-center py-12">
+										<div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+											<Bell className="w-10 h-10 text-gray-400" />
+										</div>
+										<h3 className="text-lg font-medium text-gray-900 mb-2">{t.no_notices}</h3>
+										<p className="text-gray-600 text-sm">{t.no_notices_desc}</p>
+									</div>
+								)}
+							</div>
 						</div>
-					)}
+					</div>
+
+					{/* Circulars Column */}
+					<div className="animate-fadeIn" style={{ animationDelay: '300ms' }}>
+						<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+							<div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-3">
+										<div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm">
+											<FileText className="w-6 h-6 text-white" />
+										</div>
+										<h2 className="text-xl font-bold text-white">{t.circulars_tab}</h2>
+									</div>
+									<div className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+										<span className="text-white font-bold">{sortedCirculars.length}</span>
+									</div>
+								</div>
+							</div>
+							
+							<div className="p-6">
+								{sortedCirculars && sortedCirculars.length > 0 ? (
+									<div className="space-y-4">
+										{sortedCirculars.map((circular, index) => (
+											<div 
+												key={circular._id} 
+												className="group cursor-pointer rounded-xl border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition-all duration-300 overflow-hidden bg-gradient-to-r from-gray-50 to-white hover:from-indigo-50 hover:to-white"
+												onClick={() => setSelectedCircular(circular)}
+												style={{ animationDelay: `${index * 100}ms` }}
+											>
+												<div className="p-4">
+													<div className="flex gap-4">
+														<div className="relative w-20 h-20 flex-shrink-0 bg-gradient-to-br from-indigo-100 to-purple-50 rounded-lg overflow-hidden">
+															{circular.circularMainPicture ? (
+																<Image 
+																	src={circular.circularMainPicture} 
+																	alt={circular.circularTitle[locale] || circular.circularTitle["en"]} 
+																	fill 
+																	className="object-cover group-hover:scale-110 transition-transform duration-500" 
+																/>
+															) : (
+																<div className="flex items-center justify-center h-full">
+																	<FileText className="w-8 h-8 text-indigo-500" />
+																</div>
+															)}
+														</div>
+														<div className="flex-1 min-w-0">
+															<div className="flex items-center gap-2 mb-2">
+																<Calendar className="w-3 h-3 text-indigo-500" />
+																<p className="text-indigo-600 text-xs font-medium uppercase tracking-wider">
+																	{formatDate(circular.circularPublishedAt || circular.createdAt)}
+																</p>
+															</div>
+															<h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+																{circular.circularTitle[locale] || circular.circularTitle["en"] || "Circular"}
+															</h3>
+															<p className="text-gray-600 text-sm line-clamp-2 leading-relaxed">
+																{circular.circularDesc[locale] || circular.circularDesc["en"]}
+															</p>
+														</div>
+													</div>
+													<div className="mt-3 pt-3 border-t border-gray-100">
+														<span className="text-indigo-600 font-medium text-sm inline-flex items-center group-hover:gap-2 transition-all">
+															{t.view_detail}
+															<svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+																<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+															</svg>
+														</span>
+													</div>
+												</div>
+											</div>
+										))}
+									</div>
+								) : (
+									<div className="text-center py-12">
+										<div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+											<FileText className="w-10 h-10 text-gray-400" />
+										</div>
+										<h3 className="text-lg font-medium text-gray-900 mb-2">{t.no_circulars}</h3>
+										<p className="text-gray-600 text-sm">{t.no_circulars_desc}</p>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

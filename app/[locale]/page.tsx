@@ -4,7 +4,8 @@ import { Metadata } from "next";
 import Blogs from "@/components/Blogs";
 import Gallery from "@/components/Gallery";
 import VideoGallery from "@/components/VideoGallery";
-// import HeroSection from "@/components/HeroSection";
+import EventsTimeline from "@/components/EventsTimeline";
+import NewsletterSection from "@/components/NewsletterSection";
 
 export const metadata: Metadata = {
 	title: "Home | PNSB-Norway",
@@ -21,12 +22,26 @@ export const metadata: Metadata = {
 export default function LandingPage() {
 	return (
 		<main>
-			{/* <HeroSection /> */}
+			{/* Hero Section */}
 			<Hero />
+
+			{/* About Section with Statistics */}
 			<About />
+
+			{/* Featured News/Updates Section */}
 			<Blogs />
+
+			{/* Events Timeline Section */}
+			<EventsTimeline />
+
+			{/* Gallery Section */}
 			<Gallery />
+
+			{/* Video Gallery Section */}
 			<VideoGallery />
+
+			{/* Newsletter Subscription Section */}
+			<NewsletterSection />
 		</main>
 	);
 }
