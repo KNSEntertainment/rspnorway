@@ -94,13 +94,36 @@ const VideoGallery: React.FC = () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 				console.log("Fetching videos from:", `${baseUrl}/api/videos`);
-				const res = await fetch(`${baseUrl}/api/videos`, { cache: "no-store" });
+				
+				// Use no-cache and proper headers
+				const res = await fetch(`${baseUrl}/api/videos`, { 
+					cache: "no-store",
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				});
+				
 				console.log("Response status:", res.status);
+				console.log("Response headers:", res.headers);
+				
+				if (!res.ok) {
+					throw new Error(`HTTP error! status: ${res.status}`);
+				}
+				
 				const data = await res.json();
 				console.log("Response data:", data);
 				setVideos(data.videos || []);
 			} catch (error) {
 				console.error("Failed to fetch videos:", error);
+				// Try fallback to relative URL
+				try {
+					const fallbackRes = await fetch('/api/videos', { cache: "no-store" });
+					const fallbackData = await fallbackRes.json();
+					console.log("Fallback response data:", fallbackData);
+					setVideos(fallbackData.videos || []);
+				} catch (fallbackError) {
+					console.error("Fallback also failed:", fallbackError);
+				}
 			} finally {
 				setLoading(false);
 			}
