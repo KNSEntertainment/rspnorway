@@ -19,15 +19,10 @@ export default function AboutUsClient() {
 	];
 
 	return (
-		<main className="px-4">
-			<div className="mb-6 md:mb-8">
+		<main className="pt-12 px-4">
 				<SectionHeader heading={t("title")} />
-			</div>
 
-			<div className="relative overflow-hidden">
-				{/* Decorative Background Elements */}
-				<div className="absolute top-0 right-0 w-72 h-72 bg-brand/5 rounded-full blur-3xl -z-10" />
-				<div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl -z-10" />
+			
 
 				<div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
 					{/* Text Content Column */}
@@ -96,7 +91,7 @@ export default function AboutUsClient() {
 								<div className="absolute inset-0 bg-gradient-to-br from-green-600 to-brand rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform duration-500" />
 
 								<div className="relative rounded-2xl overflow-hidden shadow-2xl">
-									<Image src="/rabi1.webp" alt="Event Experience" width={200} height={200} className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700" />
+									<Image src="/rabibalen.jpg" alt="Event Experience" width={200} height={200} className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700" />
 
 									{/* Overlay Gradient */}
 									<div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -151,7 +146,6 @@ export default function AboutUsClient() {
 						<p className="text-sm text-gray-900">Years Active</p>
 					</div>
 				</div>
-			</div>
 
 			<section className="h-auto flex flex-col md:flex-row items-center rounded-lg mt-4 md:mt-12 md:p-12 py-4 md:gap-12">
 				<div className="flex text-black p-4 lg:px-8 border border-1 border-brand rounded-3xl mx-6">

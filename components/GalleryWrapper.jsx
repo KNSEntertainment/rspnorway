@@ -10,7 +10,7 @@ const GalleryClient = dynamic(() => import("./GalleryClient"), { ssr: false });
 export default function GalleryWrapper({ images, locale }) {
 	const t = useTranslations("gallery");
 	return (
-		<section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+		<section className="py-12 md:py-20">
 			<div className="container mx-auto px-6">
 				{/* Section Header */}
 				<motion.div
@@ -20,9 +20,7 @@ export default function GalleryWrapper({ images, locale }) {
 					className="text-center mb-16"
 				>
 					<SectionHeader heading={t("title")} />
-					<p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-						Explore our collection of memorable moments and events from the Nepali community in Norway.
-					</p>
+			
 				</motion.div>
 
 				{/* Gallery Content */}

@@ -13,13 +13,12 @@ export default async function DonatePage() {
 	const t = await getTranslations("donate");
 
 	return (
-		<div className="min-h-screen pb-12 px-4">
+		<div className="min-h-screen py-12 px-4">
 			<div className="max-w-6xl mx-auto">
 				{/* Hero Section */}
 
 				<header className="text-center mb-6 md:mb-8">
-					<SectionHeader heading={t("hero_title")} />
-					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("hero_description")}</p>
+					<SectionHeader heading={t("hero_title")} subtitle={t("hero_description")} />
 				</header>
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">

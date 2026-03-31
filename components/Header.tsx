@@ -293,11 +293,11 @@ export default function Header() {
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
-							<Image src="/rsp-norway-logo.png" alt="PNSB-Norway" width={48} height={48} className="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" fetchPriority="high" priority />
+							<Image src="/rsp-norway-logo.png" alt="PNSB-Norway" width={40} height={40} className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105" fetchPriority="high" priority />
 						</div>
 						<div className="flex flex-col leading-3">
-							<span className="hidden md:block text-xl font-bold text-white">{t("pnsb")}</span>
-							<span className="hidden md:block text-md text-white">{t("norway")}</span>
+							<span className="hidden md:block text-lg md:text-xl font-bold text-white">{t("pnsb")}</span>
+							<span className="hidden md:block text-sm md:text-md text-white">{t("norway")}</span>
 						</div>
 					</Link>
 
@@ -310,32 +310,33 @@ export default function Header() {
 
 					<div className="flex items-center gap-3 justify-end">
 						{/* Search */}
-						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm">
-							<Search size={19} />
+						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="flex items-center justify-center px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm">
+							<Search size={16} className="md:w-5 md:h-5" />
 						</button>
 
 						{/* Donate Button */}
-						<Link href="/donate" className="hidden md:flex items-center gap-2 px-4 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
-							<CoinsIcon className="w-5 h-5" /> {t("donate")}
+						<Link href="/donate" className="flex items-center gap-2 px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
+							<CoinsIcon className="w-4 h-4 md:w-5 md:h-5" /> {t("donate")}
 						</Link>
 
 						{user ? (
 							<LoggedInUser user={user} />
 						) : (
-							<Link href="/login" className="px-4 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
+							<Link href="/login" className="px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
 								{t("login")}
 							</Link>
 						)}
 
-						<button className="h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
+						{/* Hamburger Menu */}
+						<button className="flex items-center justify-center px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
 							<AnimatePresence mode="wait">
 								{isMenuOpen ? (
 									<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-										<X size={22} />
+										<X size={16} className="md:w-5 md:h-5" />
 									</motion.div>
 								) : (
 									<motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-										<Menu size={22} />
+										<Menu size={16} className="md:w-5 md:h-5" />
 									</motion.div>
 								)}
 							</AnimatePresence>
@@ -346,7 +347,7 @@ export default function Header() {
 			</header>
 
 			{/* Mobile Menu */}
-			<AnimatePresence>{isMenuOpen && <MobileMenu navItems={navItems} isScrolled={isScrolled} pathname={pathname} closeMenu={() => setIsMenuOpen(false)} />}</AnimatePresence>
+			<AnimatePresence>{isMenuOpen && <MobileMenu navItems={navItems} isScrolled={isScrolled} pathname={pathname} closeMenu={() => setIsMenuOpen(false)} user={user} />}</AnimatePresence>
 
 			{/* Search */}
 			{isModalOpen && <SearchModal placeholder={t("search_placeholder")} closeModal={() => setIsModalOpen(false)} />}

@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
-import { Calendar, ArrowRight } from "lucide-react";
-import ViewAllButton from "@/components/ViewAllButton";
+import Link from "next/link";
+import { Calendar, User } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import {  useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface Blog {
@@ -15,6 +15,9 @@ interface Blog {
 	blogDate: string;
 	blogMainPicture?: string;
 	blogAuthor?: string;
+	blogDesc_en?: string;
+	blogDesc_ne?: string;
+	blogDesc_no?: string;
 	// Legacy field
 	blogTitle?: string;
 }
@@ -31,12 +34,63 @@ interface Props {
 	locale: string;
 }
 
+// BlogTitle component with clamp detection
+const BlogTitle = ({ title, className }: { title: string; className?: string }) => {
+	const [isClamped, setIsClamped] = useState(false);
+	const titleRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const checkClamp = () => {
+			if (titleRef.current) {
+				// Check if text is clamped by comparing scrollHeight and clientHeight
+				const isClampedNow = titleRef.current.scrollHeight > titleRef.current.clientHeight;
+				if (isClamped !== isClampedNow) {
+					setIsClamped(isClampedNow);
+				}
+			}
+		};
+
+		checkClamp();
+		// Re-check on window resize
+		window.addEventListener('resize', checkClamp);
+		return () => window.removeEventListener('resize', checkClamp);
+	}, [title, isClamped]);
+
+	return (
+		<div className="relative group/title">
+			<div 
+				ref={titleRef}
+				className={`${className} ${isClamped ? 'cursor-help' : ''}`}
+			>
+				{title}
+			</div>
+			
+			{/* Custom Tooltip - Only show if clamped */}
+			{isClamped && (
+				<div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover/title:opacity-100 group-hover/title:visible transition-all duration-200 whitespace-nowrap z-10 pointer-events-none">
+					{title}
+					<div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+				</div>
+			)}
+		</div>
+	);
+};
+
 export default function BlogsClient({ blogs, translations: t, locale }: Props) {
-	const pathname = usePathname();
 	const router = useRouter();
 	const [navLoading, setNavLoading] = useState(false);
-	const [currentPage, setCurrentPage] = useState(0);
-	const blogsPerPage = 6;
+	const [isMobile, setIsMobile] = useState(false);
+
+	// Detect mobile devices
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 768);
+		};
+		
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
 
 	// Helper function to get localized blog title
 	const getLocalizedTitle = (blog: Blog): string => {
@@ -45,184 +99,237 @@ export default function BlogsClient({ blogs, translations: t, locale }: Props) {
 		return (typeof localizedTitle === "string" && localizedTitle) || blog.blogTitle_en || blog.blogTitle || "Untitled";
 	};
 
-	const totalPages = Math.ceil(blogs.length / blogsPerPage);
-	const currentBlogs = blogs.slice(currentPage * blogsPerPage, (currentPage + 1) * blogsPerPage);
+	// Helper function to get localized blog description
+	// const getLocalizedDescription = (blog: Blog): string => {
+	// 	const key = `blogDesc_${locale}` as keyof Blog;
+	// 	const localizedDesc = blog[key];
+	// 	return (typeof localizedDesc === "string" && localizedDesc) || blog.blogDesc_en || "";
+	// };
 
-	const handleNavigation = (blogId: string) => {
+	// Clean description - remove HTML tags
+	// const cleanDescription = (description: string): string => {
+	// 	return description.replace(/<[^>]*>/g, '').trim();
+	// };
+
+	// Get the latest blog for featured display
+	const featuredBlog = blogs.length > 0 ? blogs[0] : null;
+
+	const handleNavigation = async (blogId: string) => {
+		if (navLoading) return;
 		setNavLoading(true);
 		router.push(`/${locale}/blogs/${blogId}`);
 	};
 
-	const nextPage = () => {
-		if (currentPage < totalPages - 1) {
-			setCurrentPage(currentPage + 1);
-		}
-	};
-
-	const prevPage = () => {
-		if (currentPage > 0) {
-			setCurrentPage(currentPage - 1);
-		}
-	};
+	if (!featuredBlog) {
+		return (
+			<section className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+				<div className="container mx-auto px-6 py-20">
+					<div className="text-center">
+						<h2 className="text-4xl font-light text-gray-900 mb-4">Blogs</h2>
+						<p className="text-gray-500">No blogs available at the moment.</p>
+					</div>
+				</div>
+			</section>
+		);
+	}
 
 	return (
-		<section className="py-20 bg-white">
-			<div className="container mx-auto px-6">
+		<section className="relative min-h-screen overflow-hidden">
+			{/* Background Decorative Elements */}
+			<div className="absolute inset-0 overflow-hidden">
+				<div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-brand/5 to-transparent rounded-full blur-3xl"></div>
+				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl"></div>
+			</div>
+
+			<div className="relative z-10 container mx-auto px-6 py-20">
 				{/* Section Header */}
+				<SectionHeader heading="Blogs" subtitle="Discover insights, stories, and updates from our community" />
+		
+
+				{/* Featured Blog Grid */}
 				<motion.div
-					initial={{ opacity: 0, y: 20 }}
+					initial={{ opacity: 0, y: 50 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6 }}
-					className="text-center mb-16"
+					transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+					className="max-w-7xl mx-auto"
 				>
-					<SectionHeader heading={t.blogs_title} />
-					<p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-						Stay updated with the latest news, events, and stories from the Nepali community in Norway.
-					</p>
-				</motion.div>
-
-				{/* Loading overlay */}
-				{navLoading && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
-						<div className="flex flex-col items-center">
-							<svg className="animate-spin h-10 w-10 text-brand mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-								<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-							</svg>
-							<span className="text-brand font-semibold">{t.loading}</span>
-						</div>
-					</div>
-				)}
-
-				{/* Featured News Grid */}
-				<div className="mb-12">
-					{currentBlogs.length === 1 && (
-						/* Single Blog - Hero */
-						<div className="max-w-4xl mx-auto">
-							<motion.div
-								initial={{ opacity: 0, y: 30 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6 }}
-								className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer"
-								onClick={() => handleNavigation(currentBlogs[0]._id)}
-							>
-								<div className="relative h-96 overflow-hidden">
-									<Image src={currentBlogs[0]?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(currentBlogs[0])} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-									<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-									<div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-										<div className="flex items-center gap-4 mb-4">
-											<span className="px-3 py-1 bg-blue-600 rounded-full text-sm font-medium">Featured</span>
-											<div className="flex items-center text-white/80">
-												<Calendar className="w-4 h-4 mr-2" />
-												<span className="text-sm">{currentBlogs[0]?.blogDate}</span>
-											</div>
+					{isMobile ? (
+						// Mobile: Show only the latest blog
+						<div 
+							className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden cursor-pointer min-h-[400px]"
+							onClick={() => handleNavigation(featuredBlog._id)}
+						>
+							{/* Card Border Gradient */}
+							<div className="absolute inset-0 bg-gradient-to-r from-brand/20 via-transparent to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+							
+							<div className="relative h-full min-h-[400px]">
+								<Image 
+									src={featuredBlog?.blogMainPicture || "/ghanti.png"} 
+									alt={getLocalizedTitle(featuredBlog)} 
+									fill 
+									className="object-cover transition-transform duration-1000 group-hover:scale-110" 
+								/>
+								
+								{/* Image Overlay Gradient */}
+								<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+								
+								{/* Content Overlay */}
+								<div className="absolute inset-0 p-6 flex flex-col justify-end">
+									{/* Category Badge */}
+									<div className="mb-4">
+										<div className="bg-brand/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg inline-block">
+											<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest Story</span>
 										</div>
-										<h3 className="text-3xl font-bold mb-4">{getLocalizedTitle(currentBlogs[0])}</h3>
-										<button className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all duration-300">
-											Read More
-											<ArrowRight className="w-4 h-4 ml-2" />
-										</button>
 									</div>
-								</div>
-							</motion.div>
-						</div>
-					)}
-
-					{currentBlogs.length >= 2 && (
-						/* Multiple Blogs - Grid Layout */
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-							{currentBlogs.map((blog, index) => (
-								<motion.div
-									key={blog._id}
-									initial={{ opacity: 0, y: 30 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.6, delay: index * 0.1 }}
-									className="group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
-									onClick={() => handleNavigation(blog._id)}
-								>
-									<div className="relative h-48 overflow-hidden">
-										<Image src={blog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(blog)} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-										<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-										{index === 0 && (
-											<div className="absolute top-4 left-4">
-												<span className="px-3 py-1 bg-blue-600 rounded-full text-white text-sm font-medium">Latest</span>
+									
+									{/* Blog Title */}
+									<h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
+										{getLocalizedTitle(featuredBlog)}
+									</h2>
+									
+									{/* Blog Meta */}
+									<div className="flex items-center gap-4 text-white/80">
+										{featuredBlog?.blogAuthor && (
+											<div className="flex items-center gap-2">
+												<User className="w-4 h-4" />
+												<span className="text-sm font-medium">{featuredBlog.blogAuthor}</span>
 											</div>
 										)}
-									</div>
-									<div className="p-6">
-										<div className="flex items-center text-gray-500 text-sm mb-3">
-											<Calendar className="w-4 h-4 mr-2" />
-											<span>{blog?.blogDate}</span>
-										</div>
-										<h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
-											{getLocalizedTitle(blog)}
-										</h3>
-										<div className="flex items-center justify-between">
-											<span className="text-blue-600 font-medium text-sm group-hover:text-blue-700 transition-colors duration-300">
-												Read Article
-											</span>
-											<ArrowRight className="w-4 h-4 text-blue-600 group-hover:translate-x-1 transition-transform duration-300" />
+										<div className="flex items-center gap-2">
+											<Calendar className="w-4 h-4" />
+											<span className="text-sm">{featuredBlog?.blogDate}</span>
 										</div>
 									</div>
-								</motion.div>
-							))}
+								</div>
+							</div>
+						</div>
+					) : (
+						// Desktop: Show the original layout with featured blog and grid
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+							{/* Left Side - Latest Blog with Overlay */}
+							<div 
+								className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden cursor-pointer min-h-[500px]"
+								onClick={() => handleNavigation(featuredBlog._id)}
+							>
+								{/* Card Border Gradient */}
+								<div className="absolute inset-0 bg-gradient-to-r from-brand/20 via-transparent to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+								
+								<div className="relative h-full min-h-[500px]">
+									<Image 
+										src={featuredBlog?.blogMainPicture || "/ghanti.png"} 
+										alt={getLocalizedTitle(featuredBlog)} 
+										fill 
+										className="object-cover transition-transform duration-1000 group-hover:scale-110" 
+									/>
+									
+									{/* Image Overlay Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+									
+									{/* Content Overlay */}
+									<div className="absolute inset-0 p-8 flex flex-col justify-end">
+										{/* Category Badge */}
+										<div className="mb-4">
+											<div className="bg-brand/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg inline-block">
+												<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest Story</span>
+											</div>
+										</div>
+										
+										{/* Blog Title */}
+										<h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
+											{getLocalizedTitle(featuredBlog)}
+										</h2>
+										
+										{/* Blog Meta */}
+										<div className="flex items-center gap-4 text-white/80">
+											{featuredBlog?.blogAuthor && (
+												<div className="flex items-center gap-2">
+													<User className="w-4 h-4" />
+													<span className="text-sm font-medium">{featuredBlog.blogAuthor}</span>
+												</div>
+											)}
+											<div className="flex items-center gap-2">
+												<Calendar className="w-4 h-4" />
+												<span className="text-sm">{featuredBlog?.blogDate}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							{/* Right Side - 2 Rows of More Blogs */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								{blogs.slice(1, 5).map((blog, index) => (
+									<motion.div
+										key={blog._id}
+										initial={{ opacity: 0, y: 30 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: "easeOut" }}
+										className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer min-h-[240px]"
+										onClick={() => handleNavigation(blog._id)}
+									>
+										{/* Card Border Gradient */}
+										<div className="absolute inset-0 bg-gradient-to-r from-brand/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+										
+										<div className="relative h-48">
+											<Image 
+												src={blog?.blogMainPicture || "/ghanti.png"} 
+												alt={getLocalizedTitle(blog)} 
+												fill 
+												className="object-cover transition-transform duration-700 group-hover:scale-105" 
+											/>
+											
+											{/* Image Overlay Gradient */}
+											<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+										</div>
+										
+										{/* Content */}
+										<div className="p-4">
+											{/* Blog Title */}
+											<BlogTitle 
+												title={getLocalizedTitle(blog)} 
+												className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-brand transition-colors duration-300"
+											/>
+											
+											{/* Blog Meta */}
+											<div className="flex items-center gap-3 text-gray-500 text-sm">
+												{blog?.blogAuthor && (
+													<div className="flex items-center gap-1">
+														<User className="w-3 h-3" />
+														<span className="truncate max-w-[80px]">{blog.blogAuthor}</span>
+													</div>
+												)}
+												<div className="flex items-center gap-1">
+													<Calendar className="w-3 h-3" />
+													<span>{blog?.blogDate}</span>
+												</div>
+											</div>
+										</div>
+									</motion.div>
+								))}
+							</div>
 						</div>
 					)}
-				</div>
+				</motion.div>
 
-				{/* Navigation */}
-				{totalPages > 1 && (
-					<div className="flex items-center justify-between mb-8">
-						<button
-							onClick={prevPage}
-							disabled={currentPage === 0}
-							className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-								currentPage > 0
-									? "bg-blue-600 text-white hover:bg-blue-700"
-									: "bg-gray-200 text-gray-400 cursor-not-allowed"
-							}`}
+				{/* Bottom Navigation - Show on all devices */}
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+					className="text-center mt-16"
+				>
+					<div className="inline-flex items-center gap-8 text-sm text-gray-500">
+						
+						{/* View All Link */}
+						<Link 
+							href={`/${locale}/blogs`}
+							className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-300"
+							onClick={(e: React.MouseEvent) => e.stopPropagation()}
 						>
-							Previous
-						</button>
-
-						<div className="flex gap-2">
-							{Array.from({ length: totalPages }).map((_, index) => (
-								<button
-									key={index}
-									onClick={() => setCurrentPage(index)}
-									className={`h-2 rounded-full transition-all duration-300 ${
-										index === currentPage ? "w-8 bg-blue-600" : "w-2 bg-gray-300 hover:bg-gray-400"
-									}`}
-									aria-label={`Go to page ${index + 1}`}
-								/>
-							))}
-						</div>
-
-						<button
-							onClick={nextPage}
-							disabled={currentPage >= totalPages - 1}
-							className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-								currentPage < totalPages - 1
-									? "bg-blue-600 text-white hover:bg-blue-700"
-									: "bg-gray-200 text-gray-400 cursor-not-allowed"
-							}`}
-						>
-							Next
-						</button>
+							View All Blogs →
+						</Link>
 					</div>
-				)}
-
-				{/* View All Button */}
-				{pathname !== `/${locale}/blogs` && (
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, delay: 0.4 }}
-						className="flex justify-center"
-					>
-						<ViewAllButton href={`/${locale}/blogs`} label={t.view_all} />
-					</motion.div>
-				)}
+				</motion.div>
 			</div>
 		</section>
 	);

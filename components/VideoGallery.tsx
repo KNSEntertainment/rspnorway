@@ -76,7 +76,7 @@ export default function VideoGallery() {
 
 	return (
 		<section className="bg-gradient-to-br from-brand-50 to-gray-100">
-			<div className="container mx-auto px-4 py-12">
+			<div className="container mx-auto px-4 py-12 md:py-20">
 				<div className="text-center mb-6 md:mb-8">
 					<SectionHeader heading={tg("videoGalleryTitle")} />
 				</div>
@@ -90,7 +90,7 @@ export default function VideoGallery() {
 				) : videos.length > 0 ? (
 					<>
 						{/* Adaptive Video Gallery Layout */}
-						<div className="mb-8">
+						<div className="mb-12">
 							{videos.length === 1 && (
 								/* Single Video - Hero Showcase */
 								<div className="max-w-5xl mx-auto">
@@ -102,12 +102,7 @@ export default function VideoGallery() {
 												<>
 													<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
 													
-													{/* Floating Badge */}
-													<div className="absolute top-6 right-6">
-														<span className="px-4 py-2 bg-brand/90 backdrop-blur-sm rounded-full text-white font-semibold text-sm shadow-lg">
-															Featured Video
-														</span>
-													</div>
+											
 													
 													{/* Play Button */}
 													<div className="absolute inset-0 flex items-center justify-center" onClick={() => setActiveVideoId(videos[0]._id)}>
@@ -151,12 +146,7 @@ export default function VideoGallery() {
 													{!isActive && (
 														<>
 															<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-															
-															<div className="absolute top-6 left-6">
-																<span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-brand font-semibold text-sm">
-																	{index === 0 ? "Latest" : "Popular"}
-																</span>
-															</div>
+													
 															
 															<div className="absolute inset-0 flex items-center justify-center" onClick={() => setActiveVideoId(video._id)}>
 																<div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 shadow-xl cursor-pointer">

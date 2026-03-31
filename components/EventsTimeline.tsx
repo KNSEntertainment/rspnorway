@@ -1,13 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Clock } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import SectionHeader from "./SectionHeader";
 import { useState, useEffect } from "react";
 import EventPopup from "./EventPopup";
+import ViewAllButton from "./ViewAllButton";
 
 interface Event {
 	_id: string;
@@ -33,17 +34,48 @@ export default function EventsTimeline() {
 		const fetchEvents = async () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-				const res = await fetch(`${baseUrl}/api/events`, { cache: "no-store" });
+				console.log("Fetching events from:", `${baseUrl}/api/events`);
+				
+				// Use no-cache and proper headers
+				const res = await fetch(`${baseUrl}/api/events`, { 
+					cache: "no-store",
+					headers: {
+						'Content-Type': 'application/json',
+					}
+				});
+				
+				console.log("Events response status:", res.status);
+				
+				if (!res.ok) {
+					throw new Error(`HTTP error! status: ${res.status}`);
+				}
+				
 				const data = await res.json();
+				
 				// Get latest 4 events for timeline
 				const allEvents = data.events || [];
 				setEvents(allEvents.slice(0, 4));
+				
 				// Set latest event for popup
 				if (allEvents.length > 0) {
 					setLatestEvent(allEvents[0]);
 				}
-			} catch (error) {
-				console.error("Failed to fetch events:", error);
+			} catch  {
+				// Try fallback to relative URL
+				try {
+					const fallbackRes = await fetch('/api/events', { cache: "no-store" });
+					const fallbackData = await fallbackRes.json();
+					console.log("Fallback events response data:", fallbackData);
+					
+					const allEvents = fallbackData.events || [];
+					setEvents(allEvents.slice(0, 4));
+					
+					if (allEvents.length > 0) {
+						setLatestEvent(allEvents[0]);
+					}
+				} catch (fallbackError) {
+					console.error("Fallback events also failed:", fallbackError);
+				}
 			} finally {
 				setLoading(false);
 			}
@@ -87,8 +119,8 @@ export default function EventsTimeline() {
 
 	return (
 		<>
-			<section className="py-20 bg-white">
-				<div className="container mx-auto px-6">
+			<section className=" bg-white px-4">
+				<div className="container mx-auto">
 					{/* Section Header */}
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
@@ -96,130 +128,97 @@ export default function EventsTimeline() {
 						transition={{ duration: 0.6 }}
 						className="text-center mb-16"
 					>
-						<SectionHeader heading="Upcoming Events" />
-						<p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-							Join us for exciting events and activities that bring our community together.
-						</p>
+						<SectionHeader 
+							heading="Upcoming Events" 
+							seeAllLink={`/${locale}/events`}
+							seeAllText="See All"
+						/>
+				
 					</motion.div>
 
 					{events.length > 0 ? (
 						<div className="w-full">
-							{/* Timeline */}
-							<div className="relative">
-								{/* Timeline Line */}
-								<div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-blue-500 to-purple-500"></div>
+							{/* Single Event Display */}
+							{events.slice(0, 1).map((event, index) => (
+								<motion.div
+									key={event._id}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: index * 0.1 }}
+								>
+									<div className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1 group">
+										<div className="flex flex-col md:flex-row">
+											{/* Event Poster Column */}
+											<div className="w-full md:w-1/2 relative h-96">
+												<Image 
+													src={event.eventposterUrl || "/ghanti.png"} 
+													alt={getLocalizedTitle(event)} 
+													fill 
+													className="object-cover transition-transform duration-700 group-hover:scale-105" 
+												/>
+												{/* Gradient Overlay */}
+												<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:hidden"></div>
+												
+											
+											</div>
 
-								{/* Timeline Events */}
-								{events.map((event, index) => (
-									<motion.div
-										key={event._id}
-										initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-										animate={{ opacity: 1, x: 0 }}
-										transition={{ duration: 0.6, delay: index * 0.2 }}
-										className={`relative flex items-center mb-12 ${
-											index % 2 === 0 ? "md:flex-row-reverse" : ""
-										}`}
-									>
-										{/* Timeline Dot */}
-										<div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-white border-4 border-blue-500 rounded-full z-10"></div>
+											{/* Event Information Column */}
+											<div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col">
+											
 
-										{/* Event Card - Full Width */}
-										<div className={`ml-16 md:ml-0 md:w-11/12 ${index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"}`}>
-											<div className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1 group">
-												<div className="flex flex-col md:flex-row">
-													{/* Event Poster Column */}
-													<div className="w-full md:w-1/3 relative h-48 md:h-auto">
-														<Image 
-															src={event.eventposterUrl || "/ghanti.png"} 
-															alt={getLocalizedTitle(event)} 
-															fill 
-															className="object-cover transition-transform duration-700 group-hover:scale-110" 
-														/>
-														{/* Gradient Overlay */}
-														<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:hidden"></div>
-														
-														{/* Event Date Badge on Poster */}
-														<div className="absolute top-4 left-4">
-															<div className="bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
-																<div className="text-center">
-																	<div className="text-xs font-bold text-blue-600">{event.eventdate?.split(' ')[0] || 'Date'}</div>
-																</div>
-															</div>
-														</div>
+												{/* Event Title */}
+												<Link href={`/${locale}/updates?eventId=${event._id}`}>
+													<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300 cursor-pointer">
+														{getLocalizedTitle(event)}
+													</h3>
+												</Link>
+
+												{/* Event Description */}
+												<p className="text-gray-600 mb-6 line-clamp-3 text-base leading-relaxed">
+													{getLocalizedDescription(event)}
+												</p>
+
+												{/* Event Details Grid */}
+												<div className="grid grid-cols-1 gap-4 mb-6">
+													<div className="flex items-center text-gray-500">
+														<Calendar className="w-5 h-5 mr-3 text-blue-500" />
+														<span className="font-medium">{event.eventdate}</span>
 													</div>
-
-													{/* Event Information Column */}
-													<div className="w-full md:w-2/3 p-6 md:p-8">
-														{/* Event Type Badge */}
-														<div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 mb-4">
-															<Calendar className="w-4 h-4" />
-															Upcoming Event
-														</div>
-
-														{/* Event Title */}
-														<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
-															{getLocalizedTitle(event)}
-														</h3>
-
-														{/* Event Description */}
-														<p className="text-gray-600 mb-6 line-clamp-3 text-base leading-relaxed">
-															{getLocalizedDescription(event)}
-														</p>
-
-														{/* Event Details Grid */}
-														<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-															<div className="flex items-center text-gray-500">
-																<Calendar className="w-5 h-5 mr-3 text-blue-500" />
-																<span className="font-medium">{event.eventdate}</span>
-															</div>
-															{event.eventtime && (
-																<div className="flex items-center text-gray-500">
-																	<Clock className="w-5 h-5 mr-3 text-purple-500" />
-																	<span className="font-medium">{event.eventtime}</span>
-																</div>
-															)}
-															{event.eventvenue && (
-																<div className="flex items-center text-gray-500">
-																	<MapPin className="w-5 h-5 mr-3 text-green-500" />
-																	<span className="font-medium">{event.eventvenue}</span>
-																</div>
-															)}
-														</div>
-
-														{/* Action Button */}
-														<div className="flex items-center justify-between">
-															<Link href={`/${locale}/events`}>
-																<button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold text-base rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-																	View Details
-																	<ArrowRight className="w-5 h-5 ml-2" />
-																</button>
-															</Link>
-														</div>
+													<div className="flex items-center text-gray-500">
+														<Clock className="w-5 h-5 mr-3 text-blue-500" />
+														<span className="font-medium">{event.eventtime}</span>
 													</div>
+													<div className="flex items-center text-gray-500">
+														<MapPin className="w-5 h-5 mr-3 text-blue-500" />
+														<span className="font-medium">{event.eventvenue}</span>
+													</div>
+												</div>
+
+												{/* Action Buttons */}
+												<div className="flex gap-4 mt-auto">
+													<Link href={`/${locale}/updates?eventId=${event._id}`}>
+														<button
+															className="flex-1 bg-brand text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200"
+														>
+															View Details
+														</button>
+													</Link>
 												</div>
 											</div>
 										</div>
-
-										{/* Spacer for alternating layout */}
-										<div className="hidden md:block md:w-1/12"></div>
-									</motion.div>
-								))}
-							</div>
+									</div>
+								</motion.div>
+							))}
 
 							{/* View All Events Button */}
 							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.6, delay: 0.8 }}
-								className="text-center mt-12"
-							>
-								<Link href={`/${locale}/events`}>
-									<button className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-										View All Events
-										<ArrowRight className="w-5 h-5 ml-2" />
-									</button>
-								</Link>
-							</motion.div>
+												initial={{ opacity: 0, y: 20 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{ duration: 0.6, delay: 0.4 }}
+												className="flex justify-center pt-12"
+											>
+												<ViewAllButton href={`/${locale}/updates`} label="View All Events" />
+											</motion.div>
 						</div>
 					) : (
 						<div className="text-center py-12">

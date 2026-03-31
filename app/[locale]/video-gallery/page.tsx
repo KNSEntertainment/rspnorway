@@ -26,20 +26,24 @@ interface Video {
 	description?: string;
 }
 
+// Helper function to extract YouTube video ID
+const getYouTubeVideoId = (url: string) => {
+	if (!url) return "";
+	if (url.includes("youtube.com/embed/")) {
+		return url.split("embed/")[1]?.split("?")[0] || "";
+	} else if (url.includes("youtube.com/watch?v=")) {
+		return url.split("v=")[1]?.split("&")[0] || "";
+	} else if (url.includes("youtu.be/")) {
+		return url.split("youtu.be/")[1]?.split("?")[0] || "";
+	}
+	return "";
+};
+
 // Helper function to get YouTube thumbnail URL
 const getYouTubeThumbnailUrl = (url: string) => {
 	if (!url) return "/ghanti.jpg";
 	
-	// Extract video ID from different YouTube URL formats
-	let videoId = '';
-	
-	if (url.includes('youtube.com/embed/')) {
-		videoId = url.split('embed/')[1]?.split('?')[0] || '';
-	} else if (url.includes('youtube.com/watch?v=')) {
-		videoId = url.split('v=')[1]?.split('&')[0] || '';
-	} else if (url.includes('youtu.be/')) {
-		videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
-	}
+	const videoId = getYouTubeVideoId(url);
 	
 	// Return high-quality thumbnail
 	return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "/ghanti.jpg";
@@ -48,18 +52,21 @@ const getYouTubeThumbnailUrl = (url: string) => {
 // Helper function to detect YouTube URLs
 const isYouTubeUrl = (url: string) => {
 	if (!url) return false;
-	return url.includes('youtube.com/embed/') || 
-		   url.includes('youtube.com/watch?v=') || 
-		   url.includes('youtu.be/') ||
-		   url.includes('youtube.com');
+	return (
+		url.includes("youtube.com/embed/") ||
+		url.includes("youtube.com/watch?v=") ||
+		url.includes("youtu.be/") ||
+		url.includes("youtube.com")
+	);
 };
 
 const VideoGallery: React.FC = () => {
-	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-	const [playingId, setPlayingId] = useState<string | null>(null);
-	const [isMuted, setIsMuted] = useState<boolean>(false);
 	const [videos, setVideos] = useState<Video[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+	const [playingId, setPlayingId] = useState<string | null>(null);
+	const [embeddedVideoId, setEmbeddedVideoId] = useState<string | null>(null);
+	const [isMuted, setIsMuted] = useState(true);
 	const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 	const modalVideoRef = useRef<HTMLVideoElement | null>(null);
 	const t = useTranslations("gallery");
@@ -83,33 +90,27 @@ const VideoGallery: React.FC = () => {
 		return url.includes("?") ? `${url}&autoplay=1` : `${url}?autoplay=1`;
 	};
 
-	// const getLocalizedDescription = (video: Video) => {
-	// 	const key = `description_${locale}` as keyof Video;
-	// 	return (video[key] as string) || video.description_en || video.description || "";
-	// };
-
 	// Fetch videos from database
 	useEffect(() => {
 		const fetchVideos = async () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 				console.log("Fetching videos from:", `${baseUrl}/api/videos`);
-				
-				// Use no-cache and proper headers
-				const res = await fetch(`${baseUrl}/api/videos`, { 
+
+				const res = await fetch(`${baseUrl}/api/videos`, {
 					cache: "no-store",
 					headers: {
-						'Content-Type': 'application/json',
-					}
+						"Content-Type": "application/json",
+					},
 				});
-				
+
 				console.log("Response status:", res.status);
 				console.log("Response headers:", res.headers);
-				
+
 				if (!res.ok) {
 					throw new Error(`HTTP error! status: ${res.status}`);
 				}
-				
+
 				const data = await res.json();
 				console.log("Response data:", data);
 				setVideos(data.videos || []);
@@ -117,7 +118,7 @@ const VideoGallery: React.FC = () => {
 				console.error("Failed to fetch videos:", error);
 				// Try fallback to relative URL
 				try {
-					const fallbackRes = await fetch('/api/videos', { cache: "no-store" });
+					const fallbackRes = await fetch("/api/videos", { cache: "no-store" });
 					const fallbackData = await fallbackRes.json();
 					console.log("Fallback response data:", fallbackData);
 					setVideos(fallbackData.videos || []);
@@ -150,7 +151,25 @@ const VideoGallery: React.FC = () => {
 		}
 	};
 
+
 	const openModal = (video: Video) => {
+		// For YouTube videos, embed directly in the grid
+		if (video.isYouTube || isYouTubeUrl(video.url)) {
+			const videoId = getYouTubeVideoId(video.url);
+			
+			if (videoId) {
+				// Toggle embedded video
+				if (embeddedVideoId === video._id) {
+					setEmbeddedVideoId(null); // Close embedded video
+				} else {
+					setEmbeddedVideoId(video._id); // Open embedded video
+					setPlayingId(null); // Pause any other playing videos
+				}
+				return;
+			}
+		}
+		
+		// For non-YouTube videos, use the modal
 		setSelectedVideo(video);
 		setPlayingId(null);
 		// Pause all grid videos
@@ -224,6 +243,9 @@ const VideoGallery: React.FC = () => {
 				minHeight: "100vh",
 				position: "relative",
 				overflow: "hidden",
+				paddingTop: "48px",
+				paddingLeft: "16px",
+				paddingRight: "16px",
 			}}
 		>
 			{/* Animated background grid */}
@@ -272,20 +294,18 @@ const VideoGallery: React.FC = () => {
 				}}
 			/>
 
-			<div>
+			<div className="max-w-7xl mx-auto">
 				{/* Header */}
-
-				<header className="text-center mb-6 md:mb-8">
-					<SectionHeader heading={t("video_title")} />
-					<p className="text-gray-900 mt-4 text-lg max-w-2xl mx-auto">{t("video_description")}</p>
+				<header className="text-center mb-6 md:mb-8 px-4">
+					<SectionHeader heading={t("video_title")} subtitle={t("video_description")} />
 				</header>
 
 				{/* Video Grid */}
 				<div
 					style={{
 						display: "grid",
-						gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))",
-						gap: "32px",
+						gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+						gap: "24px",
 					}}
 				>
 					{videos.map((video, index) => {
@@ -318,42 +338,65 @@ const VideoGallery: React.FC = () => {
 							>
 								{/* Conditional rendering for YouTube vs uploaded videos */}
 								{isYouTube ? (
-									<div style={{ position: 'relative', width: '100%', height: '100%' }}>
-										<Image
-											src={getYouTubeThumbnailUrl(video.url)}
-											alt={getLocalizedTitle(video)}
-											fill
-											sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
-											style={{
-												objectFit: 'cover',
-												transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-											}}
-											onMouseEnter={(e) => {
-												e.currentTarget.style.transform = 'scale(1.05)';
-											}}
-											onMouseLeave={(e) => {
-												e.currentTarget.style.transform = 'scale(1)';
-											}}
-										/>
-										{/* YouTube play button overlay */}
-										<div style={{
-											position: 'absolute',
-											top: '50%',
-											left: '50%',
-											transform: 'translate(-50%, -50%)',
-											width: '70px',
-											height: '70px',
-											background: 'rgba(255, 0, 0, 0.8)',
-											borderRadius: '50%',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'center',
-											transition: 'all 0.3s ease',
-										}}>
-											<svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-												<path d="M8 5v14l11-7z"/>
-											</svg>
-										</div>
+									<div style={{ position: "relative", width: "100%", height: "100%" }}>
+										{embeddedVideoId === video._id ? (
+											// Show embedded YouTube video
+											<iframe
+												src={`https://www.youtube.com/embed/${getYouTubeVideoId(video.url)}?autoplay=1&rel=0`}
+												style={{
+													position: "absolute",
+													top: 0,
+													left: 0,
+													width: "100%",
+													height: "100%",
+													border: "none",
+													borderRadius: "20px",
+												}}
+												allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+												allowFullScreen
+											/>
+										) : (
+											// Show thumbnail with play button
+											<>
+												<Image
+													src={getYouTubeThumbnailUrl(video.url)}
+													alt={getLocalizedTitle(video)}
+													fill
+													sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+													style={{
+														objectFit: "cover",
+														transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+													}}
+													onMouseEnter={(e) => {
+														e.currentTarget.style.transform = "scale(1.05)";
+													}}
+													onMouseLeave={(e) => {
+														e.currentTarget.style.transform = "scale(1)";
+													}}
+												/>
+												{/* YouTube play button overlay */}
+												<div
+													style={{
+														position: "absolute",
+														top: "50%",
+														left: "50%",
+														transform: "translate(-50%, -50%)",
+														width: "70px",
+														height: "70px",
+														background: "rgba(255, 0, 0, 0.8)",
+														borderRadius: "50%",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														transition: "all 0.3s ease",
+													}}
+												>
+													<svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+														<path d="M8 5v14l11-7z" />
+													</svg>
+												</div>
+											 </>
+										)}
 									</div>
 								) : (
 									<video
@@ -399,7 +442,7 @@ const VideoGallery: React.FC = () => {
 								</div>
 
 								{/* Play/Pause Button - Hide for YouTube videos */}
-								{!video.isYouTube && (
+								{!isYouTube && (
 									<button
 										onClick={(e) => togglePlay(video._id, e)}
 										style={{
@@ -428,10 +471,16 @@ const VideoGallery: React.FC = () => {
 										}}
 										onMouseLeave={(e) => {
 											e.currentTarget.style.transform = "translate(-50%, -50%) scale(1)";
-											e.currentTarget.style.background = isPlaying ? "rgba(0, 0, 0, 0.6)" : "rgba(138, 43, 226, 0.9)";
+											e.currentTarget.style.background = isPlaying
+												? "rgba(0, 0, 0, 0.6)"
+												: "rgba(138, 43, 226, 0.9)";
 										}}
 									>
-										{isPlaying ? <Pause size={32} color="white" fill="white" /> : <Play size={32} color="white" fill="white" style={{ marginLeft: "4px" }} />}
+										{isPlaying ? (
+											<Pause size={32} color="white" fill="white" />
+										) : (
+											<Play size={32} color="white" fill="white" style={{ marginLeft: "4px" }} />
+										)}
 									</button>
 								)}
 
@@ -786,12 +835,8 @@ const VideoGallery: React.FC = () => {
         }
 
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
         @keyframes fadeInDown {
@@ -839,22 +884,22 @@ const VideoGallery: React.FC = () => {
           }
         }
 
-        div:hover > .video-overlay {
+        :global(div:hover > .video-overlay) {
           opacity: 0.7;
         }
 
-        div:hover > .video-info {
+        :global(div:hover > .video-info) {
           opacity: 1;
           transform: translateY(0);
         }
 
-        div:hover > .play-btn {
+        :global(div:hover > .play-btn) {
           opacity: 1;
           transform: translate(-50%, -50%) scale(1);
         }
 
         @media (max-width: 768px) {
-          .play-btn {
+          :global(.play-btn) {
             opacity: 1 !important;
           }
         }

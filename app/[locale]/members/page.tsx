@@ -179,21 +179,18 @@ export default function Members() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen pt-12">
 			{/* Header Section */}
-			<div className="bg-white border-b border-gray-200">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
-					<SectionHeader heading={t("title")} />
-				</div>
-			</div>
+		
+			<SectionHeader heading={t("title")} className="bg-white mb-0" />
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 				{/* Search and Filter Toggle */}
 				<div className="mb-3">
 					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
-						<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+						<div className="flex items-stretch sm:items-center gap-3">
 							{/* Search Input */}
-							<div className="flex-1">
+							<div className="flex">
 								<div className="relative">
 									<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
 									<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
@@ -220,12 +217,12 @@ export default function Members() {
 							</div>
 
 							{/* Members Count */}
-							<div className="text-sm text-gray-700 sm:ml-auto">
-								{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {t("members")}
-							</div>
 						</div>
+						{filteredMembers.length > 0 && 	<div className="text-sm text-gray-700 sm:ml-auto m-1">
+								{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {filteredMembers.length === 1 ? t("member") : t("members")}
+							</div>}
 					</div>
-				</div>
+				</div>	
 
 				{/* Filters Section - Desktop and Mobile */}
 				<div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
@@ -334,55 +331,38 @@ export default function Members() {
 						</div>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 						{filteredMembers.map((member) => (
-							<div key={member._id} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
-								{/* Member Header with Image/Avatar */}
-								<div className="bg-gradient-to-br from-blue-50 to-white p-6 text-center border-b border-gray-100">
-									<div className="flex justify-center mb-4">
-										{member.imageUrl ? (
-											<Image src={member.imageUrl} alt={member.name} width={128} height={128} className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-lg" />
-										) : (
-											<div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 border-4 border-white shadow-lg">
-												<span className="text-white text-4xl sm:text-5xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
-											</div>
-										)}
-									</div>
-									<h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-1 line-clamp-2">{member.name}</h3>
-									{member.position && <p className="text-sm font-medium text-brand line-clamp-2">{member.position}</p>}
+						
+							<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+						<div className="aspect-square overflow-hidden bg-light">
+							{member.imageUrl && !member.imageUrl.startsWith("data:") ? (
+								<Image src={member.imageUrl} alt={member.name} width={200} height={200} className="w-full h-full object-cover" />
+							) : (
+								<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand to-blue-600">
+									<span className="text-white text-6xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
 								</div>
+							)}
+						</div>
 
-								{/* Contact Information */}
-								<div className="p-4 sm:p-6 bg-gray-50 flex-1">
-									<div className="space-y-4">
-										{/* Phone */}
-										<div className="flex items-start gap-3">
-											<div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-												<Phone className="w-5 h-5 text-white" />
-											</div>
-											<div className="flex-1 min-w-0">
-												<p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t("mobile")}</p>
-												<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand transition-colors font-medium break-all">
-													{member.phone}
-												</a>
-											</div>
-										</div>
+						<div className="p-6">
+							<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+							{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
 
-										{/* Email */}
-										<div className="flex items-start gap-3">
-											<div className="w-10 h-10 bg-brand rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-												<Mail className="w-5 h-5 text-white" />
-											</div>
-											<div className="flex-1 min-w-0">
-												<p className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t("email")}</p>
-												<a href={`mailto:${member.email}`} className="text-gray-900 hover:text-brand transition-colors text-sm break-all">
-													{member.email}
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
+							<div className="space-y-2 mb-4">
+								<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+									<Phone className="w-4 h-4" />
+									{member.phone}
+								</a>
+								<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+									<Mail className="w-4 h-4" />
+									{member.email}
+								</a>
 							</div>
+
+					
+						</div>
+					</div>
 						))}
 					</div>
 				)}

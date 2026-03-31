@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { signOut } from "next-auth/react";
 import SocialMediaLinks from "./SocialMediaLinks";
 import { X, ChevronDown } from "lucide-react";
 import { useState } from "react";
@@ -15,13 +16,29 @@ interface MobileMenuProps {
 	isScrolled: boolean;
 	pathname: string;
 	closeMenu: () => void;
+	user?: {
+		id?: string;
+		role?: string;
+		fullName?: string;
+		username?: string;
+		phone?: string;
+		name?: string | null;
+		email?: string | null;
+		image?: string | null;
+	};
 }
 
-const MobileMenu = ({ navItems, closeMenu, pathname }: MobileMenuProps) => {
+const MobileMenu = ({ navItems, closeMenu, pathname, user }: MobileMenuProps) => {
 	const t = useTranslations("navigation");
 	const tr = useTranslations("footer");
 	const locale = useLocale();
 	const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+	const handleSignOut = async () => {
+		await signOut({ redirect: false });
+		closeMenu();
+		window.location.href = `/${locale}`;
+	};
 
 	const toggleDropdown = (href: string) => {
 		setOpenDropdown(openDropdown === href ? null : href);
@@ -98,9 +115,15 @@ const MobileMenu = ({ navItems, closeMenu, pathname }: MobileMenuProps) => {
 						<Link href={`/${locale}/donate`} onClick={() => closeMenu()} className="flex items-center justify-center gap-2 w-full px-4 py-2 md:py-3 text-center text-md font-bold text-white bg-success rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
 							{t("donate") || "Donate Now"}
 						</Link>
-						<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-2 md:py-3 text-center text-md font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
-							{t("become_a_member") || "Become Member"}
-						</Link>
+						{user ? (
+							<button onClick={handleSignOut} className="flex items-center justify-center gap-2 w-full px-4 py-2 md:py-3 text-center text-md font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+								{t("sign_out") || "Sign Out"}
+							</button>
+						) : (
+							<Link href={`/${locale}/membership`} onClick={() => closeMenu()} className="block w-full px-4 py-2 md:py-3 text-center text-md font-bold text-brand bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
+								{t("become_a_member") || "Become Member"}
+							</Link>
+						)}
 					</motion.div>
 				</div>
 			</motion.div>

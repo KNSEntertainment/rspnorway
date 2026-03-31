@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function FooterClient({ settings, t }) {
 	return (
-		<footer className="bg-gradient-to-b from-gray-50 to-white text-gray-900 pt-12 pb-6">
+		<footer className="bg-gradient-to-b from-gray-100 to-gray-50 text-gray-900 pt-12 pb-6">
 			<div className="container mx-auto px-4">
 				{/* Logo Section - Mobile First */}
 				<div className="flex flex-col items-center text-center mb-10 md:hidden">

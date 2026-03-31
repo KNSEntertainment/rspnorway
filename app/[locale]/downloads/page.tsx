@@ -21,7 +21,7 @@ export default async function DownloadsPage() {
 	const downloads = await getDownloads();
 
 	return (
-		<section className="px-4">
+		<section className="px-4 pt-12">
 			<div className="mb-6 md:mb-8">
 				<SectionHeader heading={t("title")} />
 			</div>

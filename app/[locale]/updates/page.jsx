@@ -17,8 +17,10 @@ export const metadata = {
 	},
 };
 
-export default async function UpdatesPage({ params }) {
+export default async function UpdatesPage({ params, searchParams }) {
 	const { locale } = params;
+	const { eventId, noticeId, circularId } = searchParams;
+	
 	const events = await getEvents();
 	const notices = await getNotices();
 	const circulars = await getPublishedCirculars();
@@ -49,5 +51,14 @@ export default async function UpdatesPage({ params }) {
 		no_circulars_desc: t("no_circulars_desc"),
 	};
 
-	return <UpdatesClient events={eventsNorm} notices={noticesNorm} circulars={circularsNorm} translations={translations} locale={locale} />;
+	return <UpdatesClient 
+		events={eventsNorm} 
+		notices={noticesNorm} 
+		circulars={circularsNorm} 
+		translations={translations} 
+		locale={locale}
+		initialEventId={eventId}
+		initialNoticeId={noticeId}
+		initialCircularId={circularId}
+	/>;
 }

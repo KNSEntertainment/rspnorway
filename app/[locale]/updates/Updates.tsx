@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Calendar, MapPin, Clock, Bell, FileText, Pencil } from "lucide-react";
@@ -64,17 +64,40 @@ interface Props {
 	circulars: Circular[];
 	translations: Translations;
 	locale: string;
+	initialEventId?: string;
+	initialNoticeId?: string;
+	initialCircularId?: string;
 }
 
-export default function UpdatesClient({ events, notices, circulars, translations: t, locale }: Props) {
+export default function UpdatesClient({ 
+	events, 
+	notices, 
+	circulars, 
+	translations: t, 
+	locale,
+	initialEventId,
+	initialNoticeId,
+	initialCircularId 
+}: Props) {
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 	const [selectedCircular, setSelectedCircular] = useState<Circular | null>(null);
-	// const [mobileOpen, setMobileOpen] = useState({
-	// 	events: true,
-	// 	notices: false,
-	// 	circulars: false,
-	// });
+
+	// Auto-select item based on URL parameters
+	useEffect(() => {
+		if (initialEventId) {
+			const event = events.find(e => e._id === initialEventId);
+			if (event) setSelectedEvent(event);
+		}
+		if (initialNoticeId) {
+			const notice = notices.find(n => n._id === initialNoticeId);
+			if (notice) setSelectedNotice(notice);
+		}
+		if (initialCircularId) {
+			const circular = circulars.find(c => c._id === initialCircularId);
+			if (circular) setSelectedCircular(circular);
+		}
+	}, [initialEventId, initialNoticeId, initialCircularId, events, notices, circulars]);
 
 	const sortedEvents = events?.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()) || [];
 	const sortedNotices = notices?.sort((a, b) => new Date(b.noticedate).getTime() - new Date(a.noticedate).getTime()) || [];
@@ -395,14 +418,11 @@ export default function UpdatesClient({ events, notices, circulars, translations
 	// Main Page - Modern Layout with Enhanced Design
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
-			<div className="container mx-auto px-4 py-8 lg:py-12">
+			<div className="container mx-auto px-4 pt-8 lg:pt-12">
 				{/* Header Section */}
-				<div className="text-center mb-12">
-					<SectionHeader heading={t.title} />
-					<p className="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed mt-4">{t.description} </p>
+				<SectionHeader heading={t.title} subtitle={t.description} />
 					
 			
-				</div>
 
 				{/* Content Grid - All Sections Visible */}
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
