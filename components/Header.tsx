@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, Search, X, ChevronDown, Phone, Mail, CoinsIcon } from "lucide-react";
+import { Menu, Search, X, Phone, Mail, CoinsIcon } from "lucide-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import SearchModal from "@/components/SearchModal";
@@ -22,127 +22,127 @@ import LoggedInUser from "./LoggedInUser";
 /* Nav Item */
 /* ---------------------------------- */
 
-interface NavItemProps {
-	title: string;
-	href: string;
-	isScrolled: boolean;
-	pathname: string;
-	dropdownItems?: { title: string; href: string }[];
-	activeDropdown: string | null;
-	setActiveDropdown: (dropdown: string | null) => void;
-}
+// interface NavItemProps {
+// 	title: string;
+// 	href: string;
+// 	isScrolled: boolean;
+// 	pathname: string;
+// 	dropdownItems?: { title: string; href: string }[];
+// 	activeDropdown: string | null;
+// 	setActiveDropdown: (dropdown: string | null) => void;
+// }
 
-function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActiveDropdown }: NavItemProps) {
-	const isActive = pathname === href;
-	const hasDropdown = !!dropdownItems?.length;
-	// Check if any child item in dropdown is active
-	const isChildActive = hasDropdown && dropdownItems?.some((item) => pathname === item.href);
-	const isOpen = activeDropdown === href;
-	const dropdownRef = useRef<HTMLDivElement>(null);
+// function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActiveDropdown }: NavItemProps) {
+// 	const isActive = pathname === href;
+// 	const hasDropdown = !!dropdownItems?.length;
+// 	// Check if any child item in dropdown is active
+// 	const isChildActive = hasDropdown && dropdownItems?.some((item) => pathname === item.href);
+// 	const isOpen = activeDropdown === href;
+// 	const dropdownRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-				setActiveDropdown(null);
-			}
-		};
+// 	useEffect(() => {
+// 		const handleClickOutside = (event: MouseEvent) => {
+// 			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+// 				setActiveDropdown(null);
+// 			}
+// 		};
 
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		}
+// 		if (isOpen) {
+// 			document.addEventListener("mousedown", handleClickOutside);
+// 		}
 
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [isOpen, setActiveDropdown]);
+// 		return () => {
+// 			document.removeEventListener("mousedown", handleClickOutside);
+// 		};
+// 	}, [isOpen, setActiveDropdown]);
 
-	const handleMouseEnter = () => {
-		if (!hasDropdown) return;
-		setActiveDropdown(href);
-	};
+// 	const handleMouseEnter = () => {
+// 		if (!hasDropdown) return;
+// 		setActiveDropdown(href);
+// 	};
 
-	const handleMouseLeave = () => {
-		if (!hasDropdown) return;
-		setActiveDropdown(null);
-	};
+// 	const handleMouseLeave = () => {
+// 		if (!hasDropdown) return;
+// 		setActiveDropdown(null);
+// 	};
 
-	return (
-		<div ref={dropdownRef} className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-			{hasDropdown ? (
-				<button
-					aria-haspopup="menu"
-					aria-expanded={isOpen}
-					onClick={(e) => {
-						e.stopPropagation();
-						setActiveDropdown(isOpen ? null : href);
-					}}
-					className={`
-            relative px-4 py-2 flex items-center gap-2 rounded-lg
-            transition-all duration-300 text-lg font-semibold tracking-wide
-            ${isActive || isChildActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
-          `}
-				>
-					{title}
-					<ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
-				</button>
-			) : (
-				<Link
-					href={href}
-					onClick={() => setActiveDropdown(null)}
-					className={`
-            relative px-4 py-2 block text-lg font-semibold tracking-wide rounded-lg
-            transition-all duration-300
-            ${isActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
-          `}
-				>
-					{title}
-				</Link>
-			)}
+// 	return (
+// 		<div ref={dropdownRef} className="relative group" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+// 			{hasDropdown ? (
+// 				<button
+// 					aria-haspopup="menu"
+// 					aria-expanded={isOpen}
+// 					onClick={(e) => {
+// 						e.stopPropagation();
+// 						setActiveDropdown(isOpen ? null : href);
+// 					}}
+// 					className={`
+//             relative px-4 py-2 flex items-center gap-2 rounded-lg
+//             transition-all duration-300 text-lg font-semibold tracking-wide
+//             ${isActive || isChildActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
+//             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
+//           `}
+// 				>
+// 					{title}
+// 					<ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+// 				</button>
+// 			) : (
+// 				<Link
+// 					href={href}
+// 					onClick={() => setActiveDropdown(null)}
+// 					className={`
+//             relative px-4 py-2 block text-lg font-semibold tracking-wide rounded-lg
+//             transition-all duration-300
+//             ${isActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
+//             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
+//           `}
+// 				>
+// 					{title}
+// 				</Link>
+// 			)}
 
-			<AnimatePresence>
-				{hasDropdown && isOpen && (
-					<motion.div
-						initial={{ opacity: 0, y: -10 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -10 }}
-						transition={{ duration: 0.2 }}
-						role="menu"
-						className="
-              absolute -translate-x-1/2 top-full mt-2 w-48 rounded-md
-              bg-white/95 backdrop-blur-xl
-              shadow-[0_20px_60px_rgba(0,0,0,0.12)]
-              ring-1 ring-black/5 overflow-hidden z-50
-              before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand before:to-emerald-500
-              py-2
-            "
-					>
-						{dropdownItems!.map((item, idx) => {
-							const isDropdownItemActive = pathname === item.href;
-							return (
-								<Link
-									key={item.href}
-									href={item.href}
-									role="menuitem"
-									onClick={() => setActiveDropdown(null)}
-									className={`
-                  block px-4 py-2 text-lg font-medium
-                  ${isDropdownItemActive ? "bg-brand text-white" : "text-gray-900 hover:bg-brand/5 hover:text-brand"}
-                  transition-all duration-200
-                  ${idx !== 0 ? "border-t border-neutral-100" : ""}
-                `}
-								>
-									{item.title}
-								</Link>
-							);
-						})}
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</div>
-	);
-}
+// 			<AnimatePresence>
+// 				{hasDropdown && isOpen && (
+// 					<motion.div
+// 						initial={{ opacity: 0, y: -10 }}
+// 						animate={{ opacity: 1, y: 0 }}
+// 						exit={{ opacity: 0, y: -10 }}
+// 						transition={{ duration: 0.2 }}
+// 						role="menu"
+// 						className="
+//               absolute -translate-x-1/2 top-full mt-2 w-48 rounded-md
+//               bg-white/95 backdrop-blur-xl
+//               shadow-[0_20px_60px_rgba(0,0,0,0.12)]
+//               ring-1 ring-black/5 overflow-hidden z-50
+//               before:absolute before:inset-x-0 before:top-0 before:h-0.5 before:bg-gradient-to-r before:from-brand before:to-emerald-500
+//               py-2
+//             "
+// 					>
+// 						{dropdownItems!.map((item, idx) => {
+// 							const isDropdownItemActive = pathname === item.href;
+// 							return (
+// 								<Link
+// 									key={item.href}
+// 									href={item.href}
+// 									role="menuitem"
+// 									onClick={() => setActiveDropdown(null)}
+// 									className={`
+//                   block px-4 py-2 text-lg font-medium
+//                   ${isDropdownItemActive ? "bg-brand text-white" : "text-gray-900 hover:bg-brand/5 hover:text-brand"}
+//                   transition-all duration-200
+//                   ${idx !== 0 ? "border-t border-neutral-100" : ""}
+//                 `}
+// 								>
+// 									{item.title}
+// 								</Link>
+// 							);
+// 						})}
+// 					</motion.div>
+// 				)}
+// 			</AnimatePresence>
+// 		</div>
+// 	);
+// }
 
 /* ---------------------------------- */
 /* Header */
@@ -185,31 +185,31 @@ export default function Header() {
 	const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 	const [isVisible, setIsVisible] = useState(true);
 	const [lastScrollY, setLastScrollY] = useState(0);
-	const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	// const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const { data: session } = useSession();
 	const user = session?.user;
 
 	// Wrapper function to manage hover delays
-	const handleDropdownChange = (newDropdown: string | null) => {
-		if (hoverTimeoutRef.current) {
-			clearTimeout(hoverTimeoutRef.current);
-		}
+	// const handleDropdownChange = (newDropdown: string | null) => {
+	// 	if (hoverTimeoutRef.current) {
+	// 		clearTimeout(hoverTimeoutRef.current);
+	// 	}
 
-		if (newDropdown === null) {
-			// Delay closing
-			hoverTimeoutRef.current = setTimeout(() => {
-				setActiveDropdown(null);
-			}, 200);
-		} else if (activeDropdown === null) {
-			// Delay opening from closed state
-			hoverTimeoutRef.current = setTimeout(() => {
-				setActiveDropdown(newDropdown);
-			}, 150);
-		} else {
-			// Instant switch between dropdowns
-			setActiveDropdown(newDropdown);
-		}
-	};
+	// 	if (newDropdown === null) {
+	// 		// Delay closing
+	// 		hoverTimeoutRef.current = setTimeout(() => {
+	// 			setActiveDropdown(null);
+	// 		}, 200);
+	// 	} else if (activeDropdown === null) {
+	// 		// Delay opening from closed state
+	// 		hoverTimeoutRef.current = setTimeout(() => {
+	// 			setActiveDropdown(newDropdown);
+	// 		}, 150);
+	// 	} else {
+	// 		// Instant switch between dropdowns
+	// 		setActiveDropdown(newDropdown);
+	// 	}
+	// };
 
 	/* ---------------------------------- */
 	/* Effects */
@@ -289,7 +289,7 @@ export default function Header() {
 			{/* Main Header */}
 			{/* <motion.header initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="bg-gradient-to-r from-brand via-brand to-emerald-600"> */}
 			<header className="bg-gradient-to-r from-brand via-brand to-emerald-600">
-				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex lg:grid lg:grid-cols-3 items-center justify-between border-b border-brand">
+				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex items-center justify-between border-b border-brand">
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
@@ -302,11 +302,11 @@ export default function Header() {
 					</Link>
 
 					{/* Desktop Nav - Centered */}
-					<nav className="hidden lg:flex items-center gap-2 justify-center" role="navigation">
+					{/* <nav className="hidden lg:flex items-center gap-2 justify-center" role="navigation">
 						{navItems.map((item) => (
 							<NavItem key={item.href} {...item} isScrolled={isScrolled} pathname={pathname} activeDropdown={activeDropdown} setActiveDropdown={handleDropdownChange} />
 						))}
-					</nav>
+					</nav> */}
 
 					<div className="flex items-center gap-3 justify-end">
 						{/* Search */}
@@ -327,7 +327,7 @@ export default function Header() {
 							</Link>
 						)}
 
-						<button className="lg:hidden h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
+						<button className="h-8 md:h-11 w-8 md:w-11 rounded-xl flex items-center justify-center transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
 							<AnimatePresence mode="wait">
 								{isMenuOpen ? (
 									<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>

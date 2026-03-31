@@ -26,6 +26,34 @@ interface Video {
 	description?: string;
 }
 
+// Helper function to get YouTube thumbnail URL
+const getYouTubeThumbnailUrl = (url: string) => {
+	if (!url) return "/ghanti.jpg";
+	
+	// Extract video ID from different YouTube URL formats
+	let videoId = '';
+	
+	if (url.includes('youtube.com/embed/')) {
+		videoId = url.split('embed/')[1]?.split('?')[0] || '';
+	} else if (url.includes('youtube.com/watch?v=')) {
+		videoId = url.split('v=')[1]?.split('&')[0] || '';
+	} else if (url.includes('youtu.be/')) {
+		videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
+	}
+	
+	// Return high-quality thumbnail
+	return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "/ghanti.jpg";
+};
+
+// Helper function to detect YouTube URLs
+const isYouTubeUrl = (url: string) => {
+	if (!url) return false;
+	return url.includes('youtube.com/embed/') || 
+		   url.includes('youtube.com/watch?v=') || 
+		   url.includes('youtu.be/') ||
+		   url.includes('youtube.com');
+};
+
 const VideoGallery: React.FC = () => {
 	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 	const [playingId, setPlayingId] = useState<string | null>(null);
@@ -65,8 +93,11 @@ const VideoGallery: React.FC = () => {
 		const fetchVideos = async () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+				console.log("Fetching videos from:", `${baseUrl}/api/videos`);
 				const res = await fetch(`${baseUrl}/api/videos`, { cache: "no-store" });
+				console.log("Response status:", res.status);
 				const data = await res.json();
+				console.log("Response data:", data);
 				setVideos(data.videos || []);
 			} catch (error) {
 				console.error("Failed to fetch videos:", error);
@@ -236,6 +267,7 @@ const VideoGallery: React.FC = () => {
 				>
 					{videos.map((video, index) => {
 						const isPlaying = playingId === video._id;
+						const isYouTube = video.isYouTube || isYouTubeUrl(video.url);
 
 						return (
 							<div
@@ -262,23 +294,44 @@ const VideoGallery: React.FC = () => {
 								}}
 							>
 								{/* Conditional rendering for YouTube vs uploaded videos */}
-								{video.isYouTube ? (
-									<Image
-										src={video.thumbnail || "/ghanti.jpg"}
-										alt={getLocalizedTitle(video)}
-										fill
-										sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
-										style={{
-											objectFit: "cover",
-											transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.transform = "scale(1.05)";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.transform = "scale(1)";
-										}}
-									/>
+								{isYouTube ? (
+									<div style={{ position: 'relative', width: '100%', height: '100%' }}>
+										<Image
+											src={getYouTubeThumbnailUrl(video.url)}
+											alt={getLocalizedTitle(video)}
+											fill
+											sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+											style={{
+												objectFit: 'cover',
+												transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+											}}
+											onMouseEnter={(e) => {
+												e.currentTarget.style.transform = 'scale(1.05)';
+											}}
+											onMouseLeave={(e) => {
+												e.currentTarget.style.transform = 'scale(1)';
+											}}
+										/>
+										{/* YouTube play button overlay */}
+										<div style={{
+											position: 'absolute',
+											top: '50%',
+											left: '50%',
+											transform: 'translate(-50%, -50%)',
+											width: '70px',
+											height: '70px',
+											background: 'rgba(255, 0, 0, 0.8)',
+											borderRadius: '50%',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'center',
+											transition: 'all 0.3s ease',
+										}}>
+											<svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+												<path d="M8 5v14l11-7z"/>
+											</svg>
+										</div>
+									</div>
 								) : (
 									<video
 										ref={(el) => {
@@ -559,7 +612,7 @@ const VideoGallery: React.FC = () => {
 								marginBottom: "32px",
 							}}
 						>
-							{selectedVideo.isYouTube ? (
+							{selectedVideo.isYouTube || isYouTubeUrl(selectedVideo.url) ? (
 								<iframe
 									src={getYouTubeAutoplayUrl(selectedVideo.url)}
 									title={getLocalizedTitle(selectedVideo)}
@@ -651,7 +704,7 @@ const VideoGallery: React.FC = () => {
 								}}
 							>
 								{/* Hide mute button for YouTube videos */}
-								{!selectedVideo.isYouTube && (
+								{!(selectedVideo.isYouTube || isYouTubeUrl(selectedVideo.url)) && (
 									<button
 										onClick={() => setIsMuted(!isMuted)}
 										style={{

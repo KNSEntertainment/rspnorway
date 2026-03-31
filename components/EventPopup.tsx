@@ -23,17 +23,13 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [hasSeenPopup, setHasSeenPopup] = useState(false);
 	const [isTicketPopupOpen, setIsTicketPopupOpen] = useState(false);
-	// const locale = useLocale();
 
 	useEffect(() => {
 		// Check if user has seen the popup before
 		const hasSeen = localStorage.getItem('event-popup-seen');
 		if (!hasSeen && latestEvent) {
-			// Show popup after 2 seconds
-			const timer = setTimeout(() => {
-				setIsOpen(true);
-			}, 2000);
-			return () => clearTimeout(timer);
+			// Show popup immediately on every homepage load
+			setIsOpen(true);
 		}
 	}, [latestEvent]);
 
