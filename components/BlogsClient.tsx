@@ -76,7 +76,7 @@ const BlogTitle = ({ title, className }: { title: string; className?: string }) 
 	);
 };
 
-export default function BlogsClient({ blogs, translations: t, locale }: Props) {
+export default function BlogsClient({ blogs, locale }: Props) {
 	const router = useRouter();
 	const [navLoading, setNavLoading] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
