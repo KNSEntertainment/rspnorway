@@ -34,7 +34,6 @@ export default function EventsTimeline() {
 		const fetchEvents = async () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-				console.log("Fetching events from:", `${baseUrl}/api/events`);
 				
 				// Use no-cache and proper headers
 				const res = await fetch(`${baseUrl}/api/events`, { 

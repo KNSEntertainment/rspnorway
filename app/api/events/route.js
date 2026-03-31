@@ -15,12 +15,9 @@ export async function OPTIONS() {
 
 export async function GET() {
 	try {
-		console.log("Fetching events...");
 		await connectDB();
 		const query = {};
 		const events = await Event.find(query).sort({ eventdate: -1 });
-		console.log(`Found ${events.length} events`);
-		console.log("Events:", events.map(e => ({ id: e._id, name: e.eventname, date: e.eventdate })));
 		
 		// Add CORS headers
 		const headers = {
