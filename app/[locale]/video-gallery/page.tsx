@@ -63,6 +63,7 @@ const isYouTubeUrl = (url: string) => {
 const VideoGallery: React.FC = () => {
 	const [videos, setVideos] = useState<Video[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 	const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 	const [playingId, setPlayingId] = useState<string | null>(null);
 	const [embeddedVideoId, setEmbeddedVideoId] = useState<string | null>(null);
@@ -96,6 +97,7 @@ const VideoGallery: React.FC = () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
 				console.log("Fetching videos from:", `${baseUrl}/api/videos`);
+				console.log("Environment check - NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
 
 				const res = await fetch(`${baseUrl}/api/videos`, {
 					cache: "no-store",
@@ -108,7 +110,9 @@ const VideoGallery: React.FC = () => {
 				console.log("Response headers:", res.headers);
 
 				if (!res.ok) {
-					throw new Error(`HTTP error! status: ${res.status}`);
+					const errorText = await res.text();
+					console.error("API Error Response:", errorText);
+					throw new Error(`HTTP error! status: ${res.status}, message: ${errorText}`);
 				}
 
 				const data = await res.json();
@@ -116,6 +120,7 @@ const VideoGallery: React.FC = () => {
 				setVideos(data.videos || []);
 			} catch (error) {
 				console.error("Failed to fetch videos:", error);
+				setError(error instanceof Error ? error.message : "Unknown error occurred");
 				// Try fallback to relative URL
 				try {
 					const fallbackRes = await fetch("/api/videos", { cache: "no-store" });
@@ -233,6 +238,23 @@ const VideoGallery: React.FC = () => {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
 				<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex justify-center items-center min-h-screen">
+				<div className="text-center p-8">
+					<h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Videos</h2>
+					<p className="text-gray-600 mb-4">{error}</p>
+					<button 
+						onClick={() => window.location.reload()} 
+						className="bg-brand text-white px-6 py-2 rounded-lg hover:bg-brand/90"
+					>
+						Retry
+					</button>
+				</div>
 			</div>
 		);
 	}
