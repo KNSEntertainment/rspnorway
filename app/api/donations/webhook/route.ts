@@ -12,9 +12,13 @@ const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(request: Request) {
 	try {
+		console.log("Webhook received!");
 		const body = await request.text();
 		const headersList = await headers();
 		const signature = headersList.get("stripe-signature");
+
+		console.log("Webhook signature:", signature ? "present" : "missing");
+		console.log("Webhook body length:", body.length);
 
 		if (!signature) {
 			return NextResponse.json({ error: "No signature" }, { status: 400 });
@@ -32,19 +36,24 @@ export async function POST(request: Request) {
 		await connectDB();
 
 		// Handle the event
+		console.log("Processing event type:", event.type);
 		switch (event.type) {
 			case "checkout.session.completed":
 				const session = event.data.object as Stripe.Checkout.Session;
+				console.log("Checkout session completed:", session.id);
+				console.log("Payment intent:", session.payment_intent);
 
 				// Update donation status
-				await Donation.findOneAndUpdate(
+				const updatedDonation = await Donation.findOneAndUpdate(
 					{ stripeSessionId: session.id },
 					{
 						paymentStatus: "completed",
 						stripePaymentIntentId: session.payment_intent as string,
 					},
+					{ new: true } // Return the updated document
 				);
 
+				console.log("Donation updated:", updatedDonation?._id);
 				console.log("Payment completed for session:", session.id);
 				break;
 

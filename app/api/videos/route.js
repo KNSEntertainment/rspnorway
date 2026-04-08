@@ -19,8 +19,6 @@ export async function GET() {
 		console.log("Fetching videos...");
 		await connectDB();
 		const videos = await Video.find({ isActive: true }).sort({ createdAt: -1 });
-		console.log(`Found ${videos.length} videos`);
-		console.log("Videos:", videos.map(v => ({ id: v._id, title: v.title_en, url: v.url, isActive: v.isActive })));
 		
 		// Add CORS headers
 		const headers = {

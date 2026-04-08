@@ -18,15 +18,15 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "Minimum donation amount is 50 NOK" }, { status: 400 });
 		}
 
-		// Validate required fields
-		if (!donorName || !donorEmail) {
-			return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
+		// Validate required fields (only if not anonymous)
+		if (!isAnonymous && (!donorName || !donorEmail)) {
+			return NextResponse.json({ error: "Name and email are required for non-anonymous donations" }, { status: 400 });
 		}
 
 		// Create donation record
 		const donation = await Donation.create({
-			donorName,
-			donorEmail,
+			donorName: isAnonymous ? "Anonymous" : donorName,
+			donorEmail: isAnonymous ? "anonymous@rspnorway.org" : donorEmail,
 			donorPhone,
 			amount,
 			currency: "NOK",
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 			mode: "payment",
 			success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/en/donate/success?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/en/donate?canceled=true`,
-			customer_email: donorEmail,
+			customer_email: isAnonymous ? undefined : donorEmail,
 			metadata: {
 				donationId: donation._id.toString(),
 				donorName,
