@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 import {  useRouter } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import ViewAllButton from "@/components/ViewAllButton";
 
 interface Blog {
 	_id: string;
@@ -35,46 +35,46 @@ interface Props {
 }
 
 // BlogTitle component with clamp detection
-const BlogTitle = ({ title, className }: { title: string; className?: string }) => {
-	const [isClamped, setIsClamped] = useState(false);
-	const titleRef = useRef<HTMLDivElement>(null);
+// const BlogTitle = ({ title, className }: { title: string; className?: string }) => {
+// 	const [isClamped, setIsClamped] = useState(false);
+// 	const titleRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		const checkClamp = () => {
-			if (titleRef.current) {
-				// Check if text is clamped by comparing scrollHeight and clientHeight
-				const isClampedNow = titleRef.current.scrollHeight > titleRef.current.clientHeight;
-				if (isClamped !== isClampedNow) {
-					setIsClamped(isClampedNow);
-				}
-			}
-		};
+// 	useEffect(() => {
+// 		const checkClamp = () => {
+// 			if (titleRef.current) {
+// 				// Check if text is clamped by comparing scrollHeight and clientHeight
+// 				const isClampedNow = titleRef.current.scrollHeight > titleRef.current.clientHeight;
+// 				if (isClamped !== isClampedNow) {
+// 					setIsClamped(isClampedNow);
+// 				}
+// 			}
+// 		};
 
-		checkClamp();
-		// Re-check on window resize
-		window.addEventListener('resize', checkClamp);
-		return () => window.removeEventListener('resize', checkClamp);
-	}, [title, isClamped]);
+// 		checkClamp();
+// 		// Re-check on window resize
+// 		window.addEventListener('resize', checkClamp);
+// 		return () => window.removeEventListener('resize', checkClamp);
+// 	}, [title, isClamped]);
 
-	return (
-		<div className="relative group/title">
-			<div 
-				ref={titleRef}
-				className={`${className} ${isClamped ? 'cursor-help' : ''}`}
-			>
-				{title}
-			</div>
+// 	return (
+// 		<div className="relative group/title">
+// 			<div 
+// 				ref={titleRef}
+// 				className={`${className} ${isClamped ? 'cursor-help' : ''}`}
+// 			>
+// 				{title}
+// 			</div>
 			
-			{/* Custom Tooltip - Only show if clamped */}
-			{isClamped && (
-				<div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover/title:opacity-100 group-hover/title:visible transition-all duration-200 whitespace-nowrap z-10 pointer-events-none">
-					{title}
-					<div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-				</div>
-			)}
-		</div>
-	);
-};
+// 			{/* Custom Tooltip - Only show if clamped */}
+// 			{isClamped && (
+// 				<div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover/title:opacity-100 group-hover/title:visible transition-all duration-200 whitespace-nowrap z-10 pointer-events-none">
+// 					{title}
+// 					<div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+// 				</div>
+// 			)}
+// 		</div>
+// 	);
+// };
 
 export default function BlogsClient({ blogs, locale }: Props) {
 	const router = useRouter();
@@ -141,7 +141,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-emerald-500/5 to-transparent rounded-full blur-3xl"></div>
 			</div>
 
-			<div className="relative z-10 container mx-auto px-6 py-20">
+			<div className="relative z-10 container mx-auto px-6 pb-20">
 				{/* Section Header */}
 				<SectionHeader heading="Blogs" subtitle="Discover insights, stories, and updates from our community" />
 		
@@ -204,17 +204,20 @@ export default function BlogsClient({ blogs, locale }: Props) {
 							</div>
 						</div>
 					) : (
-						// Desktop: Show the original layout with featured blog and grid
+						// Desktop: Show only 2 blogs side by side
 						<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-							{/* Left Side - Latest Blog with Overlay */}
-							<div 
-								className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden cursor-pointer min-h-[500px]"
+							{/* First Blog - Latest */}
+							<motion.div
+								initial={{ opacity: 0, y: 30 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+								className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden cursor-pointer min-h-[450px]"
 								onClick={() => handleNavigation(featuredBlog._id)}
 							>
 								{/* Card Border Gradient */}
 								<div className="absolute inset-0 bg-gradient-to-r from-brand/20 via-transparent to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 								
-								<div className="relative h-full min-h-[500px]">
+								<div className="relative h-full min-h-[450px]">
 									<Image 
 										src={featuredBlog?.blogMainPicture || "/ghanti.png"} 
 										alt={getLocalizedTitle(featuredBlog)} 
@@ -235,7 +238,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 										</div>
 										
 										{/* Blog Title */}
-										<h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
+										<h2 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
 											{getLocalizedTitle(featuredBlog)}
 										</h2>
 										
@@ -254,59 +257,62 @@ export default function BlogsClient({ blogs, locale }: Props) {
 										</div>
 									</div>
 								</div>
-							</div>
+							</motion.div>
 
-							{/* Right Side - 2 Rows of More Blogs */}
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								{blogs.slice(1, 5).map((blog, index) => (
-									<motion.div
-										key={blog._id}
-										initial={{ opacity: 0, y: 30 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: "easeOut" }}
-										className="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden cursor-pointer min-h-[240px]"
-										onClick={() => handleNavigation(blog._id)}
-									>
-										{/* Card Border Gradient */}
-										<div className="absolute inset-0 bg-gradient-to-r from-brand/10 via-transparent to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+							{/* Second Blog - Next Latest */}
+							{blogs.length > 1 && (
+								<motion.div
+									initial={{ opacity: 0, y: 30 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+									className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-700 overflow-hidden cursor-pointer min-h-[450px]"
+									onClick={() => handleNavigation(blogs[1]._id)}
+								>
+									{/* Card Border Gradient */}
+									<div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-transparent to-brand/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+									
+									<div className="relative h-full min-h-[450px]">
+										<Image 
+											src={blogs[1]?.blogMainPicture || "/ghanti.png"} 
+											alt={getLocalizedTitle(blogs[1])} 
+											fill 
+											className="object-cover transition-transform duration-1000 group-hover:scale-110" 
+										/>
 										
-										<div className="relative h-48">
-											<Image 
-												src={blog?.blogMainPicture || "/ghanti.png"} 
-												alt={getLocalizedTitle(blog)} 
-												fill 
-												className="object-cover transition-transform duration-700 group-hover:scale-105" 
-											/>
+										{/* Image Overlay Gradient */}
+										<div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+										
+										{/* Content Overlay */}
+										<div className="absolute inset-0 p-8 flex flex-col justify-end">
+											{/* Category Badge */}
+											<div className="mb-4">
+												<div className="bg-emerald-500/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg inline-block">
+													<span className="text-xs font-semibold text-white uppercase tracking-wider">Featured</span>
+												</div>
+											</div>
 											
-											{/* Image Overlay Gradient */}
-											<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-										</div>
-										
-										{/* Content */}
-										<div className="p-4">
 											{/* Blog Title */}
-											<BlogTitle 
-												title={getLocalizedTitle(blog)} 
-												className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-brand transition-colors duration-300"
-											/>
+											<h2 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-emerald-400 transition-colors duration-500">
+												{getLocalizedTitle(blogs[1])}
+											</h2>
 											
 											{/* Blog Meta */}
-											<div className="flex items-center gap-3 text-gray-500 text-sm">
-												{blog?.blogAuthor && (
-													<div className="flex items-center gap-1">
-														<User className="w-3 h-3" />
-														<span className="truncate max-w-[80px]">{blog.blogAuthor}</span>
+											<div className="flex items-center gap-4 text-white/80">
+												{blogs[1]?.blogAuthor && (
+													<div className="flex items-center gap-2">
+														<User className="w-4 h-4" />
+														<span className="text-sm font-medium">{blogs[1].blogAuthor}</span>
 													</div>
 												)}
-												<div className="flex items-center gap-1">
-													<Calendar className="w-3 h-3" />
-													<span>{blog?.blogDate}</span>
+												<div className="flex items-center gap-2">
+													<Calendar className="w-4 h-4" />
+													<span className="text-sm">{blogs[1]?.blogDate}</span>
 												</div>
 											</div>
 										</div>
-									</motion.div>
-								))}
-							</div>
+									</div>
+								</motion.div>
+							)}
 						</div>
 					)}
 				</motion.div>
@@ -316,19 +322,9 @@ export default function BlogsClient({ blogs, locale }: Props) {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-					className="text-center mt-16"
+					className="flex justify-center pt-12"
 				>
-					<div className="inline-flex items-center gap-8 text-sm text-gray-500">
-						
-						{/* View All Link */}
-						<Link 
-							href={`/${locale}/blogs`}
-							className="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors duration-300"
-							onClick={(e: React.MouseEvent) => e.stopPropagation()}
-						>
-							View All Blogs →
-						</Link>
-					</div>
+					<ViewAllButton href={`/${locale}/blogs`} label="View All Blogs" />
 				</motion.div>
 			</div>
 		</section>

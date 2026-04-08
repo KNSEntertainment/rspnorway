@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs"; // Import Tabs components
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) => (
 	<div className="relative">
@@ -23,6 +23,7 @@ InputField.displayName = "Input_Fields_User_Auth_Form";
 function AuthFormContent() {
 	const router = useRouter();
 	const t = useTranslations("login");
+	const locale = useLocale();
 
 	const searchParams = useSearchParams();
 	const initialEmail = searchParams.get("email") || "";
@@ -81,7 +82,7 @@ function AuthFormContent() {
 			if (session?.user?.role === "admin") {
 				window.location.href = `/en/dashboard`;
 			} else {
-				window.location.href = `/en/profile`;
+				window.location.href = `/${locale}/profile`;
 			}
 		} else {
 			setError(result?.error || t("error"));

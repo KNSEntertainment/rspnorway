@@ -24,32 +24,53 @@ export default function About() {
 		
 
 				{/* Call to Actions */}
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.6 }}
-				>
+				<div className="-mt-16 sm:-mt-36 relative z-10 px-6">
 				
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div className=" grid grid-cols-1 md:grid-cols-4 gap-6">
 						{ctas.map((cta, index) => (
 							<Link key={index} href={`/${locale}${cta.href}`}>
 								<motion.div
-									initial={{ opacity: 0, scale: 0.9 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-									className={`${cta.color} rounded-xl p-6 text-white hover:shadow-2xl hover:brightness-110 transition-all duration-300 cursor-pointer group hover:scale-105`}
+									initial={{ opacity: 0.3, y: 20, scale: 0.95 }}
+									whileInView={{ opacity: 1, y: 0, scale: 1 }}
+									whileHover={{ 
+										scale: 1.05, 
+										y: -5,
+										transition: { duration: 0.3, ease: "easeOut" }
+									}}
+									whileTap={{ scale: 0.98 }}
+									viewport={{ once: true, amount: 0.1 }}
+									transition={{ 
+										duration: 0.4, 
+										delay: index * 0.1, 
+										ease: "easeOut"
+									}}
+									className={`${cta.color} rounded-xl p-6 text-white cursor-pointer group shadow-lg hover:shadow-2xl transition-all duration-300`}
 								>
 									<div className="flex items-start justify-between mb-4">
-										<cta.icon className="w-8 h-8" />
-										<ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+										<motion.div
+											whileHover={{ rotate: [0, -10, 10, 0] }}
+											transition={{ duration: 0.5, ease: "easeInOut" }}
+										>
+											<cta.icon className="w-8 h-8" />
+										</motion.div>
+										<motion.div
+											whileHover={{ x: 3 }}
+											transition={{ duration: 0.3, ease: "easeOut" }}
+										>
+											<ArrowRight className="w-5 h-5 transition-transform duration-300" />
+										</motion.div>
 									</div>
-									<h4 className="text-xl font-bold mb-2">{cta.title}</h4>
-									<p className="text-white text-sm leading-relaxed">{cta.description}</p>
+									<h4 className="text-xl font-bold mb-2">
+										{cta.title}
+									</h4>
+									<p className="text-white text-sm leading-relaxed">
+										{cta.description}
+									</p>
 								</motion.div>
 							</Link>
 						))}
 					</div>
-				</motion.div>
+				</div>
 			</div>
 		</section>
 	);

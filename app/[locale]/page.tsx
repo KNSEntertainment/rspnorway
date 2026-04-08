@@ -2,8 +2,8 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import { Metadata } from "next";
 import Blogs from "@/components/Blogs";
-import Gallery from "@/components/Gallery";
-import VideoGallery from "@/components/VideoGallery";
+import AboutPreview from "@/components/AboutPreview";
+import GalleryPreview from "@/components/GalleryPreview";
 import EventsTimeline from "@/components/EventsTimeline";
 import NewsletterSection from "@/components/NewsletterSection";
 
@@ -28,17 +28,17 @@ export default function LandingPage() {
 			{/* About Section with Statistics */}
 			<About />
 
+			{/* About Preview Section */}
+			<AboutPreview />
+
 			{/* Featured News/Updates Section */}
 			<Blogs />
 
 			{/* Events Timeline Section */}
 			<EventsTimeline />
 
-			{/* Gallery Section */}
-			<Gallery />
-
-			{/* Video Gallery Section */}
-			<VideoGallery />
+			{/* Gallery Preview Section */}
+			<GalleryPreview />
 
 			{/* Newsletter Subscription Section */}
 			<NewsletterSection />

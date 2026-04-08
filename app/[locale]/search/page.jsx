@@ -10,7 +10,7 @@ async function SearchContent({ query, locale }) {
 	const { getEvents } = await import("@/lib/data/events");
 	const { getGallery } = await import("@/lib/data/gallery");
 	const { getNotices } = await import("@/lib/data/notices");
-	const { getMembers } = await import("@/lib/data/members");
+	const { getExecutiveMembers } = await import("@/lib/data/executive-members");
 	const { getBlogs } = await import("@/lib/data/blogs");
 	const { getCirculars } = await import("@/lib/data/circulars");
 	const { getDownloads } = await import("@/lib/data/downloads");
@@ -21,7 +21,7 @@ async function SearchContent({ query, locale }) {
 	await connectDB();
 	const videosArray = await Video.find({ isActive: true }).lean();
 
-	const [eventsArray, galleryArray, noticesArray, membersArray, blogsArray, circularsArray, downloadsArray] = await Promise.all([getEvents(), getGallery(), getNotices(), getMembers(), getBlogs(), getCirculars(), getDownloads()]);
+	const [eventsArray, galleryArray, noticesArray, membersArray, blogsArray, circularsArray, downloadsArray] = await Promise.all([getEvents(), getGallery(), getNotices(), getExecutiveMembers(), getBlogs(), getCirculars(), getDownloads()]);
 	const lowerQuery = query.toLowerCase().trim();
 
 	const filteredEvents = eventsArray.filter((event) => {
@@ -44,10 +44,11 @@ async function SearchContent({ query, locale }) {
 		return titleMatch || contentMatch;
 	});
 	const filteredMembers = membersArray.filter((member) => {
-		const nameMatch = member.fullName?.toLowerCase().trim().includes(lowerQuery);
-		const cityMatch = member.city?.toLowerCase().trim().includes(lowerQuery);
-		const professionMatch = member.profession?.toLowerCase().trim().includes(lowerQuery);
-		return nameMatch || cityMatch || professionMatch;
+		const nameMatch = member.name?.toLowerCase().trim().includes(lowerQuery);
+		const positionMatch = member.position?.toLowerCase().trim().includes(lowerQuery);
+		const departmentMatch = member.department?.toLowerCase().trim().includes(lowerQuery);
+		const emailMatch = member.email?.toLowerCase().trim().includes(lowerQuery);
+		return nameMatch || positionMatch || departmentMatch || emailMatch;
 	});
 	const filteredBlogs = blogsArray.filter((blog) => {
 		const titleMatch = blog.blogTitle?.toLowerCase().trim().includes(lowerQuery);
@@ -125,12 +126,12 @@ async function SearchContent({ query, locale }) {
 		...filteredMembers.map((item) => ({
 			type: "Member",
 			_id: String(item._id),
-			title: item.fullName,
-			description: item.profession || item.membershipType,
-			image: item.profilePhoto,
-			url: `/en/membership/${item._id}`,
+			title: item.name,
+			description: item.position || item.department,
+			image: item.imageUrl,
+			url: `/en/members`,
 			date: item.createdAt ? String(item.createdAt) : null,
-			meta: `${item.city}, ${item.province || ""}`.trim(),
+			meta: `${item.department || ""}${item.department && item.subdepartment ? ", " : ""}${item.subdepartment || ""}`.trim(),
 		})),
 		...filteredBlogs.map((item) => ({
 			type: "Blog",

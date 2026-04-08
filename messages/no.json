@@ -96,13 +96,32 @@
 		"instagram": "/rsp_norway",
 		"terms": "Vilkår og betingelser",
 		"privacy": "Personvernregler",
-		"copyright": "© {year} PNSBN Norge.",
+		"copyright": "© 2024 PNSBN Norge.",
 		"developed_by": "Utviklet av",
 		"developer": "Hari Prasad Sanjel",
 		"address": "Oslo, Norge",
 		"phone": "96800984, 45921449, 47734203",
 		"phone_small_device": "96800984",
-		"follow_us": "Følg oss"
+		"follow_us": "Følg oss",
+		"quick_links": {
+			"title": "Hurtiglenker",
+			"description": "Utforsk viktige deler av vår organisasjon",
+			"about_us": {
+				"title": "Om oss",
+				"description": "Lær om vår misjon, visjon og historien bak PNSB-Norway",
+				"cta": "Oppdag mer"
+			},
+			"members": {
+				"title": "Medlemmer",
+				"description": "Møt vårt dedikerte teammedlemmer og styret",
+				"cta": "Se teamet"
+			},
+			"downloads": {
+				"title": "Nedlastinger",
+				"description": "Få tilgang til viktige dokumenter, skjemaer og ressurser",
+				"cta": "Få ressurser"
+			}
+		}
 	},
 
 	"slider": {
@@ -184,7 +203,7 @@
 		"no_circulars_desc": "Kom tilbake senere for sirkulærer og offisielle dokumenter."
 	},
 	"gallery": {
-		"title": "Foto Galleri",
+		"title": "Galleri",
 		"description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
 		"video_title": "Video Galleri",
 		"video_description": "Utforsk vårt galleri fylt med minner fra våre arrangementer og aktiviteter.",
@@ -441,5 +460,15 @@
 		"adjust_filters": "Prøv å justere søket eller filterkriteriene dine",
 		"mobile": "Mobil",
 		"email": "E-post"
+	},
+	"newsletter": {
+		"title": "Hold Kontakt",
+		"description": "Abonner på vårt nyhetsbrev og vær den første til å vite om kommende arrangementer, nyheter og samfunnsoppdateringer.",
+		"email_placeholder": "Skriv inn din e-postadresse",
+		"subscribe_button": "Abonner",
+		"subscribing": "Abonnerer...",
+		"subscribed": "Abonnert!",
+		"success_message": "Takk for at du abonnerer! Sjekk e-posten din for bekreftelse.",
+		"footer_text": "Bli med 500+ samfunnsmedlemmer. Avmeld når som helst."
 	}
 }

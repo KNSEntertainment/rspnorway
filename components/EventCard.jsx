@@ -43,9 +43,9 @@ const EventCard = ({ date, title, time, venue }) => {
 	);
 };
 
-const KindergartenEventsGrid = ({ events }) => {
+const EventsGrid = ({ events }) => {
 	return (
-		<div className="py-12 px-2 mx-auto max-w-7xl">
+		<div className="py-12 px-2 mx-auto max-w-5xl">
 			<div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
 				{events.map((event, index) => (
 					<EventCard key={index} date={event.eventdate} title={event.eventname} time={event.eventtime} venue={event.eventvenue} />
@@ -55,4 +55,4 @@ const KindergartenEventsGrid = ({ events }) => {
 	);
 };
 
-export default KindergartenEventsGrid;
+export default EventsGrid;

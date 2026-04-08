@@ -228,7 +228,7 @@ const UnifiedGallery = () => {
 
 	if (loading) {
 		return (
-			<div className="flex justify-center items-center min-h-screen bg-gray-50">
+			<div className="flex justify-center items-center min-h-[400px] bg-gray-50">
 				<div className="text-center">
 					<div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand border-r-transparent mb-4"></div>
 					<p className="text-gray-600 text-lg">{t("loading")}</p>
@@ -238,14 +238,13 @@ const UnifiedGallery = () => {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 pt-12">
-			{/* Header Section */}
+		<section className="pb-16 bg-gray-50">
 			<div className="bg-white border-b border-gray-200">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
 					<SectionHeader heading={t("title")} subtitle={t("description")} />
 
 					{/* View Controls */}
-					<div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+					<div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
 						{selectedAlbum && (
 							<button onClick={handleBackToAlbums} className="flex items-center gap-2 px-4 py-2 text-brand hover:text-blue-700 font-medium transition-colors">
 								<ChevronLeft className="w-5 h-5" />
@@ -273,15 +272,14 @@ const UnifiedGallery = () => {
 								</button>
 							</div>
 						)}
-
-											</div>
+					</div>
 				</div>
 			</div>
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 				{/* Albums View */}
 				{viewMode === "albums" && !selectedAlbum && (
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 						{albums.map((album) => (
 							<div key={album.name} onClick={() => handleAlbumClick(album.name)} className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer">
 								{/* Album Cover */}
@@ -333,7 +331,7 @@ const UnifiedGallery = () => {
 							</p>
 						</div>
 
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
 							{displayPhotos.map((photo, index) => (
 								<div
 									key={photo.id}
@@ -377,7 +375,7 @@ const UnifiedGallery = () => {
 							<p className="text-gray-600">Watch {displayVideos.length} amazing videos</p>
 						</div>
 
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
 							{displayVideos.map((video) => (
 								<div
 									key={video._id}
@@ -431,7 +429,7 @@ const UnifiedGallery = () => {
 						{displayVideos.length > 0 && (
 							<div className="mb-12">
 								<h3 className="text-2xl font-bold text-gray-900 mb-6">Videos</h3>
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
 									{displayVideos.map((video) => (
 										<div
 											key={video._id}
@@ -475,7 +473,7 @@ const UnifiedGallery = () => {
 						{displayPhotos.length > 0 && (
 							<div>
 								<h3 className="text-2xl font-bold text-gray-900 mb-6">Photos</h3>
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
 									{displayPhotos.map((photo, index) => (
 										<div
 											key={photo.id}
@@ -737,7 +735,7 @@ const UnifiedGallery = () => {
 					animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 				}
 			`}</style>
-		</div>
+		</section>
 	);
 };
 

@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import KindergartenEventsGrid from "@/components/EventCard";
+import EventsGrid from "@/components/EventCard";
 
 export default function UpcomingEvents({ events }) {
 	return (
@@ -13,7 +13,7 @@ export default function UpcomingEvents({ events }) {
 					</p>
 
 					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex overflow-x-scroll mx-auto">
-						<KindergartenEventsGrid events={events} />
+						<EventsGrid events={events} />
 					</motion.div>
 				</div>
 			</section>

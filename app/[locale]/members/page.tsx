@@ -72,12 +72,7 @@ export default function Members() {
 						const depts = departmentsData.departments;
 						setDepartments(depts);
 
-						// Auto-select first department on initial load
-						if (depts.length > 0) {
-							const firstDept = depts[0].name;
-							setActiveDepartment(firstDept);
-							setFilters((prev) => ({ ...prev, department: firstDept }));
-						}
+						// Don't auto-select department - show all members by default
 					}
 				}
 			} catch (error) {
