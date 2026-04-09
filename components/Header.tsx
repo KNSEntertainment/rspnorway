@@ -305,38 +305,38 @@ export default function Header() {
 						))}
 					</nav>
 
-					<div className="flex items-center gap-3 justify-end">
+					<div className="flex items-center gap-2 justify-end">
 						{/* Search */}
-						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="flex items-center justify-center px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm">
-							<Search size={16} className="md:w-5 md:h-5" />
+						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="flex items-center justify-center px-3 md:px-6 py-2 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm">
+							<Search size={20} className="md:w-5 md:h-5" />
 						</button>
 
 						{/* Donate Button */}
-						<Link href="/donate" className="flex items-center gap-2 px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
-							<CoinsIcon className="w-4 h-4 md:w-5 md:h-5" /> {t("donate")}
+						<Link href="/donate" className="flex items-center gap-2 px-2.5 md:px-6 py-1.5 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
+							<CoinsIcon className="hidden sm:inlinew-5 h-5 md:w-5 md:h-5" /> {t("donate")}
 						</Link>
 
 						{isLoading ? (
 							/* Loading placeholder with same dimensions as user profile button */
-							<div className="h-8 md:h-11 w-8 md:w-11 rounded-xl bg-gradient-to-br from-brand/50 to-emerald-500/50 shadow-lg animate-pulse"></div>
+							<div className="h-11 w-11 rounded-xl bg-gradient-to-br from-brand/50 to-emerald-500/50 shadow-lg animate-pulse"></div>
 						) : user ? (
 							<LoggedInUser user={user} />
 						) : (
-							<Link href="/login" className="px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
+							<Link href="/login" className="px-2.5 md:px-6 py-1.5 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
 								{t("login")}
 							</Link>
 						)}
 
 						{/* Hamburger Menu */}
-						<button className="sm:hidden flex items-center justify-center px-3 md:px-6 py-1 md:py-2.5 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
+						<button className="sm:hidden flex items-center justify-center px-4 md:px-6 py-2 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
 							<AnimatePresence mode="wait">
 								{isMenuOpen ? (
 									<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-										<X size={16} className="md:w-5 md:h-5" />
+										<X size={16} className="w-5 h-5" />
 									</motion.div>
 								) : (
 									<motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-										<Menu size={16} className="md:w-5 md:h-5" />
+										<Menu size={16} className="w-5 h-5" />
 									</motion.div>
 								)}
 							</AnimatePresence>

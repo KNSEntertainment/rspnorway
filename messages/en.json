@@ -237,6 +237,7 @@
 	},
 	"about-us": {
 		"title": "About Us",
+		"subtitle": "Learn more about our organization and mission",
 		"about_description_1": "Prawas Nepali Samparka Bibhag, Norway is a non-profit organization established in 2025 to bring together Nepalese people living in Norway. We are a community built on the values of brotherhood, mutual support, and cultural pride.",
 		"about_description_2": "Living far from home can be challenging, but together we create a home away from home. Our organization serves as a bridge - connecting our members to their Nepalese roots while helping them integrate and thrive in Norwegian society. We celebrate our rich cultural heritage through festivals, programs, and traditions, while also embracing the opportunities and values that Norway offers.",
 		"about_description_3": "We believe in the power of community. Whether it's celebrating Dashain together, supporting a family in need, or sharing knowledge between our two cultures, we stand united. Our members come from different backgrounds and regions of Nepal, but we are bound by a common goal: to preserve our identity, support one another, and contribute positively to both Nepalese and Norwegian societies.",
@@ -461,7 +462,13 @@
 		"no_results": "No members found",
 		"adjust_filters": "Try adjusting your search or filter criteria",
 		"mobile": "Mobile",
-		"email": "Email"
+		"email": "Email",
+		"executive_members": "Executive Members",
+		"executive_member": "Executive Member",
+		"active_members": "Active Members",
+		"active_member": "Active Member",
+		"general_members": "General Members",
+		"general_member": "General Member"
 	},
 	"newsletter": {
 		"title": "Stay Connected",

@@ -238,6 +238,7 @@
 	},
 	"about-us": {
 		"title": "Om Oss",
+		"subtitle": "Lær mer om vår organisasjon og misjon",
 		"about_description_1": "Prawas Nepali Samparka Bibhag, Norge er en ideell organisasjon etablert i 2025 for å bringe sammen nepalske mennesker som bor i Norge. Vi er et fellesskap bygget på verdiene brorskap, gjensidig støtte og kulturell stolthet.",
 		"about_description_2": "Å bo langt hjemmefra kan være utfordrende, men sammen skaper vi et hjem borte fra hjemmet. Organisasjonen vår fungerer som en bro – vi knytter medlemmene våre til sine nepalske røtter, samtidig som vi hjelper dem med å integreres og trives i det norske samfunnet. Vi feirer vår rike kulturarv gjennom festivaler, programmer og tradisjoner, samtidig som vi omfavner mulighetene og verdiene som Norge tilbyr.",
 		"about_description_3": "Vi tror på kraften i fellesskap. Enten det er å feire Dashain sammen, støtte en familie i nød eller dele kunnskap mellom våre to kulturer, står vi samlet. Medlemmene våre kommer fra ulik bakgrunn og regioner i Nepal, men vi er bundet av et felles mål: å bevare vår identitet, støtte hverandre og bidra positivt til både det nepalske og det norske samfunnet.",
@@ -461,7 +462,13 @@
 		"no_results": "Ingen medlemmer funnet",
 		"adjust_filters": "Prøv å justere søket eller filterkriteriene dine",
 		"mobile": "Mobil",
-		"email": "E-post"
+		"email": "E-post",
+		"executive_members": "Styremedlemmer",
+		"executive_member": "Styremedlem",
+		"active_members": "Aktive Medlemmer",
+		"active_member": "Aktivt Medlem",
+		"general_members": "Generelle Medlemmer",
+		"general_member": "Generelt Medlem"
 	},
 	"newsletter": {
 		"title": "Hold Kontakt",

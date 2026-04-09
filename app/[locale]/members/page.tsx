@@ -6,7 +6,7 @@ import { Phone, Mail, Search, X, Filter, ChevronRight } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 
-interface Member {
+interface ExecutiveMember {
 	_id: string;
 	name: string;
 	email: string;
@@ -16,6 +16,20 @@ interface Member {
 	department?: string;
 	subdepartment?: string;
 	tags?: string[];
+}
+
+interface RegularMember {
+	_id: string;
+	fullName: string;
+	email: string;
+	phone?: string;
+	profilePhoto?: string;
+	membershipType: string;
+	membershipStatus: string;
+	city?: string;
+	province?: string;
+	profession?: string;
+	createdAt: string;
 }
 
 interface Department {
@@ -34,9 +48,12 @@ interface Filters {
 
 export default function Members() {
 	const t = useTranslations("members");
-	const [members, setMembers] = useState<Member[]>([]);
+	const [executiveMembers, setExecutiveMembers] = useState<ExecutiveMember[]>([]);
+	const [regularMembers, setRegularMembers] = useState<RegularMember[]>([]);
 	const [departments, setDepartments] = useState<Department[]>([]);
-	const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
+	const [filteredExecutiveMembers, setFilteredExecutiveMembers] = useState<ExecutiveMember[]>([]);
+	const [filteredActiveMembers, setFilteredActiveMembers] = useState<RegularMember[]>([]);
+	const [filteredGeneralMembers, setFilteredGeneralMembers] = useState<RegularMember[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [filters, setFilters] = useState<Filters>({
 		department: null,
@@ -53,17 +70,28 @@ export default function Members() {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 				const timestamp = new Date().getTime();
 
-				const membersResponse = await fetch(`${baseUrl}/api/executive-members?t=${timestamp}`, {
-					cache: "no-store",
-				});
+				const [executiveMembersResponse, regularMembersResponse, departmentsResponse] = await Promise.all([
+					fetch(`${baseUrl}/api/executive-members?t=${timestamp}`, {
+						cache: "no-store",
+					}),
+					fetch(`${baseUrl}/api/membership?t=${timestamp}`, {
+						cache: "no-store",
+					}),
+					fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
+						cache: "no-store",
+					}),
+				]);
 
-				const departmentsResponse = await fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
-					cache: "no-store",
-				});
+				if (executiveMembersResponse.ok) {
+					const executiveMembersData = await executiveMembersResponse.json();
+					setExecutiveMembers(executiveMembersData);
+				}
 
-				if (membersResponse.ok) {
-					const membersData = await membersResponse.json();
-					setMembers(membersData);
+				if (regularMembersResponse.ok) {
+					const regularMembersData = await regularMembersResponse.json();
+					// The API returns a direct array, not wrapped in a success object
+					const members = regularMembersData.filter((member: RegularMember) => member.membershipStatus === "approved");
+					setRegularMembers(members);
 				}
 
 				if (departmentsResponse.ok) {
@@ -71,14 +99,15 @@ export default function Members() {
 					if (departmentsData.success) {
 						const depts = departmentsData.departments;
 						setDepartments(depts);
-
-						// Don't auto-select department - show all members by default
 					}
 				}
 			} catch (error) {
 				console.error("Error fetching data:", error);
-				setMembers([]);
-				setFilteredMembers([]);
+				setExecutiveMembers([]);
+				setRegularMembers([]);
+				setFilteredExecutiveMembers([]);
+				setFilteredActiveMembers([]);
+				setFilteredGeneralMembers([]);
 				setDepartments([]);
 			} finally {
 				setLoading(false);
@@ -88,24 +117,81 @@ export default function Members() {
 		fetchData();
 	}, []);
 
+	// Initialize filtered members when data changes
+	useEffect(() => {
+		console.log("Regular members:", regularMembers);
+		console.log("Executive members:", executiveMembers);
+		
+		// Set initial filtered members without applying filters
+		const activeMembers = regularMembers.filter(member => member.membershipType === "active");
+		const generalMembers = regularMembers.filter(member => member.membershipType === "general");
+		
+		setFilteredExecutiveMembers(executiveMembers);
+		setFilteredActiveMembers(activeMembers);
+		setFilteredGeneralMembers(generalMembers);
+	}, [regularMembers, executiveMembers]);
+
+	// Apply filters to all member types
 	const applyFilters = useCallback(() => {
-		let filtered = [...members];
-
+		// Filter executive members
+		let executiveFiltered = [...executiveMembers];
 		if (filters.department) {
-			filtered = filtered.filter((m) => m.department === filters.department);
+			executiveFiltered = executiveFiltered.filter((m) => m.department === filters.department);
 		}
-
 		if (filters.subdepartment) {
-			filtered = filtered.filter((m) => m.subdepartment === filters.subdepartment);
+			executiveFiltered = executiveFiltered.filter((m) => m.subdepartment === filters.subdepartment);
 		}
-
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
-			filtered = filtered.filter((m) => m.name.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.phone.includes(searchLower) || (m.position && m.position.toLowerCase().includes(searchLower)));
+			executiveFiltered = executiveFiltered.filter((m) => m.name.toLowerCase().includes(searchLower) || m.position?.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower));
 		}
 
-		setFilteredMembers(filtered);
-	}, [filters, members]);
+		// Filter regular members (active and general)
+		let activeFiltered = regularMembers.filter(member => member.membershipType === "active");
+		let generalFiltered = regularMembers.filter(member => member.membershipType === "general");
+
+		// Apply department filtering to regular members based on location mapping
+		if (filters.department) {
+			// Map department to province/district for regular members
+			const departmentProvinceMap: { [key: string]: string } = {
+				"Information and Technology Department": "province-3",
+				// Add more mappings as needed
+			};
+			
+			const targetProvince = departmentProvinceMap[filters.department];
+			if (targetProvince) {
+				activeFiltered = activeFiltered.filter((m) => m.province === targetProvince);
+				generalFiltered = generalFiltered.filter((m) => m.province === targetProvince);
+			}
+		}
+
+		// Apply subdepartment filtering to regular members based on city mapping
+		if (filters.subdepartment) {
+			// Map subdepartment to city for regular members
+			const subdepartmentCityMap: { [key: string]: string } = {
+				"IT": "Oslo",
+				"IT Online News": "Oslo",
+				// Add more mappings as needed
+			};
+			
+			const targetCity = subdepartmentCityMap[filters.subdepartment];
+			if (targetCity) {
+				activeFiltered = activeFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
+				generalFiltered = generalFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
+			}
+		}
+
+		// Apply search filtering to regular members
+		if (filters.search) {
+			const searchLower = filters.search.toLowerCase();
+			activeFiltered = activeFiltered.filter((m) => m.fullName.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.profession?.toLowerCase().includes(searchLower));
+			generalFiltered = generalFiltered.filter((m) => m.fullName.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.profession?.toLowerCase().includes(searchLower));
+		}
+
+		setFilteredExecutiveMembers(executiveFiltered);
+		setFilteredActiveMembers(activeFiltered);
+		setFilteredGeneralMembers(generalFiltered);
+	}, [executiveMembers, regularMembers, filters]);
 
 	useEffect(() => {
 		applyFilters();
@@ -213,9 +299,11 @@ export default function Members() {
 
 							{/* Members Count */}
 						</div>
-						{filteredMembers.length > 0 && 	<div className="text-sm text-gray-700 sm:ml-auto m-1">
-								{t("showing")} <span className="text-brand font-bold">{filteredMembers.length}</span> {filteredMembers.length === 1 ? t("member") : t("members")}
-							</div>}
+						<div className="text-sm text-gray-700 sm:ml-auto m-2">
+							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")}, 
+							<span className="text-brand font-bold ml-2">{filteredActiveMembers.length}</span> {filteredActiveMembers.length === 1 ? t("active_member") : t("active_members")}, 
+							<span className="text-brand font-bold ml-2">{filteredGeneralMembers.length}</span> {filteredGeneralMembers.length === 1 ? t("general_member") : t("general_members")}
+						</div>
 					</div>
 				</div>	
 
@@ -309,12 +397,126 @@ export default function Members() {
 					</div>
 				)}
 
-				{/* Members Grid */}
-				{filteredMembers.length === 0 ? (
+				{/* Members Sections */}
+				
+				{/* Executive Members Section */}
+				{filteredExecutiveMembers.length > 0 && (
+					<div className="mb-8 md:mb-20 p-6 bg-brand/5">
+						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("executive_members")}</h2>
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+							{filteredExecutiveMembers.map((member: ExecutiveMember) => (
+								<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+									<div className="aspect-square overflow-hidden bg-light">
+										{member.imageUrl && !member.imageUrl.startsWith("data:") ? (
+											<Image src={member.imageUrl} alt={member.name} width={200} height={200} className="w-full h-full object-cover" />
+										) : (
+											<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand to-blue-600">
+												<span className="text-white text-6xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
+											</div>
+										)}
+									</div>
+									<div className="p-6">
+										<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+										{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
+										<div className="space-y-2 mb-4">
+											<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+												<Phone className="w-4 h-4" />
+												{member.phone}
+											</a>
+											<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+												<Mail className="w-4 h-4" />
+												{member.email}
+											</a>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* Active Members Section */}
+				{filteredActiveMembers.length > 0 && (
+					<div className="mb-8 md:mb-20 bg-gray-50 p-6">
+						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("active_members")}</h2>
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+							{filteredActiveMembers.map((member: RegularMember) => (
+								<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+									<div className="aspect-square overflow-hidden bg-light">
+										{member.profilePhoto && !member.profilePhoto.startsWith("data:") ? (
+											<Image src={member.profilePhoto} alt={member.fullName} width={200} height={200} className="w-full h-full object-cover" />
+										) : (
+											<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-600">
+												<span className="text-white text-6xl font-bold">{member.fullName.charAt(0).toUpperCase()}</span>
+											</div>
+										)}
+									</div>
+									<div className="p-6">
+										<h3 className="text-xl font-bold text-gray-900 mb-1">{member.fullName}</h3>
+										<p className="text-sm text-green-600 font-medium mb-3">{t("active_member")}</p>
+										<div className="space-y-2 mb-4">
+											{member.phone && (
+												<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+													<Phone className="w-4 h-4" />
+													{member.phone}
+												</a>
+											)}
+											<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+												<Mail className="w-4 h-4" />
+												{member.email}
+											</a>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* General Members Section */}
+				{filteredGeneralMembers.length > 0 && (
+					<div className="mb-8">
+						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("general_members")}</h2>
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+							{filteredGeneralMembers.map((member: RegularMember) => (
+								<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+									<div className="aspect-square overflow-hidden bg-light">
+										{member.profilePhoto && !member.profilePhoto.startsWith("data:") ? (
+											<Image src={member.profilePhoto} alt={member.fullName} width={200} height={200} className="w-full h-full object-cover" />
+										) : (
+											<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-500 to-gray-600">
+												<span className="text-white text-6xl font-bold">{member.fullName.charAt(0).toUpperCase()}</span>
+											</div>
+										)}
+									</div>
+									<div className="p-6">
+										<h3 className="text-xl font-bold text-gray-900 mb-1">{member.fullName}</h3>
+										<p className="text-sm text-gray-600 font-medium mb-3">{t("general_member")}</p>
+										<div className="space-y-2 mb-4">
+											{member.phone && (
+												<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+													<Phone className="w-4 h-4" />
+													{member.phone}
+												</a>
+											)}
+											<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+												<Mail className="w-4 h-4" />
+												{member.email}
+											</a>
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* No Members Found */}
+				{filteredExecutiveMembers.length === 0 && filteredActiveMembers.length === 0 && filteredGeneralMembers.length === 0 && (
 					<div className="bg-white rounded-lg shadow-sm p-12 text-center">
 						<div className="max-w-md mx-auto">
 							<svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656-.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
 							</svg>
 							<h3 className="text-xl font-semibold text-gray-900 mb-2">{t("no_results")}</h3>
 							<p className="text-gray-600 mb-6">{t("adjust_filters")}</p>
@@ -324,41 +526,6 @@ export default function Members() {
 								</button>
 							)}
 						</div>
-					</div>
-				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-						{filteredMembers.map((member) => (
-						
-							<div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-						<div className="aspect-square overflow-hidden bg-light">
-							{member.imageUrl && !member.imageUrl.startsWith("data:") ? (
-								<Image src={member.imageUrl} alt={member.name} width={200} height={200} className="w-full h-full object-cover" />
-							) : (
-								<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand to-blue-600">
-									<span className="text-white text-6xl font-bold">{member.name.charAt(0).toUpperCase()}</span>
-								</div>
-							)}
-						</div>
-
-						<div className="p-6">
-							<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-							{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
-
-							<div className="space-y-2 mb-4">
-								<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
-									<Phone className="w-4 h-4" />
-									{member.phone}
-								</a>
-								<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
-									<Mail className="w-4 h-4" />
-									{member.email}
-								</a>
-							</div>
-
-					
-						</div>
-					</div>
-						))}
 					</div>
 				)}
 			</div>

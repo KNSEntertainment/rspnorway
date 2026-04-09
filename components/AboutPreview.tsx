@@ -17,7 +17,7 @@ export default function AboutPreview() {
 		<section className="py-16 bg-white">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
-				<SectionHeader heading={t("title")} subtitle="Learn more about our organization and mission" />
+				<SectionHeader heading={t("title")} subtitle={t("subtitle")} />
 
 				{/* Main Content Grid */}
 				<div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">

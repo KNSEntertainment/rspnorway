@@ -20,9 +20,10 @@ interface MemberIDCardProps {
 		createdAt: string;
 	};
 	logo?: string;
+	locale?: string;
 }
 
-export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
+export default function MemberIDCard({ memberData, logo, locale = "en" }: MemberIDCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 
 	// Generate membership number from last 6 digits of _id
@@ -37,12 +38,13 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 		window.print();
 	};
 
-	// QR code contains the member profile URL
+	// QR code contains the member profile URL with locale prefix
 	const baseUrl = process.env.NEXTAUTH_URL || "https://www.rspnorway.org";
-	const qrData = `${baseUrl}/members/${memberData._id}`;
+	const qrData = `${baseUrl}/${locale}/members/${memberData._id}`;
 	
 	console.log("MemberIDCard - QR Code URL:", qrData);
 	console.log("MemberIDCard - Base URL:", baseUrl);
+	console.log("MemberIDCard - Locale:", locale);
 
 	// Format membership date
 	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {

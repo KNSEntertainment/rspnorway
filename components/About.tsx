@@ -29,21 +29,7 @@ export default function About() {
 					<div className=" grid grid-cols-1 md:grid-cols-4 gap-6">
 						{ctas.map((cta, index) => (
 							<Link key={index} href={`/${locale}${cta.href}`}>
-								<motion.div
-									initial={{ opacity: 0.3, y: 20, scale: 0.95 }}
-									whileInView={{ opacity: 1, y: 0, scale: 1 }}
-									whileHover={{ 
-										scale: 1.05, 
-										y: -5,
-										transition: { duration: 0.3, ease: "easeOut" }
-									}}
-									whileTap={{ scale: 0.98 }}
-									viewport={{ once: true, amount: 0.1 }}
-									transition={{ 
-										duration: 0.4, 
-										delay: index * 0.1, 
-										ease: "easeOut"
-									}}
+								<div
 									className={`${cta.color} rounded-xl p-6 text-white cursor-pointer group shadow-lg hover:shadow-2xl transition-all duration-300`}
 								>
 									<div className="flex items-start justify-between mb-4">
@@ -66,7 +52,7 @@ export default function About() {
 									<p className="text-white text-sm leading-relaxed">
 										{cta.description}
 									</p>
-								</motion.div>
+								</div>
 							</Link>
 						))}
 					</div>

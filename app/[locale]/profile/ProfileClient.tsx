@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { User, Mail, Phone, Calendar, Shield, LogOut, CheckCircle, Clock, XCircle, Users, Camera, Upload, AlertCircle, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,12 +42,14 @@ interface Props {
 }
 
 export default function ProfileClient({ translations: t }: Props) {
-	const { data: session, status, update } = useSession();
+	const { data: session, status } = useSession();
 	const router = useRouter();
+	const params = useParams();
+	const locale = params.locale as string;
 	const [membershipData, setMembershipData] = useState<Membership | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
-	const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+	const [profilePhoto, setProfilePhoto] = useState<string>("");
 	const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 	const [selectedFileSize, setSelectedFileSize] = useState<number | null>(null);
 	const [showSizeAlert, setShowSizeAlert] = useState(false);
@@ -170,9 +172,7 @@ export default function ProfileClient({ translations: t }: Props) {
 				}
 			}
 
-			// Update session
-			await update();
-
+			// Session will be updated automatically on next request
 			toast({
 				title: "Success",
 				description: "Profile photo updated successfully",
@@ -462,6 +462,7 @@ export default function ProfileClient({ translations: t }: Props) {
 										createdAt: membershipData.createdAt,
 									}}
 									logo={logo}
+									locale={locale}
 								/>
 							</CardContent>
 						)}

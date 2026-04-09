@@ -28,8 +28,15 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 		// Check if user has seen the popup before
 		const hasSeen = localStorage.getItem('event-popup-seen');
 		if (!hasSeen && latestEvent) {
-			// Show popup immediately on every homepage load
-			setIsOpen(true);
+			// Check if event date is not in the past
+			const eventDate = new Date(latestEvent.eventdate);
+			const today = new Date();
+			today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+			
+			if (eventDate >= today) {
+				// Show popup only if event is today or in the future
+				setIsOpen(true);
+			}
 		}
 	}, [latestEvent]);
 
