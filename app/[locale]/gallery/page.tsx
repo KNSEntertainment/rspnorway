@@ -228,7 +228,7 @@ const UnifiedGallery = () => {
 
 	if (loading) {
 		return (
-			<div className="flex justify-center items-center min-h-screen bg-gray-50">
+			<div className="flex justify-center items-center min-h-screen">
 				<div className="text-center">
 					<div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand border-r-transparent mb-4"></div>
 					<p className="text-gray-600 text-lg">{t("loading")}</p>
@@ -238,7 +238,7 @@ const UnifiedGallery = () => {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50 pt-12">
+		<div className="min-h-screen pt-12">
 			{/* Header Section */}
 			<div className="bg-white border-b border-gray-200">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">

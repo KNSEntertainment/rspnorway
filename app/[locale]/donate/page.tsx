@@ -1,4 +1,5 @@
 import DonationForm from "@/components/DonationForm";
+import DonorList from "@/components/DonorList";
 import SectionHeader from "@/components/SectionHeader";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Target, TrendingUp } from "lucide-react";
@@ -107,6 +108,9 @@ export default async function DonatePage() {
 								</ul>
 							</CardContent>
 						</Card>
+
+						{/* Donor List */}
+						<DonorList />
 					</div>
 				</div>
 

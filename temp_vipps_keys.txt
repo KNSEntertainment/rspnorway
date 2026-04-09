@@ -1,0 +1,7 @@
+"payment_method": "Bhuktana Prakriya",
+		"card_payment": "Card Payment (Stripe)",
+		"vipps_payment": "Vipps Bhuktana",
+		"vipps_description": "Vipps dwara chhatra ra surakshit bhuktana garnuhos - Norway ko satabhitra bhuktana app",
+		"processing_vipps": "Vipps bhuktana process gariraa chha...",
+		"vipps_success": "Bhuktana saphal! Tapaiiko yogdaan laai dhanyabad.",
+		"redirect_to_vipps": "Tapai Vipps ma redirect hunuhunchha..."

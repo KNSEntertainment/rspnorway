@@ -6,23 +6,28 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Heart, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
 
 export default function DonationForm() {
+	const t = useTranslations("donation");
 	const { data: session } = useSession();
 	const [amount, setAmount] = useState<number>(500);
-	const [customAmount, setCustomAmount] = useState<string>("");
+	const [customAmount, setCustomAmount] = useState<string>("500");
 	const [donorName, setDonorName] = useState(session?.user?.fullName || "");
 	const [donorEmail, setDonorEmail] = useState(session?.user?.email || "");
 	const [donorPhone, setDonorPhone] = useState("");
 	const [message, setMessage] = useState("");
 	const [isAnonymous, setIsAnonymous] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState<'card' | 'vipps'>('card');
+	const [showVippsSuccess, setShowVippsSuccess] = useState(false);
 
 	const handlePresetClick = (presetAmount: number) => {
 		setAmount(presetAmount);
-		setCustomAmount("");
+		setCustomAmount(presetAmount.toString());
 	};
 
 	const handleCustomAmountChange = (value: string) => {
@@ -37,11 +42,58 @@ export default function DonationForm() {
 		e.preventDefault();
 
 		if (amount < 50) {
-			toast.error("Minimum donation amount is 50 NOK");
+			toast.error(t("minimum_error"));
 			return;
 		}
 
 		setLoading(true);
+
+		// Handle Vipps payment simulation
+		if (paymentMethod === 'vipps') {
+			try {
+				// Create donation record with completed status
+				const response = await fetch("/api/donations/vipps", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						amount,
+						donorName: isAnonymous ? "Anonymous" : donorName,
+						donorEmail: isAnonymous ? "anonymous@rspnorway.org" : donorEmail,
+						donorPhone,
+						message,
+						isAnonymous,
+					}),
+				});
+
+				if (!response.ok) {
+					throw new Error("Failed to process Vipps donation");
+				}
+
+				// Simulate Vipps payment processing delay
+				setTimeout(() => {
+					setLoading(false);
+					setShowVippsSuccess(true);
+					// Reset form after showing success
+					setTimeout(() => {
+						setShowVippsSuccess(false);
+						setAmount(500);
+						setCustomAmount("500");
+						setDonorName(session?.user?.fullName || "");
+						setDonorEmail(session?.user?.email || "");
+						setDonorPhone("");
+						setMessage("");
+						setIsAnonymous(false);
+					}, 3000);
+				}, 2000);
+			} catch (error) {
+				console.error("Vipps donation error:", error);
+				setLoading(false);
+				toast.error(error instanceof Error ? error.message : t("process_error"));
+			}
+			return;
+		}
 
 		try {
 			const response = await fetch("/api/donations/create-checkout", {
@@ -62,14 +114,14 @@ export default function DonationForm() {
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || "Failed to create checkout session");
+				throw new Error(data.error || t("checkout_error"));
 			}
 
 			// Redirect to Stripe Checkout
 			window.location.href = data.url;
 		} catch (error) {
 			console.error("Donation error:", error);
-			toast.error(error instanceof Error ? error.message : "Failed to process donation");
+			toast.error(error instanceof Error ? error.message : t("process_error"));
 			setLoading(false);
 		}
 	};
@@ -80,8 +132,8 @@ export default function DonationForm() {
 				<div className="flex items-center gap-3">
 					<Heart className="w-8 h-8" />
 					<div>
-						<CardTitle className="text-2xl">Support PNSB-Norway</CardTitle>
-						<CardDescription className="text-white/90">Your contribution makes a difference</CardDescription>
+						<CardTitle className="text-2xl">{t("title")}</CardTitle>
+						<CardDescription className="text-white/90">{t("description")}</CardDescription>
 					</div>
 				</div>
 			</CardHeader>
@@ -89,10 +141,10 @@ export default function DonationForm() {
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* Preset Amounts */}
 					<div>
-						<label className="block text-sm font-semibold text-gray-900 mb-3">Select Amount (NOK)</label>
+						<label className="block text-sm font-semibold text-gray-900 mb-3">{t("select_amount")}</label>
 						<div className="grid grid-cols-3 gap-3">
 							{PRESET_AMOUNTS.map((presetAmount) => (
-								<button key={presetAmount} type="button" onClick={() => handlePresetClick(presetAmount)} className={`text-sm md:text-xl py-3 px-2 md:px-4 rounded-lg border-2 font-semibold transition-all ${amount === presetAmount && !customAmount ? "border-brand bg-brand text-white" : "border-gray-300 text-gray-900 hover:border-brand"}`}>
+								<button key={presetAmount} type="button" onClick={() => handlePresetClick(presetAmount)} className={`text-sm md:text-xl py-3 px-2 md:px-4 rounded-lg border-2 font-semibold transition-all ${amount === presetAmount ? "border-brand bg-brand text-white" : "border-gray-300 text-gray-900 hover:border-brand"}`}>
 									{presetAmount} NOK
 								</button>
 							))}
@@ -101,52 +153,90 @@ export default function DonationForm() {
 
 					{/* Custom Amount */}
 					<div>
-						<label className="block text-sm font-semibold text-gray-900 mb-2">Or Enter Custom Amount</label>
+						<label className="block text-sm font-semibold text-gray-900 mb-2">{t("custom_amount")}</label>
 						<div className="relative">
-							<input type="number" min="50" value={customAmount} onChange={(e) => handleCustomAmountChange(e.target.value)} placeholder="Enter amount in NOK" className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" />
+							<input type="number" min="50" value={customAmount} onChange={(e) => handleCustomAmountChange(e.target.value)} placeholder={t("amount_placeholder")} className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" />
 							<span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">NOK</span>
 						</div>
-						<p className="text-xs text-gray-500 mt-1">Minimum donation: 50 NOK</p>
+						<p className="text-xs text-gray-500 mt-1">{t("minimum_donation")}</p>
 					</div>
 
 					{/* Anonymous Donation */}
 					<div className="flex items-center gap-3 p-4 bg-light rounded-lg">
 						<input type="checkbox" id="anonymous" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} className="w-4 h-4 text-brand rounded focus:ring-brand" />
 						<label htmlFor="anonymous" className="text-sm text-gray-900 cursor-pointer">
-							Make this donation anonymous
+							{t("anonymous_donation")}
 						</label>
 					</div>
 
 					{/* Donor Information */}
 					{!isAnonymous && (
 						<div className="space-y-4 p-4 bg-light rounded-lg">
-							<h3 className="font-semibold text-gray-900">Your Information</h3>
+							<h3 className="font-semibold text-gray-900">{t("your_information")}</h3>
 
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">
-									Full Name <span className="text-red-500">*</span>
+									{t("full_name")} <span className="text-red-500">*</span>
 								</label>
-								<input type="text" value={donorName} onChange={(e) => setDonorName(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder="Enter your full name" />
+								<input type="text" value={donorName} onChange={(e) => setDonorName(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder={t("name_placeholder")} />
 							</div>
 
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">
-									Email <span className="text-red-500">*</span>
+									{t("email")} <span className="text-red-500">*</span>
 								</label>
-								<input type="email" value={donorEmail} onChange={(e) => setDonorEmail(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder="your@email.com" />
+								<input type="email" value={donorEmail} onChange={(e) => setDonorEmail(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder={t("email_placeholder")} />
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-900 mb-2">Phone (Optional)</label>
-								<input type="tel" value={donorPhone} onChange={(e) => setDonorPhone(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder="+47 123 45 678" />
+								<label className="block text-sm font-medium text-gray-900 mb-2">{t("phone_optional")}</label>
+								<input type="tel" value={donorPhone} onChange={(e) => setDonorPhone(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder={t("phone_placeholder")} />
 							</div>
 						</div>
 					)}
 
+					{/* Payment Method Selection */}
+					<div>
+						<label className="block text-sm font-semibold text-gray-900 mb-3">{t("payment_method")}</label>
+						<div className="grid grid-cols-2 gap-3">
+							<button
+								type="button"
+								onClick={() => setPaymentMethod('card')}
+								className={`p-4 rounded-lg border-2 font-semibold transition-all ${
+									paymentMethod === 'card'
+										? 'border-brand bg-brand text-white'
+										: 'border-gray-300 text-gray-900 hover:border-brand'
+								}`}
+							>
+								<div className="flex items-center justify-center gap-2">
+									<svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+										<rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+										<line x1="1" y1="10" x2="23" y2="10" />
+									</svg>
+									<span>{t("card_payment")}</span>
+								</div>
+							</button>
+							<button
+								type="button"
+								onClick={() => setPaymentMethod('vipps')}
+								className={`p-4 rounded-lg border-2 font-semibold transition-all ${
+									paymentMethod === 'vipps'
+										? 'border-brand bg-brand text-white'
+										: 'border-gray-300 text-gray-900 hover:border-brand'
+								}`}
+							>
+								<div className="flex items-center justify-center gap-2">
+									<Image src="/Vipps.webp" alt="Vipps" width={64} height={64} className="w-12 rounded-full" />
+									<span>{t("vipps_payment")}</span>
+								</div>
+							</button>
+						</div>
+					</div>
+
 					{/* Message */}
 					<div>
-						<label className="block text-sm font-medium text-gray-900 mb-2">Message (Optional)</label>
-						<textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900 resize-none" placeholder="Leave a message of support..." />
+						<label className="block text-sm font-medium text-gray-900 mb-2">{t("message_optional")}</label>
+						<textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={3} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900 resize-none" placeholder={t("message_placeholder")} />
 					</div>
 
 					{/* Submit Button */}
@@ -154,18 +244,49 @@ export default function DonationForm() {
 						{loading ? (
 							<>
 								<Loader2 className="w-5 h-5 mr-2 animate-spin" />
-								Processing...
+								{paymentMethod === 'vipps' ? t("processing_vipps") : t("processing")}
 							</>
 						) : (
 							<>
-								<Heart className="w-5 h-5 mr-2" />
-								Donate {amount} NOK
+								{paymentMethod === 'vipps' ? (
+									<>
+																			<Image src="/Vipps.webp" alt="Vipps" width={64} height={64} className="w-12 rounded-full" />
+
+										{t("donate_button", { amount })}
+									</>
+								) : (
+									<>
+										<Heart className="w-5 h-5 mr-2" />
+										{t("donate_button", { amount })}
+									</>
+								)}
 							</>
 						)}
 					</Button>
 
-					<p className="text-xs text-center text-gray-500">Secure payment powered by Stripe. Your donation supports PNSB-Norway&apos;s mission and activities.</p>
+					<p className="text-xs text-center text-gray-500">
+						{paymentMethod === 'vipps' ? t("vipps_description") : t("secure_payment")}
+					</p>
 				</form>
+
+				{/* Vipps Success Modal */}
+				{showVippsSuccess && (
+					<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+						<div className="bg-white rounded-lg p-8 max-w-md mx-4 text-center">
+							<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+								<Image src="/Vipps.webp" alt="Vipps" width={48} height={48} className="w-12 rounded-full" />
+							</div>
+							<h3 className="text-xl font-semibold text-gray-900 mb-2">{t("vipps_success")}</h3>
+							<p className="text-gray-600 mb-4">Your donation of {amount} NOK has been processed successfully.</p>
+							<button
+								onClick={() => setShowVippsSuccess(false)}
+								className="px-6 py-2 bg-brand text-white rounded-lg hover:bg-brand/90 transition-colors"
+							>
+								Close
+							</button>
+						</div>
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);
