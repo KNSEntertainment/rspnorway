@@ -65,7 +65,7 @@ function SortableDepartmentCard({ department, onEdit, onDelete }: { department: 
 			)}
 
 			<div className="mt-4 pt-4 border-t border-light">
-				<span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${department.isActive ? "bg-success text-success" : "bg-light text-gray-900"}`}>{department.isActive ? "Active" : "Inactive"}</span>
+				<span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${department.isActive ? "bg-success text-white" : "bg-light text-gray-900"}`}>{department.isActive ? "Active" : "Inactive"}</span>
 			</div>
 		</div>
 	);

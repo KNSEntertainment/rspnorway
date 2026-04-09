@@ -16,10 +16,14 @@ async function SearchContent({ query, locale }) {
 	const { getDownloads } = await import("@/lib/data/downloads");
 	const connectDB = (await import("@/lib/mongodb")).default;
 	const Video = (await import("@/models/Video.Model")).default;
+	const Membership = (await import("@/models/Membership.Model")).default;
 
 	// Fetch videos manually
 	await connectDB();
 	const videosArray = await Video.find({ isActive: true }).lean();
+	
+	// Fetch membership data
+	const membershipArray = await Membership.find({ membershipStatus: "approved" }).lean();
 
 	const [eventsArray, galleryArray, noticesArray, membersArray, blogsArray, circularsArray, downloadsArray] = await Promise.all([getEvents(), getGallery(), getNotices(), getExecutiveMembers(), getBlogs(), getCirculars(), getDownloads()]);
 	const lowerQuery = query.toLowerCase().trim();
@@ -49,6 +53,17 @@ async function SearchContent({ query, locale }) {
 		const departmentMatch = member.department?.toLowerCase().trim().includes(lowerQuery);
 		const emailMatch = member.email?.toLowerCase().trim().includes(lowerQuery);
 		return nameMatch || positionMatch || departmentMatch || emailMatch;
+	});
+
+	// Filter membership data (regular members)
+	const filteredMembership = membershipArray.filter((member) => {
+		const nameMatch = member.fullName?.toLowerCase().trim().includes(lowerQuery);
+		const emailMatch = member.email?.toLowerCase().trim().includes(lowerQuery);
+		const phoneMatch = member.phone?.toLowerCase().trim().includes(lowerQuery);
+		const skillsMatch = member.skills?.toLowerCase().trim().includes(lowerQuery);
+		const membershipTypeMatch = member.membershipType?.toLowerCase().trim().includes(lowerQuery);
+		const volunteerMatch = member.volunteerInterest?.some((interest) => interest?.toLowerCase().trim().includes(lowerQuery));
+		return nameMatch || emailMatch || phoneMatch || skillsMatch || membershipTypeMatch || volunteerMatch;
 	});
 	const filteredBlogs = blogsArray.filter((blog) => {
 		const titleMatch = blog.blogTitle?.toLowerCase().trim().includes(lowerQuery);
@@ -127,11 +142,21 @@ async function SearchContent({ query, locale }) {
 			type: "Member",
 			_id: String(item._id),
 			title: item.name,
-			description: item.position || item.department,
+			description: item.position || "Executive Member",
 			image: item.imageUrl,
-			url: `/en/members`,
+			url: `/en/members/${item._id}`,
 			date: item.createdAt ? String(item.createdAt) : null,
-			meta: `${item.department || ""}${item.department && item.subdepartment ? ", " : ""}${item.subdepartment || ""}`.trim(),
+			meta: "View Details",
+		})),
+		...filteredMembership.map((item) => ({
+			type: "Member",
+			_id: String(item._id),
+			title: item.fullName,
+			description: item.skills || "Member",
+			image: item.profilePhoto,
+			url: `/en/members/${item._id}`,
+			date: item.createdAt ? String(item.createdAt) : null,
+			meta: "View Details",
 		})),
 		...filteredBlogs.map((item) => ({
 			type: "Blog",

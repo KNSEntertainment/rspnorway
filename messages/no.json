@@ -282,6 +282,7 @@
 	},
 	"blogs": {
 		"blogs_title": "Blogger",
+		"author": "Forfatter",
 		"view_all": "Se Alle",
 		"loading": "Laster inn...",
 		"no_blogs": "Ingen blogger funnet",
@@ -373,7 +374,8 @@
 		"error": "Innlogging mislyktes. Vennligst sjekk e-post og passord.",
 		"set_password": "Sett Passord",
 		"password_set_success": "Passordet ditt har blitt satt! Du kan nå logge inn med ditt nye passord.",
-		"logging_in": "Logger inn..."
+		"logging_in": "Logger inn...",
+		"forgot_password": "Glemt passordet?"
 	},
 	"setPassword": {
 		"title": "Sett Ditt Passord",
@@ -470,5 +472,37 @@
 		"subscribed": "Abonnert!",
 		"success_message": "Takk for at du abonnerer! Sjekk e-posten din for bekreftelse.",
 		"footer_text": "Bli med 500+ samfunnsmedlemmer. Avmeld når som helst."
+	},
+	"resetPassword": {
+		"title": "Tilbakestill Passord",
+		"subtitle": "Skriv inn ditt nye passord nedenfor for å tilbakestille tilgangen til kontoen din",
+		"newPassword": "Nytt Passord",
+		"confirmPassword": "Bekreft Passord",
+		"resetPassword": "Tilbakestill Passord",
+		"passwordMismatch": "Passordene stemmer ikke overens",
+		"passwordTooShort": "Passordet må være minst 6 tegn langt",
+		"success": "Passord Tilbakestilt",
+		"successMessage": "Passordet ditt har blitt tilbakestilt. Du vil bli videresendt til innloggingssiden.",
+		"error": "Feil",
+		"invalidToken": "Ugyldig eller utløpt tilbakestillingslenke",
+		"redirecting": "Videresender til innlogging",
+		"goToLogin": "Gå til Innlogging"
+	},
+	"forgotPassword": {
+		"title": "Glemt Passord",
+		"subtitle": "Skriv inn din e-postadresse så sender vi deg en lenke for å tilbakestille passordet",
+		"email": "E-postadresse",
+		"emailPlaceholder": "Skriv inn din e-postadresse",
+		"sendResetLink": "Send Tilbakestillingslenke",
+		"sending": "Sender...",
+		"success": "Tilbakestillingslenke Sendt",
+		"successMessage": "Vi har sendt en lenke for å tilbakestille passordet til din e-post. Vennligst sjekk innboksen din.",
+		"error": "Feil",
+		"invalidEmail": "Vennligst skriv inn en gyldig e-postadresse",
+		"emailNotFound": "Ingen konto funnet med denne e-postadressen",
+		"noAccountFound": "Ingen konto funnet med denne e-postadressen",
+		"tryAgain": "Vennligst prøv igjen eller kontakt kundestøtte",
+		"backToLogin": "Tilbake til Innlogging",
+		"redirecting": "Omdirigerer til innlogging..."
 	}
 }

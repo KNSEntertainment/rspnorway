@@ -282,6 +282,7 @@
 	},
 	"blogs": {
 		"blogs_title": "Blogs",
+		"author": "Author",
 		"view_all": "View All",
 		"loading": "Loading...",
 		"no_blogs": "No blogs found",
@@ -373,7 +374,8 @@
 		"error": "Invalid email or password. Please try again.",
 		"set_password": "Set Password",
 		"password_set_success": "Your password has been set successfully. You can now log in.",
-		"logging_in": "Logging in"
+		"logging_in": "Logging in",
+		"forgot_password": "Forgot your password?"
 	},
 	"setPassword": {
 		"title": "Set Your Password",
@@ -470,5 +472,37 @@
 		"subscribed": "Subscribed!",
 		"success_message": "Thank you for subscribing! Check your email for confirmation.",
 		"footer_text": "Join 500+ community members. Unsubscribe at any time."
+	},
+	"resetPassword": {
+		"title": "Reset Your Password",
+		"subtitle": "Enter your new password below to reset your account access",
+		"newPassword": "New Password",
+		"confirmPassword": "Confirm Password",
+		"resetPassword": "Reset Password",
+		"passwordMismatch": "Passwords do not match",
+		"passwordTooShort": "Password must be at least 6 characters long",
+		"success": "Password Reset Successful",
+		"successMessage": "Your password has been reset successfully. You will be redirected to the login page.",
+		"error": "Error",
+		"invalidToken": "Invalid or expired reset link",
+		"redirecting": "Redirecting to login",
+		"goToLogin": "Go to Login"
+	},
+	"forgotPassword": {
+		"title": "Forgot Password",
+		"subtitle": "Enter your email address and we'll send you a link to reset your password",
+		"email": "Email Address",
+		"emailPlaceholder": "Enter your email address",
+		"sendResetLink": "Send Reset Link",
+		"sending": "Sending...",
+		"success": "Reset Link Sent",
+		"successMessage": "We've sent a password reset link to your email. Please check your inbox.",
+		"error": "Error",
+		"invalidEmail": "Please enter a valid email address",
+		"emailNotFound": "No account found with this email address",
+		"noAccountFound": "No account found with this email address",
+		"tryAgain": "Please try again or contact support",
+		"backToLogin": "Back to Login",
+		"redirecting": "Redirecting to login..."
 	}
 }

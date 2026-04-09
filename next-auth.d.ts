@@ -8,6 +8,10 @@ declare module "next-auth" {
 			fullName?: string;
 			username?: string;
 			phone?: string;
+			// Member-specific fields
+			isMember?: boolean;
+			membershipType?: string;
+			membershipStatus?: string;
 		} & DefaultSession["user"];
 	}
 
@@ -16,6 +20,10 @@ declare module "next-auth" {
 		fullName?: string;
 		username?: string;
 		phone?: string;
+		// Member-specific fields
+		isMember?: boolean;
+		membershipType?: string;
+		membershipStatus?: string;
 	}
 }
 
@@ -25,5 +33,9 @@ declare module "next-auth/jwt" {
 		fullName?: string;
 		username?: string;
 		phone?: string;
+		// Member-specific fields
+		isMember?: boolean;
+		membershipType?: string;
+		membershipStatus?: string;
 	}
 }

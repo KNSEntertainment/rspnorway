@@ -52,7 +52,13 @@ export async function POST(req: NextRequest) {
 				if (allMembersWithResetTokens.length > 0) {
 					console.log("Members with reset tokens:");
 					allMembersWithResetTokens.forEach((member, index) => {
-						console.log(`  ${index + 1}. Email: ${member.email}, Token: ${member.passwordResetToken?.substring(0, 10)}..., Expiry: ${member.passwordResetTokenExpiry}`);
+						console.log(`  ${index + 1}. Email: ${member.email}`);
+						console.log(`      Full Token: ${member.passwordResetToken}`);
+						console.log(`      Token Length: ${member.passwordResetToken?.length}`);
+						console.log(`      Expiry: ${member.passwordResetTokenExpiry}`);
+						console.log(`      Searched Token: ${token}`);
+						console.log(`      Searched Length: ${token.length}`);
+						console.log(`      Tokens Match: ${member.passwordResetToken === token}`);
 					});
 				}
 				
@@ -98,6 +104,7 @@ export async function POST(req: NextRequest) {
 				membershipWithResetToken.passwordResetTokenExpiry = undefined;
 				await membershipWithResetToken.save();
 
+				console.log("Password reset successfully for member:", membershipWithResetToken.email);
 				return NextResponse.json({ success: true, message: "Password reset successfully" }, { status: 200 });
 			}
 
@@ -110,6 +117,7 @@ export async function POST(req: NextRequest) {
 			membership.passwordSetupTokenExpiry = undefined;
 			await membership.save();
 
+			console.log("Password set successfully for member:", membership.email);
 			return NextResponse.json({ success: true, message: "Password set successfully" }, { status: 200 });
 		}
 
@@ -122,9 +130,10 @@ export async function POST(req: NextRequest) {
 		user.setupTokenExpiry = undefined;
 		await user.save();
 
-		return NextResponse.json({ success: true, message: "Password set successfully" }, { status: 200 });
+		console.log("Password reset successfully for user:", user.email);
+		return NextResponse.json({ success: true, message: "Password reset successfully" }, { status: 200 });
 	} catch (error: unknown) {
-		console.error("Error setting password:", error);
-		return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to set password" }, { status: 500 });
+		console.error("Error resetting password:", error);
+		return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to reset password" }, { status: 500 });
 	}
 }

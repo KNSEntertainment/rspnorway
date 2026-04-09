@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { Download, CreditCard } from "lucide-react";
+import { CreditCard, Globe, Mail } from "lucide-react";
 import Image from "next/image";
 
 interface MemberIDCardProps {
@@ -32,42 +32,17 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 	console.log("MemberIDCard - membershipNumber:", membershipNumber);
 	console.log("MemberIDCard - logo:", logo);
 
-	const handleDownload = async () => {
-		if (!cardRef.current) return;
-
-		try {
-			// Dynamically import html2canvas only when needed
-			const html2canvas = (await import("html2canvas")).default;
-
-			const canvas = await html2canvas(cardRef.current, {
-				scale: 3,
-				backgroundColor: "#ffffff",
-				logging: false,
-			});
-
-			// Convert to blob and download
-			canvas.toBlob((blob) => {
-				if (blob) {
-					const url = URL.createObjectURL(blob);
-					const link = document.createElement("a");
-					link.download = `RSP-Norway-ID-${memberData.fullName.replace(/\s+/g, "-")}.png`;
-					link.href = url;
-					link.click();
-					URL.revokeObjectURL(url);
-				}
-			});
-		} catch (error) {
-			console.error("Error generating ID card:", error);
-			alert("Failed to generate ID card. Please try again.");
-		}
-	};
-
+	
 	const handlePrint = () => {
 		window.print();
 	};
 
-	// QR code contains only the membership number
-	const qrData = membershipNumber;
+	// QR code contains the member profile URL
+	const baseUrl = process.env.NEXTAUTH_URL || "https://www.rspnorway.org";
+	const qrData = `${baseUrl}/members/${memberData._id}`;
+	
+	console.log("MemberIDCard - QR Code URL:", qrData);
+	console.log("MemberIDCard - Base URL:", baseUrl);
 
 	// Format membership date
 	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {
@@ -80,10 +55,6 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 		<div className="space-y-4">
 			{/* Action Buttons */}
 			<div className="flex gap-3 print:hidden">
-				<Button onClick={handleDownload} className="bg-brand hover:bg-brand/90 text-white">
-					<Download className="w-4 h-4 mr-2" />
-					Download ID Card
-				</Button>
 				<Button onClick={handlePrint} variant="outline" className="border-brand text-brand hover:bg-brand/10">
 					<CreditCard className="w-4 h-4 mr-2" />
 					Print ID Card
@@ -91,16 +62,16 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 			</div>
 
 			{/* ID Card - Front */}
-			<div ref={cardRef} className="relative w-full max-w-[400px] mx-auto" style={{ aspectRatio: "1.586" }}>
+			<div ref={cardRef} className="relative w-full max-w-[300px] mx-auto">
 				{/* Card Container */}
-				<div className="w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-brand">
+				<div className="w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-brand">
 					{/* Header Section */}
-					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-4">
+					<div className="relative bg-gradient-to-r from-brand to-blue-700 text-white px-6 pt-4 pb-8">
 						<div className="flex items-center justify-between">
 							<div>
-								<h2 className="text-xl font-bold mt-0.5">PNSB-Norway</h2>
-								<h3 className="text-xs font-semibold tracking-wide">MEMBER ID CARD</h3>
-								<p className="text-[10px] text-white font-semibold">Membership No. {membershipNumber}</p>
+								<h2 className="text-lg font-bold mt-0.5">PNSB-Norway</h2>
+								<p className="text-[10px] text-white font-semibold">Oslo, Norway</p>
+								<h3 className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md px-2 py-1 rounded-2xl text-xs font-semibold tracking-wide text-brand">MEMBERSHIP CARD</h3>
 							</div>
 							{/* Logo */}
 							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">{logo ? <Image src={logo} alt="PNSB-Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" /> : <span className="text-brand font-bold text-lg">RSP</span>}</div>
@@ -108,14 +79,13 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 					</div>
 
 					{/* Content Section */}
-					<div className="px-6 py-4">
+					<div className="px-6 py-5">
 						{/* Membership Number - TOP LEFT */}
 
-						{/* Photo and QR Code Row */}
-						<div className="flex items-start justify-between mb-3">
-							{/* Member Photo */}
-							<div className="flex-shrink-0">
-								<div className="w-20 h-20 rounded-lg overflow-hidden bg-light border-2 border-brand/20">
+							
+
+							<div className="w-full flex justify-center mt-2 mb-4">
+									<div className="w-20 h-20 rounded-full overflow-hidden bg-light border-2 border-brand/20">
 									{memberData.profilePhoto ? (
 										<Image src={memberData.profilePhoto} alt={memberData.fullName} width={80} height={80} className="w-full h-full object-cover" />
 									) : (
@@ -125,76 +95,102 @@ export default function MemberIDCard({ memberData, logo }: MemberIDCardProps) {
 									)}
 								</div>
 							</div>
+			
+						
 
-							{/* QR Code */}
-							<div className="flex-shrink-0">
-								<div className="bg-white p-1.5 rounded-lg border-2 border-light">
-									<QRCodeSVG value={qrData} size={64} level="H" includeMargin={false} />
-								</div>
-							</div>
-						</div>
-
-						{/* Member Details */}
-						<div className="space-y-2">
+						<div className="grid grid-cols-2 gap-2">
 							{/* Name */}
-							<div>
+	<div>
 								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Full Name</p>
 								<p className="text-sm font-bold text-gray-900 truncate">{memberData.fullName}</p>
 							</div>
 
-							{/* Two Column Layout */}
-							<div className="grid grid-cols-2 gap-2">
-								{/* Type */}
+							{/* Membership Date */}
 								<div>
-									<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Type</p>
-									<p className="text-xs font-semibold text-gray-900 capitalize">{memberData.membershipType}</p>
+									<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Since</p>
+									<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
 								</div>
 
-								{/* Location */}
+									{/* Contact Information */}
+							<div className="space-y-1">
+								{memberData.phone && (
+									<div>
+										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Contact</p>
+										<p className="text-xs font-semibold text-gray-900">{memberData.phone}</p>
+									</div>
+								)}
+								</div>
+								
+								{/* Address */}
+								<div>
 								{(memberData.city || memberData.province) && (
 									<div>
-										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Location</p>
-										<p className="text-xs font-semibold text-gray-900">{memberData.city || memberData.province}</p>
+										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Address</p>
+										<p className="text-xs font-semibold text-gray-900">
+											{[memberData.city, memberData.province].filter(Boolean).join(", ")}
+										</p>
 									</div>
 								)}
 							</div>
 
-							{/* Membership Date */}
-							<div>
-								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Membership Date</p>
-								<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
-							</div>
+
 						</div>
+				
+					</div>
+					<div className="flex justify-between px-6">
+						
+
+								<div className="flex flex-col">
+									<p className="py-2 text-[10px] font-light text-gray-600">Membership No. <br /><span className="font-semibold">{membershipNumber}</span></p>
+									<p className="py-2 text-[10px] font-light text-gray-600">Member Since <br /><span className="font-semibold">{membershipDate}</span></p>
+
+								</div>
+									{/* QR Code with Signature */}
+							<div className="w-fit flex-shrink-0">
+								<div className="bg-white p-1.5 rounded-lg border-2 border-light">
+									<QRCodeSVG value={qrData} size={64} level="H" includeMargin={false} />
+								</div>
+								{/* Signature below QR */}
+								<div className="my-2 text-center">
+									<div className="border-b border-gray-400 w-16 mx-auto"></div>
+									<p className="text-[8px] text-gray-600 mt-0.5">Head</p>
+								</div>
+							</div>
 					</div>
 
-					{/* Footer Section with Signature */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-3">
-						<div className="flex items-center justify-between text-white">
-							<div className="flex items-center gap-1">
-								<div className="w-2 h-2 bg-white rounded-full"></div>
-								<p className="text-[11px] font-semibold">VERIFIED MEMBER</p>
-							</div>
-							<div className="text-right">
-								<div className="h-6 flex items-end">
-									<div className="border-b-2 border-white w-24"></div>
+					{/* Footer Section with Contact Info */}
+					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-4">
+						<div className="text-white space-y-2">
+						
+							
+							{/* RSP Norway Contact Information */}
+							<div className="grid grid-cols-2 gap-1 text-xs">
+							
+								<div className="flex items-center">
+								<Mail className="inline-block w-3 h-3 mr-1" />
+								<p>info@rspnorway.org</p>
 								</div>
-								<p className="text-[9px] font-semibold mt-0.5">President&apos;s Signature</p>
+								<div className="flex items-center">
+								<Globe className="inline-block w-3 h-3 mr-1" />
+								<p>www.rspnorway.org</p>
+								</div>
 							</div>
+					
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* ID Card - Back (for printing) */}
-			<div className="hidden print:block w-full max-w-[400px] mx-auto mt-8" style={{ aspectRatio: "1.586" }}>
+			<div className="hidden print:block w-full max-w-[450px] mx-auto mt-8" style={{ aspectRatio: "1.4" }}>
 				<div className="w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-brand">
 					{/* Header */}
-					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-3 text-center">
+					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-8 py-4 text-center">
 						<h3 className="text-sm font-bold">Emergency Contact & Guidelines</h3>
 					</div>
 
-					{/* Content */}
-					<div className="px-6 py-4 space-y-3">
+					{/* Main Content */}
+					<div className="px-8 py-6 space-y-4">
 						{/* Emergency Contact */}
 						<div>
 							<p className="text-xs font-bold text-gray-900 mb-2">Emergency Contact</p>

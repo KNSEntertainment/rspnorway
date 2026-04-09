@@ -9,6 +9,9 @@ interface SessionUser {
 	email?: string | null;
 	image?: string | null;
 	role?: string;
+	isMember?: boolean;
+	membershipType?: string;
+	membershipStatus?: string;
 	// [key: string]: any;
 }
 
@@ -16,6 +19,21 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 	const userRef = useRef<HTMLDivElement>(null);
 	const avatarInitial = typeof user?.email === "string" && user.email ? user.email.charAt(0).toUpperCase() : "U";
 	const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+	// Function to determine user role display
+	const getUserRoleText = () => {
+		if (user?.isMember) {
+			// Member-specific display
+			const membershipType = user.membershipType || "member";
+			return `Signed in as ${membershipType.charAt(0).toUpperCase() + membershipType.slice(1)} Member`;
+		} else if (user?.role) {
+			// Admin or other roles
+			return `Signed in as ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}`;
+		} else {
+			// Fallback
+			return "Signed in";
+		}
+	};
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
@@ -44,12 +62,12 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 					<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }} className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] ring-1 ring-black/5 overflow-hidden">
 						<div className="px-5 py-4 border-b border-neutral-100">
 							<p className="font-semibold text-gray-900 truncate">{user.email}</p>
-							<p className="text-xs text-gray-900 mt-1">Signed in</p>
+							<p className="text-xs text-gray-900 mt-1">{getUserRoleText()}</p>
 						</div>
-						{user.role === "admin" ? (
+						{user.role === "admin" || user.isMember ? (
 							<Link href="/en/dashboard" onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
 								<LayoutDashboard size={18} />
-								Dashboard
+								{user.role === "admin" ? "Admin Dashboard" : "Member Dashboard"}
 							</Link>
 						) : (
 							<Link href="/en/profile" onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">

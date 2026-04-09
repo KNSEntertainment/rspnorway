@@ -61,7 +61,7 @@ export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeE
 					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
 					.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
 					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-					.button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+					.button { display: inline-block; background: #667eea; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
 					.footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
 				</style>
 			</head>
@@ -162,68 +162,6 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 						</div>
 
 						<p>Your support makes a real difference in our mission to serve the Nepali community in Norway and support democratic values in Nepal. We are incredibly grateful for your generosity.</p>
-
-						${message ? `<div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 5px;"><p style="margin: 0; font-style: italic; color: #92400e;">"${message}"</p><p style="margin: 10px 0 0 0; font-size: 12px; color: #92400e;">- Your message</p></div>` : ""}
-
-						<div class="details">
-							<h3 style="margin-top: 0; color: #0094da;">Donation Details</h3>
-							<div class="details-row">
-								<span style="color: #666;">Transaction ID:</span>
-								<span style="font-family: monospace; font-size: 12px;">${transactionId}</span>
-							</div>
-							<div class="details-row">
-								<span style="color: #666;">Date:</span>
-								<span><strong>${date}</strong></span>
-							</div>
-							<div class="details-row">
-								<span style="color: #666;">Amount:</span>
-								<span><strong>${amount} ${currency}</strong></span>
-							</div>
-							<div class="details-row">
-								<span style="color: #666;">Payment Status:</span>
-								<span style="color: #10b981; font-weight: bold;">✓ Completed</span>
-							</div>
-						</div>
-
-						<div class="impact-section">
-							<h3 style="color: #0094da;">How Your Donation Helps:</h3>
-							
-							<div class="impact-item">
-								<div class="impact-icon">👥</div>
-								<div>
-									<strong>Community Events</strong>
-									<p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Supporting cultural programs and gatherings</p>
-								</div>
-							</div>
-
-							<div class="impact-item">
-								<div class="impact-icon">🎯</div>
-								<div>
-									<strong>Political Advocacy</strong>
-									<p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Funding campaigns and awareness programs</p>
-								</div>
-							</div>
-
-							<div class="impact-item">
-								<div class="impact-icon">📈</div>
-								<div>
-									<strong>Organizational Growth</strong>
-									<p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Expanding our reach and strengthening our movement</p>
-								</div>
-							</div>
-
-							<div class="impact-item">
-								<div class="impact-icon">💙</div>
-								<div>
-									<strong>Member Support</strong>
-									<p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Resources and assistance for our members</p>
-								</div>
-							</div>
-						</div>
-
-						<div style="background: linear-gradient(135deg, #0094da 0%, #0070a8 100%); color: white; padding: 25px; border-radius: 8px; margin: 20px 0; text-align: center;">
-							<p style="margin: 0; font-size: 18px; font-weight: bold;">Want to make an even bigger impact?</p>
-							<p style="margin: 10px 0 15px 0; font-size: 14px;">Consider becoming a member to get more involved in our mission.</p>
 							<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/en/membership" style="display: inline-block; background: white; color: #0094da; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 5px;">Join as Member</a>
 						</div>
 
@@ -251,5 +189,77 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 	} catch (error) {
 		console.error("Error sending donation thank you email:", error);
 		throw new Error("Failed to send donation thank you email");
+	}
+}
+
+// Password reset email
+type sendPasswordResetEmail = {
+	name: string;
+	email: string;
+	resetUrl: string;
+	userType: string;
+};
+export async function sendPasswordResetEmail({ name, email, resetUrl, userType }: sendPasswordResetEmail) {
+	const mailOptions = {
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
+		to: email,
+		subject: "Reset Your Password - PNSB-Norway",
+		text: `Hello ${name},\n\nYou requested to reset your password for your PNSB-Norway ${userType} account.\n\nPlease click the link below to reset your password:\n${resetUrl}\n\nThis link is valid for 1 hour.\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nPNSB-Norway Team`,
+		html: `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<style>
+					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+					.header { background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+					.button { display: inline-block; background: #dc2626; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
+					.footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+					.warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 5px; margin: 20px 0; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="header">
+						<h1>Reset Your Password</h1>
+					</div>
+					<div class="content">
+						<p>Hello <strong>${name}</strong>,</p>
+						<p>We received a request to reset the password for your PNSB-Norway ${userType} account.</p>
+						<p>To reset your password, please click the button below:</p>
+						<center>
+							<a href="${resetUrl}" class="button">Reset Password</a>
+						</center>
+						<p>Or copy and paste this link in your browser:</p>
+						<p style="background: white; padding: 10px; border-radius: 5px; word-break: break-all;">${resetUrl}</p>
+						
+						<div class="warning">
+							<p><strong>Important:</strong></p>
+							<ul>
+								<li>This link is valid for 1 hour only</li>
+								<li>If you didn't request this, please ignore this email</li>
+								<li>Never share this link with anyone</li>
+							</ul>
+						</div>
+						
+						<p>If you have any questions or didn't request this password reset, please contact our support team.</p>
+						<p>Best regards,<br><strong>PNSB-Norway Team</strong></p>
+					</div>
+					<div class="footer">
+						<p>This is an automated email. Please do not reply to this message.</p>
+					</div>
+				</div>
+			</body>
+			</html>
+		`,
+	};
+
+	try {
+		await transporter.sendMail(mailOptions);
+		console.log("Password reset email sent to:", email);
+	} catch (error) {
+		console.error("Error sending password reset email:", error);
+		throw new Error("Failed to send password reset email");
 	}
 }

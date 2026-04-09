@@ -20,6 +20,15 @@ interface Circular {
 	circularSecondPicture?: string;
 }
 
+// Helper function to convert object to Map for API submission
+// const objectToMap = (obj: { en: string; no: string; ne: string }): Map<string, string> => {
+// 	return new Map([
+// 		["en", obj.en],
+// 		["no", obj.no],
+// 		["ne", obj.ne],
+// 	]);
+// };
+
 interface CircularFormProps {
 	circular?: Circular;
 	onClose: () => void;
@@ -43,9 +52,9 @@ export default function CircularForm({ circular, onClose, onSuccess }: CircularF
 	useEffect(() => {
 		if (circular) {
 			setFormData({
-				circularTitle: circular.circularTitle || { en: "", no: "", ne: "" },
-				circularDesc: circular.circularDesc || { en: "", no: "", ne: "" },
-				circularAuthor: circular.circularAuthor || { en: "", no: "", ne: "" },
+				circularTitle: circular.circularTitle,
+				circularDesc: circular.circularDesc,
+				circularAuthor: circular.circularAuthor,
 				publicationStatus: circular.publicationStatus || "draft",
 				circularPublishedAt: circular.circularPublishedAt?.split("T")[0] || "",
 			});

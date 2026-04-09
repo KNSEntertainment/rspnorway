@@ -1,6 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import User from "@/models/User.Model";
+import Membership from "@/models/Membership.Model";
 import ConnectDB from "@/lib/mongodb";
 import NextAuth from "next-auth";
 
@@ -23,24 +24,63 @@ export const authOptions = {
 				await ConnectDB();
 
 				try {
-					const user = await User.findOne({ email: credentials.email });
+					// First try to find user in User model
+					let user = await User.findOne({ email: credentials.email });
+					
+					// If not found in User model, try Membership model
 					if (!user) {
-						console.log("No user found with this email");
-						throw new Error("No user found with this email");
+						const member = await Membership.findOne({ 
+							email: credentials.email,
+							membershipStatus: "approved" // Only allow approved members to login
+						});
+						
+						if (!member) {
+							console.log("No user or member found with this email");
+							throw new Error("No user found with this email");
+						}
+						
+						// Check if member has a password set
+						if (!member.password) {
+							console.log("Member has not set password yet");
+							throw new Error("Please set your password first. Check your email for the setup link.");
+						}
+						
+						// Validate member password
+						const isValid = await bcrypt.compare(credentials.password, member.password);
+						if (!isValid) {
+							console.log("Invalid member password");
+							throw new Error("Invalid credentials");
+						}
+						
+						// Return member data in user format for NextAuth
+						return {
+							_id: member._id,
+							email: member.email,
+							fullName: member.fullName,
+							phone: member.phone,
+							role: "member",
+							membershipType: member.membershipType,
+							membershipStatus: member.membershipStatus,
+							isMember: true, // Flag to identify this is a member
+						};
 					}
+					
+					// Existing user validation logic
 					// if (!user.isVerified) {
 					// 	console.log("Verify first");
 					// 	throw new Error("PLease verify your email first");
 					// }
 
-					// const isValid = credentials.password === user.password;
 					const isValid = await bcrypt.compare(credentials.password, user.password);
 					if (!isValid) {
-						console.log("Invalid password");
+						console.log("Invalid user password");
 						throw new Error("Invalid credentials");
 					}
 
-					return user;
+					return {
+						...user.toObject(),
+						isMember: false, // Flag to identify this is a regular user
+					};
 				} catch (error) {
 					throw new Error(error.message);
 				}
@@ -64,6 +104,10 @@ export const authOptions = {
 				token.fullName = user.fullName;
 				token.role = user.role;
 				token.phone = user.phone;
+				// Member-specific fields
+				token.isMember = user.isMember;
+				token.membershipType = user.membershipType;
+				token.membershipStatus = user.membershipStatus;
 			}
 			return token;
 		},
@@ -78,6 +122,10 @@ export const authOptions = {
 					fullName: token.fullName,
 					role: token.role,
 					phone: token.phone,
+					// Member-specific fields
+					isMember: token.isMember,
+					membershipType: token.membershipType,
+					membershipStatus: token.membershipStatus,
 				};
 			}
 

@@ -19,6 +19,11 @@ const MembershipSchema = new mongoose.Schema({
 	volunteerInterest: { type: [String], default: [] },
 	agreeTerms: { type: Boolean, required: true },
 	profilePhoto: { type: String },
+	password: { type: String },
+	passwordSetupToken: { type: String },
+	passwordSetupTokenExpiry: { type: Date },
+	passwordResetToken: { type: String },
+	passwordResetTokenExpiry: { type: Date },
 	createdAt: { type: Date, default: Date.now },
 });
 

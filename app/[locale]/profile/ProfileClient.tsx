@@ -60,11 +60,13 @@ export default function ProfileClient({ translations: t }: Props) {
 	useEffect(() => {
 		if (status === "unauthenticated") {
 			router.push("/en/login");
+			return;
 		}
 
 		// Redirect admins to dashboard
 		if (session?.user?.role === "admin") {
 			router.push("/en/dashboard");
+			return;
 		}
 
 		// Fetch membership data including profile photo
@@ -93,7 +95,7 @@ export default function ProfileClient({ translations: t }: Props) {
 				}
 			})
 			.catch((error) => console.error("Error fetching settings:", error));
-	}, [session, status, router]);
+	}, [status, session?.user?.email, session?.user?.role, router]);
 
 	const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -440,7 +442,7 @@ export default function ProfileClient({ translations: t }: Props) {
 								</CardTitle>
 								<Button onClick={() => setShowIDCard(!showIDCard)} variant={showIDCard ? "default" : "outline"} className={showIDCard ? "bg-brand hover:bg-brand/90" : "border-brand text-brand hover:bg-brand/10"}>
 									<CreditCard className="w-4 h-4 mr-2" />
-									{showIDCard ? "Hide ID Card" : "Generate ID Card"}
+									{showIDCard ? "Hide ID Card" : "Show ID Card"}
 								</Button>
 							</div>
 						</CardHeader>

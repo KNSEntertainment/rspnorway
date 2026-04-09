@@ -10,6 +10,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"; // Import Tabs compone
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 
 const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) => (
 	<div className="relative">
@@ -166,6 +167,11 @@ function AuthFormContent() {
 												</button>
 											</div>
 										</div>
+									</div>
+									<div className="mt-4 text-center">
+										<Link href={`/${locale}/forgot-password`} className="text-sm text-brand hover:underline">
+											{t("forgot_password")}
+										</Link>
 									</div>
 									<div className="mt-6 flex justify-between">
 										<Button type="button" variant="outline" onClick={handleCancel}>

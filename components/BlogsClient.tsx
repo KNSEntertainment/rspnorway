@@ -100,16 +100,41 @@ export default function BlogsClient({ blogs, locale }: Props) {
 	};
 
 	// Helper function to get localized blog description
-	// const getLocalizedDescription = (blog: Blog): string => {
-	// 	const key = `blogDesc_${locale}` as keyof Blog;
-	// 	const localizedDesc = blog[key];
-	// 	return (typeof localizedDesc === "string" && localizedDesc) || blog.blogDesc_en || "";
-	// };
+	const getLocalizedDescription = (blog: Blog): string => {
+		const key = `blogDesc_${locale}` as keyof Blog;
+		const localizedDesc = blog[key];
+		return (typeof localizedDesc === "string" && localizedDesc) || blog.blogDesc_en || "";
+	};
 
-	// Clean description - remove HTML tags
-	// const cleanDescription = (description: string): string => {
-	// 	return description.replace(/<[^>]*>/g, '').trim();
-	// };
+	// Enhanced description processing for professional preview
+	const cleanDescription = (description: string): string => {
+		if (!description) return "";
+		
+		// Process HTML to preserve more formatting for professional look
+		let processedText = description
+			// Handle paragraphs and line breaks
+			.replace(/<br\s*\/?>/gi, ' ') // Replace <br> with spaces
+			.replace(/<\/p>/gi, ' </p>') // Add space before closing p
+			.replace(/<p[^>]*>/gi, '') // Remove opening p tags
+			.replace(/<\/p>/gi, '') // Remove closing p tags after spacing
+			
+			// Preserve text formatting
+			.replace(/<strong[^>]*>/gi, '<strong>') // Normalize strong
+			.replace(/<\/strong>/gi, '</strong>') // Keep strong closing
+			.replace(/<b[^>]*>/gi, '<strong>') // Convert b to strong
+			.replace(/<\/b>/gi, '</strong>') // Convert /b to /strong
+			.replace(/<em[^>]*>/gi, '<em>') // Normalize em
+			.replace(/<\/em>/gi, '</em>') // Keep em closing
+			.replace(/<i[^>]*>/gi, '<em>') // Convert i to em
+			.replace(/<\/i>/gi, '</em>') // Convert /i to /em
+			
+			// Remove complex elements but keep basic formatting
+			.replace(/<[^>]*(?!strong|\/strong|em|\/em)[^>]*>/gi, ''); // Remove all other tags except formatting
+		
+		// Clean up extra spaces and limit length
+		processedText = processedText.replace(/\s+/g, ' ').trim();
+		return processedText.length > 250 ? processedText.substring(0, 250) + "..." : processedText;
+	};
 
 	// Get the latest blog for featured display
 	const featuredBlog = blogs.length > 0 ? blogs[0] : null;
@@ -183,9 +208,14 @@ export default function BlogsClient({ blogs, locale }: Props) {
 									</div>
 									
 									{/* Blog Title */}
-									<h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
+									<h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-brand transition-colors duration-500">
 										{getLocalizedTitle(featuredBlog)}
 									</h2>
+									
+									{/* Blog Description Preview */}
+									<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+										<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(featuredBlog)) }} />
+									</div>
 									
 									{/* Blog Meta */}
 									<div className="flex items-center gap-4 text-white/80">
@@ -238,9 +268,14 @@ export default function BlogsClient({ blogs, locale }: Props) {
 										</div>
 										
 										{/* Blog Title */}
-										<h2 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
+										<h2 className="text-2xl lg:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-brand transition-colors duration-500">
 											{getLocalizedTitle(featuredBlog)}
 										</h2>
+										
+										{/* Blog Description Preview */}
+										<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+											<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(featuredBlog)) }} />
+										</div>
 										
 										{/* Blog Meta */}
 										<div className="flex items-center gap-4 text-white/80">
@@ -292,9 +327,14 @@ export default function BlogsClient({ blogs, locale }: Props) {
 											</div>
 											
 											{/* Blog Title */}
-											<h2 className="text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-emerald-400 transition-colors duration-500">
+											<h2 className="text-2xl lg:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-emerald-400 transition-colors duration-500">
 												{getLocalizedTitle(blogs[1])}
 											</h2>
+											
+											{/* Blog Description Preview */}
+											<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+												<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(blogs[1])) }} />
+											</div>
 											
 											{/* Blog Meta */}
 											<div className="flex items-center gap-4 text-white/80">

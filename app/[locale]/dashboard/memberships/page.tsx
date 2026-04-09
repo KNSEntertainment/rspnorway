@@ -61,10 +61,44 @@ export default function MembershipsPage() {
 			if (!response.ok) {
 				throw new Error("Failed to update status");
 			}
-			toast({
-				title: "Success",
-				description: `Membership ${newStatus} successfully`,
-			});
+			
+			// Send welcome email if status is changed to approved
+			if (newStatus === "approved") {
+				try {
+					const emailResponse = await fetch("/api/membership/send-welcome-email", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ membershipId: id }),
+					});
+					
+					if (!emailResponse.ok) {
+						console.error("Failed to send welcome email");
+						toast({
+							title: "Warning",
+							description: "Membership approved but welcome email failed to send",
+							variant: "destructive",
+						});
+					} else {
+						toast({
+							title: "Success",
+							description: `Membership ${newStatus} and welcome email sent successfully`,
+						});
+					}
+				} catch (emailError) {
+					console.error("Error sending welcome email:", emailError);
+					toast({
+						title: "Warning",
+						description: "Membership approved but welcome email failed to send",
+						variant: "destructive",
+					});
+				}
+			} else {
+				toast({
+					title: "Success",
+					description: `Membership ${newStatus} successfully`,
+				});
+			}
+			
 			mutate();
 		} catch (error) {
 			console.error("Error updating status:", error);
@@ -119,19 +153,76 @@ export default function MembershipsPage() {
 
 	const handleBulkStatusChange = async () => {
 		if (!selectedMemberIds.length || !bulkStatus) return;
+		
+		let emailSuccessCount = 0;
+		let emailFailureCount = 0;
+		
 		for (const id of selectedMemberIds) {
-			await fetch(`/api/membership/${id}`, {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ membershipStatus: bulkStatus }),
-			});
+			try {
+				// Update membership status
+				const response = await fetch(`/api/membership/${id}`, {
+					method: "PUT",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ membershipStatus: bulkStatus }),
+				});
+				
+				if (!response.ok) {
+					throw new Error("Failed to update status");
+				}
+				
+				// Send welcome email if status is approved
+				if (bulkStatus === "approved") {
+					try {
+						const emailResponse = await fetch("/api/membership/send-welcome-email", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ membershipId: id }),
+						});
+						
+						if (emailResponse.ok) {
+							emailSuccessCount++;
+						} else {
+							emailFailureCount++;
+						}
+					} catch {
+						emailFailureCount++;
+					}
+				}
+			} catch (error) {
+				console.error("Error updating member:", id, error);
+			}
 		}
+		
 		setSelectedMemberIds([]);
 		setBulkStatus("");
-		toast({
-			title: "Success",
-			description: `Selected memberships ${bulkStatus} successfully`,
-		});
+		
+		// Show appropriate toast message
+		if (bulkStatus === "approved" && (emailSuccessCount > 0 || emailFailureCount > 0)) {
+			if (emailFailureCount === 0) {
+				toast({
+					title: "Success",
+					description: `Selected memberships ${bulkStatus} and welcome emails sent successfully`,
+				});
+			} else if (emailSuccessCount === 0) {
+				toast({
+					title: "Partial Success",
+					description: `Selected memberships ${bulkStatus} but all welcome emails failed`,
+					variant: "destructive",
+				});
+			} else {
+				toast({
+					title: "Partial Success",
+					description: `Selected memberships ${bulkStatus}. Welcome emails sent to ${emailSuccessCount} members, failed for ${emailFailureCount} members`,
+					variant: "destructive",
+				});
+			}
+		} else {
+			toast({
+				title: "Success",
+				description: `Selected memberships ${bulkStatus} successfully`,
+			});
+		}
+		
 		mutate();
 	};
 

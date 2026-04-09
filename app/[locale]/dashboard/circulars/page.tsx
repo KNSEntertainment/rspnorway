@@ -10,9 +10,9 @@ import CircularForm from "@/components/CircularForm";
 
 interface Circular {
 	_id: string;
-	circularTitle: { en: string; no: string; ne: string };
-	circularDesc: { en: string; no: string; ne: string };
-	circularAuthor: { en: string; no: string; ne: string };
+	circularTitle: Map<string, string> | { en: string; no: string; ne: string } | string;
+	circularDesc: Map<string, string> | { en: string; no: string; ne: string } | string;
+	circularAuthor: Map<string, string> | { en: string; no: string; ne: string } | string;
 	publicationStatus: string;
 	circularPublishedAt?: string;
 	circularPdfUrl?: string;
@@ -20,6 +20,63 @@ interface Circular {
 	circularSecondPicture?: string;
 	createdAt: string;
 }
+
+// Helper function to safely get localized value from MongoDB Map (serialized as object)
+const getLocalizedValue = (field: Record<string, unknown> | Map<string, unknown> | string | null | undefined, key: string): string => {
+	if (!field) return "";
+	
+	// Handle string type (direct value)
+	if (typeof field === 'string') {
+		return field;
+	}
+	
+	// Handle Map type (rare, but possible)
+	if (field instanceof Map) {
+		return (field.get(key) as string) || "";
+	}
+	
+	// Handle Object type (most common - MongoDB Map serialized to object)
+	if (typeof field === 'object' && field !== null) {
+		const fieldObj = field as Record<string, unknown>;
+		// Try direct key access first (for {en: "", no: "", ne: ""} structure)
+		if (fieldObj[key]) {
+			return (fieldObj[key] as string) || "";
+		}
+		
+		// Try all available keys and return the first non-empty string
+		const keys = Object.keys(field);
+		for (const fieldKey of keys) {
+			const value = field[fieldKey];
+			if (value && typeof value === 'string' && value.trim() !== '') {
+				return value;
+			}
+		}
+		
+		// If no non-empty values found, return the first value anyway
+		if (keys.length > 0) {
+			const firstValue = field[keys[0]];
+			if (typeof firstValue === 'string') {
+				return firstValue;
+			}
+		}
+	}
+	
+	// Handle string type (fallback)
+	if (typeof field === 'string') {
+		return field;
+	}
+	
+	return "";
+};
+
+// Helper function to convert Map to Object for form
+const mapToObject = (field: Record<string, unknown> | Map<string, unknown> | string | null | undefined): { en: string; no: string; ne: string } => {
+	return {
+		en: getLocalizedValue(field, "en"),
+		no: getLocalizedValue(field, "no"),
+		ne: getLocalizedValue(field, "ne"),
+	};
+};
 
 export default function CircularsPage() {
 	const [circulars, setCirculars] = useState<Circular[]>([]);
@@ -111,7 +168,16 @@ export default function CircularsPage() {
 			{showForm && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
 					<h2 className="text-2xl font-bold text-gray-900 mb-4">{selectedCircular ? "Edit Circular" : "Add New Circular"}</h2>
-					<CircularForm circular={selectedCircular as Circular} onClose={handleCloseForm} onSuccess={handleFormSuccess} />
+					<CircularForm 
+					circular={selectedCircular ? {
+						...selectedCircular,
+						circularTitle: mapToObject(selectedCircular.circularTitle),
+						circularDesc: mapToObject(selectedCircular.circularDesc),
+						circularAuthor: mapToObject(selectedCircular.circularAuthor),
+					} : undefined} 
+					onClose={handleCloseForm} 
+					onSuccess={handleFormSuccess} 
+				/>
 				</div>
 			)}
 
@@ -137,8 +203,8 @@ export default function CircularsPage() {
 							<TableBody>
 								{circulars.map((circular: Circular) => (
 									<TableRow key={circular._id}>
-										<TableCell className="font-medium">{circular.circularTitle?.en || "No title"}</TableCell>
-										<TableCell>{circular.circularAuthor?.en || "N/A"}</TableCell>
+										<TableCell className="font-medium">{getLocalizedValue(circular.circularTitle, "en") || "No title"}</TableCell>
+										<TableCell>{getLocalizedValue(circular.circularAuthor, "en") || "N/A"}</TableCell>
 										<TableCell>{getStatusBadge(circular.publicationStatus)}</TableCell>
 										<TableCell>{circular.circularPublishedAt ? new Date(circular.circularPublishedAt).toLocaleDateString() : "Not set"}</TableCell>
 										<TableCell>{new Date(circular.createdAt).toLocaleDateString()}</TableCell>
