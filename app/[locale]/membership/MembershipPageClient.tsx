@@ -444,7 +444,14 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 								<label className="block text-sm font-medium text-gray-900 mb-2">
 									{t.date_of_birth} <span className="text-red-500">*</span>
 								</label>
-								<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+								<input 
+									type="date" 
+									name="dateOfBirth" 
+									value={formData.dateOfBirth} 
+									onChange={handleChange} 
+									className="w-full min-w-0 max-w-full text-sm px-3 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent box-border" 
+									style={{ minWidth: '0', maxWidth: '95%' }}
+								/>
 							</div>
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">

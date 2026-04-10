@@ -34,12 +34,7 @@ interface DownloadsClientProps {
 }
 
 export default function DownloadsClient({ documents, translations }: DownloadsClientProps) {
-	// const searchPlaceholder = translations.searchPlaceholder;
-	// const downloadLabel = translations.download;
-	// const allLabel = translations.all;
-	// const downloadsCountLabel = translations.downloadsCount;
-	// const noDocumentsLabel = translations.noDocuments;
-	// const noDocumentsDescLabel = translations.noDocumentsDesc;
+
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState(translations.all);
 	const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -191,7 +186,7 @@ export default function DownloadsClient({ documents, translations }: DownloadsCl
 						))}{" "}
 					</div>
 				) : (
-					<div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+					<div className="bg-white rounded-2xl shadow-lg p-6 md:p-12 text-center">
 						{" "}
 						<div className="inline-flex items-center justify-center w-20 h-20 bg-light rounded-full mb-4">
 							{" "}

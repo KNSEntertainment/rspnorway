@@ -30,6 +30,8 @@ export default async function DonatePage() {
 
 					{/* Impact Section - Takes 1 column */}
 					<div className="space-y-6">
+							{/* Donor List */}
+						<DonorList />
 						<Card className="border-0 shadow-lg">
 							<CardContent className="pt-6">
 								<h3 className="text-xl font-bold text-gray-900 mb-4">{t("impact_title")}</h3>
@@ -84,7 +86,7 @@ export default async function DonatePage() {
 								</div>
 							</CardContent>
 						</Card>
-
+{/* Why Donate */}
 						<Card className="border-0 shadow-lg bg-gradient-to-br from-brand to-blue-700 text-white">
 							<CardContent className="pt-6">
 								<h3 className="text-xl font-bold mb-3">{t("why_donate")}</h3>
@@ -109,8 +111,7 @@ export default async function DonatePage() {
 							</CardContent>
 						</Card>
 
-						{/* Donor List */}
-						<DonorList />
+					
 					</div>
 				</div>
 

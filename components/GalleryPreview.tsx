@@ -41,12 +41,6 @@ const GalleryPreview = () => {
 	const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
 	const [allAlbumPhotos, setAllAlbumPhotos] = useState<Photo[]>([]);
 
-	// Helper function to get YouTube thumbnail
-	// const getYouTubeThumbnailUrl = (url: string) => {
-	// 	if (!url) return "/ghanti.jpg";
-	// 	const videoId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/watch\?.+&v=))([^&\n?#]+)/)?.[1];
-	// 	return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "/ghanti.jpg";
-	// };
 
 	// Fetch only albums data (lightweight)
 	useEffect(() => {
@@ -216,27 +210,28 @@ const GalleryPreview = () => {
 	return (
 		<>
 			<section className="py-16 bg-gray-50">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Section Header */}
 				<SectionHeader heading={t("title")} subtitle={t("description")} />
 
 				{/* Albums Grid */}
 				{displayedAlbums.length > 0 ? (
 					<>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-12">
 							{displayedAlbums.map((album, index) => (
 								<div 
 									key={album.name} 
 									className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer relative"
+									onClick={(e) => handleAlbumClick(album, e)}
 								>
 									{/* Album Cover */}
-									<div className="relative overflow-hidden bg-gray-100 h-96">
+									<div className="relative overflow-hidden bg-gray-100 h-64">
 										<Image 
 											src={album.coverImage} 
 											alt={album.name} 
 											width={300} 
 											height={100} 
-											className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500"
+											className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
 											loading={index < 3 ? "eager" : "lazy"}
 											priority={index < 2}
 										/>
@@ -269,8 +264,8 @@ const GalleryPreview = () => {
 
 										{/* Preview Thumbnails */}
 										<div className="flex gap-2 mb-4">
-											{album.photos.slice(0, 3).map((photo) => (
-												<div key={photo.id} className="w-24 h-24 rounded-lg overflow-hidden border-2 border-white shadow-sm">
+											{album.photos.slice(0, 4).map((photo, index) => (
+												<div key={photo.id} className="w-20 h-20 rounded-lg overflow-hidden border-2 border-white shadow-sm relative">
 													<Image 
 														src={photo.url} 
 														alt={photo.title} 
@@ -279,13 +274,15 @@ const GalleryPreview = () => {
 														className="w-full h-full object-cover object-top"
 														loading="lazy"
 													/>
+													{index === 3 && album.count > 4 && (
+														<div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+															<span className="text-white text-xs font-semibold">
+																+{album.count - 4}
+															</span>
+														</div>
+													)}
 												</div>
 											))}
-											{album.count > 3 && (
-												<div className="w-24 h-24 rounded-lg bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
-													+{album.count - 3}
-												</div>
-											)}
 										</div>
 
 										{/* Action Buttons */}

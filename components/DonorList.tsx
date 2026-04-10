@@ -55,7 +55,7 @@ export default function DonorList() {
 	}
 
 	return (
-		<Card className="border-0 shadow-lg">
+		<Card className="border-2 border-brand">
 			<CardHeader className="pb-3">
 				<CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
 					<Users className="w-5 h-5 text-brand" />

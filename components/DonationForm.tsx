@@ -198,11 +198,11 @@ export default function DonationForm() {
 					{/* Payment Method Selection */}
 					<div>
 						<label className="block text-sm font-semibold text-gray-900 mb-3">{t("payment_method")}</label>
-						<div className="grid grid-cols-2 gap-3">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 							<button
 								type="button"
 								onClick={() => setPaymentMethod('card')}
-								className={`p-4 rounded-lg border-2 font-semibold transition-all ${
+								className={`p-2 md:p-4 rounded-lg border-2 font-semibold transition-all ${
 									paymentMethod === 'card'
 										? 'border-brand bg-brand text-white'
 										: 'border-gray-300 text-gray-900 hover:border-brand'
@@ -219,7 +219,7 @@ export default function DonationForm() {
 							<button
 								type="button"
 								onClick={() => setPaymentMethod('vipps')}
-								className={`p-4 rounded-lg border-2 font-semibold transition-all ${
+								className={`p-2 md:p-4 rounded-lg border-2 font-semibold transition-all ${
 									paymentMethod === 'vipps'
 										? 'border-brand bg-brand text-white'
 										: 'border-gray-300 text-gray-900 hover:border-brand'

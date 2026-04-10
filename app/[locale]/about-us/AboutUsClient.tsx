@@ -5,10 +5,13 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 
 export default function AboutUsClient() {
 	const t = useTranslations("about-us");
 	const ta = useTranslations("about");
+	const [activeIndex, setActiveIndex] = useState(0);
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	const values = [
 		{ icon: Landmark, title: ta("value_cultural_preservation_title"), description: ta("value_cultural_preservation_desc") },
@@ -17,6 +20,51 @@ export default function AboutUsClient() {
 		{ icon: HandHeart, title: ta("value_humanitarian_support_title"), description: ta("value_humanitarian_support_desc") },
 		{ icon: RefreshCcw, title: ta("value_knowledge_exchange_title"), description: ta("value_knowledge_exchange_desc") },
 	];
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (scrollContainerRef.current) {
+				const container = scrollContainerRef.current;
+				const scrollLeft = container.scrollLeft;
+				const flexContainer = container.children[0] as HTMLElement;
+				
+				if (!flexContainer) return;
+				
+				const cards = Array.from(flexContainer.children) as HTMLElement[];
+				
+				// Find which card is most visible in the viewport
+				let maxVisibleArea = 0;
+				let activeCardIndex = 0;
+				
+				cards.forEach((card, index) => {
+					const cardLeft = card.offsetLeft;
+					const cardRight = cardLeft + card.offsetWidth;
+					const containerLeft = scrollLeft;
+					const containerRight = scrollLeft + container.offsetWidth;
+					
+					// Calculate visible area of this card
+					const visibleLeft = Math.max(cardLeft, containerLeft);
+					const visibleRight = Math.min(cardRight, containerRight);
+					const visibleArea = Math.max(0, visibleRight - visibleLeft);
+					
+					if (visibleArea > maxVisibleArea) {
+						maxVisibleArea = visibleArea;
+						activeCardIndex = index;
+					}
+				});
+				
+				setActiveIndex(activeCardIndex);
+			}
+		};
+
+		const container = scrollContainerRef.current;
+		if (container) {
+			container.addEventListener('scroll', handleScroll);
+			// Initial call to set the correct active index
+			handleScroll();
+			return () => container.removeEventListener('scroll', handleScroll);
+		}
+	}, [values.length]);
 
 	return (
 		<main className="pt-12 px-4">
@@ -174,7 +222,7 @@ export default function AboutUsClient() {
 					<SectionHeader heading={t("values_title")} />
 				</header>
 
-				<div className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+				<div ref={scrollContainerRef} className="overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
 					<div className="flex gap-6" style={{ minWidth: "fit-content" }}>
 						{values.map((value, index) => (
 							<motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }} className="bg-light rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300 w-[85vw] sm:w-[45vw] lg:w-[calc(33.333%-16px)] flex-shrink-0">
@@ -186,6 +234,18 @@ export default function AboutUsClient() {
 							</motion.div>
 						))}
 					</div>
+				</div>
+				
+				{/* Dot indicators for mobile users */}
+				<div className="flex justify-center md:hidden mt-4 gap-2">
+					{values.map((_, index) => (
+						<div
+							key={index}
+							className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+								index === activeIndex ? 'bg-brand' : 'bg-gray-300'
+							}`}
+						/>
+					))}
 				</div>
 			</motion.div>
 		</main>

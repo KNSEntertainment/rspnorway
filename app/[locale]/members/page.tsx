@@ -2,9 +2,11 @@
 
 import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
-import { Phone, Mail, Search, X, Filter, ChevronRight } from "lucide-react";
+import { Phone, Mail, Search, X, Filter, ChevronRight, UserPlus } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface ExecutiveMember {
 	_id: string;
@@ -48,6 +50,7 @@ interface Filters {
 
 export default function Members() {
 	const t = useTranslations("members");
+	const { data: session } = useSession();
 	const [executiveMembers, setExecutiveMembers] = useState<ExecutiveMember[]>([]);
 	const [regularMembers, setRegularMembers] = useState<RegularMember[]>([]);
 	const [departments, setDepartments] = useState<Department[]>([]);
@@ -269,37 +272,50 @@ export default function Members() {
 				{/* Search and Filter Toggle */}
 				<div className="mb-3">
 					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
-						<div className="flex items-stretch sm:items-center gap-3">
-							{/* Search Input */}
-							<div className="flex">
-								<div className="relative">
-									<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-									<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-									{filters.search && (
-										<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-											<X className="h-4 w-4" />
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+							{/* Right side: Become a Member Button */}
+							{!session && (
+								<div className="order-first sm:order-none sm:justify-end flex">
+									<Link href="/membership" className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+										<UserPlus className="h-4 w-4" />
+										<span>Become a Member</span>
+									</Link>
+								</div>
+							)}
+
+							{/* Left side: Search and Filter */}
+							<div className="flex items-stretch sm:items-center gap-3 order-last sm:order-none">
+								{/* Search Input */}
+								<div className="flex">
+									<div className="relative">
+										<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+										<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
+										{filters.search && (
+											<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+												<X className="h-4 w-4" />
+											</button>
+										)}
+									</div>
+								</div>
+
+								{/* Filter Toggle */}
+								<div className="flex items-center gap-2">
+									<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="inline-flex items-center gap-2 px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+										<Filter className="h-4 w-4" />
+										<span>Filters</span>
+										{hasActiveFilters && <span className="bg-white text-brand rounded-full px-2 py-0.5 text-xs font-semibold">{[filters.department, filters.subdepartment].filter(Boolean).length}</span>}
+									</button>
+									{hasActiveFilters && (
+										<button onClick={clearAllFilters} className="text-sm text-brand hover:text-blue-700 font-medium">
+											{t("clear_all")}
 										</button>
 									)}
 								</div>
 							</div>
 
-							{/* Filter Toggle */}
-							<div className="flex items-center gap-2">
-								<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="inline-flex items-center gap-2 px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
-									<Filter className="h-4 w-4" />
-									<span>Filters</span>
-									{hasActiveFilters && <span className="bg-white text-brand rounded-full px-2 py-0.5 text-xs font-semibold">{[filters.department, filters.subdepartment].filter(Boolean).length}</span>}
-								</button>
-								{hasActiveFilters && (
-									<button onClick={clearAllFilters} className="text-sm text-brand hover:text-blue-700 font-medium">
-										{t("clear_all")}
-									</button>
-								)}
-							</div>
-
 							{/* Members Count */}
 						</div>
-						<div className="text-sm text-gray-700 sm:ml-auto m-2">
+						<div className="text-sm text-gray-700 sm:ml-auto m-2 text-left sm:text-right">
 							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")}, 
 							<span className="text-brand font-bold ml-2">{filteredActiveMembers.length}</span> {filteredActiveMembers.length === 1 ? t("active_member") : t("active_members")}, 
 							<span className="text-brand font-bold ml-2">{filteredGeneralMembers.length}</span> {filteredGeneralMembers.length === 1 ? t("general_member") : t("general_members")}
@@ -437,7 +453,7 @@ export default function Members() {
 
 				{/* Active Members Section */}
 				{filteredActiveMembers.length > 0 && (
-					<div className="mb-8 md:mb-20 bg-gray-50 p-6">
+					<div className="mb-8 md:mb-20 p-6">
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("active_members")}</h2>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredActiveMembers.map((member: RegularMember) => (
@@ -531,4 +547,4 @@ export default function Members() {
 			</div>
 		</div>
 	);
-}
+} 

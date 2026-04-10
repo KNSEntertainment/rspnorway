@@ -256,15 +256,15 @@ const UnifiedGallery = () => {
 						{!selectedAlbum && (
 							<div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
 								<button onClick={() => setViewMode("albums")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "albums" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<Folder className="w-4 h-4" />
+									<Folder className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">{t("Albums")} ({albums.length})</span>
 								</button>
 								<button onClick={() => setViewMode("photos")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "photos" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<ImageIcon className="w-4 h-4" />
+									<ImageIcon className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">Photos ({photos.length})</span>
 								</button>
 								<button onClick={() => setViewMode("videos")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "videos" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<Video className="w-4 h-4" />
+									<Video className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">Videos ({videos.length})</span>
 								</button>
 								<button onClick={() => setViewMode("all")} className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "all" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>

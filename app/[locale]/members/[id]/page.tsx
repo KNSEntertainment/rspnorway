@@ -72,7 +72,7 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 										<p className="text-blue-100">
 											{isExecutiveMember ? 
 												(memberData.position || "Executive Member") : 
-												(`${memberData.membershipType} Member`)
+												(`${memberData.membershipType.charAt(0).toUpperCase() + memberData.membershipType.slice(1)} Member`)
 											}
 										</p>
 									</div>

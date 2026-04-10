@@ -139,7 +139,7 @@ export default function EventsTimeline() {
 						className="text-center mb-16"
 					>
 						<SectionHeader 
-							heading="Recent Event" 
+							heading="Recent Events" 
 							seeAllLink={`/${locale}/events`}
 							seeAllText="See All"
 						/>
@@ -147,33 +147,31 @@ export default function EventsTimeline() {
 					</motion.div>
 
 					{events.length > 0 ? (
-						<div className="w-full md:w-[600px] mx-auto">
-							{/* Single Event Display */}
-							{events.slice(0, 1).map((event, index) => (
-								<motion.div
-									key={event._id}
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
-									transition={{ duration: 0.6, delay: index * 0.1 }}
-								>
-									<div className="bg-gray-50 transition-all duration-300 overflow-hidden group">
-										<div className="flex flex-col md:flex-row">
-											{/* Event Poster Column */}
-											<div className="md:w-1/2 relative aspect-[16/9] md:aspect-[16/10]">
+						<div className="w-full max-w-6xl mx-auto">
+							{/* Two Events Display */}
+							<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+								{events.slice(0, 2).map((event, index) => (
+									<motion.div
+										key={event._id}
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.6, delay: index * 0.1 }}
+									>
+										<div className="bg-gray-50 transition-all duration-300 overflow-hidden group h-full">
+											{/* Event Poster */}
+											<div className="relative aspect-[16/9] w-full">
 												<Image 
 													src={event.eventposterUrl || "/ghanti.png"} 
 													alt={getLocalizedTitle(event)} 
 													fill 
-													className="object-contain bg-gray-50 transition-transform duration-700 group-hover:scale-105" 
+													className="object-cover bg-gray-50 transition-transform duration-700 group-hover:scale-105" 
 												/>
 												{/* Gradient Overlay */}
-												<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:hidden"></div>
-												
-											
+												<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 											</div>
 
-											{/* Event Information Column */}
-											<div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-center">
+											{/* Event Information */}
+											<div className="p-6 flex flex-col justify-center">
 											
 
 												{/* Event Title */}
@@ -216,9 +214,9 @@ export default function EventsTimeline() {
 												</div>
 											</div>
 										</div>
-									</div>
-								</motion.div>
-							))}
+									</motion.div>
+								))}
+							</div>
 
 							{/* View All Events Button */}
 							<motion.div

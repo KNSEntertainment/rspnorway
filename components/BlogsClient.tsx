@@ -34,47 +34,6 @@ interface Props {
 	locale: string;
 }
 
-// BlogTitle component with clamp detection
-// const BlogTitle = ({ title, className }: { title: string; className?: string }) => {
-// 	const [isClamped, setIsClamped] = useState(false);
-// 	const titleRef = useRef<HTMLDivElement>(null);
-
-// 	useEffect(() => {
-// 		const checkClamp = () => {
-// 			if (titleRef.current) {
-// 				// Check if text is clamped by comparing scrollHeight and clientHeight
-// 				const isClampedNow = titleRef.current.scrollHeight > titleRef.current.clientHeight;
-// 				if (isClamped !== isClampedNow) {
-// 					setIsClamped(isClampedNow);
-// 				}
-// 			}
-// 		};
-
-// 		checkClamp();
-// 		// Re-check on window resize
-// 		window.addEventListener('resize', checkClamp);
-// 		return () => window.removeEventListener('resize', checkClamp);
-// 	}, [title, isClamped]);
-
-// 	return (
-// 		<div className="relative group/title">
-// 			<div 
-// 				ref={titleRef}
-// 				className={`${className} ${isClamped ? 'cursor-help' : ''}`}
-// 			>
-// 				{title}
-// 			</div>
-			
-// 			{/* Custom Tooltip - Only show if clamped */}
-// 			{isClamped && (
-// 				<div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg shadow-lg opacity-0 invisible group-hover/title:opacity-100 group-hover/title:visible transition-all duration-200 whitespace-nowrap z-10 pointer-events-none">
-// 					{title}
-// 					<div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 bg-gray-900 rotate-45"></div>
-// 				</div>
-// 			)}
-// 		</div>
-// 	);
-// };
 
 export default function BlogsClient({ blogs, locale }: Props) {
 	const router = useRouter();
@@ -201,19 +160,19 @@ export default function BlogsClient({ blogs, locale }: Props) {
 								{/* Content Overlay */}
 								<div className="absolute inset-0 p-6 flex flex-col justify-end">
 									{/* Category Badge */}
-									<div className="mb-4">
-										<div className="bg-brand/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg inline-block">
-											<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest Story</span>
+									<div className="mb-2 md:mb-4">
+										<div className="bg-brand/90 backdrop-blur-sm rounded-full px-4 py-1 md:py-2 shadow-lg inline-block">
+											<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest</span>
 										</div>
 									</div>
 									
 									{/* Blog Title */}
-									<h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-3 leading-tight group-hover:text-brand transition-colors duration-500">
+									<h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-2 md:mb-4 leading-tight group-hover:text-brand transition-colors duration-500">
 										{getLocalizedTitle(featuredBlog)}
 									</h2>
 									
 									{/* Blog Description Preview */}
-									<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+									<div className="text-white/90 text-sm mb-2 md:mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
 										<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(featuredBlog)) }} />
 									</div>
 									
@@ -263,7 +222,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 										{/* Category Badge */}
 										<div className="mb-4">
 											<div className="bg-brand/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg inline-block">
-												<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest Story</span>
+												<span className="text-xs font-semibold text-white uppercase tracking-wider">Latest</span>
 											</div>
 										</div>
 										

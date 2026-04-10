@@ -57,6 +57,24 @@ export async function POST(request: Request) {
 				console.log("Payment completed for session:", session.id);
 				break;
 
+			case "charge.updated":
+			case "charge.succeeded":
+				const charge = event.data.object as Stripe.Charge;
+				console.log("Charge completed:", charge.id);
+				console.log("Payment intent:", charge.payment_intent);
+
+				// Update donation status using payment intent
+				if (charge.payment_intent) {
+					const updatedDonation = await Donation.findOneAndUpdate(
+						{ stripePaymentIntentId: charge.payment_intent as string },
+						{ paymentStatus: "completed" },
+						{ new: true }
+					);
+
+					console.log("Donation updated via charge:", updatedDonation?._id);
+				}
+				break;
+
 			case "checkout.session.expired":
 				const expiredSession = event.data.object as Stripe.Checkout.Session;
 
