@@ -115,15 +115,6 @@ export default function HeroLoading() {
 					))}
 				</motion.div>
 
-				{/* Loading Text */}
-				<motion.div
-					className="absolute bottom-32 left-1/2 -translate-x-1/2 text-white/70 text-sm md:text-base font-light"
-					initial={{ opacity: 0, y: 10 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ delay: 1.8, duration: 0.5 }}
-				>
-					Loading amazing content...
-				</motion.div>
 
 				{/* Animated Particles */}
 				{[...Array(6)].map((_, i) => (
