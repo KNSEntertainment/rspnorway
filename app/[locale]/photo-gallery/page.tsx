@@ -359,7 +359,7 @@ const PhotoGallery = () => {
 						<div className="relative w-full h-full flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
 							{/* Image */}
 							<div className="relative flex-1 w-full h-full max-h-[60vh] sm:max-h-[85vh] flex items-center justify-center">
-								<Image src={selectedPhoto.url} alt={selectedPhoto.title} width={1200} height={800} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" priority />
+								<Image src={selectedPhoto.url} alt={selectedPhoto.title} width={600} height={600} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" priority />
 							</div>
 
 							{/* Info Panel - Desktop */}

@@ -1,6 +1,6 @@
+import { Metadata } from "next";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import { Metadata } from "next";
 import Blogs from "@/components/Blogs";
 import AboutPreview from "@/components/AboutPreview";
 import GalleryPreview from "@/components/GalleryPreview";
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function LandingPage() {
 	return (
 		<main>
-			{/* Hero Section */}
+			{/* Hero Section - Critical, loaded immediately */}
 			<Hero />
 
 			{/* About Section with Statistics */}

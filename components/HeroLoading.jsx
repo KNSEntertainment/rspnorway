@@ -18,11 +18,16 @@ export default function HeroLoading() {
 					<div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-brand/10 to-purple-900/20" />
 					<div className="relative z-10">
 						<Image
-							src="/rsp-norway-logo-removebg-preview.png"
+							src="/rsp-norway-logo.png"
 							alt="RSP Norway Loading"
-							width={192}
-							height={192}
-							className="w-32 h-32 md:w-48 md:h-48 drop-shadow-2xl"
+							width={48}
+							height={48}
+							className="w-12 h-12 md:w-16 md:h-16 drop-shadow-2xl"
+							priority
+							placeholder="blur"
+							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+							sizes="(max-width: 768px) 48px, 64px"
+							quality={60}
 						/>
 					</div>
 				</section>
@@ -36,58 +41,38 @@ export default function HeroLoading() {
 				{/* Animated Background Gradient */}
 				<div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-brand/10 to-purple-900/20 animate-pulse" />
 				
-				{/* Logo Container with Multiple Animations */}
+				{/* Logo Container with Simple Animation */}
 				<motion.div 
 					className="relative z-10"
-					initial={{ scale: 0, rotate: -180, opacity: 0 }}
+					initial={{ scale: 0.8, opacity: 0 }}
 					animate={{ 
-						scale: [0, 1.2, 1], 
-						rotate: [-180, 10, 0], 
-						opacity: [0, 1, 1] 
+						scale: 1, 
+						opacity: 1
 					}}
 					transition={{ 
-						duration: 2, 
-						ease: "easeInOut",
-						times: [0, 0.7, 1]
+						duration: 0.8, 
+						ease: "easeOut"
 					}}
 				>
-					{/* Logo with Glow Effect */}
-					<motion.div
-						className="relative"
-						animate={{
-							scale: [1, 1.05, 1],
-						}}
-						transition={{
-							duration: 3,
-							repeat: Infinity,
-							ease: "easeInOut"
-						}}
-					>
-						{/* Glow Effect */}
-						<motion.div
-							className="absolute inset-0 blur-3xl"
-							animate={{
-								opacity: [0.3, 0.8, 0.3],
-								scale: [1, 1.2, 1],
-							}}
-							transition={{
-								duration: 2,
-								repeat: Infinity,
-								ease: "easeInOut"
-							}}
-						>
-							<div className="w-32 h-32 md:w-48 md:h-48 bg-gradient-to-r from-brand/50 to-blue-500/50 rounded-full" />
-						</motion.div>
+					{/* Logo with Simple Glow */}
+					<div className="relative">
+						{/* Simple Glow Effect */}
+						<div className="absolute inset-0 blur-xl bg-brand/30 rounded-full scale-110" />
 						
 						{/* Logo Image */}
 						<Image
-							src="/rsp-norway-logo-removebg-preview.png"
+							src="/rsp-norway-logo.png"
 							alt="RSP Norway Loading"
-							width={192}
-							height={192}
-							className="w-32 h-32 md:w-48 md:h-48 relative z-10 drop-shadow-2xl"
+							width={48}
+							height={48}
+							className="w-12 h-12 md:w-16 md:h-16 relative z-10 drop-shadow-2xl"
+							priority
+							placeholder="blur"
+							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+							sizes="(max-width: 768px) 48px, 64px"
+							quality={60}
 						/>
-					</motion.div>
+					</div>
 				</motion.div>
 
 				{/* Loading Dots */}
@@ -116,30 +101,7 @@ export default function HeroLoading() {
 				</motion.div>
 
 
-				{/* Animated Particles */}
-				{[...Array(6)].map((_, i) => (
-					<motion.div
-						key={i}
-						className="absolute w-1 h-1 bg-brand/30 rounded-full"
-						initial={{
-							x: Math.random() * 100 - 50,
-							y: Math.random() * 100 - 50,
-							opacity: 0,
-						}}
-						animate={{
-							x: Math.random() * 200 - 100,
-							y: Math.random() * 200 - 100,
-							opacity: [0, 1, 0],
-						}}
-						transition={{
-							duration: 3 + Math.random() * 2,
-							repeat: Infinity,
-							delay: Math.random() * 2,
-							ease: "easeInOut"
-						}}
-					/>
-				))}
-
+				
 				{/* Global CSS for Additional Effects */}
 				<style jsx global>{`
 					@keyframes float {

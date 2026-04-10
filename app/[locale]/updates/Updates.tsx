@@ -176,7 +176,7 @@ export default function UpdatesClient({
 									{/* Event Poster */}
 									<div className="relative w-full overflow-hidden">
 										{eventImages.length > 0 ? (
-											<Image src={eventImages[0]} alt={selectedEvent.eventname} width={1200} height={800} className="w-full h-auto object-contain" priority />
+											<Image src={eventImages[0]} alt={selectedEvent.eventname} width={300} height={200} className="w-full h-auto object-contain" priority />
 										) : (
 											<div className="flex items-center justify-center h-full">
 												<Calendar className="w-24 h-24 text-neutral-300" />
@@ -208,7 +208,7 @@ export default function UpdatesClient({
 										<div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
 											{eventImages.slice(1).map((url, index) => (
 												<div key={`${url}-${index}`} className="relative w-full overflow-hidden rounded-lg border border-neutral-100 bg-white">
-													<Image src={url} alt={`${selectedEvent.eventname} ${index + 2}`} width={600} height={400} className="w-full h-auto object-contain" />
+													<Image src={url} alt={`${selectedEvent.eventname} ${index + 2}`} width={400} height={300} className="w-full h-auto object-contain" />
 												</div>
 											))}
 										</div>
@@ -287,7 +287,7 @@ export default function UpdatesClient({
 
 									<div className="relative w-full overflow-hidden mb-8">
 										{selectedNotice.noticeimage ? (
-											<Image src={selectedNotice.noticeimage} alt={selectedNotice.noticetitle} width={1200} height={800} className="w-full h-auto object-contain" priority />
+											<Image src={selectedNotice.noticeimage} alt={selectedNotice.noticetitle} width={600} height={600} className="w-full h-auto object-contain" priority />
 										) : (
 											<div className="flex items-center justify-center py-12">
 												<Bell className="w-32 h-32 text-brand" />
@@ -364,7 +364,7 @@ export default function UpdatesClient({
 
 									<div className="relative w-full overflow-hidden mb-8">
 										{selectedCircular.circularMainPicture ? (
-											<Image src={selectedCircular.circularMainPicture} alt={selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"]} width={1200} height={800} className="w-full h-auto object-contain" priority />
+											<Image src={selectedCircular.circularMainPicture} alt={selectedCircular.circularTitle[locale] || selectedCircular.circularTitle["en"]} width={600} height={600} className="w-full h-auto object-contain" priority />
 										) : (
 											<div className="flex items-center justify-center py-12 bg-gradient-to-br from-indigo-100 to-purple-100">
 												<FileText className="w-32 h-32 text-brand" />
@@ -554,7 +554,7 @@ export default function UpdatesClient({
 																	src={notice.noticeimage} 
 																	alt={notice.noticetitle} 
 																	fill 
-																	className="object-cover group-hover:scale-110 transition-transform duration-500" 
+																	className="object-cover group-hover:scale-105 transition-transform duration-500" 
 																/>
 															) : (
 																<div className="flex items-center justify-center h-full">
@@ -633,7 +633,7 @@ export default function UpdatesClient({
 																	src={circular.circularMainPicture} 
 																	alt={circular.circularTitle[locale] || circular.circularTitle["en"]} 
 																	fill 
-																	className="object-cover group-hover:scale-110 transition-transform duration-500" 
+																	className="object-cover group-hover:scale-105 transition-transform duration-500" 
 																/>
 															) : (
 																<div className="flex items-center justify-center h-full">

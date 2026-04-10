@@ -67,9 +67,9 @@ export default function BlogPageClient({ blogData, blogsData }) {
 					<div className="mb-10">
 						<div className="relative rounded-2xl overflow-hidden shadow-xl">
 							<Image 
-								src={blog.blogMainPicture || "/placeholder.jpg"} 
+								src={blog.blogMainPicture || "/ghanti.png"} 
 								alt={getLocalizedTitle(blog) || "Blog Image"} 
-								width={900} 
+								width={500} 
 								height={500} 
 								className="w-full h-auto object-cover"
 							/>
@@ -89,7 +89,7 @@ export default function BlogPageClient({ blogData, blogsData }) {
 									<Image 
 										src={blog.blogSecondPicture} 
 										alt={getLocalizedTitle(blog) || "Blog Image"} 
-										width={900} 
+										width={500} 
 										height={500} 
 										className="w-full h-auto object-cover"
 									/>

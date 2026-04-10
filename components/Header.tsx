@@ -213,30 +213,38 @@ export default function Header() {
 	/* ---------------------------------- */
 
 	useEffect(() => {
+		let ticking = false;
+		
 		const onScroll = () => {
-			const currentScrollY = window.scrollY;
-			const scrollThreshold = 150; // Only hide after scrolling 150px down
+			if (!ticking) {
+				requestAnimationFrame(() => {
+					const currentScrollY = window.scrollY;
+					const scrollThreshold = 150; // Only hide after scrolling 150px down
 
-			// Set isScrolled state
-			setIsScrolled(currentScrollY > 10);
+					// Set isScrolled state
+					setIsScrolled(currentScrollY > 10);
 
-			// Determine scroll direction and visibility
-			if (currentScrollY < scrollThreshold) {
-				// Near top of page, always show
-				setIsVisible(true);
-			} else if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
-				// Scrolling down past threshold, hide navbar
-				setIsVisible(false);
-			} else if (currentScrollY < lastScrollY) {
-				// Scrolling up, show navbar
-				setIsVisible(true);
+					// Determine scroll direction and visibility
+					if (currentScrollY < scrollThreshold) {
+						// Near top of page, always show
+						setIsVisible(true);
+					} else if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
+						// Scrolling down past threshold, hide navbar
+						setIsVisible(false);
+					} else if (currentScrollY < lastScrollY) {
+						// Scrolling up, show navbar
+						setIsVisible(true);
+					}
+
+					setLastScrollY(currentScrollY);
+					ticking = false;
+				});
+				ticking = true;
 			}
-
-			setLastScrollY(currentScrollY);
 		};
 
-		window.addEventListener("scroll", onScroll);
-		return () => window.removeEventListener("scroll", onScroll);
+		window.addEventListener("scroll", onScroll, { passive: true } as EventListenerOptions);
+		return () => window.removeEventListener("scroll", onScroll, { passive: true } as EventListenerOptions);
 	}, [lastScrollY]);
 
 	// Close dropdown when clicking outside
@@ -290,7 +298,17 @@ export default function Header() {
 					{/* Logo */}
 					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
 						<div className="relative">
-							<Image src="/rsp-norway-logo.png" alt="PNSB-Norway" width={40} height={40} className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105" fetchPriority="high" priority />
+							<Image 
+								src="/rsp-norway-logo.png" 
+								alt="PNSB-Norway" 
+								width={40} 
+								height={40} 
+								className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105" 
+								priority
+								placeholder="blur"
+								blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+								sizes="40px"
+							/>
 						</div>
 						<div className="flex flex-col leading-3">
 							<span className="hidden md:block text-lg md:text-xl font-bold text-white">{t("pnsb")}</span>

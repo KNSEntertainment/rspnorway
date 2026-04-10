@@ -49,7 +49,7 @@ interface VideoData {
 
 type ViewMode = "albums" | "all" | "photos" | "videos";
 
-const UnifiedGallery = () => {
+export default function UnifiedGallery() {
 	const t = useTranslations("gallery");
 	const locale = useLocale();
 	const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
@@ -228,7 +228,7 @@ const UnifiedGallery = () => {
 
 	if (loading) {
 		return (
-			<div className="flex justify-center items-center min-h-[400px] bg-gray-50">
+			<div className="flex justify-center items-center min-h-screen">
 				<div className="text-center">
 					<div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-brand border-r-transparent mb-4"></div>
 					<p className="text-gray-600 text-lg">{t("loading")}</p>
@@ -238,13 +238,14 @@ const UnifiedGallery = () => {
 	}
 
 	return (
-		<section className="pb-16 bg-gray-50">
+		<div className="min-h-screen pt-12">
+			{/* Header Section */}
 			<div className="bg-white border-b border-gray-200">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
 					<SectionHeader heading={t("title")} subtitle={t("description")} />
 
 					{/* View Controls */}
-					<div className="mt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+					<div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
 						{selectedAlbum && (
 							<button onClick={handleBackToAlbums} className="flex items-center gap-2 px-4 py-2 text-brand hover:text-blue-700 font-medium transition-colors">
 								<ChevronLeft className="w-5 h-5" />
@@ -255,15 +256,15 @@ const UnifiedGallery = () => {
 						{!selectedAlbum && (
 							<div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
 								<button onClick={() => setViewMode("albums")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "albums" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<Folder className="w-4 h-4" />
+									<Folder className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">{t("Albums")} ({albums.length})</span>
 								</button>
 								<button onClick={() => setViewMode("photos")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "photos" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<ImageIcon className="w-4 h-4" />
+									<ImageIcon className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">Photos ({photos.length})</span>
 								</button>
 								<button onClick={() => setViewMode("videos")} className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "videos" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
-									<Video className="w-4 h-4" />
+									<Video className="hidden sm:block w-4 h-4" />
 									<span className="text-sm font-medium">Videos ({videos.length})</span>
 								</button>
 								<button onClick={() => setViewMode("all")} className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-md transition-all ${viewMode === "all" ? "bg-brand text-white shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
@@ -272,14 +273,15 @@ const UnifiedGallery = () => {
 								</button>
 							</div>
 						)}
-					</div>
+
+											</div>
 				</div>
 			</div>
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 				{/* Albums View */}
 				{viewMode === "albums" && !selectedAlbum && (
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 						{albums.map((album) => (
 							<div key={album.name} onClick={() => handleAlbumClick(album.name)} className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer">
 								{/* Album Cover */}
@@ -331,7 +333,7 @@ const UnifiedGallery = () => {
 							</p>
 						</div>
 
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
 							{displayPhotos.map((photo, index) => (
 								<div
 									key={photo.id}
@@ -375,7 +377,7 @@ const UnifiedGallery = () => {
 							<p className="text-gray-600">Watch {displayVideos.length} amazing videos</p>
 						</div>
 
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 							{displayVideos.map((video) => (
 								<div
 									key={video._id}
@@ -429,7 +431,7 @@ const UnifiedGallery = () => {
 						{displayVideos.length > 0 && (
 							<div className="mb-12">
 								<h3 className="text-2xl font-bold text-gray-900 mb-6">Videos</h3>
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 									{displayVideos.map((video) => (
 										<div
 											key={video._id}
@@ -473,7 +475,7 @@ const UnifiedGallery = () => {
 						{displayPhotos.length > 0 && (
 							<div>
 								<h3 className="text-2xl font-bold text-gray-900 mb-6">Photos</h3>
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
 									{displayPhotos.map((photo, index) => (
 										<div
 											key={photo.id}
@@ -583,7 +585,7 @@ const UnifiedGallery = () => {
 						<div className="relative w-full h-full flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
 							{/* Image */}
 							<div className="relative flex-1 w-full h-full max-h-[60vh] sm:max-h-[85vh] flex items-center justify-center">
-								<Image src={selectedPhoto.url} alt={selectedPhoto.title} width={600} height={600} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" priority />
+								<Image src={selectedPhoto.url} alt={selectedPhoto.title} width={1200} height={800} className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" priority />
 							</div>
 
 							{/* Info Panel - Desktop */}
@@ -735,8 +737,6 @@ const UnifiedGallery = () => {
 					animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 				}
 			`}</style>
-		</section>
+		</div>
 	);
-};
-
-export default UnifiedGallery;
+}

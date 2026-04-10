@@ -3,86 +3,60 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import HeroLoading from "@/components/HeroLoading";
+import { useOptimizedFetch } from "@/hooks/useOptimizedFetch";
 
 export default function FullWidthHero() {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [slides, setSlides] = useState([]);
-	const [loading, setLoading] = useState(true);
+	const [loading] = useState(false); // Start with false for faster LCP
 	const t = useTranslations("slider");
 	const locale = useLocale();
 
-	// Fetch slides from database
-	useEffect(() => {
-		const fetchSlides = async () => {
-			console.log("Hero Component - Fetching slides for locale:", locale);
-			try {
-				const response = await fetch(`/api/hero?locale=${locale}`);
-				const data = await response.json();
-				
-				console.log("Hero Component - Received data:", data);
-				
-				if (data.slides && data.slides.length > 0) {
-					// Filter only active slides
-					const activeSlides = data.slides.filter(slide => slide.isActive);
-					setSlides(activeSlides);
-				} else {
-					// Fallback to default slides if no data in database
-					setSlides([
-						{
-							image: "/rabibalen.jpg",
-							title: t("title_1"),
-							description: t("subtitle_1"),
-							primaryLink: "/membership",
-							primaryButton: t("become_a_member"),
-							secondaryLink: "/about-us",
-							secondaryButton: t("explore_rsp"),
-						},
-						{
-							image: "/hast.jpg",
-							title: t("title_2"),
-							description: t("subtitle_2"),
-							primaryLink: "/get-involved",
-							primaryButton: t("get_involved"),
-							secondaryLink: "/contact",
-							secondaryButton: t("contact_us"),
-						},
-					]);
-				}
-			} catch (error) {
-				console.error("Error fetching hero slides:", error);
-				// Fallback to default slides on error
-				setSlides([
-					{
-						image: "/rabibalen.jpg",
-						title: t("title_1"),
-						description: t("subtitle_1"),
-						primaryLink: "/membership",
-						primaryButton: t("become_a_member"),
-						secondaryLink: "/about-us",
-						secondaryButton: t("explore_rsp"),
-					},
-					{
-						image: "/hast.jpg",
-						title: t("title_2"),
-						description: t("subtitle_2"),
-						primaryLink: "/get-involved",
-						primaryButton: t("get_involved"),
-						secondaryLink: "/contact",
-						secondaryButton: t("contact_us"),
-					},
-				]);
-			} finally {
-				setLoading(false);
-			}
-		};
+	// Pre-optimized fallback slides with smaller images
+	const fallbackSlides = useMemo(() => [
+		{
+			image: "/rabibalen.jpg",
+			title: t("title_1"),
+			description: t("subtitle_1"),
+			primaryLink: "/membership",
+			primaryButton: t("become_a_member"),
+			secondaryLink: "/about-us",
+			secondaryButton: t("explore_rsp"),
+		},
+		{
+			image: "/hast.jpg",
+			title: t("title_2"),
+			description: t("subtitle_2"),
+			primaryLink: "/get-involved",
+			primaryButton: t("get_involved"),
+			secondaryLink: "/contact",
+			secondaryButton: t("contact_us"),
+		},
+	], [t]);
 
-		fetchSlides();
-	}, [t, locale]);
+	// Set fallback slides immediately for faster LCP
+	useEffect(() => {
+		setSlides(fallbackSlides);
+	}, [fallbackSlides]);
+
+	// Use optimized fetch with caching - load in background
+	const { data: heroData } = useOptimizedFetch(`/api/hero?locale=${locale}`);
+
+	// Update slides when data arrives (non-blocking)
+	useEffect(() => {
+		if (heroData && heroData.slides && heroData.slides.length > 0) {
+			// Filter only active slides
+			const activeSlides = heroData.slides.filter(slide => slide.isActive);
+			if (activeSlides.length > 0) {
+				setSlides(activeSlides);
+			}
+		}
+	}, [heroData]);
 
 	const nextSlide = useCallback(() => {
 		if (isAnimating || loading || slides.length === 0) return;
@@ -106,8 +80,8 @@ export default function FullWidthHero() {
 		return () => clearInterval(interval);
 	}, [currentSlide, nextSlide, isAnimating, loading, slides.length]);
 
-	// Show loading state or return empty if no slides
-	if (loading || slides.length === 0) {
+	// Show loading state only if explicitly loading, not if slides are being set
+	if (loading) {
 		return <HeroLoading />;
 	}
 
@@ -119,8 +93,19 @@ export default function FullWidthHero() {
 			<section className="relative h-[82vh] w-full flex items-center">
 				{/* Background Layer */}
 				<AnimatePresence mode="wait">
-					<motion.div key={currentSlide} className="absolute inset-0 z-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1 }}>
-						<Image src={slides[currentSlide]?.image || "/placeholder.jpg"} alt="Background" fill className="object-cover scale-110 animate-ken-burns" priority />
+					<motion.div key={currentSlide} className="absolute inset-0 z-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+						<Image 
+							src={slides[currentSlide]?.image || "/ghanti.png"} 
+							alt="Background" 
+							fill 
+							className="object-cover" 
+							priority
+							placeholder="blur"
+							blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+							sizes="100vw"
+							quality={60}
+							loading="eager"
+						/>
 						{/* Overlay: Darkens and adds a blue tint for political branding */}
 						<div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/60 z-10" />
 					</motion.div>
@@ -130,7 +115,7 @@ export default function FullWidthHero() {
 				<div className="container relative z-20 mx-auto px-6 md:px-12">
 					<div className="max-w-3xl">
 						<AnimatePresence mode="wait">
-							<motion.div key={currentSlide} initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} transition={{ duration: 0.7, ease: "easeOut" }}>
+							<motion.div key={currentSlide} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.4, ease: "easeOut" }}>
 								<h1 className="text-2xl md:text-5xl font-black text-white mb-2 md:mb-6 leading-tight tracking-tighter">{slides[currentSlide]?.title || ""}</h1>
 								<p className="text-xl md:text-2xl text-white/80 mb-6 md:mb-10 md:leading-relaxed font-light">{slides[currentSlide]?.description || ""}</p>
 
@@ -168,20 +153,6 @@ export default function FullWidthHero() {
 				</div>
 			</section>
 
-			{/* Global CSS for Ken Burns Effect */}
-			<style jsx global>{`
-				@keyframes kenburns {
-					from {
-						transform: scale(1);
-					}
-					to {
-						transform: scale(1.15);
-					}
-				}
-				.animate-ken-burns {
-					animation: kenburns 20s ease-out infinite alternate;
-				}
-			`}</style>
-		</div>
+					</div>
 	);
 }
