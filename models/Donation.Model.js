@@ -43,6 +43,15 @@ const DonationSchema = new mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 		},
+		causeId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Cause",
+		},
+		donationType: {
+			type: String,
+			enum: ["general", "cause_specific"],
+			default: "general",
+		},
 	},
 	{
 		timestamps: true,

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Subscriber from "@/models/Subscriber.Model";
+import { sendSubscriptionThankYouEmail } from "@/lib/email";
 
 export async function GET() {
 	try {
@@ -48,6 +49,15 @@ export async function POST(request) {
 		// Save the new subscriber
 		const subscriberData = await Subscriber.create({ subscriber: normalizedEmail });
 		console.log("Subscriber saved successfully:", subscriberData);
+
+		// Send thank you email
+		try {
+			await sendSubscriptionThankYouEmail(normalizedEmail);
+			console.log("Thank you email sent successfully to:", normalizedEmail);
+		} catch (emailError) {
+			console.error("Failed to send thank you email:", emailError);
+			// Continue even if email fails - subscription was successful
+		}
 
 		return NextResponse.json(
 			{

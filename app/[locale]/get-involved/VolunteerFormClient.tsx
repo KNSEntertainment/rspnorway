@@ -66,9 +66,53 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 
 	const interests = [tr.events, tr.socialMedia, tr.fundraising, tr.outreach, tr.research, tr.design];
 
-	const handleSubmit = () => {
-		console.log("Volunteer form submitted:", formData);
-		alert("Thank you for your interest! We will contact you soon.");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const handleSubmit = async () => {
+		// Validate form
+		if (!formData.name || !formData.email || formData.interests.length === 0) {
+			alert("Please fill in all required fields and select at least one area of interest.");
+			return;
+		}
+
+		// Validate email format
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(formData.email)) {
+			alert("Please enter a valid email address.");
+			return;
+		}
+
+		setIsSubmitting(true);
+
+		try {
+			const response = await fetch("/api/volunteers", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				alert("Thank you for your interest! We will contact you soon.");
+				// Reset form
+				setFormData({
+					name: "",
+					email: "",
+					phone: "",
+					interests: [],
+				});
+			} else {
+				alert(data.error || "Failed to submit application. Please try again.");
+			}
+		} catch (error) {
+			console.error("Error submitting volunteer form:", error);
+			alert("Failed to submit application. Please try again.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -128,8 +172,12 @@ export default function VolunteerFormClient({ translations: tr }: Props) {
 									</div>
 								</div>
 
-								<button onClick={handleSubmit} className="w-full bg-brand text-white py-2 md:py-4 rounded-xl font-bold text-lg hover:bg-brand/80 transition-all transform hover:scale-105 shadow-lg">
-									{tr.submitApplication}
+								<button 
+									onClick={handleSubmit} 
+									disabled={isSubmitting}
+									className="w-full bg-brand text-white py-2 md:py-4 rounded-xl font-bold text-lg hover:bg-brand/80 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+								>
+									{isSubmitting ? "Submitting..." : tr.submitApplication}
 								</button>
 							</div>
 						</div>

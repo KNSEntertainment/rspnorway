@@ -15,12 +15,31 @@ export default function NewsletterSection() {
 		e.preventDefault();
 		setIsSubmitting(true);
 
-		// Simulate API call
-		await new Promise(resolve => setTimeout(resolve, 1500));
+		try {
+			const response = await fetch("/api/subscribers", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ subscriber: email }),
+			});
 
-		setIsSubmitted(true);
-		setIsSubmitting(false);
-		setEmail("");
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || "Failed to subscribe");
+			}
+
+			if (result.success) {
+				setIsSubmitted(true);
+				setEmail("");
+			}
+		} catch (error) {
+			console.error("Subscription error:", error);
+			// You could show an error message here if needed
+		} finally {
+			setIsSubmitting(false);
+		}
 
 		// Reset success message after 3 seconds
 		setTimeout(() => setIsSubmitted(false), 3000);

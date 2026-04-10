@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Donation from "@/models/Donation.Model";
+import Cause from "@/models/Cause.Model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 	apiVersion: "2026-02-25.clover",
@@ -55,6 +56,20 @@ export async function POST(request: Request) {
 
 				console.log("Donation updated:", updatedDonation?._id);
 				console.log("Payment completed for session:", session.id);
+
+				// Update cause amounts if this is a cause-specific donation
+				if (updatedDonation && updatedDonation.causeId && updatedDonation.donationType === "cause_specific") {
+					await Cause.findByIdAndUpdate(
+						updatedDonation.causeId,
+						{
+							$inc: {
+								currentAmount: updatedDonation.amount,
+								donationCount: 1
+							}
+						}
+					);
+					console.log("Cause updated with new donation amount");
+				}
 				break;
 
 			case "charge.updated":
@@ -72,6 +87,20 @@ export async function POST(request: Request) {
 					);
 
 					console.log("Donation updated via charge:", updatedDonation?._id);
+
+					// Update cause amounts if this is a cause-specific donation
+					if (updatedDonation && updatedDonation.causeId && updatedDonation.donationType === "cause_specific") {
+						await Cause.findByIdAndUpdate(
+							updatedDonation.causeId,
+							{
+								$inc: {
+									currentAmount: updatedDonation.amount,
+									donationCount: 1
+								}
+							}
+						);
+						console.log("Cause updated via charge webhook");
+					}
 				}
 				break;
 

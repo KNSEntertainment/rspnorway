@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 
-		const { amount, donorName, donorEmail, donorPhone, message, isAnonymous } = await request.json();
+		const { amount, donorName, donorEmail, donorPhone, message, isAnonymous, causeId, donationType } = await request.json();
 
 		// Validate amount
 		if (!amount || amount < 50) {
@@ -33,6 +33,8 @@ export async function POST(request: Request) {
 			message,
 			isAnonymous,
 			paymentStatus: "pending",
+			causeId: causeId || null,
+			donationType: donationType || "general",
 		});
 
 		// Create Stripe checkout session

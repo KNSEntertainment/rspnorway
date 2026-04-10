@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Heart, Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface Donation {
 	_id: string;
@@ -15,8 +14,7 @@ interface Donation {
 	createdAt: string;
 }
 
-export default function DonorList() {
-	const t = useTranslations("donate");
+export default function DonorList({ refreshTrigger }: { refreshTrigger?: number }) {
 	const [donations, setDonations] = useState<Donation[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -40,7 +38,7 @@ export default function DonorList() {
 		};
 
 		fetchDonations();
-	}, []);
+	}, [refreshTrigger]);
 
 	if (loading) {
 		return (
@@ -59,14 +57,14 @@ export default function DonorList() {
 			<CardHeader className="pb-3">
 				<CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
 					<Users className="w-5 h-5 text-brand" />
-					{t("recent_donors")}
+					Recent Donors
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="pt-0">
 				{donations.length === 0 ? (
 					<div className="text-center py-8 text-gray-500">
 						<Heart className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-						<p className="text-sm">{t("no_donors_yet")}</p>
+						<p className="text-sm">No donors yet. Be the first to make a difference!</p>
 					</div>
 				) : (
 					<div className="space-y-3 max-h-96 overflow-y-auto">
@@ -81,10 +79,10 @@ export default function DonorList() {
 									</div>
 									<div>
 										<p className="font-medium text-gray-900 text-sm">
-											{donation.isAnonymous ? t("anonymous") : donation.donorName}
+											{donation.isAnonymous ? "Anonymous" : donation.donorName}
 										</p>
 										<p className="text-xs text-gray-500">
-											{new Date(donation.createdAt).toLocaleDateString()}
+											{new Date(donation.createdAt).toLocaleDateString('en-US')}
 										</p>
 									</div>
 								</div>

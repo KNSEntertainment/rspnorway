@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Donation from "@/models/Donation.Model";
+import Cause from "@/models/Cause.Model";
 
 export async function POST(request: Request) {
 	try {
 		await connectDB();
 
-		const { amount, donorName, donorEmail, donorPhone, message, isAnonymous } = await request.json();
+		const { amount, donorName, donorEmail, donorPhone, message, isAnonymous, causeId, donationType } = await request.json();
 
 		// Validate amount
 		if (!amount || amount < 50) {
@@ -30,7 +31,22 @@ export async function POST(request: Request) {
 			paymentStatus: "completed", // Vipps payments are simulated as completed
 			stripeSessionId: `vipps_${Date.now()}`, // Simulated session ID
 			stripePaymentIntentId: `vipps_pi_${Date.now()}`, // Simulated payment intent ID
+			causeId: causeId || null,
+			donationType: donationType || "general",
 		});
+
+		// Update cause amounts if this is a cause-specific donation
+		if (causeId && donationType === "cause_specific") {
+			await Cause.findByIdAndUpdate(
+				causeId,
+				{
+					$inc: {
+						currentAmount: amount,
+						donationCount: 1
+					}
+				}
+			);
+		}
 
 		return NextResponse.json({ 
 			success: true, 

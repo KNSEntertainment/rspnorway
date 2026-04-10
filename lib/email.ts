@@ -192,6 +192,112 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 	}
 }
 
+// Newsletter subscription thank you email
+export async function sendSubscriptionThankYouEmail(email: string) {
+	const mailOptions = {
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
+		to: email,
+		subject: "Thank You for Subscribing to PNSB-Norway Newsletter!",
+		text: `Thank you for subscribing to the PNSB-Norway newsletter!\n\nWe're excited to keep you updated with our latest news, events, and community activities.\n\nWhat you can expect:\n- Latest news and updates from PNSB-Norway\n- Information about upcoming events\n- Community initiatives and opportunities\n- Ways to get involved and make a difference\n\nYou can unsubscribe at any time by clicking the unsubscribe link in our emails.\n\nBest regards,\nPNSB-Norway Team`,
+		html: `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<style>
+					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+					.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; text-align: center; border-radius: 10px 10px 0 0; }
+					.header h1 { margin: 0; font-size: 28px; }
+					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+					.welcome-box { background: white; border-left: 4px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 5px; }
+					.feature-list { background: white; padding: 20px; margin: 20px 0; border-radius: 5px; }
+					.feature-item { display: flex; align-items: center; margin: 15px 0; }
+					.feature-icon { width: 40px; height: 40px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; flex-shrink: 0; }
+					.footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee; color: #666; font-size: 12px; }
+					.social-links { margin: 20px 0; }
+					.social-links a { margin: 0 10px; color: #667eea; text-decoration: none; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="header">
+						<h1>Thank You for Subscribing! </h1>
+						<p style="margin: 10px 0 0 0; font-size: 18px;">Welcome to the PNSB-Norway Community</p>
+					</div>
+					<div class="content">
+						<p>Dear Subscriber,</p>
+						
+						<div class="welcome-box">
+							<h3 style="margin: 0 0 10px 0; color: #10b981;"> Welcome to Our Newsletter! </h3>
+							<p style="margin: 0;">Thank you for subscribing to the PNSB-Norway newsletter. We're thrilled to have you join our community!</p>
+						</div>
+
+						<p>You're now part of a vibrant community dedicated to serving the Nepali community in Norway and supporting democratic values in Nepal. Through our newsletter, you'll stay connected with our mission and activities.</p>
+
+						<div class="feature-list">
+							<h4 style="margin: 0 0 20px 0;">What You Can Expect:</h4>
+							<div class="feature-item">
+								<div class="feature-icon"> </div>
+								<div>
+									<strong>Latest News & Updates</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Stay informed about PNSB-Norway's latest activities and achievements</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon"> </div>
+								<div>
+									<strong>Upcoming Events</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Be the first to know about community events and gatherings</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon"> </div>
+								<div>
+									<strong>Community Initiatives</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Learn about opportunities to get involved and make a difference</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon"> </div>
+								<div>
+									<strong>Ways to Support</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Discover how you can contribute to our mission</p>
+								</div>
+							</div>
+						</div>
+
+						<p>We respect your inbox and promise to send only valuable content. You can unsubscribe at any time using the link in our emails.</p>
+
+						<div style="text-align: center; margin: 30px 0;">
+							<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Visit Our Website</a>
+						</div>
+
+						<p>We're excited to have you with us on this journey. Together, we can make a meaningful impact!</p>
+
+						<p>Best regards,<br><strong>PNSB-Norway Team</strong><br>
+						<a href="mailto:${process.env.EMAIL_USER}" style="color: #667eea;">info@rspnorway.org</a><br>
+						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #667eea;">www.rspnorway.org</a></p>
+					</div>
+					<div class="footer">
+						<p>PNSB-Norway - Rastriya Swatantra Party Norway Chapter</p>
+						<p>You're receiving this email because you subscribed to our newsletter.</p>
+						<p style="color: #999; margin-top: 10px;">Questions? Contact us at ${process.env.EMAIL_USER}</p>
+					</div>
+				</div>
+			</body>
+			</html>
+		`,
+	};
+
+	try {
+		await transporter.sendMail(mailOptions);
+		console.log("Subscription thank you email sent to:", email);
+	} catch (error) {
+		console.error("Error sending subscription thank you email:", error);
+		throw new Error("Failed to send subscription thank you email");
+	}
+}
+
 // Password reset email
 type sendPasswordResetEmail = {
 	name: string;

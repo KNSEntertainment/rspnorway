@@ -3,22 +3,34 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
 
-export default function DonationForm() {
+interface DonationModalProps {
+	isOpen: boolean;
+	onClose: () => void;
+	cause?: {
+		_id: string;
+		title: string;
+		description: string;
+		category: string;
+		goalAmount: number;
+		currentAmount: number;
+	};
+	onDonationSuccess?: () => void;
+}
+
+export default function DonationModal({ isOpen, onClose, cause, onDonationSuccess }: DonationModalProps) {
 	const t = useTranslations("donation");
-	const { data: session } = useSession();
 	const [amount, setAmount] = useState<number>(500);
 	const [customAmount, setCustomAmount] = useState<string>("500");
-	const [donorName, setDonorName] = useState(session?.user?.fullName || "");
-	const [donorEmail, setDonorEmail] = useState(session?.user?.email || "");
+	const [donorName, setDonorName] = useState("");
+	const [donorEmail, setDonorEmail] = useState("");
 	const [donorPhone, setDonorPhone] = useState("");
 	const [message, setMessage] = useState("");
 	const [isAnonymous, setIsAnonymous] = useState(false);
@@ -29,8 +41,14 @@ export default function DonationForm() {
 	const [causes, setCauses] = useState<Array<{ _id: string; title: { [key: string]: string }; category: string }>>([]);
 
 	useEffect(() => {
-		fetchCauses();
-	}, []);
+		if (isOpen) {
+			fetchCauses();
+			// Pre-select the cause if provided
+			if (cause) {
+				setSelectedCause(cause._id);
+			}
+		}
+	}, [isOpen, cause]);
 
 	const fetchCauses = async () => {
 		try {
@@ -99,19 +117,18 @@ export default function DonationForm() {
 					// Reset form after showing success
 					setTimeout(() => {
 						setShowVippsSuccess(false);
-						setAmount(500);
-						setCustomAmount("500");
-						setDonorName(session?.user?.fullName || "");
-						setDonorEmail(session?.user?.email || "");
-						setDonorPhone("");
-						setMessage("");
-						setIsAnonymous(false);
+						onClose();
+						resetForm();
+						// Trigger refresh of donor list
+						if (onDonationSuccess) {
+							onDonationSuccess();
+						}
 					}, 3000);
 				}, 2000);
 			} catch (error) {
 				console.error("Vipps donation error:", error);
 				setLoading(false);
-				toast.error(error instanceof Error ? error.message : "Error processing donation");
+				toast(error instanceof Error ? error.message : "Error processing donation");
 			}
 			return;
 		}
@@ -129,38 +146,65 @@ export default function DonationForm() {
 					donorPhone,
 					message,
 					isAnonymous,
-					causeId: selectedCause || null,
-					donationType: selectedCause ? "cause_specific" : "general",
+					causeId: selectedCause && selectedCause !== "general" ? selectedCause : null,
+					donationType: selectedCause && selectedCause !== "general" ? "cause_specific" : "general",
 				}),
 			});
 
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || "Error processing donation");
+				throw new Error(data.error || "Error creating checkout session");
 			}
 
 			// Redirect to Stripe Checkout
 			window.location.href = data.url;
 		} catch (error) {
 			console.error("Donation error:", error);
-			toast.error(error instanceof Error ? error.message : "Error processing donation");
+			toast(error instanceof Error ? error.message : "Error processing donation");
 			setLoading(false);
 		}
 	};
 
+	const resetForm = () => {
+		setAmount(500);
+		setCustomAmount("500");
+		setDonorName("");
+		setDonorEmail("");
+		setDonorPhone("");
+		setMessage("");
+		setIsAnonymous(false);
+		setSelectedCause("");
+	};
+
+	const handleClose = () => {
+		onClose();
+		resetForm();
+	};
+
 	return (
-		<Card className="w-full max-w-2xl mx-auto shadow-xl border-0">
-			<CardHeader className="bg-gradient-to-r from-brand to-blue-700 text-white">
-				<div className="flex items-center gap-3">
-					<Heart className="w-8 h-8" />
-					<div>
-						<CardTitle className="text-2xl">{t("title") || "Make a Donation"}</CardTitle>
-						<CardDescription className="text-white/90">{t("description") || "Support our community with your generous contribution"}</CardDescription>
+		<Dialog open={isOpen} onOpenChange={handleClose}>
+			<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+				<DialogHeader>
+					<div className="flex items-center gap-3">
+						<Heart className="w-6 h-6 text-brand" />
+						<DialogTitle className="text-xl">
+							{cause ? `${t("support_cause") || "Support:"} ${cause.title}` : t("title") || "Make a Donation"}
+						</DialogTitle>
 					</div>
-				</div>
-			</CardHeader>
-			<CardContent className="pt-6">
+				</DialogHeader>
+
+				{cause && (
+					<div className="bg-gray-50 rounded-lg p-4 mb-6">
+						<h3 className="font-semibold text-gray-900 mb-2">{t("about_cause") || "About this cause"}</h3>
+						<p className="text-sm text-gray-600 mb-3">{cause.description}</p>
+						<div className="flex justify-between text-sm text-gray-500">
+							<span>{t("category") || "Category"}: {cause.category}</span>
+							<span>{t("goal") || "Goal"}: {cause.goalAmount.toLocaleString()} NOK</span>
+						</div>
+					</div>
+				)}
+
 				<form onSubmit={handleSubmit} className="space-y-6">
 					{/* Preset Amounts */}
 					<div>
@@ -193,9 +237,9 @@ export default function DonationForm() {
 							</SelectTrigger>
 							<SelectContent>
 								<SelectItem value="general">{t("general_donation") || "General Donation"}</SelectItem>
-								{causes.map((cause) => (
-									<SelectItem key={cause._id} value={cause._id}>
-										{cause.title.en || cause.title.no || cause.title.ne} ({cause.category})
+								{causes.map((causeOption) => (
+									<SelectItem key={causeOption._id} value={causeOption._id}>
+										{causeOption.title.en || causeOption.title.no || causeOption.title.ne} ({causeOption.category})
 									</SelectItem>
 								))}
 							</SelectContent>
@@ -208,7 +252,7 @@ export default function DonationForm() {
 					</div>
 
 					{/* Anonymous Donation */}
-					<div className="flex items-center gap-3 p-4 bg-light rounded-lg">
+					<div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
 						<input type="checkbox" id="anonymous" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} className="w-4 h-4 text-brand rounded focus:ring-brand" />
 						<label htmlFor="anonymous" className="text-sm text-gray-900 cursor-pointer">
 							{t("anonymous_donation") || "Donate anonymously"}
@@ -217,7 +261,7 @@ export default function DonationForm() {
 
 					{/* Donor Information */}
 					{!isAnonymous && (
-						<div className="space-y-4 p-4 bg-light rounded-lg">
+						<div className="space-y-4 p-4 bg-gray-50 rounded-lg">
 							<h3 className="font-semibold text-gray-900">{t("donor_information") || "Your Information"}</h3>
 
 							<div>
@@ -235,7 +279,9 @@ export default function DonationForm() {
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-900 mb-2">{t("phone_optional") || "Phone (Optional)"}</label>
+								<label className="block text-sm font-medium text-gray-900 mb-2">
+									{t("phone_optional") || "Phone (Optional)"}
+								</label>
 								<input type="tel" value={donorPhone} onChange={(e) => setDonorPhone(e.target.value)} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" placeholder={t("phone_placeholder") || "Enter your phone number"} />
 							</div>
 						</div>
@@ -297,7 +343,6 @@ export default function DonationForm() {
 								{paymentMethod === 'vipps' ? (
 									<>
 										<Image src="/Vipps.webp" alt="Vipps" width={64} height={64} className="w-12 rounded-full" />
-
 										{t("donate_button") || `Donate ${amount} NOK`}
 									</>
 								) : (
@@ -335,7 +380,7 @@ export default function DonationForm() {
 						</div>
 					</div>
 				)}
-			</CardContent>
-		</Card>
+			</DialogContent>
+		</Dialog>
 	);
 }
