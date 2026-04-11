@@ -438,16 +438,20 @@ export default function Members() {
 									<div className="p-6">
 										<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
 										{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
-										<div className="space-y-2 mb-4">
-											<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
-												<Phone className="w-4 h-4" />
-												{member.phone}
-											</a>
-											<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
-												<Mail className="w-4 h-4" />
-												{member.email}
-											</a>
-										</div>
+										{
+											session?.user && (
+												<div className="space-y-2 mb-4">
+													<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+														<Phone className="w-4 h-4" />
+														{member.phone}
+													</a>
+													<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+														<Mail className="w-4 h-4" />
+														{member.email}
+													</a>
+												</div>
+											)
+										}
 									</div>
 								</div>
 							))}

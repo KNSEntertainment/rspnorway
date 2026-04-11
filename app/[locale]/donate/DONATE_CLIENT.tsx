@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import DonationForm from "@/components/DonationForm";
 import DonorList from "@/components/DonorList";
@@ -39,6 +39,11 @@ export default function DonatePageClient({ causes, locale }: DonatePageClientPro
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCause, setSelectedCause] = useState<Cause | undefined>();
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
+	const [isMounted, setIsMounted] = useState(false);
+
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 
 	const handleSupportCause = (cause: Cause) => {
 		setSelectedCause(cause);
@@ -66,20 +71,21 @@ export default function DonatePageClient({ causes, locale }: DonatePageClientPro
 				</header>
 
 				{/* Active Causes Section */}
-				{causes.length > 0 && (
+				{isMounted && causes.length > 0 && (
 					<section className="mb-12">
 					
 						
-						<div className="flex flex-col items-center justify-center gap-8 px-4 py-8">
+						<div className="flex md:flex-col items-center justify-center gap-8 px-4 py-8">
 							{causes.map((cause: Cause) => {
 								const progressPercentage = cause.goalAmount > 0 
 									? Math.min((cause.currentAmount / cause.goalAmount) * 100, 100) 
 									: 0;
 								
 								return (
-									<div key={cause._id} className="flex w-full">
-												{cause.poster && (
-											<div className="relative w-full h-96">
+									<div key={cause._id} className="flex flex-col w-full max-w-2xl">
+										{/* Image on top for mobile */}
+										{cause.poster && (
+											<div className="relative w-full h-48 sm:h-64 md:h-80 lg:h-96">
 												<Image
 													src={cause.poster}
 													alt={cause.title}
@@ -88,60 +94,61 @@ export default function DonatePageClient({ causes, locale }: DonatePageClientPro
 												/>
 											</div>
 										)}
-											<Card className="overflow-hidden w-full max-w-2xl rounded-none shadow-none">
-								
 										
-										{/* Badges at the top */}
-										<div className="flex gap-2 px-4 pt-4">
-											{cause.featured && (
-												<Badge className="bg-purple-500 text-white text-xs">{t("featured") || "Featured"}</Badge>
-											)}
-											<Badge className={
-												cause.urgency === 'critical' ? 'bg-red-700 text-white' :
-												cause.urgency === 'high' ? 'bg-red-500 text-white' :
-												cause.urgency === 'medium' ? 'bg-orange-500 text-white' :
-												'bg-gray-500 text-white'
-											}>
-												{cause.urgency}
-											</Badge>
-										</div>
-										
-										<CardHeader>
-											<CardTitle className="text-lg line-clamp-2">{cause.title}</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<p className="text-gray-600 mb-4 line-clamp-3">{cause.description}</p>
-											
-											<div className="space-y-3">
-												<div className="flex justify-between text-sm">
-													<span>{t("progress") || "Progress"}:</span>
-													<span className="font-semibold">
-														{cause.currentAmount?.toLocaleString() || 0} / {cause.goalAmount?.toLocaleString() || 0} NOK
-													</span>
-												</div>
-												<Progress value={progressPercentage} className="h-2" />
-												<div className="flex justify-between text-sm text-gray-500">
-													<span>{progressPercentage.toFixed(1)}% {t("complete") || "complete"}</span>
-													<span>{cause.donationCount || 0} {t("donations") || "donations"}</span>
-												</div>
+										{/* Card content below image */}
+										<Card className="overflow-hidden w-full rounded-none shadow-none">
+											{/* Badges at the top */}
+											<div className="flex gap-2 px-4 pt-4">
+												{cause.featured && (
+													<Badge className="bg-purple-500 text-white text-xs">{t("featured") || "Featured"}</Badge>
+												)}
+												<Badge className={
+													cause.urgency === 'critical' ? 'bg-red-700 text-white' :
+													cause.urgency === 'high' ? 'bg-red-500 text-white' :
+													cause.urgency === 'medium' ? 'bg-orange-500 text-white' :
+													'bg-gray-500 text-white'
+												}>
+													{cause.urgency}
+												</Badge>
 											</div>
 											
-											{cause.endDate && (
-												<p className="text-sm text-gray-500 mt-3">
-													{t("ends") || "Ends"}: {new Date(cause.endDate).toLocaleDateString('en-US')}
-												</p>
-											)}
-											
-											<button 
-												onClick={() => handleSupportCause(cause)}
-												className="w-full mt-4 bg-brand hover:bg-brand/90 text-white py-2 px-4 rounded-lg transition-colors"
-											>
-												{t("support_this_cause") || "Support This Cause"}
-											</button>
-										</CardContent>
-									</Card>
-										 </div>
-								
+											<CardHeader>
+												<CardTitle className="text-lg line-clamp-2">{cause.title}</CardTitle>
+											</CardHeader>
+											<CardContent>
+												<p className="text-gray-600 mb-4 line-clamp-3">{cause.description}</p>
+												
+												<div className="space-y-3">
+													<div className="flex justify-between text-sm">
+														<span>{t("progress") || "Progress"}:</span>
+														<span className="font-semibold">
+															{cause.currentAmount?.toLocaleString() || 0} / {cause.goalAmount?.toLocaleString() || 0} NOK
+														</span>
+													</div>
+													<Progress value={progressPercentage} className="h-2" />
+													<div className="flex justify-between text-sm text-gray-500">
+														<span>{progressPercentage.toFixed(1)}% {t("complete") || "complete"}</span>
+														<span>{cause.donationCount || 0} {t("donations") || "donations"}</span>
+													</div>
+												</div>
+												
+												{cause.endDate && isMounted && (
+													<p className="text-sm text-gray-500 mt-3">
+														{t("ends") || "Ends"}: {new Date(cause.endDate).toLocaleDateString()}
+													</p>
+												)}
+												
+												<div className="flex flex-col space-y-3 mt-6">
+												<button 
+													onClick={() => handleSupportCause(cause)}
+													className="w-full bg-brand hover:bg-brand/90 text-white py-3 px-6 rounded-lg transition-colors font-medium shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
+												>
+													{t("support_this_cause") || "Support This Cause"}
+												</button>
+											</div>
+											</CardContent>
+										</Card>
+									</div>
 								);
 							})}
 						</div>

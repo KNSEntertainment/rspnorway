@@ -34,6 +34,11 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const memberData = member as any;
 
+		// Permission checking - only for regular members (not executive members)
+		const showPhoto = isExecutiveMember || memberData.permissionPhotos;
+		const showEmail = isExecutiveMember || memberData.permissionEmail;
+		const showPhone = isExecutiveMember || memberData.permissionPhone;
+
 		return (
 			<div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
 				<div className="max-w-4xl mx-auto">
@@ -53,7 +58,7 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 							<div className="absolute inset-0 bg-black opacity-20"></div>
 							<div className="relative z-10 flex items-end h-full p-6">
 								<div className="flex items-center space-x-4">
-									{(isExecutiveMember ? memberData.imageUrl : memberData.profilePhoto) ? (
+									{showPhoto && (isExecutiveMember ? memberData.imageUrl : memberData.profilePhoto) ? (
 										<div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
 											<Image
 												src={isExecutiveMember ? memberData.imageUrl : memberData.profilePhoto}
@@ -64,7 +69,9 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 										</div>
 									) : (
 										<div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
-											<User className="w-12 h-12 text-gray-400" />
+											<span className="text-2xl font-bold text-gray-600">
+												{(isExecutiveMember ? memberData.name : memberData.fullName)?.charAt(0)?.toUpperCase() || 'U'}
+											</span>
 										</div>
 									)}
 									<div className="text-white">
@@ -91,11 +98,13 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 											Personal Information
 										</h3>
 										<div className="space-y-3">
-											<div className="flex items-center space-x-3">
-												<Mail className="w-4 h-4 text-gray-400" />
-												<span className="text-gray-700">{isExecutiveMember ? memberData.email : memberData.email}</span>
-											</div>
-											{(isExecutiveMember ? memberData.phone : memberData.phone) && (
+											{showEmail && (
+												<div className="flex items-center space-x-3">
+													<Mail className="w-4 h-4 text-gray-400" />
+													<span className="text-gray-700">{isExecutiveMember ? memberData.email : memberData.email}</span>
+												</div>
+											)}
+											{showPhone && (isExecutiveMember ? memberData.phone : memberData.phone) && (
 												<div className="flex items-center space-x-3">
 													<Phone className="w-4 h-4 text-gray-400" />
 													<span className="text-gray-700">{isExecutiveMember ? memberData.phone : memberData.phone}</span>

@@ -24,11 +24,19 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Password must be at least 6 characters long" }, { status: 400 });
 		}
 
-		// First try to find user with setup token
-		const user = await User.findOne({
-			setupToken: token,
-			setupTokenExpiry: { $gt: Date.now() },
+		// First try to find user with reset token
+		let user = await User.findOne({
+			resetToken: token,
+			resetTokenExpiry: { $gt: Date.now() },
 		});
+
+		// If not found with reset token, try setup token
+		if (!user) {
+			user = await User.findOne({
+				setupToken: token,
+				setupTokenExpiry: { $gt: Date.now() },
+			});
+		}
 
 		// If not found in User model, try Membership model with setup token
 		if (!user) {
@@ -124,8 +132,11 @@ export async function POST(req: NextRequest) {
 		// Handle User model password reset (existing logic)
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Update user with password and clear setup token
+		// Update user with password and clear appropriate token
 		user.password = hashedPassword;
+		// Clear both reset and setup tokens to be safe
+		user.resetToken = undefined;
+		user.resetTokenExpiry = undefined;
 		user.setupToken = undefined;
 		user.setupTokenExpiry = undefined;
 		await user.save();

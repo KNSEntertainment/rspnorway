@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { completeSignOut } from "@/utils/authUtils";
 
 interface SessionUser {
 	name?: string | null;
@@ -75,7 +75,7 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 								My Profile
 							</Link>
 						)}
-						<button onClick={() => signOut({ callbackUrl: "/" })} className="flex items-center gap-3 px-5 py-3.5 text-red-600 hover:bg-red-50 w-full transition-all duration-200 font-medium">
+						<button onClick={() => completeSignOut("/", () => setShowUserDropdown(false))} className="flex items-center gap-3 px-5 py-3.5 text-red-600 hover:bg-red-50 w-full transition-all duration-200 font-medium">
 							<LogOut size={18} />
 							Sign Out
 						</button>

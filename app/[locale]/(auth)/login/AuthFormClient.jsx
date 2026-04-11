@@ -75,17 +75,27 @@ export default function AuthFormContent() {
 		setSubmitting(false);
 
 		if (result?.ok) {
+			// Small delay to ensure session is set
+			await new Promise(resolve => setTimeout(resolve, 100));
+			
 			// Fetch session to check user role
 			const response = await fetch("/api/auth/session");
 			const session = await response.json();
 
+			console.log("Login successful, session:", session);
+			console.log("User role:", session?.user?.role);
+			console.log("Is member:", session?.user?.isMember);
+
 			// Redirect based on role
 			if (session?.user?.role === "admin") {
+				console.log("Redirecting admin to dashboard");
 				window.location.href = `/en/dashboard`;
 			} else {
+				console.log("Redirecting member to profile");
 				window.location.href = `/${locale}/profile`;
 			}
 		} else {
+			console.log("Login failed:", result?.error);
 			setError(result?.error || t("error"));
 		}
 	};

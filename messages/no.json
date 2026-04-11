@@ -45,7 +45,11 @@
 		"communityOrganizerDesc": "Led lokale initiativer og samle nepalesere i din by",
 		"digitalActivistDesc": "Forsterk vårt budskap gjennom sosiale medier og kampanjer",
 		"policyContributorDesc": "Bidra til å forme RSPs politikk og strategi",
-		"policyContributorFeatures": ["Undersøk politiske spørsmål", "Bidra i diskusjoner", "Gi faglige innspill"],
+		"policyContributorFeatures": [
+			"Undersøk politiske spørsmål",
+			"Bidra i diskusjoner",
+			"Gi faglige innspill"
+		],
 		"fundraisingTeamDesc": "Støtt vårt arbeid med kreative innsamlingsinitiativer",
 		"youthAmbassadorDesc": "Engasjer unge nepalesere og øk ungdomsdeltakelsen",
 		"creativeTeamDesc": "Design visuelt innhold og kreative materialer",
@@ -123,7 +127,6 @@
 			}
 		}
 	},
-
 	"slider": {
 		"title_1": "Velkommen til PNSB-Norway",
 		"subtitle_1": "PNSB-Norway er en dedikert organisasjon som jobber for å styrke det nepalske samfunnet som bor i Norge sosialt, kulturelt og utdanningsmessig. Vi er forpliktet til å tilby våre medlemmer støtte, veiledning og muligheter slik at de kan nå sitt fulle potensial.",
@@ -261,16 +264,12 @@
 		"values_title": "Hva vi står for",
 		"value_cultural_preservation_title": "Bevaring av kulturarv",
 		"value_cultural_preservation_desc": "Bevare vår kulturarv ved å feire nepalske festivaler og fremme språk, kultur, religion, tradisjoner, normer og verdier for nåværende og fremtidige generasjoner.",
-
 		"value_community_brotherhood_title": "Fellesskap og samhold",
 		"value_community_brotherhood_desc": "Bygge et støttende nettverk der medlemmer hjelper hverandre gjennom livets utfordringer og feirer suksesser sammen.",
-
 		"value_social_integration_title": "Sosial integrering",
 		"value_social_integration_desc": "Oppmuntre til meningsfull deltakelse i det norske samfunnet samtidig som vi bevarer sterke bånd til vår nepalske identitet.",
-
 		"value_humanitarian_support_title": "Humanitær støtte",
 		"value_humanitarian_support_desc": "Gi økonomisk støtte og samfunnsbistand ved kriser, naturkatastrofer og andre behov, både i Norge og i Nepal.",
-
 		"value_knowledge_exchange_title": "Kunnskaps- og kulturutveksling",
 		"value_knowledge_exchange_desc": "Dele kunnskap, erfaringer og positive sider ved det norske samfunnet med vårt fellesskap og med mennesker i Nepal for gjensidig vekst og forståelse.",
 		"cta_title": "Kom i gang i dag",
@@ -380,10 +379,8 @@
 		"skills_expertise_ph": "f.eks. Prosjektledelse, Grafisk Design",
 		"general_member": "Generelt Medlem",
 		"general_member_desc": "For personer som støtter PNSB-Norways misjon og ønsker å holde seg informert.",
-		"active_member_desc": "For de som ønsker å ta en aktiv rolle i PNSB-Norways initiativer og arrangementer.",
-		"active_member": "Aktivt Medlem",
-		"national_membership_no": "RSP Nasjonalt Medlemsnummer (hvis noen)",
-		"national_membership_no_ph": "f.eks. LAka-123456789",
+		"executive_member_desc": "For de som ønsker å ta en aktiv rolle i PNSB-Norways initiativer og arrangementer.",
+		"executive_member": "Styremedlem",
 		"areas_of_interests": "Interesseområder (Valgfritt)",
 		"interest_politics": "Politikk og Styring",
 		"interest_culture": "Kulturelle Aktiviteter",
@@ -391,7 +388,15 @@
 		"interest_social": "Sosial Velferd",
 		"interest_events": "Arrangement Organisering",
 		"interest_fundraising": "Innsamling",
-		"agree_terms": "Jeg godtar vilkårene og personvernerklæringen.",
+		"agree_terms": "Jeg godtar vilkårene for bruk og personvernerklæringen.",
+		"agree_terms_prefix": "Jeg godtar",
+		"terms_and_conditions": "vilkårene for bruk",
+		"and": "og",
+		"privacy_policy": "personvernerklæringen",
+		"permissions_title": "Personvernstillatelser",
+		"permission_photos": "Jeg samtykker til at mine bilder og videoer blir publisert offentlig på nettsiden og sosiale medier.",
+		"permission_phone": "Jeg samtykker til at mitt telefonnummer blir publisert offentlig på nettsiden.",
+		"permission_email": "Jeg samtykker til at min e-postadresse blir publisert offentlig på nettsiden.",
 		"join_now": "Bli Med Nå",
 		"welcome": "Velkommen til PNSB-Norway!",
 		"welcome_msg": "Din medlemskapssøknad er mottatt. Vårt team vil gjennomgå søknaden din og kontakte deg innen 48 timer.",
@@ -523,7 +528,6 @@
 		"executive_members": "Styremedlemmer",
 		"executive_member": "Styremedlem",
 		"active_members": "Aktive Medlemmer",
-		"active_member": "Aktivt Medlem",
 		"general_members": "Generelle Medlemmer",
 		"general_member": "Generelt Medlem"
 	},

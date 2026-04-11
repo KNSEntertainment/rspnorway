@@ -182,9 +182,10 @@ export default function Header() {
 	const [isVisible, setIsVisible] = useState(true);
 	const [lastScrollY, setLastScrollY] = useState(0);
 	const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const { data: session, status } = useSession();
+	const { data: session } = useSession({
+		required: false,
+	});
 	const user = session?.user;
-	const isLoading = status === "loading";
 
 	// Wrapper function to manage hover delays
 	const handleDropdownChange = (newDropdown: string | null) => {
@@ -334,10 +335,7 @@ export default function Header() {
 							<CoinsIcon className="hidden sm:inlinew-5 h-5 md:w-5 md:h-5" /> {t("donate")}
 						</Link>
 
-						{isLoading ? (
-							/* Loading placeholder with same dimensions as user profile button */
-							<div className="h-11 w-11 rounded-xl bg-gradient-to-br from-brand/50 to-emerald-500/50 shadow-lg animate-pulse"></div>
-						) : user ? (
+						{user ? (
 							<LoggedInUser user={user} />
 						) : (
 							<Link href="/login" className="px-2.5 md:px-6 py-1.5 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">

@@ -49,7 +49,7 @@ export default function MemberDetailClient({ member }) {
 		const typeConfig = {
 			active: {
 				icon: Award,
-				label: "Active Member",
+				label: "Executive Member",
 				className: "bg-blue-100 text-brand border-blue-300",
 			},
 			general: {
@@ -128,24 +128,50 @@ export default function MemberDetailClient({ member }) {
 								Contact Information
 							</h2>
 							<div className="space-y-4">
-								<div className="flex items-start gap-3">
-									<Mail className="text-gray-900 mt-1 flex-shrink-0" size={20} />
-									<div>
-										<p className="text-sm text-gray-900">Email</p>
-										<a href={`mailto:${member.email}`} className="text-brand hover:underline font-medium">
-											{member.email}
-										</a>
+								{member.permissionEmail && (
+									<div className="flex items-start gap-3">
+										<Mail className="text-gray-900 mt-1 flex-shrink-0" size={20} />
+										<div>
+											<p className="text-sm text-gray-900">Email</p>
+											<a href={`mailto:${member.email}`} className="text-brand hover:underline font-medium">
+												{member.email}
+											</a>
+										</div>
 									</div>
-								</div>
-								<div className="flex items-start gap-3">
-									<Phone className="text-gray-900 mt-1 flex-shrink-0" size={20} />
-									<div>
-										<p className="text-sm text-gray-900">Phone</p>
-										<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand font-medium">
-											{member.phone}
-										</a>
+								)}
+								{member.permissionPhone && (
+									<div className="flex items-start gap-3">
+										<Phone className="text-gray-900 mt-1 flex-shrink-0" size={20} />
+										<div>
+											<p className="text-sm text-gray-900">Phone</p>
+											<a href={`tel:${member.phone}`} className="text-gray-900 hover:text-brand font-medium">
+												{member.phone}
+											</a>
+										</div>
 									</div>
-								</div>
+								)}
+								{!member.permissionEmail && (
+									<div className="flex items-start gap-3">
+										<Mail className="text-gray-900 mt-1 flex-shrink-0" size={20} />
+										<div>
+											<p className="text-sm text-gray-900">Email</p>
+											<div className="text-gray-500 font-medium">
+												Private (Permission not granted)
+											</div>
+										</div>
+									</div>
+								)}
+								{!member.permissionPhone && (
+									<div className="flex items-start gap-3">
+										<Phone className="text-gray-900 mt-1 flex-shrink-0" size={20} />
+										<div>
+											<p className="text-sm text-gray-900">Phone</p>
+											<div className="text-gray-500 font-medium">
+												Private (Permission not granted)
+											</div>
+										</div>
+									</div>
+								)}
 								<div className="flex items-start gap-3">
 									<MapPin className="text-gray-900 mt-1 flex-shrink-0" size={20} />
 									<div>

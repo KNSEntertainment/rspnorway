@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { Link } from "@/i18n/navigation";
 import nepalLocationsData from "@/lib/data/nepal-locations.json";
 
 interface District {
@@ -18,6 +19,8 @@ interface Translations {
 	full_name: string;
 	full_name_placeholder: string;
 	email_address: string;
+	executive_member: string;
+	executive_member_desc: string;
 	email_address_placeholder: string;
 	phone_number: string;
 	phone_number_placeholder: string;
@@ -43,12 +46,8 @@ interface Translations {
 	skills_expertise: string;
 	skills_expertise_ph: string;
 	membership_type: string;
-	national_membership_no: string;
-	national_membership_no_ph: string;
 	general_member: string;
 	general_member_desc: string;
-	active_member: string;
-	active_member_desc: string;
 	areas_of_interests: string;
 	interest_politics: string;
 	interest_social: string;
@@ -57,6 +56,14 @@ interface Translations {
 	interest_events: string;
 	interest_fundraising: string;
 	agree_terms: string;
+	agree_terms_prefix: string;
+	terms_and_conditions: string;
+	and: string;
+	privacy_policy: string;
+	permissions_title: string;
+	permission_photos: string;
+	permission_phone: string;
+	permission_email: string;
 	submit: string;
 	reset: string;
 	need_help: string;
@@ -118,10 +125,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		profession: "",
 		membershipType: "general",
 		membershipStatus: "pending",
-		nationalMembershipNo: "",
 		skills: "",
 		volunteerInterest: [] as string[],
 		agreeTerms: false,
+		permissionPhotos: false,
+		permissionPhone: false,
+		permissionEmail: false,
 	});
 
 	const [submitted, setSubmitted] = useState(false);
@@ -353,10 +362,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				profession: "",
 				membershipType: "general",
 				membershipStatus: "pending",
-				nationalMembershipNo: "",
 				skills: "",
 				volunteerInterest: [],
 				agreeTerms: false,
+				permissionPhotos: false,
+				permissionPhone: false,
+				permissionEmail: false,
 			});
 		} catch (error) {
 			alert("There was an error submitting your application. Please try again." + error);
@@ -378,10 +389,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			profession: "",
 			membershipType: "general",
 			membershipStatus: "pending",
-			nationalMembershipNo: "",
 			skills: "",
 			volunteerInterest: [],
 			agreeTerms: false,
+			permissionPhotos: false,
+			permissionPhone: false,
+			permissionEmail: false,
 		});
 		setAddressSuggestions([]);
 		setAddressError("");
@@ -409,8 +422,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 
 	return (
 		<div className="md:px-4 py-12">
+		
 			{/* Membership Form */}
-			<div className="bg-white  md:shadow-md p-8 md:px-12">
+			<div className="bg-white md:shadow-md p-8 md:px-12">
 				<div className="flex flex-col md:items-center md:justify-center">
 					<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t.title}</h2>
 					<p className="text-gray-900 mb-8"> {t.subtitle}</p>
@@ -585,23 +599,19 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 						<h3 className="text-xl font-semibold text-gray-900 mb-4">{t.membership_type}</h3>
 						<div className="space-y-3">
 							<label className="flex items-center p-4 border border-light rounded-lg cursor-pointer hover:bg-brand/10 transition-colors">
+								<input type="radio" name="membershipType" value="executive" checked={formData.membershipType === "executive"} onChange={handleChange} className="w-4 h-4 text-brand" />
+								<div className="ml-3">
+									<span className="font-medium text-gray-900">{t.executive_member}</span>
+									<p className="text-sm text-gray-900">{t.executive_member_desc}</p>
+								</div>
+							</label>
+							<label className="flex items-center p-4 border border-light rounded-lg cursor-pointer hover:bg-brand/10 transition-colors">
 								<input type="radio" name="membershipType" value="general" checked={formData.membershipType === "general"} onChange={handleChange} className="w-4 h-4 text-brand" />
 								<div className="ml-3">
 									<span className="font-medium text-gray-900">{t.general_member}</span>
 									<p className="text-sm text-gray-900">{t.general_member_desc}</p>
 								</div>
 							</label>
-							<label className="flex items-center p-4 border border-light rounded-lg cursor-pointer hover:bg-brand/10 transition-colors">
-								<input type="radio" name="membershipType" value="active" checked={formData.membershipType === "active"} onChange={handleChange} className="w-4 h-4 text-brand" />
-								<div className="ml-3">
-									<span className="font-medium text-gray-900">{t.active_member}</span>
-									<p className="text-sm text-gray-900">{t.active_member_desc}</p>
-								</div>
-							</label>
-							<div>
-								<label className="block text-sm font-medium text-gray-900 mb-2">{t.national_membership_no}</label>
-								<input type="text" name="nationalMembershipNo" value={formData.nationalMembershipNo} onChange={handleChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder={t.national_membership_no_ph} />
-							</div>
 						</div>
 					</div>
 
@@ -618,12 +628,31 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 						</div>
 					</div>
 
+					{/* Privacy Permissions */}
+					<div>
+						<h3 className="text-xl font-semibold text-gray-900 mb-4">{t.permissions_title}</h3>
+						<div className="space-y-3">
+							<label className="flex items-start cursor-pointer p-3 border border-light rounded-lg hover:bg-brand/10 transition-colors">
+								<input type="checkbox" name="permissionPhotos" checked={formData.permissionPhotos} onChange={handleChange} className="w-5 h-5 text-brand rounded mt-1" />
+								<span className="ml-3 text-gray-900 text-sm">{t.permission_photos}</span>
+							</label>
+							<label className="flex items-start cursor-pointer p-3 border border-light rounded-lg hover:bg-brand/10 transition-colors">
+								<input type="checkbox" name="permissionPhone" checked={formData.permissionPhone} onChange={handleChange} className="w-5 h-5 text-brand rounded mt-1" />
+								<span className="ml-3 text-gray-900 text-sm">{t.permission_phone}</span>
+							</label>
+							<label className="flex items-start cursor-pointer p-3 border border-light rounded-lg hover:bg-brand/10 transition-colors">
+								<input type="checkbox" name="permissionEmail" checked={formData.permissionEmail} onChange={handleChange} className="w-5 h-5 text-brand rounded mt-1" />
+								<span className="ml-3 text-gray-900 text-sm">{t.permission_email}</span>
+							</label>
+						</div>
+					</div>
+
 					{/* Terms and Conditions */}
 					<div className="bg-light rounded-lg p-2 md:p-6">
 						<label className="flex items-start cursor-pointer">
 							<input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} className="w-5 h-5 text-brand rounded mt-1" />
 							<span className="ml-2 md:ml-3 text-gray-900">
-								{t.agree_terms} <span className="text-red-500"> *</span>
+								{t.agree_terms_prefix} <Link href="/terms-and-conditions" className="text-brand hover:underline">{t.terms_and_conditions}</Link> {t.and} <Link href="/privacy-policy" className="text-brand hover:underline">{t.privacy_policy}</Link>. <span className="text-red-500"> *</span>
 							</span>
 						</label>
 					</div>

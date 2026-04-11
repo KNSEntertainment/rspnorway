@@ -2,10 +2,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { signOut } from "next-auth/react";
 import SocialMediaLinks from "./SocialMediaLinks";
 import { X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { completeSignOut } from "@/utils/authUtils";
 
 interface MobileMenuProps {
 	navItems: {
@@ -35,9 +35,7 @@ const MobileMenu = ({ navItems, closeMenu, pathname, user }: MobileMenuProps) =>
 	const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
 	const handleSignOut = async () => {
-		await signOut({ redirect: false });
-		closeMenu();
-		window.location.href = `/${locale}`;
+		await completeSignOut(`/${locale}`, closeMenu);
 	};
 
 	const toggleDropdown = (href: string) => {

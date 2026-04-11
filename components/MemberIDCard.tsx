@@ -155,7 +155,7 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 								{/* Signature below QR */}
 								<div className="my-2 text-center">
 									<div className="border-b border-gray-400 w-16 mx-auto"></div>
-									<p className="text-[8px] text-gray-600 mt-0.5">Head</p>
+									<p className="text-xs text-gray-600 mt-0.5">President</p>
 								</div>
 							</div>
 					</div>
