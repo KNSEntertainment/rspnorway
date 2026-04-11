@@ -78,14 +78,29 @@ export default function Members() {
 				const timestamp = new Date().getTime();
 
 				const [executiveMembersResponse, regularMembersResponse, departmentsResponse] = await Promise.all([
-					fetch(`${baseUrl}/api/executive-members?t=${timestamp}`, {
+					fetch(`${baseUrl}/api/executive-members/unified?t=${timestamp}`, {
 						cache: "no-store",
+						headers: {
+							'Cache-Control': 'no-cache, no-store, must-revalidate',
+							'Pragma': 'no-cache',
+							'Expires': '0'
+						}
 					}),
 					fetch(`${baseUrl}/api/membership?t=${timestamp}`, {
 						cache: "no-store",
+						headers: {
+							'Cache-Control': 'no-cache, no-store, must-revalidate',
+							'Pragma': 'no-cache',
+							'Expires': '0'
+						}
 					}),
 					fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
 						cache: "no-store",
+						headers: {
+							'Cache-Control': 'no-cache, no-store, must-revalidate',
+							'Pragma': 'no-cache',
+							'Expires': '0'
+						}
 					}),
 				]);
 
@@ -97,7 +112,10 @@ export default function Members() {
 				if (regularMembersResponse.ok) {
 					const regularMembersData = await regularMembersResponse.json();
 					// The API returns a direct array, not wrapped in a success object
-					const members = regularMembersData.filter((member) => member.membershipStatus === "approved");
+					// Filter out executive members since they're now handled by unified endpoint
+					const members = regularMembersData.filter((member) => 
+						member.membershipStatus === "approved" && member.membershipType !== "executive"
+					);
 					setRegularMembers(members);
 				}
 
@@ -130,6 +148,7 @@ export default function Members() {
 		console.log("Executive members:", executiveMembers);
 		
 		// Set initial filtered members without applying filters
+		// Filter out executive members from regular members since they're handled by unified endpoint
 		const activeMembers = regularMembers.filter(member => member.membershipType === "active");
 		const generalMembers = regularMembers.filter(member => member.membershipType === "general");
 		

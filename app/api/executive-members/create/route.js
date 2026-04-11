@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import ExecutiveMember from "@/models/ExecutiveMember.Model";
+import Membership from "@/models/Membership.Model";
 import { saveUploadedFile } from "@/lib/saveUploadedFile";
+import { sendWelcomeEmail } from "@/lib/email";
+import crypto from "crypto";
 
 export async function POST(req) {
 	try {
@@ -40,7 +43,54 @@ export async function POST(req) {
 			imageUrl,
 		});
 
-		return NextResponse.json({ success: true, member: newMember }, { status: 201 });
+		// Create corresponding membership record for user creation flow
+		const setupToken = crypto.randomBytes(32).toString('hex');
+		const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+
+		const membershipData = {
+			fullName: name,
+			email,
+			phone,
+			address: "",
+			city: "",
+			postalCode: "",
+			dateOfBirth: "",
+			gender: "prefer-not-to-say",
+			province: "",
+			district: "",
+			profession: position || "Executive Member",
+			membershipType: "executive",
+			membershipStatus: "approved",
+			skills: "",
+			volunteerInterest: [],
+			agreeTerms: true,
+			permissionPhotos: true,
+			permissionPhone: true,
+			permissionEmail: true,
+			profilePhoto: imageUrl,
+			passwordSetupToken: setupToken,
+			passwordSetupTokenExpiry: tokenExpiry,
+		};
+
+		const membership = await Membership.create(membershipData);
+
+		// Send welcome email with password setup link
+		try {
+			await sendWelcomeEmail({ 
+				name, 
+				email, 
+				setupToken 
+			});
+		} catch (emailError) {
+			console.error("Failed to send welcome email:", emailError);
+			// Continue even if email fails
+		}
+
+		return NextResponse.json({ 
+			success: true, 
+			member: newMember,
+			membershipId: membership._id
+		}, { status: 201 });
 	} catch (error) {
 		console.error("Error creating executive member:", error);
 		return NextResponse.json({ error: "Failed to create executive member." }, { status: 500 });

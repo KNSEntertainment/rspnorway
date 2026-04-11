@@ -54,12 +54,15 @@ export interface Membership {
 	province?: string;
 	district?: string;
 	profession?: string;
-	membershipType: "general" | "active";
+	membershipType: "general" | "active" | "executive";
 	membershipStatus: "blocked" | "pending" | "approved";
 	nationalMembershipNo?: string;
 	skills?: string;
 	volunteerInterest?: string[];
 	agreeTerms: boolean;
+	permissionPhotos?: boolean;
+	permissionPhone?: boolean;
+	permissionEmail?: boolean;
 	profilePhoto?: string;
 	createdAt: string;
 }

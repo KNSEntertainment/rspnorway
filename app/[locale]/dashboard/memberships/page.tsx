@@ -5,7 +5,7 @@ import useFetchData from "@/hooks/useFetchData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X } from "lucide-react";
+import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +19,8 @@ export default function MembershipsPage() {
 	const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
 	const [bulkStatus, setBulkStatus] = useState("");
 	const [viewingMember, setViewingMember] = useState<Membership | null>(null);
+	const [editingMember, setEditingMember] = useState<Membership | null>(null);
+	const [editFormData, setEditFormData] = useState<Partial<Membership>>({});
 	const MEMBERS_PER_PAGE = 10;
 	const { data: memberships, error, loading, mutate } = useFetchData("/api/membership", "memberships");
 	const { toast } = useToast();
@@ -108,6 +110,66 @@ export default function MembershipsPage() {
 				variant: "destructive",
 			});
 		}
+	};
+
+	const handleEdit = (member: Membership) => {
+		setEditingMember(member);
+		setEditFormData({
+			fullName: member.fullName,
+			email: member.email,
+			phone: member.phone,
+			address: member.address,
+			city: member.city,
+			postalCode: member.postalCode,
+			dateOfBirth: member.dateOfBirth,
+			gender: member.gender,
+			province: member.province,
+			district: member.district,
+			profession: member.profession,
+			membershipType: member.membershipType,
+			membershipStatus: member.membershipStatus,
+			skills: member.skills,
+			volunteerInterest: member.volunteerInterest || [],
+			permissionPhotos: member.permissionPhotos,
+			permissionPhone: member.permissionPhone,
+			permissionEmail: member.permissionEmail,
+		});
+	};
+
+	const handleEditSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!editingMember) return;
+
+		try {
+			const response = await fetch(`/api/membership/${editingMember._id}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(editFormData),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to update membership");
+			}
+
+			toast({
+				title: "Success",
+				description: "Membership updated successfully",
+			});
+			setEditingMember(null);
+			setEditFormData({});
+			mutate();
+		} catch (error) {
+			console.error("Error updating membership:", error);
+			toast({
+				title: "Error",
+				description: "Failed to update membership. Please try again.",
+				variant: "destructive",
+			});
+		}
+	};
+
+	const handleEditChange = (field: string, value: string | string[] | boolean) => {
+		setEditFormData(prev => ({ ...prev, [field]: value }));
 	};
 
 	const filteredMemberships =
@@ -349,6 +411,9 @@ export default function MembershipsPage() {
 										<div className="flex gap-2">
 											<Button variant="outline" size="sm" onClick={() => setViewingMember(member)} title="View Details">
 												<Eye className="w-4 h-4" />
+											</Button>
+											<Button variant="outline" size="sm" onClick={() => handleEdit(member)} title="Edit Member">
+												<Edit className="w-4 h-4" />
 											</Button>
 											{member.membershipStatus === "pending" && (
 												<>
@@ -626,6 +691,224 @@ export default function MembershipsPage() {
 								</Button>
 							</div>
 						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Edit Member Modal */}
+			{editingMember && (
+				<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200" onClick={() => setEditingMember(null)}>
+					<div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+						{/* Header */}
+						<div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+							<button onClick={() => setEditingMember(null)} className="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200">
+								<X className="w-5 h-5" />
+							</button>
+							<h2 className="text-3xl font-bold text-white mb-2">Edit Member</h2>
+							<p className="text-blue-100">Update membership information</p>
+						</div>
+
+						{/* Form */}
+						<form onSubmit={handleEditSubmit} className="overflow-y-auto max-h-[calc(90vh-180px)] px-8 py-6">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								{/* Personal Information */}
+								<div className="space-y-4">
+									<h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+									
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Full Name *</label>
+										<input
+											type="text"
+											value={editFormData.fullName || ''}
+											onChange={(e) => handleEditChange('fullName', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											required
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Email *</label>
+										<input
+											type="email"
+											value={editFormData.email || ''}
+											onChange={(e) => handleEditChange('email', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											required
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Phone *</label>
+										<input
+											type="tel"
+											value={editFormData.phone || ''}
+											onChange={(e) => handleEditChange('phone', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											required
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Date of Birth</label>
+										<input
+											type="date"
+											value={editFormData.dateOfBirth || ''}
+											onChange={(e) => handleEditChange('dateOfBirth', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Gender</label>
+										<select
+											value={editFormData.gender || ''}
+											onChange={(e) => handleEditChange('gender', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										>
+											<option value="">Select Gender</option>
+											<option value="male">Male</option>
+											<option value="female">Female</option>
+											<option value="other">Other</option>
+											<option value="prefer-not-to-say">Prefer not to say</option>
+										</select>
+									</div>
+								</div>
+
+								{/* Location & Professional Information */}
+								<div className="space-y-4">
+									<h3 className="text-lg font-semibold text-gray-900 mb-4">Location & Professional</h3>
+									
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Address</label>
+										<input
+											type="text"
+											value={editFormData.address || ''}
+											onChange={(e) => handleEditChange('address', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">City</label>
+										<input
+											type="text"
+											value={editFormData.city || ''}
+											onChange={(e) => handleEditChange('city', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Postal Code</label>
+										<input
+											type="text"
+											value={editFormData.postalCode || ''}
+											onChange={(e) => handleEditChange('postalCode', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Profession</label>
+										<input
+											type="text"
+											value={editFormData.profession || ''}
+											onChange={(e) => handleEditChange('profession', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Skills</label>
+										<textarea
+											value={editFormData.skills || ''}
+											onChange={(e) => handleEditChange('skills', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											rows={3}
+										/>
+									</div>
+								</div>
+							</div>
+
+							{/* Membership Information */}
+							<div className="mt-6 space-y-4">
+								<h3 className="text-lg font-semibold text-gray-900 mb-4">Membership Details</h3>
+								
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Membership Type</label>
+										<select
+											value={editFormData.membershipType || ''}
+											onChange={(e) => handleEditChange('membershipType', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										>
+											<option value="general">General</option>
+											<option value="active">Active</option>
+											<option value="executive">Executive</option>
+										</select>
+									</div>
+
+									<div>
+										<label className="block text-sm font-medium text-gray-900 mb-2">Membership Status</label>
+										<select
+											value={editFormData.membershipStatus || ''}
+											onChange={(e) => handleEditChange('membershipStatus', e.target.value)}
+											className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										>
+											<option value="pending">Pending</option>
+											<option value="approved">Approved</option>
+											<option value="blocked">Blocked</option>
+										</select>
+									</div>
+								</div>
+
+								{/* Permissions */}
+								<div className="mt-6">
+									<h3 className="text-lg font-semibold text-gray-900 mb-4">Permissions</h3>
+									<div className="space-y-3">
+										<label className="flex items-center">
+											<input
+												type="checkbox"
+												checked={editFormData.permissionPhotos || false}
+												onChange={(e) => handleEditChange('permissionPhotos', e.target.checked)}
+												className="w-4 h-4 text-blue-600 rounded"
+											/>
+											<span className="ml-2 text-gray-900">Permission to use photos</span>
+										</label>
+										<label className="flex items-center">
+											<input
+												type="checkbox"
+												checked={editFormData.permissionPhone || false}
+												onChange={(e) => handleEditChange('permissionPhone', e.target.checked)}
+												className="w-4 h-4 text-blue-600 rounded"
+											/>
+											<span className="ml-2 text-gray-900">Permission to contact by phone</span>
+										</label>
+										<label className="flex items-center">
+											<input
+												type="checkbox"
+												checked={editFormData.permissionEmail || false}
+												onChange={(e) => handleEditChange('permissionEmail', e.target.checked)}
+												className="w-4 h-4 text-blue-600 rounded"
+											/>
+											<span className="ml-2 text-gray-900">Permission to contact by email</span>
+										</label>
+									</div>
+								</div>
+							</div>
+
+							{/* Action Buttons */}
+							<div className="border-t bg-gray-50 px-8 py-4 mt-6">
+								<div className="flex gap-3">
+									<Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+										Save Changes
+									</Button>
+									<Button type="button" variant="outline" onClick={() => setEditingMember(null)} className="px-6">
+										Cancel
+									</Button>
+								</div>
+							</div>
+						</form>
 					</div>
 				</div>
 			)}
