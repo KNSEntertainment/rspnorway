@@ -77,8 +77,8 @@ function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActi
 						setActiveDropdown(isOpen ? null : href);
 					}}
 					className={`
-            relative px-4 py-2 flex items-center gap-2 rounded-lg
-            transition-all duration-300 text-md font-semibold tracking-wide
+            relative px-2 md:px-4 py-1.5 md:py-2 flex items-center gap-1 md:gap-2 rounded-lg
+            transition-all duration-300 text-sm md:text-md font-semibold tracking-wide
             ${isActive || isChildActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
           `}
@@ -91,7 +91,7 @@ function NavItem({ title, href, pathname, dropdownItems, activeDropdown, setActi
 					href={href}
 					onClick={() => setActiveDropdown(null)}
 					className={`
-            relative px-4 py-2 block text-md font-semibold tracking-wide rounded-lg
+            relative px-2 md:px-4 py-1.5 md:py-2 block text-sm md:text-md font-semibold tracking-wide rounded-lg
             transition-all duration-300
             ${isActive ? "bg-white text-brand" : "text-white/90 hover:bg-white hover:text-brand"}
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2
@@ -297,54 +297,58 @@ export default function Header() {
 			<header className="bg-gradient-to-r from-brand via-brand to-emerald-600">
 				<div className="container mx-auto px-4 lg:px-6 h-16 md:h-24 flex items-center justify-between border-b border-brand">
 					{/* Logo */}
-					<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
-						<div className="relative">
-							<Image 
-								src="/rsp-norway-logo.png" 
-								alt="PNSB-Norway" 
-								width={40} 
-								height={40} 
-								className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105" 
-								priority
-								placeholder="blur"
-								blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
-								sizes="40px"
-							/>
-						</div>
-						<div className="flex flex-col leading-3">
-							<span className="hidden md:block text-lg md:text-xl font-bold text-white">{t("pnsb")}</span>
-							<span className="hidden md:block text-sm md:text-md text-white">{t("norway")}</span>
-						</div>
-					</Link>
+					<div className="flex-shrink-0">
+						<Link href="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 rounded-lg">
+							<div className="relative">
+								<Image 
+									src="/rsp-norway-logo.png" 
+									alt="PNSB-Norway" 
+									width={40} 
+									height={40} 
+									className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:scale-105" 
+									priority
+									placeholder="blur"
+									blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+									sizes="40px"
+								/>
+							</div>
+							<div className="flex flex-col leading-3">
+								<span className="hidden md:block text-lg md:text-xl font-bold text-white">{t("pnsb")}</span>
+								<span className="hidden md:block text-sm md:text-md text-white">{t("norway")}</span>
+							</div>
+						</Link>
+					</div>
 
 					{/* Desktop Nav - Centered */}
-					<nav className="hidden lg:flex items-center gap-2 justify-center" role="navigation">
+					<nav className="hidden lg:flex items-center gap-1 justify-center flex-1 min-w-0 overflow-x-auto" role="navigation">
 						{navItems.map((item) => (
 							<NavItem key={item.href} {...item} isScrolled={isScrolled} pathname={pathname} activeDropdown={activeDropdown} setActiveDropdown={handleDropdownChange} />
 						))}
 					</nav>
 
-					<div className="flex items-center gap-2 justify-end">
+					
+					<div className="flex items-center gap-1 lg:gap-2 justify-end flex-shrink-0">
 						{/* Search */}
-						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="flex items-center justify-center px-3 md:px-6 py-2 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm">
-							<Search size={20} className="md:w-5 md:h-5" />
+						<button onClick={() => setIsModalOpen(true)} aria-label="Open search" className="flex items-center justify-center px-2 md:px-4 py-1.5 md:py-2 rounded-lg font-medium text-sm md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm">
+							<Search size={16} className="md:w-5 md:h-5" />
 						</button>
 
 						{/* Donate Button */}
-						<Link href="/donate" className="flex items-center gap-2 px-2.5 md:px-6 py-1.5 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
-							<CoinsIcon className="hidden sm:inlinew-5 h-5 md:w-5 md:h-5" /> {t("donate")}
+						<Link href="/donate" className="hidden sm:flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium text-sm md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-success text-white shadow-md hover:shadow-lg">
+							<CoinsIcon className="w-4 h-4 md:w-5 md:h-5" /> 
+							<span className="hidden md:inline">{t("donate")}</span>
 						</Link>
 
 						{user ? (
 							<LoggedInUser user={user} />
 						) : (
-							<Link href="/login" className="px-2.5 md:px-6 py-1.5 md:py-2.5 rounded-xl font-semibold text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
+							<Link href="/login" className="hidden sm:flex px-2 md:px-4 py-1 md:py-2 rounded-lg font-medium text-sm md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white text-brand shadow-md hover:shadow-lg">
 								{t("login")}
 							</Link>
 						)}
 
 						{/* Hamburger Menu */}
-						<button className="sm:hidden flex items-center justify-center px-4 md:px-6 py-2 rounded-xl font-semibold text-xs md:text-base tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
+						<button className="lg:hidden flex items-center justify-center px-2 py-1.5 rounded-lg font-medium text-xs md:text-sm tracking-wide transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 bg-white/20 hover:bg-white/30 text-white shadow-md hover:shadow-lg backdrop-blur-sm" onClick={() => setIsMenuOpen((v) => !v)} aria-label={isMenuOpen ? "Close menu" : "Open menu"} aria-expanded={isMenuOpen}>
 							<AnimatePresence mode="wait">
 								{isMenuOpen ? (
 									<motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
