@@ -73,6 +73,8 @@ interface Translations {
 	district: string;
 	select_province: string;
 	select_district: string;
+	locating: string;
+	use_current_location: string;
 }
 
 interface Props {
@@ -538,7 +540,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 											disabled={locating}
 											className={`text-sm font-medium px-3 py-1.5 rounded border border-light bg-white hover:bg-light transition-colors ${locating ? "opacity-60 cursor-not-allowed" : ""}`}
 										>
-											{locating ? "Locating..." : "Use my current location"}
+											{locating ? t.locating : t.use_current_location}
 										</button>
 									</div>
 									{addressLoading && <div className="absolute right-3 top-2.5 text-xs text-gray-500">Loading…</div>}

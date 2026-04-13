@@ -142,3 +142,27 @@ body {
 	opacity: 1;
 	transform: rotate(3deg) translate(0px, -4px);
 }
+
+/* Glass button */
+.btn-glass {
+  @apply flex items-center justify-center px-3 md:px-4 py-2 rounded-lg
+  bg-white/20 hover:bg-white/30 text-white
+  backdrop-blur-sm shadow-md hover:shadow-lg
+  transition-all duration-300 hover:scale-105 active:scale-95;
+}
+
+/* Donate button */
+.btn-success {
+  @apply flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg
+  bg-emerald-500 hover:bg-emerald-600 text-white
+  shadow-md hover:shadow-lg
+  transition-all duration-300 hover:scale-105 active:scale-95;
+}
+
+/* Login button */
+.btn-white {
+  @apply px-3 md:px-4 py-2 rounded-lg
+  bg-white text-brand
+  shadow-md hover:shadow-lg
+  transition-all duration-300 hover:scale-105 active:scale-95;
+}

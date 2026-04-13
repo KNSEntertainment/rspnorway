@@ -45,11 +45,7 @@
 		"communityOrganizerDesc": "Led lokale initiativer og samle nepalesere i din by",
 		"digitalActivistDesc": "Forsterk vårt budskap gjennom sosiale medier og kampanjer",
 		"policyContributorDesc": "Bidra til å forme RSPs politikk og strategi",
-		"policyContributorFeatures": [
-			"Undersøk politiske spørsmål",
-			"Bidra i diskusjoner",
-			"Gi faglige innspill"
-		],
+		"policyContributorFeatures": ["Undersøk politiske spørsmål", "Bidra i diskusjoner", "Gi faglige innspill"],
 		"fundraisingTeamDesc": "Støtt vårt arbeid med kreative innsamlingsinitiativer",
 		"youthAmbassadorDesc": "Engasjer unge nepalesere og øk ungdomsdeltakelsen",
 		"creativeTeamDesc": "Design visuelt innhold og kreative materialer",
@@ -186,7 +182,7 @@
 		}
 	},
 	"notices": {
-		"back": "Tilbake til oppdateringer",
+		"back": "Gå Tilbake",
 		"other_events": "Andre arrangementer",
 		"venue": "Sted",
 		"other_notices": "Andre meldinger",
@@ -407,7 +403,9 @@
 		"male": "Mann",
 		"female": "Kvinne",
 		"other": "Annet",
-		"prefer_not_to_say": "Foretrekker å ikke si"
+		"prefer_not_to_say": "Foretrekker å ikke si",
+		"locating": "Finner posisjon...",
+		"use_current_location": "Bruk min nåværende posisjon"
 	},
 	"login": {
 		"title": "Logg Inn",

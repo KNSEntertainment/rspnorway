@@ -4,7 +4,7 @@ import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
 import { Phone, Mail, Search, X, Filter, ChevronRight, UserPlus } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -54,6 +54,7 @@ import Link from "next/link";
 
 export default function Members() {
 	const t = useTranslations("members");
+	const locale = useLocale();
 	const { data: session } = useSession();
 	const [executiveMembers, setExecutiveMembers] = useState([]);
 	const [regularMembers, setRegularMembers] = useState([]);
@@ -81,26 +82,26 @@ export default function Members() {
 					fetch(`${baseUrl}/api/executive-members/unified?t=${timestamp}`, {
 						cache: "no-store",
 						headers: {
-							'Cache-Control': 'no-cache, no-store, must-revalidate',
-							'Pragma': 'no-cache',
-							'Expires': '0'
-						}
+							"Cache-Control": "no-cache, no-store, must-revalidate",
+							Pragma: "no-cache",
+							Expires: "0",
+						},
 					}),
 					fetch(`${baseUrl}/api/membership?t=${timestamp}`, {
 						cache: "no-store",
 						headers: {
-							'Cache-Control': 'no-cache, no-store, must-revalidate',
-							'Pragma': 'no-cache',
-							'Expires': '0'
-						}
+							"Cache-Control": "no-cache, no-store, must-revalidate",
+							Pragma: "no-cache",
+							Expires: "0",
+						},
 					}),
 					fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
 						cache: "no-store",
 						headers: {
-							'Cache-Control': 'no-cache, no-store, must-revalidate',
-							'Pragma': 'no-cache',
-							'Expires': '0'
-						}
+							"Cache-Control": "no-cache, no-store, must-revalidate",
+							Pragma: "no-cache",
+							Expires: "0",
+						},
 					}),
 				]);
 
@@ -113,9 +114,7 @@ export default function Members() {
 					const regularMembersData = await regularMembersResponse.json();
 					// The API returns a direct array, not wrapped in a success object
 					// Filter out executive members since they're now handled by unified endpoint
-					const members = regularMembersData.filter((member) => 
-						member.membershipStatus === "approved" && member.membershipType !== "executive"
-					);
+					const members = regularMembersData.filter((member) => member.membershipStatus === "approved" && member.membershipType !== "executive");
 					setRegularMembers(members);
 				}
 
@@ -146,12 +145,12 @@ export default function Members() {
 	useEffect(() => {
 		console.log("Regular members:", regularMembers);
 		console.log("Executive members:", executiveMembers);
-		
+
 		// Set initial filtered members without applying filters
 		// Filter out executive members from regular members since they're handled by unified endpoint
-		const activeMembers = regularMembers.filter(member => member.membershipType === "active");
-		const generalMembers = regularMembers.filter(member => member.membershipType === "general");
-		
+		const activeMembers = regularMembers.filter((member) => member.membershipType === "active");
+		const generalMembers = regularMembers.filter((member) => member.membershipType === "general");
+
 		setFilteredExecutiveMembers(executiveMembers);
 		setFilteredActiveMembers(activeMembers);
 		setFilteredGeneralMembers(generalMembers);
@@ -173,8 +172,8 @@ export default function Members() {
 		}
 
 		// Filter regular members (active and general)
-		let activeFiltered = regularMembers.filter(member => member.membershipType === "active");
-		let generalFiltered = regularMembers.filter(member => member.membershipType === "general");
+		let activeFiltered = regularMembers.filter((member) => member.membershipType === "active");
+		let generalFiltered = regularMembers.filter((member) => member.membershipType === "general");
 
 		// Apply department filtering to regular members based on location mapping
 		if (filters.department) {
@@ -183,7 +182,7 @@ export default function Members() {
 				"Information and Technology Department": "province-3",
 				// Add more mappings as needed
 			};
-			
+
 			const targetProvince = departmentProvinceMap[filters.department];
 			if (targetProvince) {
 				activeFiltered = activeFiltered.filter((m) => m.province === targetProvince);
@@ -195,11 +194,11 @@ export default function Members() {
 		if (filters.subdepartment) {
 			// Map subdepartment to city for regular members
 			const subdepartmentCityMap = {
-				"IT": "Oslo",
+				IT: "Oslo",
 				"IT Online News": "Oslo",
 				// Add more mappings as needed
 			};
-			
+
 			const targetCity = subdepartmentCityMap[filters.subdepartment];
 			if (targetCity) {
 				activeFiltered = activeFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
@@ -288,7 +287,7 @@ export default function Members() {
 	return (
 		<div className="min-h-screen pt-12">
 			{/* Header Section */}
-		
+
 			<SectionHeader heading={t("title")} className="bg-white mb-0" />
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -299,7 +298,7 @@ export default function Members() {
 							{/* Right side: Become a Member Button */}
 							{!session && (
 								<div className="order-first sm:order-none sm:justify-end flex">
-									<Link href="/membership" className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+									<Link href={`/${locale}/membership`} className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
 										<UserPlus className="h-4 w-4" />
 										<span>Become a Member</span>
 									</Link>
@@ -339,12 +338,10 @@ export default function Members() {
 							{/* Members Count */}
 						</div>
 						<div className="text-sm text-gray-700 sm:ml-auto m-2 text-left sm:text-right">
-							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")}, 
-							<span className="text-brand font-bold ml-2">{filteredActiveMembers.length}</span> {filteredActiveMembers.length === 1 ? t("active_member") : t("active_members")}, 
-							<span className="text-brand font-bold ml-2">{filteredGeneralMembers.length}</span> {filteredGeneralMembers.length === 1 ? t("general_member") : t("general_members")}
+							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")},<span className="text-brand font-bold ml-2">{filteredActiveMembers.length}</span> {filteredActiveMembers.length === 1 ? t("active_member") : t("active_members")},<span className="text-brand font-bold ml-2">{filteredGeneralMembers.length}</span> {filteredGeneralMembers.length === 1 ? t("general_member") : t("general_members")}
 						</div>
 					</div>
-				</div>	
+				</div>
 
 				{/* Filters Section - Desktop and Mobile */}
 				<div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
@@ -437,7 +434,7 @@ export default function Members() {
 				)}
 
 				{/* Members Sections */}
-				
+
 				{/* Executive Members Section */}
 				{filteredExecutiveMembers.length > 0 && (
 					<div className="mb-8 md:mb-20 p-6 bg-brand/5">
@@ -457,20 +454,18 @@ export default function Members() {
 									<div className="p-6">
 										<h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
 										{member.position && <p className="text-sm text-brand font-medium mb-3">{member.position}</p>}
-										{
-											session?.user && (
-												<div className="space-y-2 mb-4">
-													<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
-														<Phone className="w-4 h-4" />
-														{member.phone}
-													</a>
-													<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
-														<Mail className="w-4 h-4" />
-														{member.email}
-													</a>
-												</div>
-											)
-										}
+										{session?.user && (
+											<div className="space-y-2 mb-4">
+												<a href={`tel:${member.phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
+													<Phone className="w-4 h-4" />
+													{member.phone}
+												</a>
+												<a href={`mailto:${member.email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+													<Mail className="w-4 h-4" />
+													{member.email}
+												</a>
+											</div>
+										)}
 									</div>
 								</div>
 							))}

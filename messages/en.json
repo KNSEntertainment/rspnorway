@@ -182,7 +182,7 @@
 		}
 	},
 	"notices": {
-		"back": "Back to Updates",
+		"back": "Go Back",
 		"other_events": "Other Events",
 		"venue": "Venue",
 		"other_notices": "Other Notices",
@@ -408,7 +408,9 @@
 		"male": "Male",
 		"female": "Female",
 		"other": "Other",
-		"prefer_not_to_say": "Prefer not to say"
+		"prefer_not_to_say": "Prefer not to say",
+		"locating": "Locating...",
+		"use_current_location": "Use my current location"
 	},
 	"login": {
 		"title": "Login",

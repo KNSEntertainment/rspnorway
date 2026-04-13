@@ -51,11 +51,7 @@
 		"communityOrganizerDesc": "स्थानीय पहलहरू नेतृत्व गर्नुहोस् र तपाईंको शहरमा नेपालीहरूलाई एकत्रित गर्नुहोस्",
 		"digitalActivistDesc": "सामाजिक सञ्जाल र अनलाइन अभियानमार्फत हाम्रो सन्देश फैलाउनुहोस्",
 		"policyContributorDesc": "प्रवास नेपाली सम्पर्क विभाग, नर्वे का नीतिहरू र रणनीति निर्माणमा सहयोग गर्नुहोस्",
-		"policyContributorFeatures": [
-			"नीति मुद्दाहरू अनुसन्धान गर्नुहोस्",
-			"छलफलहरूमा योगदान गर्नुहोस्",
-			"विशेषज्ञ दृष्टिकोण प्रदान गर्नुहोस्"
-		],
+		"policyContributorFeatures": ["नीति मुद्दाहरू अनुसन्धान गर्नुहोस्", "छलफलहरूमा योगदान गर्नुहोस्", "विशेषज्ञ दृष्टिकोण प्रदान गर्नुहोस्"],
 		"fundraisingTeamDesc": "रचनात्मक कोष संकलन पहलहरू मार्फत हाम्रो लक्ष्यलाई समर्थन गर्नुहोस्",
 		"youthAmbassadorDesc": "युवा नेपालीहरूलाई संलग्न गर्नुहोस् र युवाको सहभागिता बढाउनुहोस्",
 		"creativeTeamDesc": "दृश्य सामग्री र रचनात्मक सामग्रीहरू डिजाइन गर्नुहोस्",
@@ -309,7 +305,7 @@
 		"message_optional": "सन्देश (वैकल्पिक)",
 		"name_placeholder": "तपाईंको पूरा नाम लेख्नुहोस्",
 		"email_placeholder": "तपाईंको@ईमेल.com",
-		"phone_placeholder": "+47 123 45 678",
+		"phone_placeholder": "+४७ १२३ ४५ ६७८",
 		"message_placeholder": "समर्थनको सन्देश छोड्नुहोस्...",
 		"processing": "प्रक्रिया गर्दै...",
 		"donate_button": "योगदान गर्नुहोस्",
@@ -336,11 +332,12 @@
 		"no_notices": "कुनै सूचना फेला परेनन्।"
 	},
 	"membership": {
-		"title": "Membership Application Form",
-		"personal_info": "Personal Information",
-		"address_norway": "Address in Norway",
-		"street_address": "Address",
-		"street_address_ph": "e.g. Grorudveien 12, Apartment 4B",
+		"title": "सदस्यता आवेदन फारम",
+		"subtitle": "हाम्रो राष्ट्रको भविष्य निर्माणमा तपाईंको आवाजको महत्व छ। PNSB-नर्वे को सदस्य बन्न र प्रगतिशील, भ्रष्टाचारमुक्त नेपाल निर्माणको आन्दोलनको हिस्सा बन्न तलको फारम भर्नुहोस्।",
+		"personal_info": "तपाईंको व्यक्तिगत विवरण",
+		"address_norway": "नर्वे मूल (ठेगाना)",
+		"street_address": "ठेगाना",
+		"street_address_ph": "जस्तै Grorudveien 12, Apartment 4B",
 		"address_nepal": "नेपाली मूल (ठेगाना)",
 		"address_nepal_ph": "जस्तै बागमती प्रदेश, काठमाडौं जिल्ला",
 		"province": "प्रदेश",
@@ -405,12 +402,13 @@
 		"female": "महिला",
 		"other": "अन्य",
 		"prefer_not_to_say": "भन्न नचाहने",
-		"permissions_title": "Privacy Permissions",
+		"permissions_title": "गोपनीयता अनुमतिहरू",
 		"permission_photos": "मेरो फोटो र भिडियो वेबसाइट र सामाजिक सञ्जालमा सार्वजनिक रूपमा प्रकाशित हुनेछ मैले स्वीकार गर्दछु।",
 		"permission_phone": "मेरो फोन नम्बर वेबसाइटमा सार्वजनिक रूपमा प्रकाशित हुनेछ मैले स्वीकार गर्दछु।",
 		"permission_email": "मेरो इमेल ठेगाना वेबसाइटमा सार्वजनिक रूपमा प्रकाशित हुनेछ मैले स्वीकार गर्दछु।",
-		"subtitle": "Your voice matters in shaping future of our nation. Fill out the information below to become a member of PNSB-Norway and be part of the movement to build a progressive, corruption-free Nepal.",
-		"address_norway_ph": "e.g. Oslo"
+		"address_norway_ph": "जस्तै Oslo",
+		"locating": "स्थान खोज्दै...",
+		"use_current_location": "मेरो हालको स्थान प्रयोग गर्नुहोस्"
 	},
 	"login": {
 		"title": "लगइन",

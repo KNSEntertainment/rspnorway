@@ -82,6 +82,8 @@ export default async function MembershipPage({ params }: { params: Promise<{ loc
 		district: t("district"),
 		select_province: t("select_province"),
 		select_district: t("select_district"),
+		locating: t("locating"),
+		use_current_location: t("use_current_location"),
 	};
 
 	return <MembershipPageClient translations={translations} locale={locale} />;
