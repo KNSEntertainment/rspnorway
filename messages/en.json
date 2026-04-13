@@ -510,6 +510,8 @@
 	},
 	"members": {
 		"title": "Members Directory",
+		"description": "Meet the people who make our community thrive",
+		"become_a_member": "Become a Member",
 		"loading": "Loading members...",
 		"no_members_found": "No executive members found.",
 		"search_label": "Search Members",

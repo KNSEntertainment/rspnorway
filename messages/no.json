@@ -505,6 +505,8 @@
 	},
 	"members": {
 		"title": "Katalog over Styremedlemmer",
+		"description": "Møt de menneskene som gjør vår fellesskap til et sted hvor alle kan trives",
+		"become_a_member": "Bli en Medlem",
 		"loading": "Laster medlemmer...",
 		"no_members_found": "Ingen styremedlemmer funnet.",
 		"search_label": "Søk Medlemmer",

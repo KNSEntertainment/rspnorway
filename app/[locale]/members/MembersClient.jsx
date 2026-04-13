@@ -288,7 +288,7 @@ export default function Members() {
 		<div className="min-h-screen pt-12">
 			{/* Header Section */}
 
-			<SectionHeader heading={t("title")} className="bg-white mb-0" />
+			<SectionHeader heading={t("title")} subtitle={t("description")} className="bg-white mb-0" />
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 				{/* Search and Filter Toggle */}
@@ -300,7 +300,7 @@ export default function Members() {
 								<div className="order-first sm:order-none sm:justify-end flex">
 									<Link href={`/${locale}/membership`} className="inline-flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
 										<UserPlus className="h-4 w-4" />
-										<span>Become a Member</span>
+										<span>{t("become_a_member")}</span>
 									</Link>
 								</div>
 							)}
@@ -324,7 +324,7 @@ export default function Members() {
 								<div className="flex items-center gap-2">
 									<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="inline-flex items-center gap-2 px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
 										<Filter className="h-4 w-4" />
-										<span>Filters</span>
+										<span>{t("filters")}</span>
 										{hasActiveFilters && <span className="bg-white text-brand rounded-full px-2 py-0.5 text-xs font-semibold">{[filters.department, filters.subdepartment].filter(Boolean).length}</span>}
 									</button>
 									{hasActiveFilters && (
@@ -347,7 +347,7 @@ export default function Members() {
 				<div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
 					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
 						<div className="flex items-center justify-between mb-3">
-							<h3 className="text-sm font-semibold text-gray-900">{t("filters")}</h3>
+							<h3 className="text-md font-bold text-brand">{t("filters")}</h3>
 						</div>
 
 						{/* Departments */}
