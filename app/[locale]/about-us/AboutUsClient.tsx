@@ -68,7 +68,7 @@ export default function AboutUsClient() {
 
 	return (
 		<main className="pt-12 px-4">
-			<SectionHeader heading={t("title")} subtitle={ta("description")} />
+			<SectionHeader heading={t("title")} subtitle={t("subtitle")} />
 
 			<div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
 				{/* Text Content Column */}

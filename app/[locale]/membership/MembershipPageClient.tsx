@@ -215,8 +215,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				const data = (await res.json()) as GeoapifyResponse;
 				const suggestions: AddressSuggestion[] = (data.features || []).map((feature: GeoapifyFeature) => {
 					const props = feature.properties || {};
-					const addressLine =
-						[props.street, props.housenumber].filter(Boolean).join(" ").trim() || props.formatted || "";
+					const addressLine = [props.street, props.housenumber].filter(Boolean).join(" ").trim() || props.formatted || "";
 					const city = props.city || props.town || props.village || props.municipality || props.county || "";
 					const postalCode = props.postcode || "";
 					return {
@@ -316,7 +315,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				setAddressError("Unable to access your location.");
 				setLocating(false);
 			},
-			{ enableHighAccuracy: true, timeout: 8000 }
+			{ enableHighAccuracy: true, timeout: 8000 },
 		);
 	};
 
@@ -424,15 +423,15 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 
 	return (
 		<div className="md:px-4 py-12">
-		
 			{/* Membership Form */}
-			<div className="bg-white md:shadow-md p-8 md:px-12">
-				<div className="flex flex-col md:items-center md:justify-center">
+			<div className="mx-auto max-w-3xl md:shadow-md p-8 md:px-12 bg-cover bg-center bg-no-repeat relative overflow-hidden">
+				<div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style={{ backgroundImage: "url('/nepalipaper.jpg')" }} />
+				<div className="relative z-10flex flex-col md:items-center md:justify-center">
 					<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t.title}</h2>
 					<p className="text-gray-900 mb-8"> {t.subtitle}</p>
 				</div>
 
-				<div className="space-y-6">
+				<div className="  relative z-10 space-y-6">
 					{/* Personal Information */}
 					<div>
 						<h3 className="text-xl font-semibold text-gray-900 mb-4">{t.personal_info}</h3>
@@ -460,14 +459,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 								<label className="block text-sm font-medium text-gray-900 mb-2">
 									{t.date_of_birth} <span className="text-red-500">*</span>
 								</label>
-								<input 
-									type="date" 
-									name="dateOfBirth" 
-									value={formData.dateOfBirth} 
-									onChange={handleChange} 
-									className="w-full min-w-0 max-w-full text-sm px-3 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent box-border" 
-									style={{ minWidth: '0', maxWidth: '95%' }}
-								/>
+								<input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="w-full min-w-0 max-w-full text-sm px-3 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent box-border" style={{ minWidth: "0", maxWidth: "95%" }} />
 							</div>
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">
@@ -523,23 +515,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 									{t.street_address} <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<input
-										type="text"
-										name="address"
-										value={formData.address}
-										onChange={handleAddressChange}
-										onKeyDown={handleAddressKeyDown}
-										className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-										placeholder={t.street_address_ph}
-										autoComplete="off"
-									/>
+									<input type="text" name="address" value={formData.address} onChange={handleAddressChange} onKeyDown={handleAddressKeyDown} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder={t.street_address_ph} autoComplete="off" />
 									<div className="mt-2">
-										<button
-											type="button"
-											onClick={handleUseMyLocation}
-											disabled={locating}
-											className={`text-sm font-medium px-3 py-1.5 rounded border border-light bg-white hover:bg-light transition-colors ${locating ? "opacity-60 cursor-not-allowed" : ""}`}
-										>
+										<button type="button" onClick={handleUseMyLocation} disabled={locating} className={`text-sm font-medium px-3 py-1.5 rounded border border-light bg-white hover:bg-light transition-colors ${locating ? "opacity-60 cursor-not-allowed" : ""}`}>
 											{locating ? t.locating : t.use_current_location}
 										</button>
 									</div>
@@ -557,9 +535,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 													}}
 												>
 													<div className="font-medium">{item.label}</div>
-													<div className="text-xs text-gray-600">
-														{[item.postalCode, item.city].filter(Boolean).join(" ")}
-													</div>
+													<div className="text-xs text-gray-600">{[item.postalCode, item.city].filter(Boolean).join(" ")}</div>
 												</li>
 											))}
 										</ul>
@@ -654,7 +630,15 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 						<label className="flex items-start cursor-pointer">
 							<input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} className="w-5 h-5 text-brand rounded mt-1" />
 							<span className="ml-2 md:ml-3 text-gray-900">
-								{t.agree_terms_prefix} <Link href="/terms-and-conditions" className="text-brand hover:underline">{t.terms_and_conditions}</Link> {t.and} <Link href="/privacy-policy" className="text-brand hover:underline">{t.privacy_policy}</Link>. <span className="text-red-500"> *</span>
+								{t.agree_terms_prefix}{" "}
+								<Link href="/terms-and-conditions" className="text-brand hover:underline">
+									{t.terms_and_conditions}
+								</Link>{" "}
+								{t.and}{" "}
+								<Link href="/privacy-policy" className="text-brand hover:underline">
+									{t.privacy_policy}
+								</Link>
+								. <span className="text-red-500"> *</span>
 							</span>
 						</label>
 					</div>

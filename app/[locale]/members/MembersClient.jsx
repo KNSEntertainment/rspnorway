@@ -288,7 +288,7 @@ export default function Members() {
 		<div className="min-h-screen pt-12">
 			{/* Header Section */}
 
-			<SectionHeader heading={t("title")} subtitle={t("description")} className="bg-white mb-0" />
+			<SectionHeader heading={t("title")} subtitle={t("description")} className="mb-0" />
 
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 				{/* Search and Filter Toggle */}

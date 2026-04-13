@@ -29,10 +29,10 @@ export const metadata = {
 	},
 };
 
-export default async function CircularsPage({ params, searchParams }: { params: Promise<{ locale: string }>, searchParams: Promise<{ circularId?: string }> }) {
+export default async function CircularsPage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams: Promise<{ circularId?: string }> }) {
 	const { locale } = await params;
 	const { circularId } = await searchParams;
-	
+
 	const circulars = await getPublishedCirculars();
 	const circularsNorm = normalizeDocs(circulars);
 
@@ -40,6 +40,7 @@ export default async function CircularsPage({ params, searchParams }: { params: 
 
 	const translations = {
 		circulars_tab: t("circulars_tab"),
+		circulars_subtitle: t("circulars_subtitle"),
 		back: t("back"),
 		other_circulars: t("other_circulars"),
 		view_detail: t("view_detail"),
@@ -47,10 +48,5 @@ export default async function CircularsPage({ params, searchParams }: { params: 
 		no_circulars_desc: t("no_circulars_desc"),
 	};
 
-	return <CircularsClient 
-		circulars={circularsNorm as Circular[]} 
-		translations={translations} 
-		locale={locale}
-		initialCircularId={circularId}
-	/>;
+	return <CircularsClient circulars={circularsNorm as Circular[]} translations={translations} locale={locale} initialCircularId={circularId} />;
 }

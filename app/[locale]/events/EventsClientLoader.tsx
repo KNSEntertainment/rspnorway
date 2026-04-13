@@ -34,6 +34,7 @@ interface Event {
 
 interface Translations {
 	events_tab: string;
+	events_subtitle: string;
 	back: string;
 	other_events: string;
 	view_detail: string;

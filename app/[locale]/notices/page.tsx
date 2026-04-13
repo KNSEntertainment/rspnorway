@@ -35,6 +35,7 @@ export default async function NoticesPage({ searchParams }: { searchParams: Prom
 
 	const translations = {
 		notices_tab: t("notices_tab"),
+		notices_subtitle: t("notices_subtitle"),
 		back: t("back"),
 		other_notices: t("other_notices"),
 		view_detail: t("view_detail"),

@@ -21,6 +21,7 @@ interface Circular {
 
 interface Translations {
 	circulars_tab: string;
+	circulars_subtitle: string;
 	back: string;
 	other_circulars: string;
 	view_detail: string;
@@ -181,14 +182,14 @@ export default function CircularsColumn({ circulars, translations: t, locale, in
 												<Card key={circular._id} className="cursor-pointer hover:shadow-lg transition-all duration-300" onClick={() => setSelectedCircular(circular)}>
 													<div className="bg-amber-500 h-1" />
 													<CardContent className="p-4">
-													<div className="flex items-center gap-2 mb-2">
-														<Calendar className="w-4 h-4 text-amber-500" />
-														<p className="text-amber-500 text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
-													</div>
-													<h4 className="font-bold text-gray-900 line-clamp-2 mb-2">{getLocalizedValue(circular.circularTitle, locale, "Circular")}</h4>
-													<p className="text-gray-600 text-sm line-clamp-2">{getLocalizedValue(circular.circularDesc, locale)}</p>
-												</CardContent>
-											</Card>
+														<div className="flex items-center gap-2 mb-2">
+															<Calendar className="w-4 h-4 text-amber-500" />
+															<p className="text-amber-500 text-xs font-medium">{formatDate(circular.circularPublishedAt || circular.createdAt)}</p>
+														</div>
+														<h4 className="font-bold text-gray-900 line-clamp-2 mb-2">{getLocalizedValue(circular.circularTitle, locale, "Circular")}</h4>
+														<p className="text-gray-600 text-sm line-clamp-2">{getLocalizedValue(circular.circularDesc, locale)}</p>
+													</CardContent>
+												</Card>
 											))}
 									</div>
 								</div>
@@ -204,7 +205,7 @@ export default function CircularsColumn({ circulars, translations: t, locale, in
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
 			<div className="container mx-auto px-4 pt-8 lg:pt-12">
-				<SectionHeader heading={t.circulars_tab} />
+				<SectionHeader heading={t.circulars_tab} subtitle={t.circulars_subtitle} />
 				{sortedCirculars.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
 						{sortedCirculars.map((circular) => (

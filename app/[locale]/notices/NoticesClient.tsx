@@ -17,6 +17,7 @@ interface Notice {
 
 interface Translations {
 	notices_tab: string;
+	notices_subtitle: string;
 	back: string;
 	other_notices: string;
 	view_detail: string;
@@ -196,7 +197,7 @@ export default function NoticesColumn({ notices, translations: t, initialNoticeI
 	return (
 		<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
 			<div className="container max-w-7xl mx-auto px-4 pt-8 lg:pt-12">
-				<SectionHeader heading={t.notices_tab} />
+				<SectionHeader heading={t.notices_tab} subtitle={t.notices_subtitle} />
 				{sortedNotices.length > 0 ? (
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
 						{sortedNotices.map((notice) => (

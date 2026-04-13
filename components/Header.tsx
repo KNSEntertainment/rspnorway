@@ -47,6 +47,7 @@ export default function Header() {
 					{ title: t("events"), href: "/events" },
 					{ title: t("notices"), href: "/notices" },
 					{ title: t("circulars"), href: "/circulars" },
+					{ title: t("downloads"), href: "/downloads" },
 				],
 			},
 			{ title: t("gallery"), href: "/gallery" },

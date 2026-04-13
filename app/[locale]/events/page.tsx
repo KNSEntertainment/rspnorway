@@ -38,6 +38,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
 
 	const translations = {
 		events_tab: t("events_tab"),
+		events_subtitle: t("events_subtitle"),
 		back: t("back"),
 		other_events: t("other_events"),
 		view_detail: t("view_detail"),
