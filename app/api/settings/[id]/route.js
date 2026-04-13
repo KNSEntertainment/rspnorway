@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Setting from "@/models/Setting.Model";
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export async function PUT(request) {
 	try {
@@ -11,9 +11,16 @@ export async function PUT(request) {
 		const contentType = request.headers.get("content-type");
 		let data;
 
+		let oldCompanyLogo = null;
+
 		if (contentType && contentType.includes("multipart/form-data")) {
 			const formData = await request.formData();
 			data = Object.fromEntries(formData);
+
+			if (data._id) {
+				const existingSetting = await Setting.findById(data._id);
+				oldCompanyLogo = existingSetting?.companyLogo || null;
+			}
 
 			// Upload companyLogo to Cloudinary if present and is a file
 			if (data.companyLogo && data.companyLogo instanceof File) {
@@ -28,6 +35,15 @@ export async function PUT(request) {
 		if (!updatedSetting) {
 			return NextResponse.json({ success: false, error: "Setting not found" }, { status: 404 });
 		}
+
+		if (oldCompanyLogo && updateData.companyLogo && oldCompanyLogo !== updateData.companyLogo) {
+			try {
+				await deleteFromCloudinary(oldCompanyLogo, "image");
+			} catch (error) {
+				console.error("Failed to delete old company logo from Cloudinary:", error);
+			}
+		}
+
 		return NextResponse.json({ success: true, setting: updatedSetting }, { status: 200 });
 	} catch (error) {
 		console.error("Error updating setting:", error);

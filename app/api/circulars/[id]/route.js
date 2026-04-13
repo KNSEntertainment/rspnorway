@@ -1,26 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Circular from "@/models/Circular.Model";
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
-import cloudinary from "cloudinary";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export const config = {
 	api: {
 		bodyParser: false,
 	},
 };
-
-function extractPublicId(cloudinaryUrl) {
-	try {
-		const urlParts = cloudinaryUrl.split("/");
-		const versionAndId = urlParts.slice(-2).join("/"); // Extract version and ID
-		const publicIdWithExtension = versionAndId.split(".")[0]; // Remove file extension
-		return publicIdWithExtension;
-	} catch (error) {
-		console.error("Error extracting public ID:", error);
-		return null;
-	}
-}
 export async function GET(req, { params }) {
 	const { id } = await params;
 	console.log("Received ID:", id);
@@ -92,24 +79,16 @@ export async function PUT(request, { params }) {
 		// Handle images
 		let circularMainPictureUrl = existingCircular.circularMainPicture;
 		let circularSecondPictureUrl = existingCircular.circularSecondPicture;
+		let oldMainPictureUrl = null;
+		let oldSecondPictureUrl = null;
 
 		if (formData.get("circularMainPicture")) {
-			if (existingCircular.circularMainPicture) {
-				const mainPictureId = extractPublicId(existingCircular.circularMainPicture);
-				if (mainPictureId) {
-					await cloudinary.v2.uploader.destroy(mainPictureId);
-				}
-			}
+			oldMainPictureUrl = existingCircular.circularMainPicture || null;
 			circularMainPictureUrl = await uploadToCloudinary(formData.get("circularMainPicture"), "circulars");
 		}
 
 		if (formData.get("circularSecondPicture")) {
-			if (existingCircular.circularSecondPicture) {
-				const secondPictureId = extractPublicId(existingCircular.circularSecondPicture);
-				if (secondPictureId) {
-					await cloudinary.v2.uploader.destroy(secondPictureId);
-				}
-			}
+			oldSecondPictureUrl = existingCircular.circularSecondPicture || null;
 			circularSecondPictureUrl = await uploadToCloudinary(formData.get("circularSecondPicture"), "circulars");
 		}
 
@@ -123,6 +102,22 @@ export async function PUT(request, { params }) {
 		existingCircular.circularSecondPicture = circularSecondPictureUrl;
 
 		await existingCircular.save();
+
+		if (oldMainPictureUrl && circularMainPictureUrl && oldMainPictureUrl !== circularMainPictureUrl) {
+			try {
+				await deleteFromCloudinary(oldMainPictureUrl, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old circular main image from Cloudinary:", deleteError);
+			}
+		}
+
+		if (oldSecondPictureUrl && circularSecondPictureUrl && oldSecondPictureUrl !== circularSecondPictureUrl) {
+			try {
+				await deleteFromCloudinary(oldSecondPictureUrl, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old circular secondary image from Cloudinary:", deleteError);
+			}
+		}
 
 		return NextResponse.json({ success: true, circular: existingCircular }, { status: 200 });
 	} catch (error) {
@@ -143,6 +138,22 @@ export async function DELETE(request, { params }) {
 
 		if (!deletedblog) {
 			return NextResponse.json({ success: false, error: "Circular not found" }, { status: 404 });
+		}
+
+		if (deletedblog.circularMainPicture) {
+			try {
+				await deleteFromCloudinary(deletedblog.circularMainPicture, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete circular main image from Cloudinary:", deleteError);
+			}
+		}
+
+		if (deletedblog.circularSecondPicture) {
+			try {
+				await deleteFromCloudinary(deletedblog.circularSecondPicture, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete circular secondary image from Cloudinary:", deleteError);
+			}
 		}
 
 		return NextResponse.json({ success: true, message: "Circular deleted successfully" }, { status: 200 });

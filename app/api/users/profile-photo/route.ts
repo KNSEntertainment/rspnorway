@@ -21,8 +21,6 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "No file provided" }, { status: 400 });
 		}
 
-		console.log("File received:", { name: file.name, size: file.size, type: file.type });
-
 		// Validate file type
 		if (!file.type.startsWith("image/")) {
 			return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
@@ -32,8 +30,6 @@ export async function POST(req: NextRequest) {
 		if (file.size > 300 * 1024) {
 			return NextResponse.json({ error: "File size must be less than 300KB" }, { status: 400 });
 		}
-
-		console.log("Starting Cloudinary upload...");
 
 		// Get existing membership to retrieve old photo URL
 		const existingMembership = await Membership.findOne({ email: session.user.email });
@@ -46,10 +42,8 @@ export async function POST(req: NextRequest) {
 
 		// Upload new photo to Cloudinary
 		const photoUrl = await uploadToCloudinary(file, "profile-photos");
-		console.log("Cloudinary upload successful:", photoUrl);
 
 		// Update membership's profile photo in database
-		console.log("Updating membership for email:", session.user.email);
 		const membership = await Membership.findOneAndUpdate({ email: session.user.email }, { profilePhoto: photoUrl }, { new: true });
 
 		if (!membership) {
@@ -60,16 +54,13 @@ export async function POST(req: NextRequest) {
 		// Delete old photo from Cloudinary if it exists
 		if (oldPhotoUrl) {
 			try {
-				console.log("Deleting old photo from Cloudinary:", oldPhotoUrl);
 				await deleteFromCloudinary(oldPhotoUrl, "image");
-				console.log("Old photo deleted successfully");
 			} catch (deleteError) {
 				console.error("Error deleting old photo from Cloudinary:", deleteError);
 				// Don't fail the request if deletion fails - the new photo is already uploaded
 			}
 		}
 
-		console.log("Membership updated successfully");
 		return NextResponse.json({
 			success: true,
 			profilePhoto: photoUrl,

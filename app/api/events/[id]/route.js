@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import connectDB from "@/lib/mongodb";
 import Event from "@/models/Event.Model";
-import { v2 as cloudinary } from "cloudinary";
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
@@ -12,22 +11,6 @@ export const config = {
 		bodyParser: false,
 	},
 };
-
-async function deleteFromCloudinary(url) {
-	try {
-		// Delete the file from Cloudinary
-		const publicId = url.split("/").pop().split(".")[0];
-		console.log("Deleting Cloudinary publicId:", publicId);
-		const result = await cloudinary.uploader.destroy(`rspnorway_event_images/${publicId}`);
-		console.log("Cloudinary deletion result:", result);
-		if (result.result !== "ok" && result.result !== "not_found") {
-			throw new Error(`Failed to delete resource: ${result.result}`);
-		}
-	} catch (error) {
-		console.error("Error deleting from Cloudinary:", error);
-		throw error;
-	}
-}
 
 export async function PUT(request, { params }) {
 	const { id } = params;
@@ -42,6 +25,7 @@ export async function PUT(request, { params }) {
 		if (!event) {
 			return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 });
 		}
+		const urlsToDelete = [];
 
 		const eventData = {};
 		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime"];
@@ -59,10 +43,12 @@ export async function PUT(request, { params }) {
 		const handleUpload = async (formKey, urlField) => {
 			const file = formData.get(formKey);
 			if (file && typeof file.arrayBuffer === "function" && file.size > 0) {
-				if (event[urlField]) {
-					await deleteFromCloudinary(event[urlField]);
+				const oldUrl = event[urlField];
+				const newUrl = await uploadToCloudinary(file, "rspnorway_event_images");
+				eventData[urlField] = newUrl;
+				if (oldUrl && oldUrl !== newUrl) {
+					urlsToDelete.push(oldUrl);
 				}
-				eventData[urlField] = await uploadToCloudinary(file, "rspnorway_event_images");
 			}
 		};
 
@@ -78,8 +64,8 @@ export async function PUT(request, { params }) {
 			if (!removeFlag) return;
 			if (eventData[urlField]) return;
 			if (event[urlField]) {
-				await deleteFromCloudinary(event[urlField]);
 				eventData[urlField] = null;
+				urlsToDelete.push(event[urlField]);
 			}
 		};
 
@@ -87,6 +73,14 @@ export async function PUT(request, { params }) {
 		await handleRemove(removeEventPoster3, "eventposter3Url");
 
 		const updatedEvent = await Event.findByIdAndUpdate(eventId, eventData, { new: true });
+
+		for (const url of urlsToDelete) {
+			try {
+				await deleteFromCloudinary(url);
+			} catch (deleteError) {
+				console.error("Failed to delete old event asset from Cloudinary:", deleteError);
+			}
+		}
 
 		return NextResponse.json({ success: true, event: updatedEvent }, { status: 200 });
 	} catch (error) {
@@ -129,7 +123,7 @@ export async function DELETE(request, { params }) {
 		if (event.eventposterUrl) await deleteFromCloudinary(event.eventposterUrl);
 		if (event.eventposter2Url) await deleteFromCloudinary(event.eventposter2Url);
 		if (event.eventposter3Url) await deleteFromCloudinary(event.eventposter3Url);
-		// if (event.eventvideoUrl) await deleteFromCloudinary(event.eventvideoUrl);
+		if (event.eventvideoUrl) await deleteFromCloudinary(event.eventvideoUrl);
 
 		return NextResponse.json({ success: true, message: "Event deleted successfully" }, { status: 200 });
 	} catch (error) {

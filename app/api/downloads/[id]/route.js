@@ -19,23 +19,20 @@ export async function PUT(request, context) {
 		let imageSize = formData.get("imageSize");
 		const file = formData.get("file");
 		const image = formData.get("image");
+		let oldFileUrl = null;
+		let oldImageUrl = null;
 
 		// Fetch current document to get old URLs
 		const current = await Download.findById(id);
-		// If new file uploaded, upload to Cloudinary and delete old file
-		if (file) {
-			if (current && current.fileUrl) {
-				await deleteFromCloudinary(current.fileUrl, "raw");
-			}
+		// If new file uploaded, upload first and delete old file after update succeeds
+		if (file && file.size > 0) {
+			oldFileUrl = current?.fileUrl || null;
 			fileUrl = await uploadToCloudinary(file, "Downloads");
 			fileSize = file.size;
 		}
-		// If new image uploaded, upload to Cloudinary and delete old image
-		if (image) {
-			if (current && current.imageUrl) {
-				console.log("Attempting to delete old image from Cloudinary:", current.imageUrl);
-				await deleteFromCloudinary(current.imageUrl, "image");
-			}
+		// If new image uploaded, upload first and delete old image after update succeeds
+		if (image && image.size > 0) {
+			oldImageUrl = current?.imageUrl || null;
 			imageUrl = await uploadToCloudinary(image, "Downloads");
 			imageSize = image.size;
 		}
@@ -56,6 +53,23 @@ export async function PUT(request, context) {
 		if (!updated) {
 			return NextResponse.json({ success: false, error: "Download not found" }, { status: 404 });
 		}
+
+		if (oldFileUrl && fileUrl && oldFileUrl !== fileUrl) {
+			try {
+				await deleteFromCloudinary(oldFileUrl, "raw");
+			} catch (deleteError) {
+				console.error("Failed to delete old download file from Cloudinary:", deleteError);
+			}
+		}
+
+		if (oldImageUrl && imageUrl && oldImageUrl !== imageUrl) {
+			try {
+				await deleteFromCloudinary(oldImageUrl, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old download image from Cloudinary:", deleteError);
+			}
+		}
+
 		return NextResponse.json({ success: true, download: updated }, { status: 200 });
 	} catch (error) {
 		console.error("Error updating download:", error);

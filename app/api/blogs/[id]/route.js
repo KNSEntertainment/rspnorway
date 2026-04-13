@@ -1,26 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Blog from "@/models/Blog.Model";
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
-import cloudinary from "cloudinary";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export const config = {
 	api: {
 		bodyParser: false,
 	},
 };
-
-function extractPublicId(cloudinaryUrl) {
-	try {
-		const urlParts = cloudinaryUrl.split("/");
-		const versionAndId = urlParts.slice(-2).join("/"); // Extract version and ID
-		const publicIdWithExtension = versionAndId.split(".")[0]; // Remove file extension
-		return publicIdWithExtension;
-	} catch (error) {
-		console.error("Error extracting public ID:", error);
-		return null;
-	}
-}
 export async function GET(req, { params }) {
 	const { id } = await params;
 	console.log("Received ID:", id);
@@ -69,22 +56,18 @@ export async function PUT(request, { params }) {
 		// Handle images
 		let blogMainPictureUrl = existingBlog.blogMainPicture;
 		let blogSecondPictureUrl = existingBlog.blogSecondPicture;
+		let oldMainPictureUrl = null;
+		let oldSecondPictureUrl = null;
 
 		// Update main picture if a new file is provided
 		if (formData.get("blogMainPicture")) {
-			if (existingBlog.blogMainPicture) {
-				const mainPictureId = extractPublicId(existingBlog.blogMainPicture);
-				if (mainPictureId) await cloudinary.v2.uploader.destroy(mainPictureId);
-			}
+			oldMainPictureUrl = existingBlog.blogMainPicture || null;
 			blogMainPictureUrl = await uploadToCloudinary(formData.get("blogMainPicture"), "blogs_images");
 		}
 
 		// Update second picture if a new file is provided
 		if (formData.get("blogSecondPicture")) {
-			if (existingBlog.blogSecondPicture) {
-				const secondPictureId = extractPublicId(existingBlog.blogSecondPicture);
-				if (secondPictureId) await cloudinary.v2.uploader.destroy(secondPictureId);
-			}
+			oldSecondPictureUrl = existingBlog.blogSecondPicture || null;
 			blogSecondPictureUrl = await uploadToCloudinary(formData.get("blogSecondPicture"), "blogs_images");
 		}
 
@@ -102,6 +85,22 @@ export async function PUT(request, { params }) {
 		existingBlog.blogSecondPicture = blogSecondPictureUrl;
 
 		await existingBlog.save();
+
+		if (oldMainPictureUrl && blogMainPictureUrl && oldMainPictureUrl !== blogMainPictureUrl) {
+			try {
+				await deleteFromCloudinary(oldMainPictureUrl, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old blog main image from Cloudinary:", deleteError);
+			}
+		}
+
+		if (oldSecondPictureUrl && blogSecondPictureUrl && oldSecondPictureUrl !== blogSecondPictureUrl) {
+			try {
+				await deleteFromCloudinary(oldSecondPictureUrl, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old blog secondary image from Cloudinary:", deleteError);
+			}
+		}
 
 		return NextResponse.json({ success: true, blog: existingBlog }, { status: 200 });
 	} catch (error) {
@@ -124,21 +123,21 @@ export async function DELETE(request, { params }) {
 			return NextResponse.json({ success: false, error: "Blog not found" }, { status: 404 });
 		}
 
-		// Delete the main picture from Cloudinary
-		// if (deletedblog.blogMainPicture) {
-		// 	const mainPictureId = extractPublicId(deletedblog.blogMainPicture);
-		// 	if (mainPictureId) {
-		// 		await cloudinary.v2.uploader.destroy(mainPictureId);
-		// 	}
-		// }
+		if (deletedblog.blogMainPicture) {
+			try {
+				await deleteFromCloudinary(deletedblog.blogMainPicture, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete blog main image from Cloudinary:", deleteError);
+			}
+		}
 
-		// Delete the second picture from Cloudinary
-		// if (deletedblog.blogSecondPicture) {
-		// 	const secondPictureId = extractPublicId(deletedblog.blogSecondPicture);
-		// 	if (secondPictureId) {
-		// 		await cloudinary.v2.uploader.destroy(secondPictureId);
-		// 	}
-		// }
+		if (deletedblog.blogSecondPicture) {
+			try {
+				await deleteFromCloudinary(deletedblog.blogSecondPicture, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete blog secondary image from Cloudinary:", deleteError);
+			}
+		}
 
 		return NextResponse.json({ success: true, message: "Blog deleted successfully" }, { status: 200 });
 	} catch (error) {

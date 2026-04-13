@@ -1,20 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Gallery from "@/models/Gallery.Model";
-import { v2 as cloudinary } from "cloudinary";
-
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export const config = {
 	api: {
 		bodyParser: false,
 	},
 };
-
-async function deleteFromCloudinary(url) {
-	const publicId = url.split("/").pop().split(".")[0];
-	await cloudinary.uploader.destroy(`gallery_images/${publicId}`);
-}
 
 export async function PUT(request, { params }) {
 	const { id } = await params;
@@ -37,13 +30,21 @@ export async function PUT(request, { params }) {
 		}
 
 		if (mediaFiles.length > 0) {
-			// Delete old images
-			for (const url of existingGallery.media) {
-				await deleteFromCloudinary(url);
+			const oldMedia = [...existingGallery.media];
+			const newMedia = await Promise.all(mediaFiles.map(async (file) => await uploadToCloudinary(file, "gallery_images")));
+			galleryData.media = newMedia;
+
+			const updatedGallery = await Gallery.findByIdAndUpdate(id, galleryData, { new: true });
+
+			for (const url of oldMedia) {
+				try {
+					await deleteFromCloudinary(url);
+				} catch (deleteError) {
+					console.error("Failed to delete old gallery media from Cloudinary:", deleteError);
+				}
 			}
 
-			// Upload new images
-			galleryData.media = await Promise.all(mediaFiles.map(async (file) => await uploadToCloudinary(file, "gallery_images")));
+			return NextResponse.json({ success: true, gallery: updatedGallery }, { status: 200 });
 		}
 
 		// Keep alt for backward compatibility
@@ -108,6 +109,16 @@ export async function DELETE(request, { params }) {
 
 		if (!deletedpartner) {
 			return NextResponse.json({ success: false, error: "gallery not found" }, { status: 404 });
+		}
+
+		if (Array.isArray(deletedpartner.media)) {
+			for (const url of deletedpartner.media) {
+				try {
+					await deleteFromCloudinary(url);
+				} catch (deleteError) {
+					console.error("Failed to delete gallery media from Cloudinary:", deleteError);
+				}
+			}
 		}
 
 		return NextResponse.json({ success: true, message: "gallery deleted successfully" }, { status: 200 });

@@ -38,6 +38,7 @@ export async function PUT(request, { params }) {
 		if (!existingNotice) {
 			return NextResponse.json({ success: false, error: "Notice not found" }, { status: 404 });
 		}
+		let oldNoticeImage = null;
 
 		const updateData = {
 			noticetitle: noticetitle || existingNotice.noticetitle,
@@ -45,17 +46,21 @@ export async function PUT(request, { params }) {
 			notice: notice || existingNotice.notice,
 		};
 
-		// If new image is uploaded, delete old and upload new
+		// If new image is uploaded, upload first and delete old after update succeeds
 		if (noticeImageFile && noticeImageFile.size > 0) {
-			// Delete old image from Cloudinary
-			if (existingNotice.noticeimage) {
-				await deleteFromCloudinary(existingNotice.noticeimage, "image");
-			}
-			// Upload new image
+			oldNoticeImage = existingNotice.noticeimage || null;
 			updateData.noticeimage = await uploadToCloudinary(noticeImageFile, "notices");
 		}
 
 		const updatedNotice = await Notice.findByIdAndUpdate(id, updateData, { new: true });
+
+		if (oldNoticeImage && updateData.noticeimage && oldNoticeImage !== updateData.noticeimage) {
+			try {
+				await deleteFromCloudinary(oldNoticeImage, "image");
+			} catch (deleteError) {
+				console.error("Failed to delete old notice image from Cloudinary:", deleteError);
+			}
+		}
 
 		return NextResponse.json({ success: true, notice: updatedNotice }, { status: 200 });
 	} catch (error) {

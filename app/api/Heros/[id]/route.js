@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Hero from "@/models/Hero.Model";
-import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export const config = {
 	api: {
@@ -17,6 +17,11 @@ export async function PUT(request, { params }) {
 
 		const formData = await request.formData();
 		const heroId = id;
+		const existingHero = await Hero.findById(heroId);
+
+		if (!existingHero) {
+			return NextResponse.json({ success: false, error: "Hero not found" }, { status: 404 });
+		}
 
 		const heroData = {};
 		for (const [key, value] of formData.entries()) {
@@ -26,6 +31,7 @@ export async function PUT(request, { params }) {
 		}
 
 		const heroimage = formData.get("heroimage");
+		const oldHeroImage = existingHero.heroimage;
 		if (heroimage) {
 			heroData.heroimage = await uploadToCloudinary(heroimage, "hero_images");
 		}
@@ -34,6 +40,14 @@ export async function PUT(request, { params }) {
 
 		if (!updatedhero) {
 			return NextResponse.json({ success: false, error: "Hero not found" }, { status: 404 });
+		}
+
+		if (oldHeroImage && heroData.heroimage && oldHeroImage !== heroData.heroimage) {
+			try {
+				await deleteFromCloudinary(oldHeroImage, "image");
+			} catch (error) {
+				console.error("Failed to delete old hero image from Cloudinary:", error);
+			}
 		}
 
 		return NextResponse.json({ success: true, Hero: updatedhero }, { status: 200 });
