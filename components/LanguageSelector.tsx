@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Flag from "@/components/ui/Flag";
 import { useLocale } from "next-intl";

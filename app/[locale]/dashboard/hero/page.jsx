@@ -18,9 +18,17 @@ export default function HeroPage() {
 
 	const slides = Array.isArray(heroData) ? heroData : [];
 
-	const handleEdit = (slide) => {
-		setSlideToEdit(slide);
-		setOpenSlideModal(true);
+	const handleEdit = async (slide) => {
+		try {
+			// Fetch full multilingual data for editing
+			const response = await fetch(`/api/hero?edit=true`);
+			const data = await response.json();
+			const fullSlide = data.slides.find((s) => s._id === slide._id);
+			setSlideToEdit(fullSlide);
+			setOpenSlideModal(true);
+		} catch (error) {
+			console.error("Error fetching slide for editing:", error);
+		}
 	};
 
 	const handleDelete = async (slideId) => {
@@ -41,10 +49,10 @@ export default function HeroPage() {
 	};
 
 	const handleReorder = async (slideId, direction) => {
-		const currentIndex = slides.findIndex(slide => slide._id === slideId);
+		const currentIndex = slides.findIndex((slide) => slide._id === slideId);
 		if (currentIndex === -1) return;
 
-		const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+		const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 		if (newIndex < 0 || newIndex >= slides.length) return;
 
 		const reorderedSlides = [...slides];
@@ -75,9 +83,7 @@ export default function HeroPage() {
 	};
 
 	const handleToggleActive = async (slideId) => {
-		const updatedSlides = slides.map(slide => 
-			slide._id === slideId ? { ...slide, isActive: !slide.isActive } : slide
-		);
+		const updatedSlides = slides.map((slide) => (slide._id === slideId ? { ...slide, isActive: !slide.isActive } : slide));
 
 		try {
 			const response = await fetch("/api/hero", {
@@ -122,7 +128,7 @@ export default function HeroPage() {
 			) : (
 				<div className="space-y-4">
 					{slides.map((slide, index) => (
-						<Card key={slide._id} className={`${!slide.isActive ? 'opacity-60' : ''}`}>
+						<Card key={slide._id} className={`${!slide.isActive ? "opacity-60" : ""}`}>
 							<CardHeader>
 								<div className="flex items-center justify-between">
 									<CardTitle className="flex items-center gap-2">
@@ -131,28 +137,14 @@ export default function HeroPage() {
 										{!slide.isActive && <span className="text-sm text-gray-500">(Inactive)</span>}
 									</CardTitle>
 									<div className="flex items-center gap-2">
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() => handleReorder(slide._id, 'up')}
-											disabled={index === 0}
-										>
+										<Button variant="outline" size="sm" onClick={() => handleReorder(slide._id, "up")} disabled={index === 0}>
 											<MoveUp className="w-4 h-4" />
 										</Button>
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() => handleReorder(slide._id, 'down')}
-											disabled={index === slides.length - 1}
-										>
+										<Button variant="outline" size="sm" onClick={() => handleReorder(slide._id, "down")} disabled={index === slides.length - 1}>
 											<MoveDown className="w-4 h-4" />
 										</Button>
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() => handleToggleActive(slide._id)}
-										>
-											{slide.isActive ? 'Deactivate' : 'Activate'}
+										<Button variant="outline" size="sm" onClick={() => handleToggleActive(slide._id)}>
+											{slide.isActive ? "Deactivate" : "Activate"}
 										</Button>
 										<Button variant="outline" size="sm" onClick={() => handleEdit(slide)}>
 											<Pencil className="w-4 h-4" />
@@ -167,12 +159,7 @@ export default function HeroPage() {
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 									<div>
 										<div className="relative aspect-video rounded-lg overflow-hidden bg-gray-100">
-											<Image
-												src={slide.image}
-												alt={slide.title}
-												fill
-												className="object-cover"
-											/>
+											<Image src={slide.image} alt={slide.title} fill sizes="100%" className="object-cover" />
 										</div>
 									</div>
 									<div className="space-y-4">
@@ -183,16 +170,12 @@ export default function HeroPage() {
 										<div className="space-y-2">
 											<div className="flex items-center gap-2">
 												<span className="font-medium text-sm">Primary Button:</span>
-												<span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
-													{slide.primaryButton}
-												</span>
+												<span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">{slide.primaryButton}</span>
 												<span className="text-sm text-gray-500">({slide.primaryLink})</span>
 											</div>
 											<div className="flex items-center gap-2">
 												<span className="font-medium text-sm">Secondary Button:</span>
-												<span className="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">
-													{slide.secondaryButton}
-												</span>
+												<span className="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">{slide.secondaryButton}</span>
 												<span className="text-sm text-gray-500">({slide.secondaryLink})</span>
 											</div>
 										</div>

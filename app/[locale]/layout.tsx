@@ -3,9 +3,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import ClientLayout from "./ClientLayout";
 import { NextIntlClientProvider } from "next-intl";
-import Header from "@/components/Header";
-import ProgressBar from "@/components/ProgressBar";
-import PerformanceMonitor from "@/components/PerformanceMonitor";
+import Header from "@/components/header/Header";
 
 const geistSans = localFont({
 	src: "./fonts/GeistVF.woff",
@@ -22,8 +20,6 @@ export default function LocaleLayout({ children }: { children: React.ReactNode }
 	return (
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<PerformanceMonitor />
-				<ProgressBar />
 				<ClientLayout>
 					<NextIntlClientProvider>
 						<Header />
