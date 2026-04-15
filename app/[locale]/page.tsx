@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Blogs from "@/components/Blogs";
 import AboutPreview from "@/components/AboutPreview";
-import GalleryPreview from "@/components/GalleryPreview";
 import EventsTimeline from "@/components/EventsTimeline";
 import NewsletterSection from "@/components/NewsletterSection";
 
