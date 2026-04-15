@@ -37,9 +37,6 @@ export default function LandingPage() {
 			{/* Events Timeline Section */}
 			<EventsTimeline />
 
-			{/* Gallery Preview Section */}
-			<GalleryPreview />
-
 			{/* Newsletter Subscription Section */}
 			<NewsletterSection />
 		</main>
