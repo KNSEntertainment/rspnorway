@@ -26,13 +26,13 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 
 	useEffect(() => {
 		// Check if user has seen the popup before
-		const hasSeen = localStorage.getItem('event-popup-seen');
+		const hasSeen = localStorage.getItem("event-popup-seen");
 		if (!hasSeen && latestEvent) {
 			// Check if event date is not in the past
 			const eventDate = new Date(latestEvent.eventdate);
 			const today = new Date();
 			today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
-			
+
 			if (eventDate >= today) {
 				// Show popup only if event is today or in the future
 				setIsOpen(true);
@@ -43,7 +43,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 	const handleClose = () => {
 		setIsOpen(false);
 		setHasSeenPopup(true);
-		localStorage.setItem('event-popup-seen', 'true');
+		localStorage.setItem("event-popup-seen", "true");
 	};
 
 	const handleBookTicket = () => {
@@ -63,28 +63,12 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 				{isOpen && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 						{/* Backdrop */}
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.3 }}
-							className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-							onClick={handleClose}
-						/>
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
 						{/* Modal Content */}
-						<motion.div
-							initial={{ opacity: 0, scale: 0.9, y: 20 }}
-							animate={{ opacity: 1, scale: 1, y: 0 }}
-							exit={{ opacity: 0, scale: 0.9, y: 20 }}
-							transition={{ duration: 0.3, ease: "easeOut" }}
-							className="relative bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden z-10"
-						>
+						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden z-10">
 							{/* Close Button */}
-							<button
-								onClick={handleClose}
-								className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg"
-							>
+							<button onClick={handleClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
 								<X className="w-5 h-5" />
 							</button>
 
@@ -93,14 +77,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 								{/* Left Column - Event Poster */}
 								<div className="w-full md:w-1/2 bg-gray-100 relative">
 									<div className="relative h-64 md:h-full overflow-hidden">
-										<Image
-											src={latestEvent.eventposterUrl || "/ghanti.png"}
-											alt={latestEvent.eventname}
-											width={800}
-											height={600}
-											className="w-full h-full object-contain"
-											priority
-										/>
+										<Image src={latestEvent.eventposterUrl || "/ghanti.png"} alt={latestEvent.eventname} width={800} height={600} className="w-full h-full object-contain" priority />
 									</div>
 								</div>
 
@@ -108,17 +85,13 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 								<div className="w-full md:w-1/2 p-8 md:p-10 bg-white overflow-y-auto">
 									{/* Event Title */}
 									<div className="mb-6">
-										<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-											{latestEvent.eventname}
-										</h2>
+										<h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{latestEvent.eventname}</h2>
 										<div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
 									</div>
 
 									{/* Event Description */}
 									<div className="mb-8">
-										<p className="text-gray-600 text-base leading-relaxed">
-											{latestEvent.eventdescription}
-										</p>
+										<p className="text-gray-600 text-base leading-relaxed">{latestEvent.eventdescription}</p>
 									</div>
 
 									{/* Event Info Cards */}
@@ -166,17 +139,11 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 
 									{/* Action Buttons */}
 									<div className="flex flex-col sm:flex-row gap-4 mb-8">
-										<button
-											onClick={handleBookTicket}
-											className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-base rounded-xl transition-all duration-300 hover:scale-105 shadow-xl"
-										>
+										<button onClick={handleBookTicket} className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-base rounded-xl transition-all duration-300 hover:scale-105 shadow-xl">
 											Book Ticket Now
 											<ArrowRight className="w-5 h-5 ml-2" />
 										</button>
-										<button
-											onClick={handleClose}
-											className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-base rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300"
-										>
+										<button onClick={handleClose} className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-base rounded-xl transition-all duration-300 border-2 border-gray-200 hover:border-gray-300">
 											Close
 										</button>
 									</div>
@@ -190,7 +157,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 												onChange={(e) => {
 													if (e.target.checked) {
 														setHasSeenPopup(true);
-														localStorage.setItem('event-popup-seen', 'true');
+														localStorage.setItem("event-popup-seen", "true");
 													}
 												}}
 												className="mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
@@ -210,28 +177,12 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 				{isTicketPopupOpen && (
 					<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 						{/* Backdrop */}
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.3 }}
-							className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-							onClick={handleTicketPopupClose}
-						/>
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleTicketPopupClose} />
 
 						{/* Modal Content */}
-						<motion.div
-							initial={{ opacity: 0, scale: 0.9, y: 20 }}
-							animate={{ opacity: 1, scale: 1, y: 0 }}
-							exit={{ opacity: 0, scale: 0.9, y: 20 }}
-							transition={{ duration: 0.3, ease: "easeOut" }}
-							className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10"
-						>
+						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10">
 							{/* Close Button */}
-							<button
-								onClick={handleTicketPopupClose}
-								className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg"
-							>
+							<button onClick={handleTicketPopupClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
 								<X className="w-5 h-5" />
 							</button>
 
@@ -243,9 +194,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 								</div>
 
 								{/* Title */}
-								<h3 className="text-2xl font-bold text-gray-900 text-center mb-4">
-									Ticket Booking
-								</h3>
+								<h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Ticket Booking</h3>
 
 								{/* Message */}
 								<div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
@@ -253,10 +202,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 										Please contact <span className="font-semibold text-blue-600">Mr. Saroj Thapa</span> for ticket booking by calling on
 									</p>
 									<div className="mt-3 text-center">
-										<a 
-											href="tel:47734203" 
-											className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg"
-										>
+										<a href="tel:47734203" className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
 											<Calendar className="w-5 h-5 mr-2" />
 											477 342 03
 										</a>
@@ -266,15 +212,17 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 								{/* Additional Info */}
 								<div className="text-center text-sm text-gray-500">
 									<p className="mb-2">Available Monday - Friday, 10:00 AM - 6:00 PM</p>
-									<p>Or email us at <a href="mailto:info@rspnorway.org" className="text-blue-600 hover:text-blue-700 font-medium">info@rspnorway.org</a></p>
+									<p>
+										Or email us at{" "}
+										<a href="mailto:info@pnsbnorway.org" className="text-blue-600 hover:text-blue-700 font-medium">
+											info@pnsbnorway.org
+										</a>
+									</p>
 								</div>
 
 								{/* Close Button */}
 								<div className="mt-6">
-									<button
-										onClick={handleTicketPopupClose}
-										className="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all duration-300"
-									>
+									<button onClick={handleTicketPopupClose} className="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all duration-300">
 										Close
 									</button>
 								</div>

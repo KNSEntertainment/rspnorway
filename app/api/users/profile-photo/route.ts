@@ -5,6 +5,31 @@ import connectDB from "@/lib/mongodb";
 import Membership from "@/models/Membership.Model";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
+export async function GET(req: NextRequest) {
+	try {
+		await connectDB();
+
+		const email = req.nextUrl.searchParams.get("email");
+		if (!email) {
+			return NextResponse.json({ error: "Email parameter is required" }, { status: 400 });
+		}
+
+		// Fetch membership with the given email
+		const membership = await Membership.findOne({ email });
+		if (!membership) {
+			return NextResponse.json({ error: "Membership not found" }, { status: 404 });
+		}
+
+		return NextResponse.json({
+			success: true,
+			profilePhoto: membership.profilePhoto || null,
+		});
+	} catch (error: unknown) {
+		console.error("Error fetching profile photo:", error);
+		return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to fetch profile photo" }, { status: 500 });
+	}
+}
+
 export async function POST(req: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);

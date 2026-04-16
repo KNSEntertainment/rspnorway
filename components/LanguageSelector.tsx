@@ -30,7 +30,7 @@ const LanguageSelector = () => {
 						onClick={() => handleLocaleChange(lang.code)}
 						aria-label={`Switch to ${lang.label}`}
 						className={`
-              flex items-center gap-1 px-1.5 py-0.5 rounded
+              flex items-center px-1 md:px-1.5 py-1 rounded
               transition-all duration-200 font-medium text-xs
               hover:scale-105 active:scale-95
               focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand/50
@@ -38,6 +38,7 @@ const LanguageSelector = () => {
             `}
 					>
 						<Flag country={lang.flag} size={14} />
+
 						<span className="leading-none">{lang.label}</span>
 					</button>
 					{idx < LANGUAGES.length - 1 && <span className="text-xs text-gray-400">|</span>}

@@ -199,7 +199,7 @@ export default function NoticesColumn({ notices, translations: t, initialNoticeI
 			<div className="container max-w-7xl mx-auto px-4 pt-8 lg:pt-12">
 				<SectionHeader heading={t.notices_tab} subtitle={t.notices_subtitle} />
 				{sortedNotices.length > 0 ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
 						{sortedNotices.map((notice) => (
 							<div key={notice._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-emerald-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full" onClick={() => setSelectedNotice(notice)}>
 								{/* Image Section */}

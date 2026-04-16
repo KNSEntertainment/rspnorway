@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 
 const SearchModal = dynamic(() => import("@/components/SearchModal"), {
 	ssr: false,
+	loading: () => null,
 });
 
 export default function SearchButton() {

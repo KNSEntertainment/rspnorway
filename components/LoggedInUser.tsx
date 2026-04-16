@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { LayoutDashboard, LogOut, User } from "lucide-react";
 import { completeSignOut } from "@/utils/authUtils";
 
@@ -8,6 +9,7 @@ interface SessionUser {
 	name?: string | null;
 	email?: string | null;
 	image?: string | null;
+	profilePhoto?: string | null;
 	role?: string;
 	isMember?: boolean;
 	membershipType?: string;
@@ -19,6 +21,29 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 	const userRef = useRef<HTMLDivElement>(null);
 	const avatarInitial = typeof user?.email === "string" && user.email ? user.email.charAt(0).toUpperCase() : "U";
 	const [showUserDropdown, setShowUserDropdown] = useState(false);
+	const [memberPhoto, setMemberPhoto] = useState<string | null>(null);
+
+	// Fetch member profile photo when user is a member
+	useEffect(() => {
+		const fetchMemberPhoto = async () => {
+			if (!user?.isMember || !user?.email) return;
+
+			try {
+				setMemberPhoto(null); // Reset photo when fetching new user
+				const response = await fetch(`/api/users/profile-photo?email=${encodeURIComponent(user.email)}`);
+				if (response.ok) {
+					const data = await response.json();
+					if (data.profilePhoto) {
+						setMemberPhoto(data.profilePhoto);
+					}
+				}
+			} catch (error) {
+				console.error("Failed to fetch member profile photo:", error);
+			}
+		};
+
+		fetchMemberPhoto();
+	}, [user?.isMember, user?.email]);
 
 	// Function to determine user role display
 	const getUserRoleText = () => {
@@ -54,8 +79,8 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 
 	return (
 		<div ref={userRef} className="relative">
-			<button onClick={() => setShowUserDropdown((v) => !v)} aria-label="User menu" aria-expanded={showUserDropdown} className="h-8 md:h-11 w-8 md:w-11 rounded-xl bg-gradient-to-br from-brand to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 text-sm md:text-base">
-				{avatarInitial}
+			<button onClick={() => setShowUserDropdown((v) => !v)} aria-label="User menu" aria-expanded={showUserDropdown} className="h-10 w-11 rounded-full border border-1 border-white bg-gradient-to-br from-brand to-emerald-500 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:ring-offset-2 text-sm md:text-base overflow-hidden flex items-center justify-center">
+				{memberPhoto ? <Image src={memberPhoto} alt={user.name || "User avatar"} width={44} height={44} className="w-full h-full object-cover" /> : avatarInitial}
 			</button>
 			<AnimatePresence>
 				{showUserDropdown && (

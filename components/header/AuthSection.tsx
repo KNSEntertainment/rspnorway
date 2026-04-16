@@ -8,6 +8,7 @@ import { useLocale } from "next-intl";
 
 const LoggedInUser = dynamic(() => import("@/components/LoggedInUser"), {
 	ssr: false,
+	loading: () => null,
 });
 
 export default function AuthSection() {
@@ -20,7 +21,7 @@ export default function AuthSection() {
 	if (user) return <LoggedInUser user={user} />;
 
 	return (
-		<Link href="/login" locale={locale} className="hidden sm:flex btn-white">
+		<Link href="/login" locale={locale} className="flex btn-white">
 			{t("login")}
 		</Link>
 	);

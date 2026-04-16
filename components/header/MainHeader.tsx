@@ -54,7 +54,7 @@ export default function MainHeader() {
 				<div className="flex items-center gap-2">
 					<SearchButton />
 					<Link href="/donate" locale={locale} className="hidden sm:flex btn-success">
-						<span className="hidden md:inline">{t("donate")}</span>
+						<span className=" md:inline">{t("donate")}</span>
 					</Link>
 
 					<AuthSection />

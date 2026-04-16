@@ -207,7 +207,7 @@ export default function CircularsColumn({ circulars, translations: t, locale, in
 			<div className="container mx-auto px-4 pt-8 lg:pt-12">
 				<SectionHeader heading={t.circulars_tab} subtitle={t.circulars_subtitle} />
 				{sortedCirculars.length > 0 ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
 						{sortedCirculars.map((circular) => (
 							<div key={circular._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-amber-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col h-full" onClick={() => setSelectedCircular(circular)}>
 								{/* Image Section */}

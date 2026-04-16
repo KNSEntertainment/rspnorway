@@ -33,7 +33,6 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 	console.log("MemberIDCard - membershipNumber:", membershipNumber);
 	console.log("MemberIDCard - logo:", logo);
 
-	
 	const handlePrint = () => {
 		window.print();
 	};
@@ -41,7 +40,7 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 	// QR code contains the member profile URL with locale prefix
 	const baseUrl = process.env.NEXTAUTH_URL || "https://www.rspnorway.org";
 	const qrData = `${baseUrl}/${locale}/members/${memberData._id}`;
-	
+
 	console.log("MemberIDCard - QR Code URL:", qrData);
 	console.log("MemberIDCard - Base URL:", baseUrl);
 	console.log("MemberIDCard - Locale:", locale);
@@ -84,36 +83,32 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 					<div className="px-6 py-5">
 						{/* Membership Number - TOP LEFT */}
 
-							
-
-							<div className="w-full flex justify-center mt-2 mb-4">
-									<div className="w-20 h-20 rounded-full overflow-hidden bg-light border-2 border-brand/20">
-									{memberData.profilePhoto ? (
-										<Image src={memberData.profilePhoto} alt={memberData.fullName} width={80} height={80} className="w-full h-full object-cover" />
-									) : (
-										<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/20 to-brand/10">
-											<span className="text-2xl font-bold text-brand">{memberData.fullName.charAt(0)}</span>
-										</div>
-									)}
-								</div>
+						<div className="w-full flex justify-center mt-2 mb-4">
+							<div className="w-20 h-20 rounded-full overflow-hidden bg-light border-2 border-brand/20">
+								{memberData.profilePhoto ? (
+									<Image src={memberData.profilePhoto} alt={memberData.fullName} width={80} height={80} className="w-full h-full object-cover" />
+								) : (
+									<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/20 to-brand/10">
+										<span className="text-2xl font-bold text-brand">{memberData.fullName.charAt(0)}</span>
+									</div>
+								)}
 							</div>
-			
-						
+						</div>
 
 						<div className="grid grid-cols-2 gap-2">
 							{/* Name */}
-	<div>
+							<div>
 								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Full Name</p>
 								<p className="text-sm font-bold text-gray-900 truncate">{memberData.fullName}</p>
 							</div>
 
 							{/* Membership Date */}
-								<div>
-									<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Since</p>
-									<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
-								</div>
+							<div>
+								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Since</p>
+								<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
+							</div>
 
-									{/* Contact Information */}
+							{/* Contact Information */}
 							<div className="space-y-1">
 								{memberData.phone && (
 									<div>
@@ -121,63 +116,57 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 										<p className="text-xs font-semibold text-gray-900">{memberData.phone}</p>
 									</div>
 								)}
-								</div>
-								
-								{/* Address */}
-								<div>
+							</div>
+
+							{/* Address */}
+							<div>
 								{(memberData.city || memberData.province) && (
 									<div>
 										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Address</p>
-										<p className="text-xs font-semibold text-gray-900">
-											{[memberData.city, memberData.province].filter(Boolean).join(", ")}
-										</p>
+										<p className="text-xs font-semibold text-gray-900">{[memberData.city, memberData.province].filter(Boolean).join(", ")}</p>
 									</div>
 								)}
 							</div>
-
-
 						</div>
-				
 					</div>
 					<div className="flex justify-between px-6">
-						
-
-								<div className="flex flex-col">
-									<p className="py-2 text-[10px] font-light text-gray-600">Membership No. <br /><span className="font-semibold">{membershipNumber}</span></p>
-									<p className="py-2 text-[10px] font-light text-gray-600">Member Since <br /><span className="font-semibold">{membershipDate}</span></p>
-
-								</div>
-									{/* QR Code with Signature */}
-							<div className="w-fit flex-shrink-0">
-								<div className="bg-white p-1.5 rounded-lg border-2 border-light">
-									<QRCodeSVG value={qrData} size={64} level="H" includeMargin={false} />
-								</div>
-								{/* Signature below QR */}
-								<div className="my-2 text-center">
-									<div className="border-b border-gray-400 w-16 mx-auto"></div>
-									<p className="text-xs text-gray-600 mt-0.5">President</p>
-								</div>
+						<div className="flex flex-col">
+							<p className="py-2 text-[10px] font-light text-gray-600">
+								Membership No. <br />
+								<span className="font-semibold">{membershipNumber}</span>
+							</p>
+							<p className="py-2 text-[10px] font-light text-gray-600">
+								Member Since <br />
+								<span className="font-semibold">{membershipDate}</span>
+							</p>
+						</div>
+						{/* QR Code with Signature */}
+						<div className="w-fit flex-shrink-0">
+							<div className="bg-white p-1.5 rounded-lg border-2 border-light">
+								<QRCodeSVG value={qrData} size={64} level="H" includeMargin={false} />
 							</div>
+							{/* Signature below QR */}
+							<div className="my-2 text-center">
+								<div className="border-b border-gray-400 w-16 mx-auto"></div>
+								<p className="text-xs text-gray-600 mt-0.5">President</p>
+							</div>
+						</div>
 					</div>
 
 					{/* Footer Section with Contact Info */}
 					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-4">
 						<div className="text-white space-y-2">
-						
-							
 							{/* RSP Norway Contact Information */}
 							<div className="grid grid-cols-2 gap-1 text-xs">
-							
 								<div className="flex items-center">
-								<Mail className="inline-block w-3 h-3 mr-1" />
-								<p>info@rspnorway.org</p>
+									<Mail className="inline-block w-3 h-3 mr-1" />
+									<p>info@pnsbnorway.org</p>
 								</div>
 								<div className="flex items-center">
-								<Globe className="inline-block w-3 h-3 mr-1" />
-								<p>www.rspnorway.org</p>
+									<Globe className="inline-block w-3 h-3 mr-1" />
+									<p>www.rspnorway.org</p>
 								</div>
 							</div>
-					
 						</div>
 					</div>
 				</div>
@@ -226,7 +215,7 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 							<p className="text-[10px] font-bold text-brand mb-1">PNSB-Norway</p>
 							<p className="text-[9px] text-gray-600">Rastriya Swatantra Party - Norway Chapter</p>
 							<p className="text-[9px] text-gray-600 mt-1">www.rspnorway.org</p>
-							<p className="text-[9px] text-gray-600">info@rspnorway.org</p>
+							<p className="text-[9px] text-gray-600">info@pnsbnorway.org</p>
 						</div>
 					</div>
 

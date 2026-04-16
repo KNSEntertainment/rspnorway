@@ -21,6 +21,7 @@ PNSB-Norway serves as the digital hub for the Norwegian chapter of Nepal's progr
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15.1.9 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS with custom animations
@@ -30,6 +31,7 @@ PNSB-Norway serves as the digital hub for the Norwegian chapter of Nepal's progr
 - **Internationalization**: next-intl
 
 ### Backend
+
 - **Database**: MongoDB with Mongoose ODM
 - **Authentication**: NextAuth.js
 - **File Storage**: Cloudinary
@@ -38,6 +40,7 @@ PNSB-Norway serves as the digital hub for the Norwegian chapter of Nepal's progr
 - **API**: Next.js API Routes
 
 ### Development Tools
+
 - **Code Quality**: ESLint, TypeScript
 - **Testing**: Jest
 - **Deployment**: Docker, Docker Compose
@@ -73,7 +76,7 @@ rspnorway/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - MongoDB database
 - Cloudinary account (for media storage)
 - Stripe account (for payments)
@@ -82,22 +85,26 @@ rspnorway/
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/your-username/rspnorway.git
 cd rspnorway
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Set up environment variables**
+
 ```bash
 cp .env.example .env.local
 ```
 
 Configure your `.env.local` with:
+
 ```env
 # Database
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
@@ -124,40 +131,45 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
 4. **Run the development server**
+
 ```bash
 npm run dev
 ```
 
-5. **Open your browser**
-Navigate to [http://localhost:3000](http://localhost:3000)
+5. **Open your browser** Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## 🌐 Features in Detail
 
 ### 🏠 Homepage
+
 - **Hero Section**: Dynamic content with call-to-action
 - **Event Timeline**: Upcoming events with popup notifications
 - **Gallery Preview**: Recent photos and videos
 - **Newsletter Subscription**: Email capture system
 
 ### 📰 Content Management
+
 - **Blog System**: Rich text editor with TipTap
 - **Event Management**: Calendar integration with ticket booking
 - **Gallery**: Photo and video galleries with lazy loading
 - **Notices**: Important announcements and circulars
 
 ### 👥 User System
+
 - **Authentication**: Secure login/registration with NextAuth
 - **User Roles**: Member, Admin, SuperAdmin permissions
 - **Profiles**: User profile management
 - **Memberships**: Membership application and management
 
 ### 💰 Donations
+
 - **Stripe Integration**: Secure payment processing
 - **Multiple Amounts**: Preset and custom donation amounts
 - **Receipt Generation**: Automated donation receipts
 - **Donor Management**: Track and manage donations
 
 ### 🎨 Design System
+
 - **Responsive Design**: Mobile-first approach
 - **Dark/Light Mode**: Theme switching capability
 - **Accessibility**: WCAG compliant components
@@ -166,6 +178,7 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 ## 🌍 Internationalization
 
 The platform supports three languages:
+
 - **English** (en)
 - **Nepali** (ne) - नेपाली
 - **Norwegian** (no) - Norsk
@@ -175,33 +188,39 @@ Language files are located in `/messages/` directory and can be easily extended.
 ## 🔧 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `POST /api/auth/logout` - User logout
 
 ### Content Management
+
 - `GET /api/blogs` - Fetch blog posts
 - `POST /api/blogs` - Create blog post
 - `PUT /api/blogs/[id]` - Update blog post
 - `DELETE /api/blogs/[id]` - Delete blog post
 
 ### Events
+
 - `GET /api/events` - Fetch events
 - `POST /api/events` - Create event
 - `PUT /api/events/[id]` - Update event
 
 ### Media
+
 - `GET /api/gallery` - Fetch gallery images
 - `GET /api/videos` - Fetch videos
 - `POST /api/upload` - Upload media to Cloudinary
 
 ### Donations
+
 - `POST /api/donations` - Process donation
 - `GET /api/donations` - Fetch donation history
 
 ## 📦 Deployment
 
 ### Docker Deployment
+
 ```bash
 # Build the image
 docker build -t rspnorway .
@@ -211,11 +230,13 @@ docker-compose up -d
 ```
 
 ### Vercel Deployment
+
 1. Connect your repository to Vercel
 2. Configure environment variables
 3. Deploy automatically on push to main branch
 
 ### Manual Deployment
+
 ```bash
 # Build for production
 npm run build
@@ -227,11 +248,13 @@ npm start
 ## 🧪 Testing
 
 Run the test suite:
+
 ```bash
 npm test
 ```
 
 Run tests with coverage:
+
 ```bash
 npm run test:coverage
 ```
@@ -268,7 +291,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and inquiries:
-- **Email**: info@rspnorway.org
+
+- **Email**: info@pnsbnorway.org
 - **Phone**: +47 967 80 0984
 - **Website**: [https://rspnorway.org](https://rspnorway.org)
 

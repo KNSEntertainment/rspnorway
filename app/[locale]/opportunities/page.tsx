@@ -17,7 +17,7 @@ const opportunitiesData = [
 		benefits: ["Leadership development opportunities", "Network with influential community members", "Access to RSP national events and training", "Certificate of recognition for your service", "Direct impact on community building"],
 		timeCommitment: "5-10 hours per week",
 		location: "Your local city in Norway",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 	{
 		id: "digital-activist",
@@ -32,7 +32,7 @@ const opportunitiesData = [
 		benefits: ["Build your digital portfolio", "Learn advanced social media strategies", "Certificate in digital activism", "Networking with digital professionals", "Amplify your voice on important issues"],
 		timeCommitment: "8-12 hours per week",
 		location: "Remote (anywhere in Norway)",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 	{
 		id: "policy-contributor",
@@ -47,7 +47,7 @@ const opportunitiesData = [
 		benefits: ["Shape national policies", "Work with policy experts", "Access to research resources", "Published work recognition", "Policy development experience"],
 		timeCommitment: "6-10 hours per week",
 		location: "Remote (anywhere in Norway)",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 	{
 		id: "fundraising-team",
@@ -62,7 +62,7 @@ const opportunitiesData = [
 		benefits: ["Fundraising expertise development", "Network with business leaders", "Event management experience", "Recognition for campaign success", "Direct impact on RSP's capacity"],
 		timeCommitment: "8-15 hours per week",
 		location: "Hybrid (mix of remote and in-person)",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 	{
 		id: "youth-ambassador",
@@ -77,7 +77,7 @@ const opportunitiesData = [
 		benefits: ["Leadership training programs", "Scholarship opportunities", "Youth conference attendance", "Mentorship from senior leaders", "Build youth movement experience"],
 		timeCommitment: "6-10 hours per week",
 		location: "Campus-based or local community",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 	{
 		id: "creative-team",
@@ -92,7 +92,7 @@ const opportunitiesData = [
 		benefits: ["Build professional portfolio", "Access to design software licenses", "Recognition for creative work", "Networking with creative professionals", "Creative freedom and expression"],
 		timeCommitment: "5-10 hours per week",
 		location: "Remote (anywhere in Norway)",
-		contact: "info@rspnorway.org",
+		contact: "info@pnsbnorway.org",
 	},
 ];
 

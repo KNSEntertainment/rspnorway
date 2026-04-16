@@ -221,7 +221,7 @@ export default function EventsColumn({ events, translations: t, initialEventId }
 			<div className="container max-w-7xl mx-auto px-4 pt-8 lg:pt-12">
 				<SectionHeader heading={t.events_tab} subtitle={t.events_subtitle} />
 				{sortedEvents.length > 0 ? (
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-12">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
 						{sortedEvents.map((event) => {
 							const { day, month } = formatEventDate(event.eventdate);
 							return (

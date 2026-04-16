@@ -169,7 +169,7 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 
 						<p>With deep appreciation and gratitude,</p>
 						<p><strong>PNSB-Norway Team</strong><br>
-						<a href="mailto:${process.env.EMAIL_USER}" style="color: #0094da;">info@rspnorway.org</a><br>
+						<a href="mailto:${process.env.EMAIL_USER}" style="color: #0094da;">info@pnsbnorway.org</a><br>
 						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #0094da;">www.rspnorway.org</a></p>
 					</div>
 					<div class="footer">
@@ -275,7 +275,7 @@ export async function sendSubscriptionThankYouEmail(email: string) {
 						<p>We're excited to have you with us on this journey. Together, we can make a meaningful impact!</p>
 
 						<p>Best regards,<br><strong>PNSB-Norway Team</strong><br>
-						<a href="mailto:${process.env.EMAIL_USER}" style="color: #667eea;">info@rspnorway.org</a><br>
+						<a href="mailto:${process.env.EMAIL_USER}" style="color: #667eea;">info@pnsbnorway.org</a><br>
 						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #667eea;">www.rspnorway.org</a></p>
 					</div>
 					<div class="footer">
