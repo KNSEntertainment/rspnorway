@@ -290,6 +290,55 @@ export default function MembershipsPage() {
 					<Button size="sm" onClick={handleBulkStatusChange} disabled={selectedMemberIds.length === 0 || !bulkStatus}>
 						Apply Status
 					</Button>
+					<Button 
+						variant="outline" 
+						size="sm" 
+						onClick={async () => {
+							// Get first selected member for password reset
+							const firstSelectedId = selectedMemberIds[0];
+							if (firstSelectedId) {
+								const newPassword = prompt(`Enter new password for member: ${firstSelectedId}`);
+								if (newPassword) {
+									try {
+										const response = await fetch('/api/membership/reset-password', {
+											method: 'POST',
+											headers: {
+												'Content-Type': 'application/json',
+											},
+											body: JSON.stringify({
+												memberId: firstSelectedId,
+												newPassword: newPassword,
+											}),
+										});
+
+										if (response.ok) {
+											toast({
+												title: "Password Reset",
+												description: `Password reset successfully for member ${firstSelectedId}`,
+											});
+										} else {
+											throw new Error('Failed to reset password');
+										}
+									} catch (error) {
+										console.error('Password reset error:', error);
+										toast({
+											title: "Error",
+											description: "Failed to reset password. Please try again.",
+											variant: "destructive",
+										});
+									}
+								} else {
+									toast({
+										title: "No Selection",
+										description: "Please select a member to reset password",
+										variant: "destructive",
+									});
+								}
+							}}}
+						disabled={selectedMemberIds.length === 0}
+					>
+						Reset Password
+					</Button>
 				</div>
 				<div className="text-sm text-gray-900">
 					Total: {filteredMemberships.length} | Selected: {selectedMemberIds.length}

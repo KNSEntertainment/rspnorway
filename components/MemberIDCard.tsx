@@ -25,6 +25,9 @@ interface MemberIDCardProps {
 
 export default function MemberIDCard({ memberData, logo, locale = "en" }: MemberIDCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
+	
+	// Cache-busting key to prevent Safari caching issues
+	const cacheKey = `${memberData._id}-${memberData.createdAt}-${Date.now()}`;
 
 	// Generate membership number from last 6 digits of _id
 	const membershipNumber = memberData._id.slice(-6).toUpperCase();
@@ -53,7 +56,7 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 	});
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4" key={cacheKey}>
 			{/* Action Buttons */}
 			<div className="flex gap-3 print:hidden">
 				<Button onClick={handlePrint} variant="outline" className="border-brand text-brand hover:bg-brand/10">

@@ -3,7 +3,7 @@
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { User, Mail, Phone, Calendar, Shield, LogOut, CheckCircle, Clock, XCircle, Users, Camera, Upload, AlertCircle, CreditCard } from "lucide-react";
+import { User, Mail, Phone, Calendar, Shield, LogOut, CheckCircle, Clock, XCircle, Users, Camera, Upload, AlertCircle, CreditCard, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -48,6 +48,8 @@ export default function ProfileClient({ translations: t }: Props) {
 	const locale = params.locale as string;
 	const [membershipData, setMembershipData] = useState<Membership | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [profilePhoto, setProfilePhoto] = useState<string>("");
 	const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
@@ -58,6 +60,57 @@ export default function ProfileClient({ translations: t }: Props) {
 	const [logo, setLogo] = useState<string>("");
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const { toast } = useToast();
+
+	const handleDeleteAccount = async () => {
+		setIsDeleting(true);
+		try {
+			const response = await fetch('/api/user/delete-account', {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					email: session?.user?.email,
+				}),
+			});
+
+			if (response.ok) {
+				// Send notification email
+				await fetch('/api/email/account-deletion-notification', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						email: session?.user?.email,
+						name: session?.user?.fullName || session?.user?.email || 'User',
+					}),
+				});
+
+				toast({
+					title: "Account Deleted",
+					description: "Your account has been permanently deleted. You will be redirected to the home page.",
+				});
+				
+				// Sign out and redirect to home
+				setTimeout(() => {
+					signOut({ callbackUrl: "/" });
+				}, 2000);
+			} else {
+				throw new Error('Failed to delete account');
+			}
+		} catch (error) {
+			console.error('Delete account error:', error);
+			toast({
+				title: "Error",
+				description: "Failed to delete account. Please try again.",
+				variant: "destructive",
+			});
+		} finally {
+			setIsDeleting(false);
+			setShowDeleteDialog(false);
+		}
+	};
 
 	useEffect(() => {
 		if (status === "unauthenticated") {
@@ -280,6 +333,10 @@ export default function ProfileClient({ translations: t }: Props) {
 									</p>
 								)}
 							</div>
+							<Button onClick={() => setShowDeleteDialog(true)} variant="outline" className="w-full text-red-600 hover:bg-red-50 hover:text-red-600 border-red-200 mb-2">
+								<Trash2 className="w-4 h-4 mr-2" />
+								Delete My Account
+							</Button>
 							<Button onClick={() => signOut({ callbackUrl: "/" })} variant="outline" className="w-full text-red-600 hover:bg-red-50 hover:text-red-600 border-red-200">
 								<LogOut className="w-4 h-4 mr-2" />
 								{t.logout}
@@ -507,6 +564,36 @@ export default function ProfileClient({ translations: t }: Props) {
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogAction onClick={() => setShowSizeAlert(false)}>Got it</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			{/* Delete Account Confirmation Dialog */}
+			<AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle className="text-red-600">Delete Account</AlertDialogTitle>
+						<AlertDialogDescription>
+							Are you sure you want to delete your account? This action is <strong>permanent and cannot be undone</strong>. 
+							All your data, including profile information, membership details, and activity history will be permanently removed from our database.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<Button
+							onClick={() => setShowDeleteDialog(false)}
+							variant="outline"
+							className="mr-2"
+							disabled={isDeleting}
+						>
+							Cancel
+						</Button>
+						<Button
+							onClick={handleDeleteAccount}
+							className="bg-red-600 hover:bg-red-700 text-white"
+							disabled={isDeleting}
+						>
+							{isDeleting ? "Deleting..." : "Delete Forever"}
+						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
