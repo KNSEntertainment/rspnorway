@@ -170,10 +170,10 @@ export async function sendDonationThankYouEmail({ name, email, amount, currency,
 						<p>With deep appreciation and gratitude,</p>
 						<p><strong>PNSB-Norway Team</strong><br>
 						<a href="mailto:${process.env.EMAIL_USER}" style="color: #0094da;">info@pnsbnorway.org</a><br>
-						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #0094da;">www.rspnorway.org</a></p>
+						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #0094da;">www.pnsbnorway.org</a></p>
 					</div>
 					<div class="footer">
-						<p>PNSB-Norway - Rastriya Swatantra Party Norway Chapter</p>
+						<p>PNSB-Norway</p>
 						<p>This is an automated receipt. Please keep it for your records.</p>
 						<p style="color: #999; margin-top: 10px;">Questions? Contact us at ${process.env.EMAIL_USER}</p>
 					</div>
@@ -276,10 +276,10 @@ export async function sendSubscriptionThankYouEmail(email: string) {
 
 						<p>Best regards,<br><strong>PNSB-Norway Team</strong><br>
 						<a href="mailto:${process.env.EMAIL_USER}" style="color: #667eea;">info@pnsbnorway.org</a><br>
-						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #667eea;">www.rspnorway.org</a></p>
+						<a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}" style="color: #667eea;">www.pnsbnorway.org</a></p>
 					</div>
 					<div class="footer">
-						<p>PNSB-Norway - Rastriya Swatantra Party Norway Chapter</p>
+						<p>PNSB-Norway</p>
 						<p>You're receiving this email because you subscribed to our newsletter.</p>
 						<p style="color: #999; margin-top: 10px;">Questions? Contact us at ${process.env.EMAIL_USER}</p>
 					</div>

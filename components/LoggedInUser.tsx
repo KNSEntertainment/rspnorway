@@ -100,6 +100,7 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 								My Profile
 							</Link>
 						)}
+				
 						<button onClick={() => completeSignOut("/", () => setShowUserDropdown(false))} className="flex items-center gap-3 px-5 py-3.5 text-red-600 hover:bg-red-50 w-full transition-all duration-200 font-medium">
 							<LogOut size={18} />
 							Sign Out

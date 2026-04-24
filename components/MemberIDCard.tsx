@@ -2,8 +2,7 @@
 
 import { useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { Button } from "@/components/ui/button";
-import { CreditCard, Globe, Mail } from "lucide-react";
+
 import Image from "next/image";
 
 interface MemberIDCardProps {
@@ -23,7 +22,7 @@ interface MemberIDCardProps {
 	locale?: string;
 }
 
-export default function MemberIDCard({ memberData, logo, locale = "en" }: MemberIDCardProps) {
+export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCardProps) {
 	const cardRef = useRef<HTMLDivElement>(null);
 	
 	// Cache-busting key to prevent Safari caching issues
@@ -32,21 +31,12 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 	// Generate membership number from last 6 digits of _id
 	const membershipNumber = memberData._id.slice(-6).toUpperCase();
 
-	console.log("MemberIDCard - _id:", memberData._id);
-	console.log("MemberIDCard - membershipNumber:", membershipNumber);
-	console.log("MemberIDCard - logo:", logo);
 
-	const handlePrint = () => {
-		window.print();
-	};
 
 	// QR code contains the member profile URL with locale prefix
-	const baseUrl = process.env.NEXTAUTH_URL || "https://www.rspnorway.org";
+	const baseUrl = process.env.NEXTAUTH_URL || "https://www.pnsbnorway.org";
 	const qrData = `${baseUrl}/${locale}/members/${memberData._id}`;
 
-	console.log("MemberIDCard - QR Code URL:", qrData);
-	console.log("MemberIDCard - Base URL:", baseUrl);
-	console.log("MemberIDCard - Locale:", locale);
 
 	// Format membership date
 	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {
@@ -56,19 +46,13 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 	});
 
 	return (
-		<div className="space-y-4" key={cacheKey}>
-			{/* Action Buttons */}
-			<div className="flex gap-3 print:hidden">
-				<Button onClick={handlePrint} variant="outline" className="border-brand text-brand hover:bg-brand/10">
-					<CreditCard className="w-4 h-4 mr-2" />
-					Print ID Card
-				</Button>
-			</div>
+		<div className="flex max-w-2xl mt-6 items-start" key={cacheKey}>
+		
 
 			{/* ID Card - Front */}
 			<div ref={cardRef} className="relative w-full max-w-[300px] mx-auto">
 				{/* Card Container */}
-				<div className="w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border-2 border-brand">
+				<div className="w-full h-full bg-white shadow-lg overflow-hidden min-h-[475px]">
 					{/* Header Section */}
 					<div className="relative bg-gradient-to-r from-brand to-blue-700 text-white px-6 pt-4 pb-8">
 						<div className="flex items-center justify-between">
@@ -78,7 +62,9 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 								<h3 className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md px-2 py-1 rounded-2xl text-xs font-semibold tracking-wide text-brand">MEMBERSHIP CARD</h3>
 							</div>
 							{/* Logo */}
-							<div className="w-12 h-12 bg-white rounded-full flex items-center justify-center overflow-hidden">{logo ? <Image src={logo} alt="PNSB-Norway Logo" width={48} height={48} className="w-full h-full object-contain p-1" /> : <span className="text-brand font-bold text-lg">RSP</span>}</div>
+							<div className="w-12 h-12 border border-white bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+								<Image src="/rsp-norway-logo.png" alt="PNSB-Norway Logo" width={48} height={48} className="w-full h-full object-contain" />
+							</div>
 						</div>
 					</div>
 
@@ -145,46 +131,38 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 						</div>
 						{/* QR Code with Signature */}
 						<div className="w-fit flex-shrink-0">
-							<div className="bg-white p-1.5 rounded-lg border-2 border-light">
 								<QRCodeSVG value={qrData} size={64} level="H" includeMargin={false} />
-							</div>
 							{/* Signature below QR */}
 							<div className="my-2 text-center">
-								<div className="border-b border-gray-400 w-16 mx-auto"></div>
-								<p className="text-xs text-gray-600 mt-0.5">President</p>
+								{/* <div className="w-16 h-8 mx-auto flex items-center justify-center">
+									<Image src="/signature.png" alt="President's Signature" className="w-full h-full object-contain" width={64} height={32} />
+								</div> */}
+								<p className="text-xs text-gray-600 mt-6">President</p>
 							</div>
 						</div>
 					</div>
 
 					{/* Footer Section with Contact Info */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-4">
-						<div className="text-white space-y-2">
-							{/* RSP Norway Contact Information */}
-							<div className="grid grid-cols-2 gap-1 text-xs">
-								<div className="flex items-center">
-									<Mail className="inline-block w-3 h-3 mr-1" />
-									<p>info@pnsbnorway.org</p>
+					<div className="absolute bottom-0 w-full bg-gradient-to-r from-success to-emerald-600 px-6 py-4">
+								
+								<div className="flex justify-center items-center">
+									<p className="text-xs text-gray-100">www.pnsbnorway.org</p>
 								</div>
-								<div className="flex items-center">
-									<Globe className="inline-block w-3 h-3 mr-1" />
-									<p>www.rspnorway.org</p>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* ID Card - Back (for printing) */}
-			<div className="hidden print:block w-full max-w-[450px] mx-auto mt-8" style={{ aspectRatio: "1.4" }}>
-				<div className="w-full h-full bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-brand">
-					{/* Header */}
-					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-8 py-4 text-center">
-						<h3 className="text-sm font-bold">Emergency Contact & Guidelines</h3>
+			{/* ID Card - Back */}
+			<div className="relative block relative w-full max-w-[300px] mx-auto">
+				{/* Card Container */}
+				<div className="bg-white shadow-lg overflow-hidden min-h-[475px]">
+					{/* Header Section */}
+					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-6">
+						<h3 className="text-sm font-bold text-center">Emergency Contact & Guidelines</h3>
 					</div>
 
 					{/* Main Content */}
-					<div className="px-8 py-6 space-y-4">
+					<div className="p-12 space-y-6">
 						{/* Emergency Contact */}
 						<div>
 							<p className="text-xs font-bold text-gray-900 mb-2">Emergency Contact</p>
@@ -216,29 +194,24 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 						{/* Organization Info */}
 						<div className="border-t border-light pt-3">
 							<p className="text-[10px] font-bold text-brand mb-1">PNSB-Norway</p>
-							<p className="text-[9px] text-gray-600">Rastriya Swatantra Party - Norway Chapter</p>
-							<p className="text-[9px] text-gray-600 mt-1">www.rspnorway.org</p>
+							<p className="text-[9px] text-gray-600 mt-1">www.pnsbnorway.org</p>
 							<p className="text-[9px] text-gray-600">info@pnsbnorway.org</p>
 						</div>
 					</div>
 
-					{/* Footer */}
-					<div className="bg-gradient-to-r from-success to-emerald-600 px-6 py-3">
-						<div className="flex items-center justify-between text-white">
-							<p className="text-[10px] font-semibold">Issued: {membershipDate}</p>
-							<div className="text-right">
-								<div className="h-6 flex items-end">
-									<div className="border-b-2 border-white w-24"></div>
+					{/* Footer Section */}
+					<div className="absolute bottom-0 w-full bg-gradient-to-r from-success to-emerald-600 px-6 py-4">
+						
+							<div className="flex justify-center items-center">
+									<p className="text-xs text-gray-100">info@pnsbnorway.org</p>
 								</div>
-								<p className="text-[9px] font-semibold mt-0.5">President&apos;s Signature</p>
-							</div>
-						</div>
+							
 					</div>
 				</div>
 			</div>
 
 			{/* Print Styles */}
-			<style jsx global>{`
+			{/* <style jsx global>{`
 				@media print {
 					body * {
 						visibility: hidden;
@@ -258,7 +231,7 @@ export default function MemberIDCard({ memberData, logo, locale = "en" }: Member
 						margin: 20mm;
 					}
 				}
-			`}</style>
+			`}</style> */}
 		</div>
 	);
 }

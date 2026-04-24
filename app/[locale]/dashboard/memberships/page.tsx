@@ -136,8 +136,67 @@ export default function MembershipsPage() {
 		}
 	};
 
-	const handleEditChange = (field: string, value: string | string[] | boolean) => {
-		setEditFormData(prev => ({ ...prev, [field]: value }));
+	const handleEditChange = (field: string, value: string | boolean) => {
+		setEditFormData((prev) => ({ ...prev, [field]: value }));
+	};
+
+	const handlePasswordReset = async () => {
+		const firstSelectedId = selectedMemberIds[0];
+		if (firstSelectedId) {
+			// Find the member's name from the paginated data
+			let selectedMember: Membership | undefined;
+			for (const member of paginatedMemberships) {
+				if ((member as Membership)._id === firstSelectedId) {
+					selectedMember = member as Membership;
+					break;
+				}
+			}
+			const memberName = selectedMember?.fullName || 'Member';
+			const memberEmail = selectedMember?.email;
+			
+			// Validate that we have a valid email
+			if (!memberEmail) {
+				toast({
+					title: "Error",
+					description: "Selected member does not have a valid email address.",
+					variant: "destructive",
+				});
+				return;
+			}
+			
+			// Send password reset email directly without prompting for password
+			try {
+				const response = await fetch('/api/email/password-reset', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						email: memberEmail,
+						name: memberName,
+						temporaryPassword: '', // API generates its own password but expects this field
+					}),
+				});
+
+				if (response.ok) {
+					toast({
+						title: "Password Reset Email Sent",
+						description: `Password reset email sent to ${memberName}.`,
+					});
+				} else {
+					const errorData = await response.json();
+					console.error('API Error Response:', errorData);
+					throw new Error(errorData.error || 'Failed to send password reset email');
+				}
+			} catch (error) {
+				console.error('Password reset error:', error);
+				toast({
+					title: "Error",
+					description: error instanceof Error ? error.message : "Failed to send password reset email. Please try again.",
+					variant: "destructive",
+				});
+			}
+		}
 	};
 
 	const filteredMemberships =
@@ -283,62 +342,14 @@ export default function MembershipsPage() {
 					</Button>
 					<select className="border rounded px-2 py-1 text-sm" value={bulkStatus} onChange={(e) => setBulkStatus(e.target.value)} disabled={selectedMemberIds.length === 0}>
 						<option value="">Change Status</option>
-						<option value="approved">Approve</option>
+						<option value="approved">Approved</option>
 						<option value="blocked">Block</option>
 						<option value="pending">Pending</option>
 					</select>
 					<Button size="sm" onClick={handleBulkStatusChange} disabled={selectedMemberIds.length === 0 || !bulkStatus}>
 						Apply Status
 					</Button>
-					<Button 
-						variant="outline" 
-						size="sm" 
-						onClick={async () => {
-							// Get first selected member for password reset
-							const firstSelectedId = selectedMemberIds[0];
-							if (firstSelectedId) {
-								const newPassword = prompt(`Enter new password for member: ${firstSelectedId}`);
-								if (newPassword) {
-									try {
-										const response = await fetch('/api/membership/reset-password', {
-											method: 'POST',
-											headers: {
-												'Content-Type': 'application/json',
-											},
-											body: JSON.stringify({
-												memberId: firstSelectedId,
-												newPassword: newPassword,
-											}),
-										});
-
-										if (response.ok) {
-											toast({
-												title: "Password Reset",
-												description: `Password reset successfully for member ${firstSelectedId}`,
-											});
-										} else {
-											throw new Error('Failed to reset password');
-										}
-									} catch (error) {
-										console.error('Password reset error:', error);
-										toast({
-											title: "Error",
-											description: "Failed to reset password. Please try again.",
-											variant: "destructive",
-										});
-									}
-								} else {
-									toast({
-										title: "No Selection",
-										description: "Please select a member to reset password",
-										variant: "destructive",
-									});
-								}
-							}}}
-						disabled={selectedMemberIds.length === 0}
-					>
-						Reset Password
-					</Button>
+					<Button size="sm" onClick={handlePasswordReset}>Reset Password</Button>
 				</div>
 				<div className="text-sm text-gray-900">
 					Total: {filteredMemberships.length} | Selected: {selectedMemberIds.length}
