@@ -110,7 +110,7 @@ export default function EventsTimeline() {
 			<section className="py-20 bg-white">
 				<div className="container mx-auto px-6">
 					<div className="text-center mb-16">
-						<h2 className="text-3xl font-bold text-gray-900 mb-4">Recent Event</h2>
+						<h1 className="text-3xl font-bold text-gray-900 mb-4">Recent Event</h1>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 							{[...Array(4)].map((_, i) => (
 								<div key={i} className="bg-gray-100 rounded-xl p-6 animate-pulse">

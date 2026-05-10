@@ -156,7 +156,7 @@ export default function DonationForm() {
 					<Heart className="w-8 h-8" />
 					<div>
 						<CardTitle className="text-2xl">{t("title") || "Make a Donation"}</CardTitle>
-						<CardDescription className="text-white/90">{t("description") || "Support our community with your generous contribution"}</CardDescription>
+						<CardDescription className="text-white">{t("description") || "Support our community with your generous contribution"}</CardDescription>
 					</div>
 				</div>
 			</CardHeader>

@@ -290,7 +290,7 @@ export default async function DonationReportsPage({ params }: { params: Promise<
 				{/* Call to Action */}
 				<div className="text-center bg-gradient-to-r from-brand to-blue-700 rounded-lg p-8 text-white">
 					<h2 className="text-2xl font-bold mb-4">Make a Difference Today</h2>
-					<p className="text-white/90 mb-6 max-w-2xl mx-auto">
+					<p className="text-white mb-6 max-w-2xl mx-auto">
 						Your generous donation helps us continue supporting those in need in both Norway and Nepal. 
 						Every contribution, no matter the size, makes a meaningful impact.
 					</p>

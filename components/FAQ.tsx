@@ -48,7 +48,7 @@ const FAQItem: React.FC<{ item: FAQItem }> = ({ item }) => {
 const FAQ: React.FC = () => {
 	return (
 		<div className="max-w-3xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-			<h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Frequently Asked Questions</h2>
+			<h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Frequently Asked Questions</h1>
 			<div className="mt-6 border-t border-light pt-10">
 				{faqData.map((item, index) => (
 					<FAQItem key={index} item={item} />

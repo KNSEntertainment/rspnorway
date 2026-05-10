@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function LandingPage() {
 	return (
-		<main>
+		<main aria-label="Main content">
 			{/* Hero Section - Critical, loaded immediately */}
 			<Hero />
 

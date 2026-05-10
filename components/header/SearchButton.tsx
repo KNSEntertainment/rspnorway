@@ -16,7 +16,7 @@ export default function SearchButton() {
 
 	return (
 		<>
-			<button onClick={() => setOpen(true)} className="btn-glass">
+			<button onClick={() => setOpen(true)} className="btn-glass" aria-label={t("search") || "Search"}>
 				<Search size={24} />
 			</button>
 

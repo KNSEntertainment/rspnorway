@@ -66,7 +66,7 @@ export default function EventsColumn({ events, translations: t, initialEventId }
 		const eventImages = [selectedEvent.eventposterUrl, selectedEvent.eventposter2Url, selectedEvent.eventposter3Url].filter(Boolean) as string[];
 
 		return (
-			<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+			<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
 				<div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 					<button onClick={() => setSelectedEvent(null)} className="group inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-8">
 						<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,7 +85,7 @@ export default function EventsColumn({ events, translations: t, initialEventId }
 									<div className="relative flex items-start gap-6">
 										<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/30 min-w-[100px] text-center flex-shrink-0">
 											<div className="text-4xl md:text-5xl font-bold text-white leading-none drop-shadow-lg">{day}</div>
-											<div className="text-sm md:text-base uppercase tracking-wider text-white/90 mt-2 font-semibold">{month}</div>
+											<div className="text-sm md:text-base uppercase tracking-wider text-white mt-2 font-semibold">{month}</div>
 										</div>
 										<div className="flex-1">
 											<h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight drop-shadow-lg">{selectedEvent.eventname}</h1>
@@ -211,13 +211,13 @@ export default function EventsColumn({ events, translations: t, initialEventId }
 						</div>
 					</div>
 				</div>
-			</div>
+			</section>
 		);
 	}
 
 	// ── List View ─────────────────────────────────────────────────────
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
+		<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
 			<div className="container max-w-7xl mx-auto px-4 pt-8 lg:pt-12">
 				<SectionHeader heading={t.events_tab} subtitle={t.events_subtitle} />
 				{sortedEvents.length > 0 ? (
@@ -282,6 +282,6 @@ export default function EventsColumn({ events, translations: t, initialEventId }
 					</div>
 				)}
 			</div>
-		</div>
+		</section>
 	);
 }

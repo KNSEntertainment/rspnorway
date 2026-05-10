@@ -95,7 +95,7 @@ export default function NoticesColumn({ notices, translations: t, initialNoticeI
 									<div className="relative flex items-start gap-6">
 										<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/30 min-w-[100px] text-center flex-shrink-0">
 											<div className="text-4xl md:text-5xl font-bold text-white leading-none drop-shadow-lg">{day}</div>
-											<div className="text-sm md:text-base uppercase tracking-wider text-white/90 mt-2 font-semibold">{month}</div>
+											<div className="text-sm md:text-base uppercase tracking-wider text-white mt-2 font-semibold">{month}</div>
 										</div>
 										<div className="flex-1">
 											<h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight drop-shadow-lg">{selectedNotice.noticetitle}</h1>

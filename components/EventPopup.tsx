@@ -68,7 +68,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 						{/* Modal Content */}
 						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden z-10">
 							{/* Close Button */}
-							<button onClick={handleClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
+							<button onClick={handleClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
 								<X className="w-5 h-5" />
 							</button>
 
@@ -91,7 +91,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 
 									{/* Event Description */}
 									<div className="mb-8">
-										<p className="text-gray-600 text-base leading-relaxed">{latestEvent.eventdescription}</p>
+										<p className="text-gray-700 text-base leading-relaxed">{latestEvent.eventdescription}</p>
 									</div>
 
 									{/* Event Info Cards */}
@@ -150,7 +150,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 
 									{/* Don't show again checkbox */}
 									<div className="pt-6 border-t border-gray-200">
-										<label className="flex items-center text-sm text-gray-600 cursor-pointer hover:text-gray-700 transition-colors">
+										<label className="flex items-center text-sm text-gray-700 cursor-pointer hover:text-gray-700 transition-colors">
 											<input
 												type="checkbox"
 												checked={hasSeenPopup}
@@ -182,7 +182,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 						{/* Modal Content */}
 						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10">
 							{/* Close Button */}
-							<button onClick={handleTicketPopupClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
+							<button onClick={handleTicketPopupClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
 								<X className="w-5 h-5" />
 							</button>
 

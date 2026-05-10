@@ -38,7 +38,7 @@ export default function DonationSuccessPage() {
 						</div>
 					</div>
 					<CardTitle className="text-3xl mb-2">Thank You for Your Donation!</CardTitle>
-					<p className="text-white/90 text-lg">Your generous support means the world to us</p>
+					<p className="text-white text-lg">Your generous support means the world to us</p>
 				</CardHeader>
 				<CardContent className="pt-8 pb-8 space-y-6">
 					<div className="text-center space-y-4">

@@ -23,7 +23,7 @@ export default function LocaleLayout({ children }: { children: React.ReactNode }
 				<ClientLayout>
 					<NextIntlClientProvider>
 						<Header />
-						<div className="container mx-auto mt-24 md:mt-[140px] md:mb-12 min-h-screen">{children}</div>
+						<main className="container mx-auto mt-24 md:mt-[140px] md:mb-12 min-h-screen">{children}</main>
 						<Footer />
 					</NextIntlClientProvider>
 				</ClientLayout>

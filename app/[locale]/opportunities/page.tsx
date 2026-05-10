@@ -185,7 +185,7 @@ function MainContent({ opportunity }: { opportunity: Opportunity }) {
 					<div className="text-6xl mr-4">{opportunity.icon}</div>
 					<div>
 						<h1 className="text-4xl font-bold mb-2">{opportunity.title}</h1>
-						<p className="text-xl text-white/90">{opportunity.shortDescription}</p>
+						<p className="text-xl text-white">{opportunity.shortDescription}</p>
 					</div>
 				</div>
 			</div>

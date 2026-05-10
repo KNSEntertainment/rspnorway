@@ -39,7 +39,7 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
 	return (
 		<>
 			{/* Toggle Button */}
-			<button onClick={() => setIsOpen((v) => !v)} className="lg:hidden btn-glass w-10 h-10">
+			<button onClick={() => setIsOpen((v) => !v)} className="lg:hidden btn-glass w-10 h-10" aria-label={isOpen ? t("close_menu") || "Close menu" : t("open_menu") || "Open menu"}>
 				{isOpen ? <X size={18} /> : <Menu size={18} />}
 			</button>
 
@@ -56,7 +56,7 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
 								<h2 className="text-xl font-bold">
 									{t("pnsb")} {t("norway")}
 								</h2>
-								<button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/20 rounded-lg transition-colors">
+								<button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/20 rounded-lg transition-colors" aria-label={t("close_menu") || "Close menu"}>
 									<X size={24} />
 								</button>
 							</div>

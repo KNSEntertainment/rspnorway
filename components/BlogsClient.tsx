@@ -109,7 +109,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 			<section className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
 				<div className="container mx-auto px-6 py-20">
 					<div className="text-center">
-						<h2 className="text-4xl font-light text-gray-900 mb-4">Blogs</h2>
+						<h1 className="text-4xl font-light text-gray-900 mb-4">Blogs</h1>
 						<p className="text-gray-500">No blogs available at the moment.</p>
 					</div>
 				</div>
@@ -172,7 +172,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 									</h2>
 									
 									{/* Blog Description Preview */}
-									<div className="text-white/90 text-sm mb-2 md:mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+									<div className="text-white text-sm mb-2 md:mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
 										<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(featuredBlog)) }} />
 									</div>
 									
@@ -232,7 +232,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 										</h2>
 										
 										{/* Blog Description Preview */}
-										<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+										<div className="text-white text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
 											<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(featuredBlog)) }} />
 										</div>
 										
@@ -291,7 +291,7 @@ export default function BlogsClient({ blogs, locale }: Props) {
 											</h2>
 											
 											{/* Blog Description Preview */}
-											<div className="text-white/90 text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
+											<div className="text-white text-sm mb-4 line-clamp-2 leading-relaxed prose prose-invert prose-sm max-w-none">
 												<div dangerouslySetInnerHTML={{ __html: cleanDescription(getLocalizedDescription(blogs[1])) }} />
 											</div>
 											

@@ -78,7 +78,7 @@ export default function NewsletterSection() {
 								{t("title")}
 							</h2>
 							
-							<p className="text-xl text-white/90 mb-8 max-w-lg">
+							<p className="text-xl text-white mb-8 max-w-lg">
 								{t("description")}
 							</p>
 
