@@ -1,12 +1,35 @@
 "use client";
 import Image from "next/image";
-import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css";
-import { Zoom, Fullscreen, Thumbnails } from "yet-another-react-lightbox/plugins";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
 import { useState, useRef, useEffect } from "react";
 import { Folder, Images, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+
+// Dynamic imports for lightbox components
+const Lightbox = dynamic(() => import("yet-another-react-lightbox"), {
+	ssr: false,
+	loading: () => <div className="flex items-center justify-center h-64">Loading...</div>
+});
+
+const LightboxStyles = dynamic(() => import("yet-another-react-lightbox/styles.css"), {
+	ssr: false
+});
+
+const ZoomPlugin = dynamic(() => import("yet-another-react-lightbox/plugins").then(mod => mod.Zoom), {
+	ssr: false
+});
+
+const FullscreenPlugin = dynamic(() => import("yet-another-react-lightbox/plugins").then(mod => mod.Fullscreen), {
+	ssr: false
+});
+
+const ThumbnailsPlugin = dynamic(() => import("yet-another-react-lightbox/plugins").then(mod => mod.Thumbnails), {
+	ssr: false
+});
+
+const ThumbnailsStyles = dynamic(() => import("yet-another-react-lightbox/plugins/thumbnails.css"), {
+	ssr: false
+});
 
 export default function GalleryClient({ images }) {
 	const t = useTranslations("gallery");
@@ -79,8 +102,27 @@ export default function GalleryClient({ images }) {
 
 	// Get all images for lightbox
 	const lightboxImages = selectedAlbum ? selectedAlbum.photos : images;
+	
+	// State for dynamic plugins
+	const [plugins, setPlugins] = useState([]);
+
+	// Load plugins when lightbox is opened
+	useEffect(() => {
+		if (open && plugins.length === 0) {
+			Promise.all([
+				ZoomPlugin,
+				FullscreenPlugin,
+				ThumbnailsPlugin
+			]).then(([zoom, fullscreen, thumbnails]) => {
+				setPlugins([zoom, fullscreen, thumbnails]);
+			});
+		}
+	}, [open, plugins.length]);
 
 	return (
+		<>
+			<LightboxStyles />
+			<ThumbnailsStyles />
 		<div className="w-full relative">
 			{/* Navigation Arrows - Only for horizontal scroll layouts */}
 			{albumsArray.length > 4 && (
@@ -263,21 +305,23 @@ export default function GalleryClient({ images }) {
 			</div>
 
 			{/* Enhanced Lightbox */}
-			<Lightbox
-				open={open}
-				close={() => {
-					setOpen(false);
-					setSelectedAlbum(null);
-				}}
-				slides={lightboxImages}
-				index={selectedAlbum ? 0 : index}
-				plugins={[Zoom, Fullscreen, Thumbnails]}
-				animation={{ fade: 400, swipe: 250 }}
-				styles={{
-					container: { backgroundColor: "rgba(15, 23, 42, 0.95)" },
-					thumbnailsContainer: { backgroundColor: "#0f172a" },
-				}}
-			/>
+			{open && (
+				<Lightbox
+					open={open}
+					close={() => {
+						setOpen(false);
+						setSelectedAlbum(null);
+					}}
+					slides={lightboxImages}
+					index={selectedAlbum ? 0 : index}
+					plugins={plugins}
+					animation={{ fade: 400, swipe: 250 }}
+					styles={{
+						container: { backgroundColor: "rgba(15, 23, 42, 0.95)" },
+						thumbnailsContainer: { backgroundColor: "#0f172a" },
+					}}
+				/>
+			)}
 
 			<style jsx>{`
 				.hide-scrollbar::-webkit-scrollbar {
@@ -289,5 +333,6 @@ export default function GalleryClient({ images }) {
 				}
 			`}</style>
 		</div>
+		</>
 	);
 }

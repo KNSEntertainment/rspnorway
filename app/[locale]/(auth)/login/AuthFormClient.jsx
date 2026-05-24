@@ -45,6 +45,7 @@ export default function AuthFormContent() {
 	const [submitting, setSubmitting] = useState(false);
 	const [captchaVerified, setCaptchaVerified] = useState(false);
 	const [captchaError, setCaptchaError] = useState("");
+	const [captchaId, setCaptchaId] = useState("");
 
 	const hasInvite = Boolean(inviteToken);
 
@@ -82,7 +83,7 @@ export default function AuthFormContent() {
 		e.preventDefault();
 		
 		// Validate captcha
-		if (!captchaVerified) {
+		if (!captchaVerified || !captchaId) {
 			setCaptchaError("Please complete the captcha verification.");
 			return;
 		}
@@ -124,8 +125,9 @@ export default function AuthFormContent() {
 	}, [router]);
 
 	// Captcha handlers
-	const handleCaptchaVerify = useCallback((isValid) => {
+	const handleCaptchaVerify = useCallback((isValid, captchaId) => {
 		setCaptchaVerified(isValid);
+		setCaptchaId(captchaId || "");
 		if (!isValid) {
 			setCaptchaError("Please complete the captcha verification.");
 		} else {

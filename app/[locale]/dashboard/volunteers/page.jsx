@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ const statusColors = {
 };
 
 export default function VolunteersPage() {
+  const { toast } = useToast();
   const [volunteers, setVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
@@ -37,15 +38,23 @@ export default function VolunteersPage() {
         setVolunteers(data.volunteers);
         setPagination(data.pagination);
       } else {
-        toast.error(data.error || "Failed to fetch volunteers");
+        toast({
+          title: "Error",
+          description: data.error || "Failed to fetch volunteers",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error("Error fetching volunteers:", error);
-      toast.error("Failed to fetch volunteers");
+      toast({
+        title: "Error",
+        description: "Failed to fetch volunteers",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
-  }, [page, statusFilter]);
+  }, [page, statusFilter, toast]);
 
   const updateVolunteerStatus = async (volunteerId, newStatus) => {
     try {
@@ -60,14 +69,25 @@ export default function VolunteersPage() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Volunteer status updated successfully");
+        toast({
+          title: "Success",
+          description: "Volunteer status updated successfully"
+        });
         fetchVolunteers(); // Refresh the list
       } else {
-        toast.error(data.error || "Failed to update volunteer status");
+        toast({
+          title: "Error",
+          description: data.error || "Failed to update volunteer status",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error("Error updating volunteer status:", error);
-      toast.error("Failed to update volunteer status");
+      toast({
+        title: "Error",
+        description: "Failed to update volunteer status",
+        variant: "destructive"
+      });
     }
   };
 

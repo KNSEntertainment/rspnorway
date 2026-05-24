@@ -1,12 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
-import { Users, Heart, ArrowRight, HandHeart } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Users, Heart, HandHeart } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const AboutMotion = dynamic(() => import("./AboutMotion"), {
+	ssr: false,
+	loading: () => <div className="grid grid-cols-1 md:grid-cols-4 gap-6">{/* Loading skeleton */}</div>
+});
 
 export default function About() {
-	const locale = useLocale();
 	const t = useTranslations("about");
 
 
@@ -25,37 +28,7 @@ export default function About() {
 
 				{/* Call to Actions */}
 				<div className="-mt-16 sm:-mt-36 relative z-10 px-6">
-				
-					<div className=" grid grid-cols-1 md:grid-cols-4 gap-6">
-						{ctas.map((cta, index) => (
-							<Link key={index} href={`/${locale}${cta.href}`}>
-								<div
-									className={`${cta.color} rounded-xl p-6 text-white cursor-pointer group shadow-lg hover:shadow-2xl transition-all duration-300`}
-								>
-									<div className="flex items-start justify-between mb-4">
-										<motion.div
-											whileHover={{ rotate: [0, -10, 10, 0] }}
-											transition={{ duration: 0.5, ease: "easeInOut" }}
-										>
-											<cta.icon className="w-8 h-8" />
-										</motion.div>
-										<motion.div
-											whileHover={{ x: 3 }}
-											transition={{ duration: 0.3, ease: "easeOut" }}
-										>
-											<ArrowRight className="w-5 h-5 transition-transform duration-300" />
-										</motion.div>
-									</div>
-									<h4 className="text-xl font-bold mb-2">
-										{cta.title}
-									</h4>
-									<p className="text-white text-sm leading-relaxed">
-										{cta.description}
-									</p>
-								</div>
-							</Link>
-						))}
-					</div>
+					<AboutMotion ctas={ctas} t={t} />
 				</div>
 			</div>
 		</section>

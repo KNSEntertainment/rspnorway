@@ -71,6 +71,22 @@ export async function POST(req: NextRequest) {
 		await connectDB();
 		const data = await req.json();
 
+		// Validate captcha
+		if (!data.captchaId) {
+			return NextResponse.json({ error: "Captcha verification required" }, { status: 400 });
+		}
+
+		// Validate captcha with the captcha store
+		const { captchaStore } = await import('@/lib/captcha-store');
+		const storedCaptcha = captchaStore.get(data.captchaId);
+		
+		if (!storedCaptcha || storedCaptcha.expires < Date.now()) {
+			return NextResponse.json({ error: "Captcha expired or invalid" }, { status: 400 });
+		}
+
+		// Remove captcha after validation attempt (one-time use)
+		captchaStore.delete(data.captchaId);
+
 		// Validate required fields
 		const requiredFields = ['fullName', 'email', 'phone', 'address', 'city', 'postalCode', 'dateOfBirth', 'gender', 'agreeTerms'];
 		for (const field of requiredFields) {

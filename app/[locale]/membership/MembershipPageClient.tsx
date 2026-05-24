@@ -148,6 +148,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const geoapifyKey = process.env.NEXT_PUBLIC_GEOAPIFY_KEY;
 	const [captchaVerified, setCaptchaVerified] = useState(false);
 	const [captchaError, setCaptchaError] = useState("");
+	const [captchaId, setCaptchaId] = useState("");
 
 	// Cascading dropdown state
 	const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
@@ -342,8 +343,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		}
 	};
 
-	const handleCaptchaVerify = (isValid: boolean) => {
+	const handleCaptchaVerify = (isValid: boolean, captchaId?: string) => {
 		setCaptchaVerified(isValid);
+		setCaptchaId(captchaId || "");
 		if (!isValid) {
 			setCaptchaError("Please complete the captcha verification.");
 		} else {
@@ -359,7 +361,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		e.preventDefault();
 		
 		// Validate captcha
-		if (!captchaVerified) {
+		if (!captchaVerified || !captchaId) {
 			setCaptchaError("Please complete the captcha verification.");
 			return;
 		}
@@ -370,7 +372,10 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(formData),
+				body: JSON.stringify({
+					...formData,
+					captchaId: captchaId
+				}),
 			});
 			const result = await res.json();
 			

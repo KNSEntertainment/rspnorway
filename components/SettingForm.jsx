@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EmployeeForm({ settingdata }) {
+	const { toast } = useToast();
 	const [formData, setFormData] = useState({
 		name: "",
 		address: "",
@@ -89,10 +90,17 @@ export default function EmployeeForm({ settingdata }) {
 				setFormData((prev) => ({ ...prev, companyLogo: result.setting.companyLogo }));
 			}
 
-			toast.success(method === "POST" ? "Profile created successfully" : "Profile updated successfully");
+			toast({
+				title: "Success",
+				description: method === "POST" ? "Profile created successfully" : "Profile updated successfully"
+			});
 			setMessage(method === "POST" ? "Profile created successfully" : "Profile updated successfully");
 		} catch (err) {
-			toast.error("Profile not updated. Please try again.");
+			toast({
+				title: "Error",
+				description: "Profile not updated. Please try again.",
+				variant: "destructive"
+			});
 			setError(err.message);
 		} finally {
 			setSubmitting(false);

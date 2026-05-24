@@ -19,9 +19,10 @@ import {
   Filter,
   Activity
 } from "lucide-react";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SubscribersPage() {
+	const { toast } = useToast();
 	const [deleteId, setDeleteId] = useState(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [timeFilter, setTimeFilter] = useState("all");
@@ -102,7 +103,10 @@ export default function SubscribersPage() {
 		document.body.removeChild(a);
 		window.URL.revokeObjectURL(url);
 		
-		toast.success("Subscribers exported successfully!");
+		toast({
+			title: "Success",
+			description: "Subscribers exported successfully!"
+		});
 	};
 
 	const handleDelete = async (id) => {
@@ -113,10 +117,17 @@ export default function SubscribersPage() {
 			if (!response.ok) {
 				throw new Error("Failed to delete subscriber");
 			}
-			toast.success("Subscriber deleted successfully!");
+			toast({
+				title: "Success",
+				description: "Subscriber deleted successfully!"
+			});
 			mutate();
-		} catch (error) {
-			toast.error("Failed to delete subscriber. Please try again.", error);
+		} catch {
+			toast({
+				title: "Error",
+				description: "Failed to delete subscriber. Please try again.",
+				variant: "destructive"
+			});
 		}
 	};
 

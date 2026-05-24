@@ -34,10 +34,7 @@ const nextConfig = withNextIntl({
 	// Performance optimizations
 	experimental: {
 		turbo: {
-			resolveAlias: {
-				// Reduce bundle size by aliasing to smaller packages
-				'framer-motion': 'framer-motion/dist/framer-motion.min.js',
-			},
+			// Turbo mode optimizations
 		},
 	},
 	
@@ -95,21 +92,56 @@ const nextConfig = withNextIntl({
 						name: 'vendors',
 						priority: -10,
 						chunks: 'all',
+						enforce: true,
 					},
 					react: {
 						test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
 						name: 'react',
-						priority: 20,
+						priority: 30,
 						chunks: 'all',
+						enforce: true,
 					},
 					framer: {
 						test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
 						name: 'framer',
+						priority: 25,
+						chunks: 'all',
+						enforce: true,
+					},
+					tiptap: {
+						test: /[\\/]node_modules[\\/](@tiptap|prosemirror)[\\/]/,
+						name: 'tiptap',
+						priority: 20,
+						chunks: 'all',
+						enforce: true,
+					},
+					lightbox: {
+						test: /[\\/]node_modules[\\/](yet-another-react-lightbox)[\\/]/,
+						name: 'lightbox',
+						priority: 18,
+						chunks: 'all',
+						enforce: true,
+					},
+					lucide: {
+						test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+						name: 'lucide',
 						priority: 15,
 						chunks: 'all',
+						enforce: true,
+					},
+					radix: {
+						test: /[\\/]node_modules[\\/](@radix-ui)[\\/]/,
+						name: 'radix',
+						priority: 12,
+						chunks: 'all',
+						enforce: true,
 					},
 				},
 			};
+			
+			// Enable tree shaking
+			config.optimization.usedExports = true;
+			config.optimization.sideEffects = false;
 		}
 		
 		// Reduce bundle size by excluding unnecessary modules
@@ -120,6 +152,11 @@ const nextConfig = withNextIntl({
 				'jsdom': '{}',
 			});
 		}
+		
+		// Add resolve aliases for smaller imports
+		config.resolve.alias = {
+			...config.resolve.alias,
+		};
 		
 		return config;
 	},

@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Newsletter() {
+	const { toast } = useToast();
 	const [email, setEmail] = useState("");
 
 	const handleSubmit = async (e) => {
@@ -28,10 +29,17 @@ export default function Newsletter() {
 
 			if (result.success) {
 				setEmail("");
-				toast.success("Thank you for subscribing!");
+				toast({
+				title: "Success",
+				description: "Thank you for subscribing!"
+			});
 			}
-		} catch (error) {
-			toast.success("Sorry, try again!", error);
+		} catch {
+			toast({
+				title: "Error",
+				description: "Sorry, try again!",
+				variant: "destructive"
+			});
 		}
 	};
 

@@ -24,9 +24,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import NoticeForm from "@/components/NoticeForm";
-import toast from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 
 export default function NoticesPage() {
+	const { toast } = useToast();
 	const [openNoticeModal, setOpenNoticeModal] = useState(false);
 	const [noticeToEdit, setNoticeToEdit] = useState(null);
 	const [deleteId, setDeleteId] = useState(null);
@@ -140,7 +141,10 @@ export default function NoticesPage() {
 		document.body.removeChild(a);
 		window.URL.revokeObjectURL(url);
 		
-		toast.success("Notices exported successfully!");
+		toast({
+			title: "Success",
+			description: "Notices exported successfully!"
+		});
 	};
 
 	if (loading) return (
@@ -163,10 +167,17 @@ export default function NoticesPage() {
 			if (!response.ok) {
 				throw new Error("Failed to delete notice");
 			}
-			toast.success("Notice deleted successfully!");
+			toast({
+				title: "Success",
+				description: "Notice deleted successfully!"
+			});
 			mutate();
 		} catch {
-			toast.error("Failed to delete notice. Please try again.");
+			toast({
+				title: "Error",
+				description: "Failed to delete notice. Please try again.",
+				variant: "destructive"
+			});
 		}
 	};
 
