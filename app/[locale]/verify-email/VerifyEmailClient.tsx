@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, XCircle, Loader2, Eye, EyeOff } from "lucide-react";
 
@@ -49,17 +49,7 @@ export default function VerifyEmailClient({ translations: t }: Props) {
 	const [passwordError, setPasswordError] = useState("");
 	const [passwordLoading, setPasswordLoading] = useState(false);
 
-	useEffect(() => {
-		if (!token) {
-			setStatus("error");
-			setMessage(t.invalidToken);
-			return;
-		}
-
-		verifyEmail();
-	}, [token]);
-
-	const verifyEmail = async () => {
+	const verifyEmail = useCallback(async () => {
 		try {
 			const response = await fetch("/api/auth/verify-email", {
 				method: "POST",
@@ -90,7 +80,17 @@ export default function VerifyEmailClient({ translations: t }: Props) {
 			setStatus("error");
 			setMessage(error instanceof Error ? error.message : t.error);
 		}
-	};
+	}, [token, t.expiredToken, t.error, t.successMessage]);
+
+	useEffect(() => {
+		if (!token) {
+			setStatus("error");
+			setMessage(t.invalidToken);
+			return;
+		}
+
+		verifyEmail();
+	}, [token, t.invalidToken, verifyEmail]);
 
 	const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;

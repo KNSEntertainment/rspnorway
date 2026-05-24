@@ -38,20 +38,19 @@ export async function sendContactEmail({ name, email, message }: sendContactEmai
 	}
 }
 
-// Welcome email with password setup link
+// Welcome email for approved membership
 type sendWelcomeEmail = {
 	name: string;
 	email: string;
-	setupToken: string;
 };
-export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeEmail) {
-	const setupUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/en/set-password?token=${setupToken}`;
+export async function sendWelcomeEmail({ name, email }: sendWelcomeEmail) {
+	const loginUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/en/login`;
 
 	const mailOptions = {
 		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
 		to: email,
-		subject: "Welcome to PNSB-Norway - Set Your Password",
-		text: `Hello ${name},\n\nWelcome to PNSB-Norway! Your membership has been approved.\n\nPlease set your password by clicking the link below:\n${setupUrl}\n\nThis link is valid for 24 hours.\n\nBest regards,\nPNSB-Norway Team`,
+		subject: "Welcome to PNSB-Norway - Membership Approved!",
+		text: `Hello ${name},\n\nCongratulations! Your membership application has been approved by the PNSB-Norway team.\n\nWe're excited to have you as part of our community. You can now login to your account using the email and password you created during registration.\n\nLogin here: ${loginUrl}\n\nAs an approved member, you now have access to:\n- Your member dashboard\n- Member-only events and activities\n- Community resources and updates\n- Your digital member ID card\n\nIf you have any questions or need assistance, feel free to reach out to us.\n\nBest regards,\nPNSB-Norway Team`,
 		html: `
 			<!DOCTYPE html>
 			<html>
@@ -59,39 +58,78 @@ export async function sendWelcomeEmail({ name, email, setupToken }: sendWelcomeE
 				<style>
 					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
 					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
-					.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+					.header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
 					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-					.button { display: inline-block; background: #667eea; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
+					.button { display: inline-block; background: #10b981; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
 					.footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+					.success-box { background: #ecfdf5; border: 1px solid #10b981; padding: 20px; border-radius: 5px; margin: 20px 0; }
+					.features { background: white; padding: 20px; border-radius: 5px; margin: 20px 0; }
+					.feature-item { display: flex; align-items: center; margin: 15px 0; }
+					.feature-icon { width: 40px; height: 40px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px; flex-shrink: 0; }
 				</style>
 			</head>
 			<body>
 				<div class="container">
 					<div class="header">
-						<h1>Welcome to PNSB-Norway!</h1>
+						<h1>🎉 Membership Approved!</h1>
+						<p style="margin: 10px 0 0 0; font-size: 18px;">Welcome to PNSB-Norway Community</p>
 					</div>
 					<div class="content">
 						<p>Hello <strong>${name}</strong>,</p>
-						<p>Congratulations! Your membership application has been approved. We're excited to have you as part of the PNSB-Norway community.</p>
-						<p>To complete your account setup, please set your password by clicking the button below:</p>
+						
+						<div class="success-box">
+							<h3 style="margin: 0 0 10px 0; color: #10b981;">✅ Congratulations!</h3>
+							<p style="margin: 0;">Your membership application has been approved by the PNSB-Norway team. We're thrilled to welcome you to our community!</p>
+						</div>
+
+						<p>You can now access your member account using the email and password you created during registration.</p>
+						
 						<center>
-							<a href="${setupUrl}" class="button">Set Your Password</a>
+							<a href="${loginUrl}" class="button">Login to Your Account</a>
 						</center>
-						<p>Or copy and paste this link in your browser:</p>
-						<p style="background: white; padding: 10px; border-radius: 5px; word-break: break-all;">${setupUrl}</p>
-						<p><strong>Note:</strong> This link is valid for 24 hours. If it expires, please contact our support team.</p>
-						<p>Once you've set your password, you'll be able to:</p>
-						<ul>
-							<li>Access your member dashboard</li>
-							<li>Update your profile information</li>
-							<li>Participate in member-only events</li>
-							<li>Stay connected with the community</li>
-						</ul>
-						<p>If you have any questions, feel free to reach out to us.</p>
+
+						<div class="features">
+							<h4 style="margin: 0 0 20px 0;">What You Can Access Now:</h4>
+							<div class="feature-item">
+								<div class="feature-icon">📊</div>
+								<div>
+									<strong>Member Dashboard</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Access your personal dashboard with membership details</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon">🎫</div>
+								<div>
+									<strong>Member-Only Events</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Participate in exclusive community events and activities</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon">🆔</div>
+								<div>
+									<strong>Digital Member ID</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Access your digital member ID card anytime</p>
+								</div>
+							</div>
+							<div class="feature-item">
+								<div class="feature-icon">📢</div>
+								<div>
+									<strong>Community Updates</strong>
+									<p style="margin: 5px 0 0 0; color: #666;">Stay informed about important announcements and news</p>
+								</div>
+							</div>
+						</div>
+
+						<p>If you forgot your password, you can reset it from the login page.</p>
+						
+						<p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
+						
 						<p>Best regards,<br><strong>PNSB-Norway Team</strong></p>
 					</div>
 					<div class="footer">
+						<p>PNSB-Norway</p>
 						<p>This is an automated email. Please do not reply to this message.</p>
+						<p style="color: #999; margin-top: 10px;">Questions? Contact us at ${process.env.EMAIL_USER}</p>
 					</div>
 				</div>
 			</body>

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Membership from "@/models/Membership.Model";
 import { sendWelcomeEmail } from "@/lib/email";
-import crypto from "crypto";
 
 export async function POST(request: Request) {
 	try {
@@ -43,21 +42,10 @@ export async function POST(request: Request) {
 			}, { status: 400 });
 		}
 
-		// Generate a setup token (valid for 24 hours)
-		const setupToken = crypto.randomBytes(32).toString('hex');
-		const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
-
-		// Save the token to the membership record
-		await Membership.findByIdAndUpdate(membershipId, {
-			passwordSetupToken: setupToken,
-			passwordSetupTokenExpiry: tokenExpiry,
-		});
-
 		// Send welcome email
 		await sendWelcomeEmail({ 
 			name: membership.fullName, 
-			email: membership.email, 
-			setupToken 
+			email: membership.email
 		});
 
 		return NextResponse.json({ 
