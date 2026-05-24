@@ -621,5 +621,18 @@
 		"skills": "Skills",
 		"volunteerInterest": "Volunteer Interest",
 		"updating": "Updating..."
+	},
+	"verifyEmail": {
+		"title": "Verify Your Email",
+		"subtitle": "Please wait while we verify your email address",
+		"verifying": "Verifying Email...",
+		"success": "Email Verified Successfully!",
+		"successMessage": "Your email has been verified. Your account is now active.",
+		"error": "Verification Failed",
+		"invalidToken": "Invalid verification token. Please check your email and try again.",
+		"expiredToken": "The verification link has expired. Please request a new verification email.",
+		"redirecting": "Redirecting to membership page in",
+		"goToLogin": "Go to Login",
+		"goToMembership": "Go to Membership"
 	}
 }

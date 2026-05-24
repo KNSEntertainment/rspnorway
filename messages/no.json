@@ -616,5 +616,18 @@
 		"skills": "Ferdigheter",
 		"volunteerInterest": "Frivillig Interesse",
 		"updating": "Oppdaterer..."
+	},
+	"verifyEmail": {
+		"title": "Bekreft Din E-post",
+		"subtitle": "Vennligst vent mens vi bekrefter din e-postadresse",
+		"verifying": "Bekrefter E-post...",
+		"success": "E-post Bekreftet!",
+		"successMessage": "Din e-post har blitt bekreftet. Din konto er nå aktiv.",
+		"error": "Bekreftelse Mislyktes",
+		"invalidToken": "Ugyldig bekreftelses-token. Vennligst sjekk e-posten din og prøv igjen.",
+		"expiredToken": "Bekreftelseslinken har utløpt. Vennligst be om en ny bekreftelses-e-post.",
+		"redirecting": "Omdirigerer til medlemskapsside om",
+		"goToLogin": "Gå til Innlogging",
+		"goToMembership": "Gå til Medlemskap"
 	}
 }
