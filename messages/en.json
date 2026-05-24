@@ -150,6 +150,9 @@
 		"pnsb": "PNSB",
 		"norway": "Norway",
 		"search_placeholder": "Search...",
+		"search": "Search",
+		"open_menu": "Open menu",
+		"close_menu": "Close menu",
 		"events": "Events",
 		"circulars": "Circulars",
 		"updates": "Updates",
@@ -248,7 +251,11 @@
 		"mission_description": "Our mission is to unite and empower the Nepalese community in Norway.",
 		"vision_title": "Our Vision",
 		"vision_description": "A thriving, connected Nepalese community in Norway where every member feels supported, valued, and proud of their heritage - while contributing as active, integrated members of Norwegian society.",
-		"values_title": "What We Stand For"
+		"values_title": "What We Stand For",
+		"stat_members": "Active Members",
+		"stat_events": "Events Organized",
+		"stat_cities": "Cities Reached",
+		"stat_impacted": "Lives Impacted"
 	},
 	"about": {
 		"title": "Welcome to PNSB-Norway",
@@ -547,6 +554,9 @@
 		"subscribing": "Subscribing...",
 		"subscribed": "Subscribed!",
 		"success_message": "Thank you for subscribing!",
+		"error_already_subscribed": "This email is already subscribed.",
+		"error_invalid_email": "Please provide a valid email address.",
+		"error_general": "An error occurred while processing your request.",
 		"footer_text": "Join 500+ community members. Unsubscribe at any time."
 	},
 	"resetPassword": {

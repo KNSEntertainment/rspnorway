@@ -175,7 +175,7 @@ export default function EventsTimeline() {
 											
 
 												{/* Event Title */}
-												<Link href={`/${locale}/updates?eventId=${event._id}`}>
+												<Link href={`/${locale}/events?eventId=${event._id}`}>
 													<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-brand transition-colors duration-300 cursor-pointer">
 														{getLocalizedTitle(event)}
 													</h3>
@@ -204,7 +204,7 @@ export default function EventsTimeline() {
 
 												{/* Action Buttons */}
 												<div className="flex gap-4">
-													<Link href={`/${locale}/updates?eventId=${event._id}`}>
+													<Link href={`/${locale}/events?eventId=${event._id}`}>
 														<button
 															className="flex-1 bg-brand text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200"
 														>
@@ -225,7 +225,7 @@ export default function EventsTimeline() {
 												transition={{ duration: 0.6, delay: 0.4 }}
 												className="flex justify-center pt-12"
 											>
-												<ViewAllButton href={`/${locale}/updates`} label="View All Events" />
+												<ViewAllButton href={`/${locale}/events`} label="View All Events" />
 											</motion.div>
 						</div>
 					) : (

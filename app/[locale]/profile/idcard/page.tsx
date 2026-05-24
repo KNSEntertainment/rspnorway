@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Shield, CreditCard, Loader2, Printer } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -24,27 +24,7 @@ export default function IDCardPage() {
     const [profilePhoto, setProfilePhoto] = useState<string>("");
     const [logo, setLogo] = useState<string>("");
 
-
-    
-    
-        
-
-    // Fetch membership data and profile photo
-    useEffect(() => {
-        if (status === "authenticated") {
-            fetchMembershipData();
-            fetchProfilePhoto();
-            fetchLogo();
-            setIsLoading(false);
-        }
-    }, [status]);
-
-
-	const handlePrint = () => {
-		window.print();
-	};
-
-    const fetchMembershipData = async () => {
+    const fetchMembershipData = useCallback(async () => {
         try {
             const response = await fetch(`/api/membership?email=${session?.user?.email}`);
             if (!response.ok) {
@@ -70,9 +50,9 @@ export default function IDCardPage() {
         } catch (error) {
             console.error("Error fetching membership data:", error);
         }
-    };
+    }, [session?.user?.email]);
 
-    const fetchProfilePhoto = async () => {
+    const fetchProfilePhoto = useCallback(async () => {
         try {
             const response = await fetch(`/api/users/profile-photo?email=${session?.user?.email}`);
             if (response.ok) {
@@ -84,9 +64,9 @@ export default function IDCardPage() {
         } catch (error) {
             console.error("Error fetching profile photo:", error);
         }
-    };
+    }, [session?.user?.email]);
 
-    const fetchLogo = async () => {
+    const fetchLogo = useCallback(async () => {
         try {
             const response = await fetch(`/api/settings`);
             if (response.ok) {
@@ -98,7 +78,22 @@ export default function IDCardPage() {
         } catch (error) {
             console.error("Error fetching logo:", error);
         }
-    };
+    }, []);
+
+    // Fetch membership data and profile photo
+    useEffect(() => {
+        if (status === "authenticated") {
+            fetchMembershipData();
+            fetchProfilePhoto();
+            fetchLogo();
+            setIsLoading(false);
+        }
+    }, [status, fetchMembershipData, fetchProfilePhoto, fetchLogo]);
+
+
+	const handlePrint = () => {
+		window.print();
+	};
 
 
 

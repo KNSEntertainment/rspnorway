@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import nepalLocationsData from "@/lib/data/nepal-locations.json";
+import Captcha from "@/components/ui/Captcha";
 
 interface District {
 	id: string;
@@ -143,6 +144,8 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
 	const [locating, setLocating] = useState(false);
 	const geoapifyKey = process.env.NEXT_PUBLIC_GEOAPIFY_KEY;
+	const [captchaVerified, setCaptchaVerified] = useState(false);
+	const [captchaError, setCaptchaError] = useState("");
 
 	// Cascading dropdown state
 	const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
@@ -337,8 +340,28 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		}
 	};
 
+	const handleCaptchaVerify = (isValid: boolean) => {
+		setCaptchaVerified(isValid);
+		if (!isValid) {
+			setCaptchaError("Please complete the captcha verification.");
+		} else {
+			setCaptchaError("");
+		}
+	};
+
+	const handleCaptchaError = (error: string) => {
+		setCaptchaError(error);
+	};
+
 	const handleSubmit = async (e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
 		e.preventDefault();
+		
+		// Validate captcha
+		if (!captchaVerified) {
+			setCaptchaError("Please complete the captcha verification.");
+			return;
+		}
+		
 		try {
 			const res = await fetch("/api/membership", {
 				method: "POST",
@@ -347,7 +370,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				},
 				body: JSON.stringify(formData),
 			});
-			if (!res.ok) throw new Error("Failed to submit application");
+			const result = await res.json();
+			
+			if (!res.ok) {
+				throw new Error(result.error || "Failed to submit application");
+			}
+			
 			setSubmitted(true);
 			setFormData({
 				fullName: "",
@@ -370,8 +398,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				permissionPhone: false,
 				permissionEmail: false,
 			});
+			setCaptchaVerified(false);
 		} catch (error) {
-			alert("There was an error submitting your application. Please try again." + error);
+			alert("There was an error submitting your application. Please try again. " + (error instanceof Error ? error.message : ""));
 		}
 	};
 
@@ -643,9 +672,22 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 						</label>
 					</div>
 
+					{/* Captcha */}
+					<div className="bg-light rounded-lg p-4">
+						<h4 className="text-sm font-medium text-gray-900 mb-3">Security Verification</h4>
+						<Captcha 
+							onVerify={handleCaptchaVerify} 
+							onError={handleCaptchaError}
+							className="w-full"
+						/>
+						{captchaError && (
+							<p className="text-red-600 text-sm mt-2">{captchaError}</p>
+						)}
+					</div>
+
 					{/* Submit Button */}
 					<div className="flex gap-4">
-						<button onClick={handleSubmit} className={`flex-1 bg-brand text-white py-2 md:py-4 px-6 md:px-8 rounded-lg font-semibold hover:bg-brand/90 transition-colors shadow-lg hover:shadow-xl${!formData.agreeTerms ? " opacity-50 cursor-not-allowed" : ""}`} disabled={!formData.agreeTerms}>
+						<button onClick={handleSubmit} className={`flex-1 bg-brand text-white py-2 md:py-4 px-6 md:px-8 rounded-lg font-semibold hover:bg-brand/90 transition-colors shadow-lg hover:shadow-xl${!formData.agreeTerms || !captchaVerified ? " opacity-50 cursor-not-allowed" : ""}`} disabled={!formData.agreeTerms || !captchaVerified}>
 							{t.submit}
 						</button>
 						<button onClick={resetForm} className="px-6 md:px-8 py-2 md:py-4 border-2 border-light text-gray-900 rounded-lg font-semibold hover:bg-light transition-colors">

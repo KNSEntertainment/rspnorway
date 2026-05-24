@@ -34,7 +34,7 @@ interface DonatePageClientProps {
 	translations?: Record<string, string>;
 }
 
-export default function DonatePageClient({ causes, locale }: DonatePageClientProps) {
+export default function DonatePageClient({ causes }: DonatePageClientProps) {
 	const t = useTranslations("donate");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedCause, setSelectedCause] = useState<Cause | undefined>();
@@ -154,7 +154,7 @@ export default function DonatePageClient({ causes, locale }: DonatePageClientPro
 						</div>
 						
 						<div className="text-center mt-8">
-							<Link href={`/${locale}/donate/reports`}>
+							<Link href="/donate/reports">
 								<button className="text-brand hover:text-brand/90 font-medium">
 									{t("view_all_reports") || "View All Donation Reports"} &rarr;
 								</button>

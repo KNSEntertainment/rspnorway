@@ -147,8 +147,10 @@ export default function SettingsPage({ translations: t }: Props) {
       fetch(`/api/membership?email=${encodeURIComponent(session.user.email)}`)
         .then((res) => res.json())
         .then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            const member = data[0];
+          // Handle both array and single object responses
+          const member = Array.isArray(data) ? (data.length > 0 ? data[0] : null) : data;
+          
+          if (member) {
             setMembershipData(member);
             
             // Populate profile form with existing data

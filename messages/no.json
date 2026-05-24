@@ -150,6 +150,9 @@
 		"pnsb": "PNSB",
 		"norway": "Norge",
 		"search_placeholder": "Søk...",
+		"search": "Søk",
+		"open_menu": "Åpne meny",
+		"close_menu": "Lukk meny",
 		"events": "Arrangementer",
 		"circulars": "Sirkulærer",
 		"updates": "Oppdateringer",
@@ -248,7 +251,11 @@
 		"mission_description": "Vårt oppdrag er å forene og styrke det nepalske samfunnet i Norge.",
 		"vision_title": "Vår Visjon",
 		"vision_description": "Et blomstrende, sammenhengende nepalsk samfunn i Norge hvor hvert medlem føler seg støttet, verdsatt og stolt av sin arv – samtidig som de bidrar som aktive, integrerte medlemmer av det norske samfunnet.",
-		"values_title": "Hva vi står for"
+		"values_title": "Hva vi står for",
+		"stat_members": "Aktive medlemmer",
+		"stat_events": "Arrangementer organisert",
+		"stat_cities": "Byer nådd",
+		"stat_impacted": "Liv påvirket"
 	},
 	"about": {
 		"title": "Velkommen til PNSB-Norway",
@@ -542,6 +549,9 @@
 		"subscribing": "Abonnerer...",
 		"subscribed": "Abonnert, tusen takk!",
 		"success_message": "Takk for at du abonnerer!",
+		"error_already_subscribed": "Denne e-posten er allerede abonnert.",
+		"error_invalid_email": "Vennligst oppgi en gyldig e-postadresse.",
+		"error_general": "En feil oppstod under behandling av din forespørsel.",
 		"footer_text": "Bli med 500+ samfunnsmedlemmer. Avmeld når som helst."
 	},
 	"resetPassword": {

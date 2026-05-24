@@ -179,7 +179,7 @@ export default function DonationForm() {
 						<label className="block text-sm font-semibold text-gray-900 mb-2">{t("custom_amount") || "Custom Amount"}</label>
 						<div className="relative">
 							<input type="number" min="50" value={customAmount} onChange={(e) => handleCustomAmountChange(e.target.value)} placeholder={t("amount_placeholder") || "Enter amount"} className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-brand focus:outline-none text-gray-900" />
-							<span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">NOK</span>
+							<span className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">NOK</span>
 						</div>
 						<p className="text-xs text-gray-500 mt-1">{t("minimum_donation") || "Minimum donation: 50 NOK"}</p>
 					</div>

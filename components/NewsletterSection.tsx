@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Send, CheckCircle } from "lucide-react";
+import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -10,10 +10,13 @@ export default function NewsletterSection() {
 	const [email, setEmail] = useState("");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [error, setError] = useState("");
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setIsSubmitting(true);
+		setError("");
+		setIsSubmitted(false);
 
 		try {
 			const response = await fetch("/api/subscribers", {
@@ -27,7 +30,15 @@ export default function NewsletterSection() {
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(result.error || "Failed to subscribe");
+				// Map error messages to translation keys
+				let errorMessageKey = "error_general";
+				if (result.error === "This email is already subscribed.") {
+					errorMessageKey = "error_already_subscribed";
+				} else if (result.error === "Please provide a valid email address.") {
+					errorMessageKey = "error_invalid_email";
+				}
+				setError(t(errorMessageKey));
+				return;
 			}
 
 			if (result.success) {
@@ -36,13 +47,18 @@ export default function NewsletterSection() {
 			}
 		} catch (error) {
 			console.error("Subscription error:", error);
-			// You could show an error message here if needed
+			setError(t("error_general"));
 		} finally {
 			setIsSubmitting(false);
 		}
 
-		// Reset success message after 3 seconds
-		setTimeout(() => setIsSubmitted(false), 3000);
+		// Reset messages after 3 seconds
+		if (isSubmitted || error) {
+			setTimeout(() => {
+				setIsSubmitted(false);
+				setError("");
+			}, 3000);
+		}
 	};
 
 	return (
@@ -150,6 +166,21 @@ export default function NewsletterSection() {
 									<div className="flex items-center justify-center gap-2 text-white">
 										<CheckCircle className="w-5 h-5" />
 										<span>{t("success_message")}</span>
+									</div>
+								</motion.div>
+							)}
+
+							{/* Error Message */}
+							{error && (
+								<motion.div
+									initial={{ opacity: 0, scale: 0.8 }}
+									animate={{ opacity: 1, scale: 1 }}
+									exit={{ opacity: 0, scale: 0.8 }}
+									className="mt-4 p-4 bg-red-500/20 backdrop-blur-sm rounded-lg border border-red-500/30"
+								>
+									<div className="flex items-center justify-center gap-2 text-white">
+										<AlertCircle className="w-5 h-5" />
+										<span>{error}</span>
 									</div>
 								</motion.div>
 							)}

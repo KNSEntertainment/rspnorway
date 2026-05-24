@@ -54,13 +54,19 @@ export const authOptions = {
 					}
 
 					// If not admin, check if it's a member in Membership model
+					// Allow both pending and approved members to login (pending members get limited access)
 					const member = await Membership.findOne({ 
 						email: credentials.email,
-						membershipStatus: "approved" // Only allow approved members to login
+						membershipStatus: { $in: ["pending", "approved"] } // Allow pending and approved members
 					});
 					
 					if (!member) {
-						throw new Error("No approved member found with this email");
+						throw new Error("No member found with this email. Please register first.");
+					}
+					
+					// Check if member account is blocked
+					if (member.membershipStatus === "blocked") {
+						throw new Error("Your account has been blocked. Please contact support.");
 					}
 					
 					// Check if member has a password set
@@ -68,11 +74,32 @@ export const authOptions = {
 						throw new Error("Please set your password first. Check your email for the setup link.");
 					}
 					
+					// Check if account is locked due to too many failed attempts
+					if (member.lockUntil && member.lockUntil > Date.now()) {
+						throw new Error("Account temporarily locked due to too many failed attempts. Please try again later.");
+					}
+					
 					// Validate member password
 					const isValid = await bcrypt.compare(credentials.password, member.password);
 					if (!isValid) {
+						// Increment login attempts
+						await Membership.findByIdAndUpdate(member._id, {
+							$inc: { loginAttempts: 1 },
+							$set: { 
+								lockUntil: member.loginAttempts + 1 >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : undefined // Lock for 15 minutes after 5 attempts
+							}
+						});
 						throw new Error("Invalid credentials");
 					}
+					
+					// Reset login attempts on successful login
+					await Membership.findByIdAndUpdate(member._id, {
+						$set: { 
+							loginAttempts: 0, 
+							lockUntil: undefined,
+							lastLoginAt: new Date()
+						}
+					});
 					
 					// Return member data for NextAuth
 					return {
@@ -84,6 +111,7 @@ export const authOptions = {
 						membershipType: member.membershipType,
 						membershipStatus: member.membershipStatus,
 						isMember: true, // Flag to identify this is a member
+						emailVerified: member.emailVerified,
 					};
 				} catch (error) {
 					throw new Error(error.message);
@@ -102,9 +130,6 @@ export const authOptions = {
 		async jwt({ token, user }) {
 			if (user) {
 				token._id = user._id;
-				token.isVerified = user.isVerified;
-				token.isAcceptingMessages = user.isAcceptingMessages;
-				token.username = user.username;
 				token.fullName = user.fullName;
 				token.role = user.role;
 				token.phone = user.phone;
@@ -112,6 +137,7 @@ export const authOptions = {
 				token.isMember = user.isMember;
 				token.membershipType = user.membershipType;
 				token.membershipStatus = user.membershipStatus;
+				token.emailVerified = user.emailVerified;
 			}
 			return token;
 		},
@@ -120,9 +146,6 @@ export const authOptions = {
 				session.user = {
 					_id: token._id,
 					email: token.email,
-					isVerified: token.isVerified,
-					isAcceptingMessages: token.isAcceptingMessages,
-					username: token.username,
 					fullName: token.fullName,
 					role: token.role,
 					phone: token.phone,
@@ -130,6 +153,7 @@ export const authOptions = {
 					isMember: token.isMember,
 					membershipType: token.membershipType,
 					membershipStatus: token.membershipStatus,
+					emailVerified: token.emailVerified,
 				};
 			}
 

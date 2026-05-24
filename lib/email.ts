@@ -369,3 +369,78 @@ export async function sendPasswordResetEmail({ name, email, resetUrl, userType }
 		throw new Error("Failed to send password reset email");
 	}
 }
+
+// Email verification email
+type sendEmailVerificationEmail = {
+	name: string;
+	email: string;
+	verificationUrl: string;
+	userType: string;
+};
+export async function sendEmailVerificationEmail({ name, email, verificationUrl, userType }: sendEmailVerificationEmail) {
+	const mailOptions = {
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
+		to: email,
+		subject: "Verify Your Email - PNSB-Norway",
+		text: `Hello ${name},\n\nPlease verify your email address for your PNSB-Norway ${userType} account.\n\nClick the link below to verify your email:\n${verificationUrl}\n\nThis link is valid for 24 hours.\n\nBest regards,\nPNSB-Norway Team`,
+		html: `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<style>
+					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+					.header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+					.button { display: inline-block; background: #10b981; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
+					.footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+					.info-box { background: #ecfdf5; border: 1px solid #10b981; padding: 15px; border-radius: 5px; margin: 20px 0; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="header">
+						<h1>Verify Your Email Address</h1>
+					</div>
+					<div class="content">
+						<p>Hello <strong>${name}</strong>,</p>
+						<p>Thank you for registering with PNSB-Norway! To complete your ${userType} account setup, please verify your email address.</p>
+						<p>Click the button below to verify your email:</p>
+						<center>
+							<a href="${verificationUrl}" class="button">Verify Email</a>
+						</center>
+						<p>Or copy and paste this link in your browser:</p>
+						<p style="background: white; padding: 10px; border-radius: 5px; word-break: break-all;">${verificationUrl}</p>
+						
+						<div class="info-box">
+							<p><strong>Why verify your email?</strong></p>
+							<ul>
+								<li>Ensures account security</li>
+								<li>Enables important notifications</li>
+								<li>Allows password recovery</li>
+								<li>Confirms your identity</li>
+							</ul>
+						</div>
+						
+						<p><strong>Note:</strong> This link is valid for 24 hours. If it expires, please request a new verification email.</p>
+						
+						<p>If you didn't create an account with us, please ignore this email.</p>
+						<p>Best regards,<br><strong>PNSB-Norway Team</strong></p>
+					</div>
+					<div class="footer">
+						<p>This is an automated email. Please do not reply to this message.</p>
+					</div>
+				</div>
+			</body>
+			</html>
+		`,
+	};
+
+	try {
+		await transporter.sendMail(mailOptions);
+		console.log("Email verification sent to:", email);
+	} catch (error) {
+		console.error("Error sending email verification:", error);
+		throw new Error("Failed to send email verification");
+	}
+}
