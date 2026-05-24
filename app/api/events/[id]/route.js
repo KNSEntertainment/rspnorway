@@ -6,6 +6,13 @@ import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToClou
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
+const getNumberField = (formData, key) => {
+	const value = formData.get(key);
+	if (value === null || value === undefined || value === "") return 0;
+	const parsed = Number(value);
+	return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+};
+
 export const config = {
 	api: {
 		bodyParser: false,
@@ -28,7 +35,7 @@ export async function PUT(request, { params }) {
 		const urlsToDelete = [];
 
 		const eventData = {};
-		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime"];
+		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime", "practicalInfo"];
 		for (const key of textKeys) {
 			if (formData.has(key)) {
 				const value = formData.get(key);
@@ -37,6 +44,16 @@ export async function PUT(request, { params }) {
 				} else if (value !== null && value !== undefined) {
 					eventData[key] = String(value);
 				}
+			}
+		}
+		for (const key of ["price", "childPrice", "maximumSeats"]) {
+			if (formData.has(key)) {
+				eventData[key] = getNumberField(formData, key);
+			}
+		}
+		for (const key of ["registrationEnabled", "paymentCollectionEnabled"]) {
+			if (formData.has(key)) {
+				eventData[key] = formData.get(key) !== "false";
 			}
 		}
 

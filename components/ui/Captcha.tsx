@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "./button";
 
 interface CaptchaProps {
@@ -14,6 +14,16 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 	const [captchaSvg, setCaptchaSvg] = useState("");
 	const [isVerified, setIsVerified] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	
+	// Use refs to prevent stale closures and infinite re-renders
+	const onVerifyRef = useRef(onVerify);
+	const onErrorRef = useRef(onError);
+	
+	// Update refs when props change
+	useEffect(() => {
+		onVerifyRef.current = onVerify;
+		onErrorRef.current = onError;
+	});
 
 	// Fetch new captcha from server
 	const fetchCaptcha = useCallback(async () => {
@@ -36,14 +46,14 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 			setCaptchaId(newCaptchaId);
 			setUserInput("");
 			setIsVerified(false);
-			onVerify(false, newCaptchaId);
+			onVerifyRef.current(false, newCaptchaId);
 		} catch (error) {
 			console.error('Captcha fetch error:', error);
-			onError?.('Failed to load captcha');
+			onErrorRef.current?.('Failed to load captcha');
 		} finally {
 			setIsLoading(false);
 		}
-	}, [onVerify, onError]);
+	}, []); // Empty dependency array - fetchCaptcha never changes
 
 	// Initialize captcha on mount
 	useEffect(() => {
@@ -59,7 +69,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 	const validateCaptcha = async (value: string) => {
 		if (!captchaId || value.length !== 6) {
 			setIsVerified(false);
-			onVerify(false, captchaId);
+			onVerifyRef.current(false, captchaId);
 			return;
 		}
 
@@ -79,17 +89,17 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 
 			if (response.ok) {
 				setIsVerified(result.valid);
-				onVerify(result.valid, captchaId);
+				onVerifyRef.current(result.valid, captchaId);
 			} else {
 				setIsVerified(false);
-				onVerify(false, captchaId);
-				onError?.(result.error || 'Validation failed');
+				onVerifyRef.current(false, captchaId);
+				onErrorRef.current?.(result.error || 'Validation failed');
 			}
 		} catch (error) {
 			console.error('Captcha validation error:', error);
 			setIsVerified(false);
-			onVerify(false, captchaId);
-			onError?.('Failed to validate captcha');
+			onVerifyRef.current(false, captchaId);
+			onErrorRef.current?.('Failed to validate captcha');
 		}
 	};
 
@@ -102,7 +112,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 			validateCaptcha(value);
 		} else {
 			setIsVerified(false);
-			onVerify(false, captchaId);
+			onVerifyRef.current(false, captchaId);
 		}
 	};
 

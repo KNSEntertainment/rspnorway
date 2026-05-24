@@ -15,6 +15,12 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 		eventposter2: null,
 		eventposter3: null,
 		eventvideo: null,
+		price: "",
+		childPrice: "",
+		maximumSeats: "",
+		registrationEnabled: true,
+		paymentCollectionEnabled: true,
+		practicalInfo: "",
 		removeEventPoster2: false,
 		removeEventPoster3: false,
 	});
@@ -24,7 +30,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 	useEffect(() => {
 		if (eventToEdit) {
 			const eventDateValue = eventToEdit.eventdate ? String(eventToEdit.eventdate).split("T")[0] : "";
-			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime"];
+			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime", "price", "childPrice", "maximumSeats", "practicalInfo"];
 			const sanitizedStrings = stringKeys.reduce((acc, key) => {
 				acc[key] = toSafeString(eventToEdit[key]);
 				return acc;
@@ -37,6 +43,8 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 				eventposter2: null,
 				eventposter3: null,
 				eventvideo: null,
+				registrationEnabled: eventToEdit.registrationEnabled !== false,
+				paymentCollectionEnabled: eventToEdit.paymentCollectionEnabled !== false,
 				removeEventPoster2: false,
 				removeEventPoster3: false,
 			}));
@@ -53,7 +61,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 			const payload = { ...formData };
 			Object.keys(payload).forEach((key) => {
 				if (key === "removeEventPoster2" || key === "removeEventPoster3") return;
-				if (payload[key]) {
+				if (payload[key] !== null && payload[key] !== undefined && payload[key] !== "") {
 					form.append(key, payload[key]);
 				}
 			});
@@ -88,6 +96,12 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 					eventposter2: null,
 					eventposter3: null,
 					eventvideo: null,
+					price: "",
+					childPrice: "",
+					maximumSeats: "",
+					registrationEnabled: true,
+					paymentCollectionEnabled: true,
+					practicalInfo: "",
 					removeEventPoster2: false,
 					removeEventPoster3: false,
 				});
@@ -154,6 +168,38 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 					</label>
 					<input type="text" id="eventtime" value={formData.eventtime} onChange={(e) => setFormData({ ...formData, eventtime: e.target.value })} className="w-full p-2 border rounded" />
 				</div>
+				<div>
+					<label htmlFor="price" className="block mb-2 font-bold">
+						Adult Ticket Price (NOK)
+					</label>
+					<input type="number" min="0" id="price" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="childPrice" className="block mb-2 font-bold">
+						Child Ticket Price (NOK)
+					</label>
+					<input type="number" min="0" id="childPrice" value={formData.childPrice} onChange={(e) => setFormData({ ...formData, childPrice: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="maximumSeats" className="block mb-2 font-bold">
+						Maximum Ticket Seats
+					</label>
+					<input type="number" min="0" id="maximumSeats" value={formData.maximumSeats} onChange={(e) => setFormData({ ...formData, maximumSeats: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="practicalInfo" className="block mb-2 font-bold">
+						Practical Information
+					</label>
+					<textarea id="practicalInfo" value={formData.practicalInfo} onChange={(e) => setFormData({ ...formData, practicalInfo: e.target.value })} className="w-full p-2 border rounded" rows={1} />
+				</div>
+				<label className="flex items-center gap-2 font-bold">
+					<input type="checkbox" checked={formData.registrationEnabled} onChange={(e) => setFormData({ ...formData, registrationEnabled: e.target.checked })} />
+					Enable Event Registration
+				</label>
+				<label className="flex items-center gap-2 font-bold">
+					<input type="checkbox" checked={formData.paymentCollectionEnabled} onChange={(e) => setFormData({ ...formData, paymentCollectionEnabled: e.target.checked })} />
+					Enable Payment Collection
+				</label>
 
 				<div>
 					<label htmlFor="eventposter" className="block mb-2 font-bold">

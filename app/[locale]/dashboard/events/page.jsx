@@ -65,7 +65,7 @@ export default function EventsPage() {
 				</div>
 			)}
 			<div className="bg-white rounded-lg shadow overflow-x-auto">
-				<Table className="min-w-[700px]">
+				<Table className="min-w-[1000px]">
 					<TableHeader>
 						<TableRow>
 							<TableHead>Event Name</TableHead>
@@ -73,6 +73,9 @@ export default function EventsPage() {
 							<TableHead>Event Venue</TableHead>
 							<TableHead>Event Date</TableHead>
 							<TableHead>Event Time</TableHead>
+							<TableHead>Tickets</TableHead>
+							<TableHead>Seats</TableHead>
+							<TableHead>Collection</TableHead>
 							<TableHead>Poster</TableHead>
 							<TableHead>Actions</TableHead>
 						</TableRow>
@@ -86,6 +89,9 @@ export default function EventsPage() {
 									<TableCell>{event.eventvenue}</TableCell>
 									<TableCell className="w-24">{event.eventdate}</TableCell>
 									<TableCell className="w-28">{event.eventtime}</TableCell>
+									<TableCell className="w-32">Adult: NOK {event.price || 0}<br />Child: NOK {event.childPrice || 0}</TableCell>
+									<TableCell className="w-28">{event.registeredSeats || 0}{event.maximumSeats ? ` / ${event.maximumSeats}` : ""}</TableCell>
+									<TableCell className="w-28">NOK {event.totalCollection || 0}</TableCell>
 									<TableCell>
 										<Image src={event.eventposterUrl || "/ghanti.png"} width={100} height={100} alt={event.eventname || "alt"} className="w-16 h-20 object-cover rounded" />
 									</TableCell>
@@ -103,7 +109,7 @@ export default function EventsPage() {
 							))
 						) : (
 							<TableRow>
-								<TableCell colSpan={7} className="text-center">
+								<TableCell colSpan={10} className="text-center">
 									No events found.
 								</TableCell>
 							</TableRow>

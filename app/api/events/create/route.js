@@ -3,6 +3,13 @@ import connectDB from "@/lib/mongodb";
 import Event from "@/models/Event.Model";
 import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
+const getNumberField = (formData, key) => {
+	const value = formData.get(key);
+	if (value === null || value === undefined || value === "") return 0;
+	const parsed = Number(value);
+	return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+};
+
 export const config = {
 	api: {
 		bodyParser: false,
@@ -20,6 +27,12 @@ export async function POST(request) {
 		const eventvenue = formData.get("eventvenue");
 		const eventdate = formData.get("eventdate");
 		const eventtime = formData.get("eventtime");
+		const price = getNumberField(formData, "price");
+		const childPrice = getNumberField(formData, "childPrice");
+		const maximumSeats = getNumberField(formData, "maximumSeats");
+		const registrationEnabled = formData.get("registrationEnabled") !== "false";
+		const paymentCollectionEnabled = formData.get("paymentCollectionEnabled") !== "false";
+		const practicalInfo = formData.get("practicalInfo") || "";
 		const eventposter = formData.get("eventposter");
 		if (!eventposter || typeof eventposter.arrayBuffer !== "function") {
 			return NextResponse.json({ success: false, error: "Invalid file upload for eventposter" }, { status: 400 });
@@ -55,6 +68,12 @@ export async function POST(request) {
 			eventposter2Url,
 			eventposter3Url,
 			eventvideoUrl,
+			price,
+			childPrice,
+			maximumSeats,
+			registrationEnabled,
+			paymentCollectionEnabled,
+			practicalInfo,
 		});
 		console.log("Event created successfully:", event);
 
