@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Loader2 } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
@@ -26,6 +26,7 @@ interface DonationModalProps {
 }
 
 export default function DonationModal({ isOpen, onClose, cause, onDonationSuccess }: DonationModalProps) {
+	const { toast } = useToast();
 	const t = useTranslations("donation");
 	const [amount, setAmount] = useState<number>(500);
 	const [customAmount, setCustomAmount] = useState<string>("500");
@@ -79,7 +80,11 @@ export default function DonationModal({ isOpen, onClose, cause, onDonationSucces
 		e.preventDefault();
 
 		if (amount < 50) {
-			toast.error("Minimum donation amount is 50 NOK");
+			toast({
+				title: "Error",
+				description: "Minimum donation amount is 50 NOK",
+				variant: "destructive"
+			});
 			return;
 		}
 
@@ -128,7 +133,11 @@ export default function DonationModal({ isOpen, onClose, cause, onDonationSucces
 			} catch (error) {
 				console.error("Vipps donation error:", error);
 				setLoading(false);
-				toast(error instanceof Error ? error.message : "Error processing donation");
+				toast({
+					title: "Error",
+					description: error instanceof Error ? error.message : "Error processing donation",
+					variant: "destructive"
+				});
 			}
 			return;
 		}
@@ -161,7 +170,11 @@ export default function DonationModal({ isOpen, onClose, cause, onDonationSucces
 			window.location.href = data.url;
 		} catch (error) {
 			console.error("Donation error:", error);
-			toast(error instanceof Error ? error.message : "Error processing donation");
+			toast({
+				title: "Error",
+				description: error instanceof Error ? error.message : "Error processing donation",
+				variant: "destructive"
+			});
 			setLoading(false);
 		}
 	};

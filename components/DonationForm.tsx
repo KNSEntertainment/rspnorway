@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { toast } from "react-hot-toast";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
 
 export default function DonationForm() {
+	const { toast } = useToast();
 	const t = useTranslations("donation");
 	const { data: session } = useSession();
 	const [amount, setAmount] = useState<number>(500);
@@ -61,7 +62,11 @@ export default function DonationForm() {
 		e.preventDefault();
 
 		if (amount < 50) {
-			toast.error("Minimum donation amount is 50 NOK");
+			toast({
+				title: "Error",
+				description: "Minimum donation amount is 50 NOK",
+				variant: "destructive"
+			});
 			return;
 		}
 
@@ -111,7 +116,11 @@ export default function DonationForm() {
 			} catch (error) {
 				console.error("Vipps donation error:", error);
 				setLoading(false);
-				toast.error(error instanceof Error ? error.message : "Error processing donation");
+				toast({
+					title: "Error",
+					description: error instanceof Error ? error.message : "Error processing donation",
+					variant: "destructive"
+				});
 			}
 			return;
 		}
@@ -144,7 +153,11 @@ export default function DonationForm() {
 			window.location.href = data.url;
 		} catch (error) {
 			console.error("Donation error:", error);
-			toast.error(error instanceof Error ? error.message : "Error processing donation");
+			toast({
+				title: "Error",
+				description: error instanceof Error ? error.message : "Error processing donation",
+				variant: "destructive"
+			});
 			setLoading(false);
 		}
 	};
