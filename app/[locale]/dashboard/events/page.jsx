@@ -26,13 +26,20 @@ export default function EventsPage() {
 			try {
 				const response = await fetch(`/api/events/${id}`, {
 					method: "DELETE",
+					credentials: "include",
 				});
+				
+				const data = await response.json();
+				
 				if (!response.ok) {
-					throw new Error("Failed to delete event");
+					throw new Error(data.error || "Failed to delete event");
 				}
+				
+				alert("Event deleted successfully!");
 				mutate();
 			} catch (error) {
 				console.error("Error deleting event:", error);
+				alert(`Error: ${error.message}`);
 			}
 		}
 	};
@@ -89,7 +96,7 @@ export default function EventsPage() {
 									<TableCell>{event.eventvenue}</TableCell>
 									<TableCell className="w-24">{event.eventdate}</TableCell>
 									<TableCell className="w-28">{event.eventtime}</TableCell>
-									<TableCell className="w-32">Adult: NOK {event.price || 0}<br />Child: NOK {event.childPrice || 0}</TableCell>
+									<TableCell className="w-32">Adult: NOK {event.price || 0}<br />Student: NOK {event.studentPrice || 0}</TableCell>
 									<TableCell className="w-28">{event.registeredSeats || 0}{event.maximumSeats ? ` / ${event.maximumSeats}` : ""}</TableCell>
 									<TableCell className="w-28">NOK {event.totalCollection || 0}</TableCell>
 									<TableCell>

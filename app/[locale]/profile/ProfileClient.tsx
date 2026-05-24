@@ -148,7 +148,7 @@ export default function ProfileClient({ translations: t }: Props) {
 		}, 5000); // 5 second timeout
 
 		return () => clearTimeout(loadingTimeout);
-	}, [status, session?.user?.email, session?.user?.role, router]);
+	}, [status, session, router]);
 
 	const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -292,57 +292,82 @@ export default function ProfileClient({ translations: t }: Props) {
 	};
 
 	return (
-			<div className="max-w-4xl mx-auto space-y-6">
-			<div className="mb-8">
+			<div className="max-w-6xl mx-auto">
 				{/* Header */}
 				<div className="mb-8">
 					<h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{t.title}</h1>
+					<p className="text-gray-600">View and manage your profile information</p>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					{/* Profile Card */}
-					<Card className="md:col-span-1 shadow-lg border-0">
-						<CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+				<div className="flex flex-col lg:flex-row gap-6">
+					{/* Left Sidebar - Profile Photo */}
+					<Card className="lg:w-80 shadow-lg border-0">
+						<CardContent className="p-6">
 							<div className="flex flex-col items-center">
-								<div className="relative w-24 h-24 rounded-full bg-white/20 flex items-center justify-center mb-4 group">
-									{profilePhoto ? <Image src={profilePhoto} alt="Profile" width={96} height={96} className="w-24 h-24 rounded-full object-cover" /> : <User className="w-12 h-12 text-white" />}
-									<button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-not-allowed">
-										{uploading ? <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div> : <Camera className="w-6 h-6 text-white" />}
+								<div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-brand to-blue-600 flex items-center justify-center mb-4 group">
+									{profilePhoto ? (
+										<Image src={profilePhoto} alt="Profile" width={128} height={128} className="w-32 h-32 rounded-full object-cover" />
+									) : (
+										<User className="w-16 h-16 text-white" />
+									)}
+									<button 
+										onClick={() => fileInputRef.current?.click()} 
+										disabled={uploading} 
+										className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-not-allowed"
+									>
+										{uploading ? (
+											<div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+										) : (
+											<Camera className="w-8 h-8 text-white" />
+										)}
 									</button>
 									<input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
 								</div>
-								<CardTitle className="text-center text-xl">{session.user.fullName}</CardTitle>
-								<Badge variant="secondary" className="mt-2">
+								
+								<h2 className="text-xl font-bold text-gray-900 text-center mb-2">{session.user.fullName}</h2>
+								<Badge variant="secondary" className="mb-4">
 									<Shield className="w-3 h-3 mr-1" />
 									{session.user.role === "admin" ? t.admin : t.member}
 								</Badge>
+								
+								<div className="w-full space-y-3">
+									<Button 
+										onClick={() => fileInputRef.current?.click()} 
+										disabled={uploading} 
+										variant="outline" 
+										className="w-full"
+									>
+										<Upload className="w-4 h-4 mr-2" />
+										{uploading ? "Uploading..." : "Change Photo"}
+									</Button>
+									
+									<div className="text-xs text-gray-900 text-center space-y-1">
+										<p>Maximum file size: 300KB</p>
+										{selectedFileName && selectedFileSize && (
+											<p className="text-brand font-medium">
+												Selected: {selectedFileName} ({Math.round(selectedFileSize / 1024)}KB)
+											</p>
+										)}
+									</div>
+									
+									<Button 
+										onClick={() => router.push(`/${locale}/profile/settings`)} 
+										variant="outline" 
+										className="w-full"
+									>
+										<Settings className="w-4 h-4 mr-2" />
+										Settings
+									</Button>
+								</div>
 							</div>
-						</CardHeader>
-						<CardContent className="pt-6 space-y-3">
-							<Button onClick={() => fileInputRef.current?.click()} disabled={uploading} variant="outline" className="w-full">
-								<Upload className="w-4 h-4 mr-2" />
-								{uploading ? "Uploading..." : "Upload Photo"}
-							</Button>
-						
-							<div className="text-xs text-gray-900 text-center space-y-1">
-								<p>Maximum file size: 300KB</p>
-								{selectedFileName && selectedFileSize && (
-									<p className="text-brand font-medium">
-										Selected: {selectedFileName} ({Math.round(selectedFileSize / 1024)}KB)
-									</p>
-								)}
-							</div>
-						
-								<Button onClick={() => router.push(`/${locale}/profile/settings`)} variant="outline" className="w-full">
-							<Settings className="w-4 h-4 mr-2" />
-							Settings
-						</Button>
 						</CardContent>
 					</Card>
 
-					{/* Personal Information */}
-					<Card className="md:col-span-2 shadow-lg border-0">
-						<CardHeader>
+					{/* Main Content Area */}
+					<div className="flex-1 space-y-6">
+						{/* Personal Information */}
+						<Card className="shadow-lg border-0">
+							<CardHeader>
 							<CardTitle className="flex items-center text-2xl">
 								<User className="w-6 h-6 mr-2 text-brand" />
 								{t.personalInfo}
@@ -557,8 +582,6 @@ export default function ProfileClient({ translations: t }: Props) {
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
-
-	
-		</div>
+				</div>
 	);
 }

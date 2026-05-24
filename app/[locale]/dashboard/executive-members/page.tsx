@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Edit, Trash2, Mail, Phone } from "lucide-react";
-import ExecutiveMemberForm from "@/components/ExecutiveMemberForm";
+import { Trash2, Mail, Phone, Upload } from "lucide-react";
+import ExecutiveMemberBulkUpload from "@/components/ExecutiveMemberBulkUpload";
 import Image from "next/image";
 
 interface Member {
@@ -19,8 +19,7 @@ interface Member {
 export default function ExecutiveMembersAdmin() {
 	const [members, setMembers] = useState<Member[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [showModal, setShowModal] = useState(false);
-	const [memberToEdit, setMemberToEdit] = useState<Member | null>(null);
+	const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
 
 	useEffect(() => {
 		fetchMembers();
@@ -38,14 +37,8 @@ export default function ExecutiveMembersAdmin() {
 		}
 	};
 
-	const handleAddMember = () => {
-		setMemberToEdit(null);
-		setShowModal(!showModal);
-	};
-
-	const handleEditMember = (member: Member) => {
-		setMemberToEdit(member);
-		setShowModal(true);
+	const handleBulkUpload = () => {
+		setShowBulkUploadModal(!showBulkUploadModal);
 	};
 
 	const handleDeleteMember = async (id: string) => {
@@ -64,9 +57,8 @@ export default function ExecutiveMembersAdmin() {
 		}
 	};
 
-	const handleCloseModal = () => {
-		setShowModal(false);
-		setMemberToEdit(null);
+	const handleCloseBulkUploadModal = () => {
+		setShowBulkUploadModal(false);
 		fetchMembers();
 	};
 
@@ -85,24 +77,24 @@ export default function ExecutiveMembersAdmin() {
 					<h1 className="text-3xl font-bold text-gray-900">Executive Members</h1>
 					<p className="text-gray-900 mt-1">Manage organization leadership</p>
 				</div>
-				<Button onClick={handleAddMember} className="bg-brand hover:bg-brand/90">
-					{showModal ? (
+				<Button onClick={handleBulkUpload} className="bg-brand hover:bg-brand/90">
+					{showBulkUploadModal ? (
 						"Cancel"
 					) : (
 						<>
-							<Plus className="w-4 h-4 mr-2" />
-							Add Member
+							<Upload className="w-4 h-4 mr-2" />
+							Bulk Upload Members
 						</>
 					)}
 				</Button>
 			</div>
 
-			{/* Inline Form Section */}
-			{showModal && (
-				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-2xl font-bold text-gray-900 mb-4">{memberToEdit ? "Edit Member" : "Add New Member"}</h2>
-					<ExecutiveMemberForm handleCloseModal={handleCloseModal} memberToEdit={memberToEdit as unknown as null} />
-				</div>
+			{/* Bulk Upload Section */}
+			{showBulkUploadModal && (
+				<ExecutiveMemberBulkUpload 
+					onClose={handleCloseBulkUploadModal} 
+					onSuccess={fetchMembers} 
+				/>
 			)}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,11 +126,7 @@ export default function ExecutiveMembersAdmin() {
 							</div>
 
 							<div className="flex gap-2 pt-4 border-t border-neutral-100">
-								<Button variant="outline" size="sm" onClick={() => handleEditMember(member)} className="flex-1">
-									<Edit className="w-4 h-4 mr-1" />
-									Edit
-								</Button>
-								<Button variant="outline" size="sm" onClick={() => handleDeleteMember(member._id)} className="text-red-600 hover:text-red-600 hover:bg-red-50">
+								<Button variant="outline" size="sm" onClick={() => handleDeleteMember(member._id)} className="text-red-600 hover:text-red-600 hover:bg-red-50 flex-1">
 									<Trash2 className="w-4 h-4 mr-1" />
 									Delete
 								</Button>
@@ -151,9 +139,9 @@ export default function ExecutiveMembersAdmin() {
 			{members.length === 0 && (
 				<div className="text-center py-12">
 					<p className="text-gray-900 text-lg mb-4">No executive members added yet.</p>
-					<Button onClick={handleAddMember} className="bg-brand hover:bg-brand/90">
-						<Plus className="w-4 h-4 mr-2" />
-						Add Your First Member
+					<Button onClick={handleBulkUpload} className="bg-brand hover:bg-brand/90">
+						<Upload className="w-4 h-4 mr-2" />
+						Bulk Upload Members
 					</Button>
 				</div>
 			)}

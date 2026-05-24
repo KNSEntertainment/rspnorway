@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,32 +26,38 @@ interface Donation {
 
 export default function MyDonations() {
   const { data: session } = useSession();
+  const params = useParams();
+  const locale = params.locale as string;
   const [donations, setDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [totalDonations, setTotalDonations] = useState(0);
-
-  const fetchDonations = async () => {
-    if (!session?.user?.email) return;
-
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/donations/my-donations?email=${encodeURIComponent(session.user.email)}`);
-      if (response.ok) {
-        const data = await response.json();
-        setDonations(data.donations || []);
-        setTotalDonations(data.totalAmount || 0);
-      }
-    } catch (error) {
-      console.error("Failed to fetch donations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchedEmailRef = useRef<string | null>(null);
 
   useEffect(() => {
-    fetchDonations();
-  }, [session, fetchDonations]);
+    const email = session?.user?.email;
+    if (email && email !== fetchedEmailRef.current) {
+      fetchedEmailRef.current = email;
+      
+      const fetchDonations = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/donations/my-donations?email=${encodeURIComponent(email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setDonations(data.donations || []);
+            setTotalDonations(data.totalAmount || 0);
+          }
+        } catch (error) {
+          console.error("Failed to fetch donations:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchDonations();
+    }
+  }, [session?.user?.email]);
 
   const filteredDonations = donations.filter(donation =>
     donation.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -192,7 +199,7 @@ export default function MyDonations() {
               </p>
               {!searchTerm && (
                 <Button className="mt-4" asChild>
-                  <Link href="/donate">Make Your First Donation</Link>
+                  <Link href={`/${locale}/donate`}>Make Your First Donation</Link>
                 </Button>
               )}
             </div>

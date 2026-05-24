@@ -20,7 +20,7 @@ interface Event {
   eventdescription?: string;
   eventposterUrl?: string;
   price?: number;
-  childPrice?: number;
+  studentPrice?: number;
   maximumSeats?: number;
   registeredSeats?: number;
   registrationEnabled?: boolean;
@@ -44,14 +44,14 @@ interface RegistrationData {
   specialRequests?: string;
 }
 
-const extractPriceFromDescription = (description: string | undefined, type: 'adult' | 'child') => {
+const extractPriceFromDescription = (description: string | undefined, type: 'adult' | 'student') => {
   if (!description) return 0;
   
   console.log("[EventRegistrationModal] Extracting price from description:", { description, type });
   
   // Look for price patterns in description
   const patterns = {
-    child: [/student.*?(\d+)\s*nok/i, /child.*?(\d+)\s*nok/i, /barn.*?(\d+)\s*nok/i],
+    student: [/student.*?(\d+)\s*nok/i, /child.*?(\d+)\s*nok/i, /barn.*?(\d+)\s*nok/i],
     adult: [/standard.*?(\d+)\s*nok/i, /adult.*?(\d+)\s*nok/i, /voksen.*?(\d+)\s*nok/i]
   };
   
@@ -68,7 +68,7 @@ const extractPriceFromDescription = (description: string | undefined, type: 'adu
   return 0;
 };
 
-const getTicketPrice = (value: number | undefined, description?: string, type?: 'adult' | 'child') => {
+const getTicketPrice = (value: number | undefined, description?: string, type?: 'adult' | 'student') => {
   // If database value exists and is not 0, use it
   if (value !== undefined && value !== null && value > 0) {
     console.log("[EventRegistrationModal] Using database price:", { value });
@@ -111,7 +111,7 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
         eventName: event.eventname,
         eventdescription: event.eventdescription,
         price: event.price,
-        childPrice: event.childPrice,
+        studentPrice: event.studentPrice,
         paymentCollectionEnabled: event.paymentCollectionEnabled,
       });
     }
@@ -133,22 +133,22 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
   const calculateTotal = () => {
     if (!event) return 0;
     const adultPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.price, event.eventdescription, 'adult');
-    const childPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.childPrice, event.eventdescription, 'child');
+    const studentPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.studentPrice, event.eventdescription, 'student');
     console.log("[EventRegistrationModal] calculateTotal:", {
       eventId: event._id,
       eventName: event.eventname,
       rawPrice: event.price,
-      rawChildPrice: event.childPrice,
+      rawStudentPrice: event.studentPrice,
       paymentCollectionEnabled: event.paymentCollectionEnabled,
       adultPrice,
-      childPrice,
+      studentPrice,
       adults: registrationData.adults,
       children: registrationData.children,
     });
     
     const adultTotal = (registrationData.adults || 0) * adultPrice;
-    const childTotal = (registrationData.children || 0) * childPrice;
-    return adultTotal + childTotal;
+    const studentTotal = (registrationData.children || 0) * studentPrice;
+    return adultTotal + studentTotal;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -214,6 +214,24 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
   const seatsRemaining = maximumSeats > 0 ? Math.max(maximumSeats - registeredSeats, 0) : null;
 
   if (!isOpen) return null;
+
+  // If event is in the past, show completed message
+  if (isEventPast) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-8 h-8 text-gray-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Event Completed</h3>
+          <p className="text-gray-600 mb-6">This event has already taken place.</p>
+          <Button onClick={onClose} className="w-full">
+            Close
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -348,7 +366,7 @@ function EventDetailsStep({ event, onNext, disabled, seatsRemaining }: { event: 
             </div>
           </div>
           
-          {event.paymentCollectionEnabled !== false && (event.price !== undefined || event.childPrice !== undefined) && (
+          {event.paymentCollectionEnabled !== false && (event.price !== undefined || event.studentPrice !== undefined) && (
             <div className="bg-gray-50 rounded-lg p-4">
               <h4 className="font-semibold text-gray-900 mb-2">Pricing</h4>
               {event.price !== undefined && (
@@ -357,10 +375,10 @@ function EventDetailsStep({ event, onNext, disabled, seatsRemaining }: { event: 
                   <span className="font-medium">NOK {getTicketPrice(event.price, event.eventdescription, 'adult')}</span>
                 </div>
               )}
-              {event.childPrice !== undefined && (
+              {event.studentPrice !== undefined && (
                 <div className="flex justify-between text-sm">
-                  <span>Children</span>
-                  <span className="font-medium">NOK {getTicketPrice(event.childPrice, event.eventdescription, 'child')}</span>
+                  <span>Students</span>
+                  <span className="font-medium">NOK {getTicketPrice(event.studentPrice, event.eventdescription, 'student')}</span>
                 </div>
               )}
             </div>
@@ -528,7 +546,7 @@ function AttendeeInfoStep({
             )}
           </div>
           <div>
-            <Label htmlFor="children">Children</Label>
+            <Label htmlFor="children">Students</Label>
             <Select value={data.children.toString()} onValueChange={(value) => updateData("children", parseInt(value))}>
               <SelectTrigger>
                 <SelectValue />
@@ -536,7 +554,7 @@ function AttendeeInfoStep({
               <SelectContent>
                 {[0, 1, 2, 3, 4, 5, 6].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
-                    {num} {num === 1 ? "Child" : "Children"}
+                    {num} {num === 1 ? "Student" : "Students"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -586,20 +604,20 @@ function PaymentStep({
   if (!event) return null;
   
   const adultPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.price, event.eventdescription, 'adult');
-  const childPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.childPrice, event.eventdescription, 'child');
+  const studentPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.studentPrice, event.eventdescription, 'student');
   console.log("[EventRegistrationModal] PaymentStep price values:", {
     eventId: event._id,
     eventName: event.eventname,
     rawPrice: event.price,
-    rawChildPrice: event.childPrice,
+    rawStudentPrice: event.studentPrice,
     paymentCollectionEnabled: event.paymentCollectionEnabled,
     adultPrice,
-    childPrice,
+    studentPrice,
   });
   
   const adultTotal = (data.adults || 0) * adultPrice;
-  const childTotal = (data.children || 0) * childPrice;
-  const totalAmount = adultTotal + childTotal;
+  const studentTotal = (data.children || 0) * studentPrice;
+  const totalAmount = adultTotal + studentTotal;
 
   return (
     <div className="space-y-6">
@@ -630,13 +648,13 @@ function PaymentStep({
                   )}
                   {data.children > 0 && (
                     <div className="flex justify-between text-sm text-gray-600">
-                      <span>{data.children} Child{data.children > 1 ? "ren" : ""} × NOK {childPrice}</span>
-                      <span>NOK {childTotal}</span>
+                      <span>{data.children} Student{data.children > 1 ? "s" : ""} × NOK {studentPrice}</span>
+                      <span>NOK {studentTotal}</span>
                     </div>
                   )}
                   {data.children > 0 && (
                     <div className="text-xs text-red-600">
-                      DEBUG: childPrice={childPrice}, childTotal={childTotal}, rawChildPrice={event.childPrice}
+                      DEBUG: studentPrice={studentPrice}, studentTotal={studentTotal}, rawStudentPrice={event.studentPrice}
                     </div>
                   )}
                 </div>

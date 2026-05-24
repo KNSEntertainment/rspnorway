@@ -1,4 +1,4 @@
-import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Video, FileText, Bell, Layers, Users, Mail, DollarSign, Image, Heart, HandHelping, Send, LucideIcon } from "lucide-react";
+import { BookImage, Settings, GalleryThumbnails, LayoutDashboard, Book, Newspaper, User, Download, Video, FileText, Bell, Layers, Users, Mail, DollarSign, Image, Heart, HandHelping, Send, TrendingUp, LucideIcon } from "lucide-react";
 
 export interface MenuItem {
 	id: string;
@@ -16,6 +16,7 @@ export const menuItems: MenuItem[] = [
 	{ id: "circulars", label: "Circulars", icon: FileText, color: "bg-teal-600", href: "/en/dashboard/circulars" },
 	{ id: "departments", label: "Departments", icon: Layers, color: "bg-indigo-600", href: "/en/dashboard/departments" },
 	{ id: "donations", label: "Donations", icon: DollarSign, color: "bg-green-600", href: "/en/dashboard/donations" },
+	{ id: "finances", label: "Financial Analytics", icon: TrendingUp, color: "bg-emerald-600", href: "/en/dashboard/finances" },
 	{ id: "downloads", label: "Downloads", icon: Download, color: "bg-rose-600", href: "/en/dashboard/downloads" },
 	{ id: "events", label: "Events", icon: BookImage, color: "bg-pink-600", href: "/en/dashboard/events" },
 	{ id: "executive-members", label: "Executive Members", icon: Users, color: "bg-cyan-600", href: "/en/dashboard/executive-members" },

@@ -5,11 +5,12 @@ import useFetchData from "@/hooks/useFetchData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X, Edit } from "lucide-react";
+import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X, Edit, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Membership } from "@/types";
+import MembershipBulkUpload from "@/components/MembershipBulkUpload";
 
 export default function MembershipsPage() {
 	const [search, setSearch] = useState("");
@@ -21,6 +22,7 @@ export default function MembershipsPage() {
 	const [viewingMember, setViewingMember] = useState<Membership | null>(null);
 	const [editingMember, setEditingMember] = useState<Membership | null>(null);
 	const [editFormData, setEditFormData] = useState<Partial<Membership>>({});
+	const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
 	const MEMBERS_PER_PAGE = 10;
 	const { data: memberships, error, loading, mutate } = useFetchData("/api/membership", "memberships");
 	const { toast } = useToast();
@@ -270,6 +272,15 @@ export default function MembershipsPage() {
 		mutate();
 	};
 
+	const handleBulkUpload = () => {
+		setShowBulkUploadModal(!showBulkUploadModal);
+	};
+
+	const handleCloseBulkUploadModal = () => {
+		setShowBulkUploadModal(false);
+		mutate();
+	};
+
 	const handlePageChange = (page: number) => {
 		if (page >= 1 && page <= totalPages) setCurrentPage(page);
 	};
@@ -312,7 +323,27 @@ export default function MembershipsPage() {
 
 	return (
 		<div className="max-w-7xl">
-			<h1 className="text-2xl font-bold mb-6">Membership Management</h1>
+			<div className="flex justify-between items-center mb-6">
+				<h1 className="text-2xl font-bold">Membership Management</h1>
+				<Button onClick={handleBulkUpload} className="bg-brand hover:bg-brand/90">
+					{showBulkUploadModal ? (
+						"Cancel"
+					) : (
+						<>
+							<Upload className="w-4 h-4 mr-2" />
+							Bulk Upload
+						</>
+					)}
+				</Button>
+			</div>
+
+			{/* Bulk Upload Section */}
+			{showBulkUploadModal && (
+				<MembershipBulkUpload 
+					onClose={handleCloseBulkUploadModal} 
+					onSuccess={() => mutate()} 
+				/>
+			)}
 
 			{/* Filters */}
 			<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">

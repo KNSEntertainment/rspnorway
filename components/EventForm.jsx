@@ -16,7 +16,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 		eventposter3: null,
 		eventvideo: null,
 		price: "",
-		childPrice: "",
+		studentPrice: "",
 		maximumSeats: "",
 		registrationEnabled: true,
 		paymentCollectionEnabled: true,
@@ -30,7 +30,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 	useEffect(() => {
 		if (eventToEdit) {
 			const eventDateValue = eventToEdit.eventdate ? String(eventToEdit.eventdate).split("T")[0] : "";
-			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime", "price", "childPrice", "maximumSeats", "practicalInfo"];
+			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime", "price", "studentPrice", "maximumSeats", "practicalInfo"];
 			const sanitizedStrings = stringKeys.reduce((acc, key) => {
 				acc[key] = toSafeString(eventToEdit[key]);
 				return acc;
@@ -97,7 +97,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 					eventposter3: null,
 					eventvideo: null,
 					price: "",
-					childPrice: "",
+					studentPrice: "",
 					maximumSeats: "",
 					registrationEnabled: true,
 					paymentCollectionEnabled: true,
@@ -175,10 +175,10 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 					<input type="number" min="0" id="price" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} className="w-full p-2 border rounded" />
 				</div>
 				<div>
-					<label htmlFor="childPrice" className="block mb-2 font-bold">
-						Child Ticket Price (NOK)
+					<label htmlFor="studentPrice" className="block mb-2 font-bold">
+						Student Ticket Price (NOK)
 					</label>
-					<input type="number" min="0" id="childPrice" value={formData.childPrice} onChange={(e) => setFormData({ ...formData, childPrice: e.target.value })} className="w-full p-2 border rounded" />
+					<input type="number" min="0" id="studentPrice" value={formData.studentPrice} onChange={(e) => setFormData({ ...formData, studentPrice: e.target.value })} className="w-full p-2 border rounded" />
 				</div>
 				<div>
 					<label htmlFor="maximumSeats" className="block mb-2 font-bold">

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,95 +26,53 @@ interface Event {
   role?: string;
   image?: string;
   organizer?: string;
+  qrCode?: string;
+  registrationId?: string;
+  paymentStatus?: string;
+  checkedIn?: boolean;
+  totalAmount?: number;
+  price?: number;
 }
 
 export default function MyEvents() {
   const { data: session } = useSession();
+  const params = useParams();
+  const locale = params.locale as string;
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-
-  const fetchEvents = async () => {
-    if (!session?.user?.email) return;
-
-    try {
-      setLoading(true);
-      // For now, we'll create mock data. Later this will be replaced with actual API call
-      const mockEvents: Event[] = [
-        {
-          id: "1",
-          title: "Annual General Meeting 2024",
-          description: "Join us for our annual general meeting where we'll discuss the year's achievements and future plans.",
-          date: "2024-03-15",
-          time: "18:00",
-          location: "Community Center, Oslo",
-          status: "completed",
-          category: "Meeting",
-          participantCount: 45,
-          maxParticipants: 60,
-          registrationDate: "2024-02-20",
-          role: "Member",
-          organizer: "PNSB Norway"
-        },
-        {
-          id: "2",
-          title: "Cultural Festival Celebration",
-          description: "Celebrate Nepali culture with traditional music, dance, and food.",
-          date: "2024-06-20",
-          time: "14:00",
-          location: "Frogner Park, Oslo",
-          status: "upcoming",
-          category: "Cultural",
-          participantCount: 120,
-          maxParticipants: 200,
-          registrationDate: "2024-05-10",
-          role: "Volunteer",
-          organizer: "Cultural Committee"
-        },
-        {
-          id: "3",
-          title: "Charity Fundraising Dinner",
-          description: "An elegant dinner event to raise funds for our community projects.",
-          date: "2024-09-10",
-          time: "19:00",
-          location: "Grand Hotel, Oslo",
-          status: "upcoming",
-          category: "Fundraising",
-          participantCount: 30,
-          maxParticipants: 100,
-          registrationDate: "2024-08-01",
-          role: "Sponsor",
-          organizer: "Fundraising Committee"
-        },
-        {
-          id: "4",
-          title: "Sports Day 2024",
-          description: "A fun-filled day of sports activities for all ages.",
-          date: "2024-07-15",
-          time: "10:00",
-          location: "Sports Complex, Oslo",
-          status: "completed",
-          category: "Sports",
-          participantCount: 85,
-          maxParticipants: 150,
-          registrationDate: "2024-06-01",
-          role: "Participant",
-          organizer: "Sports Committee"
-        }
-      ];
-      
-      setEvents(mockEvents);
-    } catch (error) {
-      console.error("Failed to fetch events:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchedEmailRef = useRef<string | null>(null);
 
   useEffect(() => {
-    fetchEvents();
-  }, [session, fetchEvents]);
+    const email = session?.user?.email;
+    if (email && email !== fetchedEmailRef.current) {
+      fetchedEmailRef.current = email;
+      
+      const fetchEvents = async () => {
+        if (!email) return;
+
+        try {
+          setLoading(true);
+          const response = await fetch(`/api/events/my-events?email=${encodeURIComponent(email)}`);
+          if (response.ok) {
+            const data = await response.json();
+            setEvents(data.events || []);
+          } else {
+            console.error("Failed to fetch events:", response.statusText);
+            setEvents([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch events:", error);
+          setEvents([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchEvents();
+    }
+  }, [session?.user?.email]);
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -316,7 +276,7 @@ export default function MyEvents() {
               </p>
               {!searchTerm && (
                 <Button className="mt-4" asChild>
-                  <Link href="/events">Browse Events</Link>
+                  <Link href={`/${locale}/events`}>Browse Events</Link>
                 </Button>
               )}
             </div>
@@ -326,9 +286,39 @@ export default function MyEvents() {
                 <Card key={event.id} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex flex-col md:flex-row gap-6">
-                      {/* Event Image Placeholder */}
-                      <div className="w-full md:w-48 h-32 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center">
-                        {getCategoryIcon(event.category)}
+                      {/* Event Image/QR Code */}
+                      <div className="w-full md:w-48 h-40 rounded-lg overflow-hidden flex items-center justify-center bg-gray-100">
+                        {event.status === "completed" ? (
+                          // Show event image for past events
+                          event.image ? (
+                            <Image 
+                              src={event.image} 
+                              alt={event.title} 
+                              width={400}
+                              height={400}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                              {getCategoryIcon(event.category)}
+                            </div>
+                          )
+                        ) : (
+                          // Show QR code for current/future events
+                          event.qrCode ? (
+                            <Image 
+                              src={event.qrCode} 
+                              alt="Event QR Code" 
+                              width={400}
+                              height={400}
+                              className="w-full h-full object-contain bg-white p-2"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                              <span className="text-gray-500 text-xs text-center px-2">QR Code Available</span>
+                            </div>
+                          )
+                        )}
                       </div>
                       
                       {/* Event Details */}
@@ -338,20 +328,25 @@ export default function MyEvents() {
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">
                               {event.title}
                             </h3>
-                            <p className="text-gray-600 text-sm mb-3">
-                              {event.description}
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                              <Badge className={getStatusColor(event.status)}>
-                                {event.status}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              <Badge className={`${getStatusColor(event.status)} pointer-events-none`}>
+                                {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
                               </Badge>
-                              <Badge className={getRoleColor(event.role || "")}>
+                              <Badge className={`${getRoleColor(event.role || "")} pointer-events-none`}>
                                 {event.role}
                               </Badge>
-                              <Badge variant="outline">
-                                {event.category}
-                              </Badge>
                             </div>
+                            {event.totalAmount && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <span className="font-semibold text-gray-700">Cost:</span>
+                                <span className="text-emerald-600 font-bold">
+                                  {new Intl.NumberFormat("nb-NO", {
+                                    style: "currency",
+                                    currency: "NOK",
+                                  }).format(event.totalAmount)}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                         

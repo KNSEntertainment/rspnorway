@@ -17,7 +17,7 @@ interface Event {
 	eventposter2Url?: string;
 	eventposter3Url?: string;
 	price?: number;
-	childPrice?: number;
+	studentPrice?: number;
 	maximumSeats?: number;
 	registeredSeats?: number;
 	registrationEnabled?: boolean;
@@ -58,8 +58,8 @@ const formatEventDate = (dateString: string) => {
 const getPriceLines = (event: Event) => {
 	if (event.paymentCollectionEnabled === false) return [];
 	const lines = [];
-	if (Number(event.price || 0) > 0) lines.push(`Adult: NOK ${event.price}`);
-	if (Number(event.childPrice || 0) > 0) lines.push(`Child: NOK ${event.childPrice}`);
+	if (event.price !== undefined && event.price !== null) lines.push(`Adult: NOK ${event.price}`);
+	if (event.studentPrice !== undefined && event.studentPrice !== null) lines.push(`Student: NOK ${event.studentPrice}`);
 	return lines;
 };
 
@@ -79,16 +79,11 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
 
-	const isEventPast = () => {
-		// Temporarily set to false to show Register buttons for testing
-		// return new Date(eventDate).getTime() < new Date().setHours(0, 0, 0, 0);
-		return false;
+	const isEventPast = (eventDate: string) => {
+		return new Date(eventDate).getTime() < new Date().setHours(0, 0, 0, 0);
 	};
 
-	const isEventTodayOrFuture = (eventDate: string) => {
-		return new Date(eventDate).getTime() >= new Date().setHours(0, 0, 0, 0);
-	};
-
+	
 	useEffect(() => {
 		if (!initialEventId) {
 			setSelectedEvent(null);
@@ -268,7 +263,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 												.map((event) => {
 													const { day, month } = formatEventDate(event.eventdate);
 													return (
-														<div key={event._id} className="group cursor-pointer rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-lg transition-all duration-300 p-4" onClick={() => setSelectedEvent(event)}>
+														<div key={event._id} className="group cursor-pointer rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-4" onClick={() => setSelectedEvent(event)}>
 															<div className="flex gap-4">
 																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-xl p-4 text-center min-w-[80px] flex-shrink-0">
 																	<div className="text-2xl font-bold leading-none">{day}</div>
@@ -296,30 +291,49 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 										<div className="p-6">
 											<div className="space-y-4">
 												<div className="text-center">
-													<p className="text-gray-600 mb-4">
-														{isEventPast() 
-															? "This event has already taken place" 
-															: isEventTodayOrFuture(selectedEvent.eventdate) 
-																? "Register now to secure your spot!" 
-																: "Registration is open"}
-													</p>
-													{isEventPast() ? (
-														<Button 
-															disabled
-															className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-														>
-															<Users className="w-5 h-5" />
-															Completed
-														</Button>
-													) : (
-														<Button 
-															onClick={() => setRegistrationModal(selectedEvent)}
-															className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
-														>
-															<Users className="w-5 h-5" />
-															Register Now
-														</Button>
-													)}
+													{(() => {
+														// Debug log to check event properties
+														console.log("Event registration debug:", {
+															eventId: selectedEvent._id,
+															eventName: selectedEvent.eventname,
+															registrationEnabled: selectedEvent.registrationEnabled,
+															paymentCollectionEnabled: selectedEvent.paymentCollectionEnabled,
+															isPast: isEventPast(selectedEvent.eventdate),
+															eventData: selectedEvent
+														});
+														
+														if (selectedEvent.registrationEnabled === false) {
+															return (
+																<>
+																	<p className="text-gray-600 mb-4">Registration for this event is currently disabled</p>
+																	<Button 
+																		disabled
+																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																	>
+																		<Users className="w-5 h-5" />
+																		Registration Closed
+																	</Button>
+																</>
+															);
+														} else {
+															return (
+																<>
+																	<p className="text-gray-600 mb-4">
+																		{selectedEvent.paymentCollectionEnabled === false 
+																			? "Register now for this free event!" 
+																			: "Register now to secure your spot!"}
+																	</p>
+																	<Button 
+																		onClick={() => setRegistrationModal(selectedEvent)}
+																		className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+																	>
+																		<Users className="w-5 h-5" />
+																		Register Now
+																	</Button>
+																</>
+															);
+														}
+													})()}
 												</div>
 												{(selectedPriceLines.length > 0 || selectedSeatsRemaining !== null || selectedEvent.practicalInfo) && (
 													<div className="text-xs text-gray-500 text-center space-y-1">
@@ -418,7 +432,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 												
 													{/* Register Button */}
 													<div onClick={(e) => e.stopPropagation()} className="flex-1">
-														{isEventPast() ? (
+														{isEventPast(event.eventdate) ? (
 															<button
 																disabled
 																className="w-full bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"

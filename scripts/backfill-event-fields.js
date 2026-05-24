@@ -34,7 +34,7 @@ const eventSchema = new mongoose.Schema(
 		eventposter3Url: String,
 		eventvideoUrl: String,
 		price: { type: Number, default: 0 },
-		childPrice: { type: Number, default: 0 },
+		studentPrice: { type: Number, default: 0 },
 		maximumSeats: { type: Number, default: 0 },
 		registeredSeats: { type: Number, default: 0 },
 		totalRegistrations: { type: Number, default: 0 },
@@ -50,7 +50,7 @@ const Event = mongoose.models.Event || mongoose.model("Event", eventSchema);
 
 const defaultFields = {
 	price: 0,
-	childPrice: 0,
+	studentPrice: 0,
 	maximumSeats: 0,
 	registeredSeats: 0,
 	totalRegistrations: 0,

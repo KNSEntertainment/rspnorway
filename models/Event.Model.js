@@ -11,7 +11,7 @@ const eventSchema = new mongoose.Schema({
 	eventposter3Url: { type: String, required: false },
 	eventvideoUrl: { type: String, required: false },
 	price: { type: Number, required: false, min: 0, default: 0 },
-	childPrice: { type: Number, required: false, min: 0, default: 0 },
+	studentPrice: { type: Number, required: false, min: 0, default: 0 },
 	maximumSeats: { type: Number, required: false, min: 0, default: 0 },
 	registeredSeats: { type: Number, required: false, min: 0, default: 0 },
 	totalRegistrations: { type: Number, required: false, min: 0, default: 0 },

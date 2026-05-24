@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import connectDB from "@/lib/mongodb";
 import Event from "@/models/Event.Model";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
-const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 const getNumberField = (formData, key) => {
 	const value = formData.get(key);
@@ -20,7 +20,7 @@ export const config = {
 };
 
 export async function PUT(request, { params }) {
-	const { id } = params;
+	const { id } = await params;
 
 	try {
 		await connectDB();
@@ -46,7 +46,7 @@ export async function PUT(request, { params }) {
 				}
 			}
 		}
-		for (const key of ["price", "childPrice", "maximumSeats"]) {
+		for (const key of ["price", "studentPrice", "maximumSeats"]) {
 			if (formData.has(key)) {
 				eventData[key] = getNumberField(formData, key);
 			}
@@ -113,20 +113,10 @@ export async function DELETE(request, { params }) {
 	try {
 		await connectDB();
 
-		const token = request.cookies.get("authToken")?.value;
-		if (!token) {
-			return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-		}
-		let payload;
-		try {
-			const secretKey = new TextEncoder().encode(JWT_SECRET);
-			({ payload } = await jwtVerify(token, secretKey));
-		} catch {
-			return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-		}
-		const role = payload?.role;
-		if (!role || !["admin"].includes(role)) {
-			return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+		// Check authentication and admin role using NextAuth
+		const session = await getServerSession(authOptions);
+		if (!session || !session.user?.role || session.user.role !== 'admin') {
+			return NextResponse.json({ success: false, error: "Unauthorized - Admin access required" }, { status: 401 });
 		}
 
 		const event = await Event.findById(id);

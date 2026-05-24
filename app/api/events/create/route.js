@@ -28,7 +28,7 @@ export async function POST(request) {
 		const eventdate = formData.get("eventdate");
 		const eventtime = formData.get("eventtime");
 		const price = getNumberField(formData, "price");
-		const childPrice = getNumberField(formData, "childPrice");
+		const studentPrice = getNumberField(formData, "studentPrice");
 		const maximumSeats = getNumberField(formData, "maximumSeats");
 		const registrationEnabled = formData.get("registrationEnabled") !== "false";
 		const paymentCollectionEnabled = formData.get("paymentCollectionEnabled") !== "false";
@@ -69,7 +69,7 @@ export async function POST(request) {
 			eventposter3Url,
 			eventvideoUrl,
 			price,
-			childPrice,
+			studentPrice,
 			maximumSeats,
 			registrationEnabled,
 			paymentCollectionEnabled,

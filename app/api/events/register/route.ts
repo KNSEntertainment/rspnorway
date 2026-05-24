@@ -104,8 +104,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Not enough seats available for this event" }, { status: 400 });
     }
     const adultPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.price);
-    const childPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.childPrice);
-    const totalAmount = adultCount * adultPrice + childCount * childPrice;
+    const studentPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.studentPrice);
+    const totalAmount = adultCount * adultPrice + childCount * studentPrice;
 
     // Generate unique registration ID
     const timestamp = Date.now().toString(36);
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       adults: adultCount,
       children: childCount,
       adultPrice,
-      childPrice,
+      studentPrice,
       totalSeats,
       specialRequests,
       totalAmount,
