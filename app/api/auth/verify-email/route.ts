@@ -54,20 +54,22 @@ export async function POST(req: NextRequest) {
 		}
 
 		await connectDB();
-		const { email, action } = await req.json();
-
-		if (!email) {
-			return NextResponse.json({ error: "Email is required" }, { status: 400 });
-		}
+		const body = await req.json();
+		const { action, email, token } = body;
 
 		// Handle email verification request
 		if (action === "request") {
+			if (!email) {
+				return NextResponse.json({ error: "Email is required" }, { status: 400 });
+			}
 			return await handleEmailVerificationRequest(email);
 		}
 
 		// Handle email verification confirmation
 		if (action === "verify") {
-			const { token } = await req.json();
+			if (!token) {
+				return NextResponse.json({ error: "Token is required" }, { status: 400 });
+			}
 			return await handleEmailVerification(token);
 		}
 
@@ -185,15 +187,25 @@ async function handleEmailVerification(token: string) {
 	});
 
 	if (member) {
-		// Update member and clear verification token
+		// Generate password setup token
+		const setupToken = crypto.randomBytes(32).toString('hex');
+		const setupTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+		// Update member, clear verification token, and add setup token
 		await Membership.findByIdAndUpdate(member._id, {
 			emailVerified: true,
 			emailVerificationToken: undefined,
 			emailVerificationExpiry: undefined,
+			passwordSetupToken: setupToken,
+			passwordSetupTokenExpiry: setupTokenExpiry,
 		});
 
 		console.log("Email verified successfully for member:", member.email);
-		return NextResponse.json({ success: true, message: "Email verified successfully" });
+		return NextResponse.json({ 
+			success: true, 
+			message: "Email verified successfully!",
+			setupToken: setupToken
+		});
 	}
 
 	return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });

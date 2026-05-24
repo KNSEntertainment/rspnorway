@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Captcha from "@/components/ui/Captcha";
@@ -24,6 +24,7 @@ InputField.displayName = "Input_Fields_User_Auth_Form";
 
 export default function AuthFormContent() {
 	const router = useRouter();
+	const { data: session, status } = useSession();
 	const t = useTranslations("login");
 	const locale = useLocale();
 
@@ -46,6 +47,20 @@ export default function AuthFormContent() {
 	const [captchaError, setCaptchaError] = useState("");
 
 	const hasInvite = Boolean(inviteToken);
+
+	// Handle redirect when session is available
+	useEffect(() => {
+		if (status === "authenticated" && session?.user) {
+			// Redirect based on role
+			if (session.user.role === "admin") {
+				console.log("Redirecting admin to dashboard");
+				window.location.href = `/en/dashboard`;
+			} else {
+				console.log("Redirecting member to profile");
+				window.location.href = `/${locale}/profile`;
+			}
+		}
+	}, [status, session, locale]);
 
 	useEffect(() => {
 		const email = searchParams.get("email") || "";
@@ -85,20 +100,10 @@ export default function AuthFormContent() {
 		setSubmitting(false);
 
 		if (result?.ok) {
-			// Small delay to ensure session is set
-			await new Promise((resolve) => setTimeout(resolve, 100));
-
-			// Fetch session to check user role
-			const response = await fetch("/api/auth/session");
-			const session = await response.json();
-
-			// Redirect based on role
-			if (session?.user?.role === "admin") {
-				console.log("Redirecting admin to dashboard");
-				window.location.href = `/en/dashboard`;
-			} else {
-				window.location.href = `/${locale}/profile`;
-			}
+			// Session will be automatically updated by NextAuth
+			// Redirect will be handled by the useEffect hook
+			setSuccess(t("success"));
+			console.log("Login successful, waiting for session update...");
 		} else {
 			console.log("Login failed:", result?.error);
 			setError(result?.error || t("error"));

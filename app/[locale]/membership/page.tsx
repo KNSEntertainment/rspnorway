@@ -22,6 +22,7 @@ export default async function MembershipPage({ params }: { params: Promise<{ loc
 		welcome: t("welcome"),
 		welcome_msg: t("welcome_msg"),
 		submit_another: t("submit_another"),
+		go_to_homepage: t("go_to_homepage"),
 		title: t("title"),
 		subtitle: t("subtitle"),
 		personal_info: t("personal_info"),

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import nepalLocationsData from "@/lib/data/nepal-locations.json";
 import Captcha from "@/components/ui/Captcha";
+import { X } from "lucide-react";
 
 interface District {
 	id: string;
@@ -14,6 +15,7 @@ interface Translations {
 	welcome: string;
 	welcome_msg: string;
 	submit_another: string;
+	go_to_homepage: string;
 	title: string;
 	subtitle: string;
 	personal_info: string;
@@ -434,7 +436,16 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	if (submitted) {
 		return (
 			<div className="bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center min-h-screen justify-center p-4">
-				<div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
+				<div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center relative">
+					{/* Close Icon */}
+					<button 
+						onClick={() => setSubmitted(false)} 
+						className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+						aria-label="Close modal"
+					>
+						<X className="w-6 h-6" />
+					</button>
+					
 					<div className="w-20 h-20 bg-success rounded-full flex items-center justify-center mx-auto mb-6">
 						<svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -442,9 +453,15 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 					</div>
 					<h2 className="text-3xl font-bold text-gray-900 mb-4">{t.welcome}</h2>
 					<p className="text-gray-900 mb-6">{t.welcome_msg}</p>
-					<button onClick={() => setSubmitted(false)} className="bg-brand text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-						{t.submit_another}
-					</button>
+					
+					<div className="space-y-3">
+						<button onClick={() => setSubmitted(false)} className="w-full bg-brand text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+							{t.submit_another}
+						</button>
+						<Link href="/" className="block w-full bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors text-center font-medium">
+							{t.go_to_homepage}
+						</Link>
+					</div>
 				</div>
 			</div>
 		);

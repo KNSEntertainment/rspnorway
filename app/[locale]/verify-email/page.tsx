@@ -21,6 +21,13 @@ export default async function VerifyEmailPage() {
 		redirecting: t("redirecting"),
 		goToLogin: t("goToLogin"),
 		goToMembership: t("goToMembership"),
+		setPassword: t("setPassword"),
+		newPassword: t("newPassword"),
+		confirmPassword: t("confirmPassword"),
+		passwordMismatch: t("passwordMismatch"),
+		passwordTooShort: t("passwordTooShort"),
+		passwordSetSuccess: t("passwordSetSuccess"),
+		passwordSetMessage: t("passwordSetMessage"),
 	};
 
 	return <VerifyEmailClient translations={translations} />;

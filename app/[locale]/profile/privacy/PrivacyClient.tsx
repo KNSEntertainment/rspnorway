@@ -38,7 +38,7 @@ export default function PrivacyClient() {
 		permissionPhone: false,
 		permissionEmail: false,
 	});
-	const [isLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [membershipData, setMembershipData] = useState<Membership | null>(null);
@@ -77,8 +77,16 @@ export default function PrivacyClient() {
 	// Fetch current privacy settings and membership data
 	useEffect(() => {
 		if (status === "authenticated") {
-			fetchPrivacySettings();
-			fetchMembershipData();
+			const fetchData = async () => {
+				setIsLoading(true);
+				await Promise.all([
+					fetchPrivacySettings(),
+					fetchMembershipData()
+				]);
+				setIsLoading(false);
+			};
+			
+			fetchData();
 		}
 	}, [status, fetchPrivacySettings, fetchMembershipData]);
 

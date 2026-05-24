@@ -366,6 +366,7 @@
 		"interest_areas": "Areas of Interest",
 		"submit": "Submit Application",
 		"submit_another": "Submit Another",
+		"go_to_homepage": "Go to Homepage",
 		"reset": "Reset Form",
 		"success": "Thank you for applying! We will review your application and get back to you soon.",
 		"error": "There was an error submitting your application. Please try again later.",
@@ -627,12 +628,19 @@
 		"subtitle": "Please wait while we verify your email address",
 		"verifying": "Verifying Email...",
 		"success": "Email Verified Successfully!",
-		"successMessage": "Your email has been verified. Your account is now active.",
+		"successMessage": "Your email has been verified! Please set your password below.",
 		"error": "Verification Failed",
 		"invalidToken": "Invalid verification token. Please check your email and try again.",
 		"expiredToken": "The verification link has expired. Please request a new verification email.",
-		"redirecting": "Redirecting to membership page in",
+		"redirecting": "Redirecting to login page in",
 		"goToLogin": "Go to Login",
-		"goToMembership": "Go to Membership"
+		"goToMembership": "Go to Membership",
+		"setPassword": "Set Password",
+		"newPassword": "New Password",
+		"confirmPassword": "Confirm Password",
+		"passwordMismatch": "Passwords do not match",
+		"passwordTooShort": "Password must be at least 6 characters long",
+		"passwordSetSuccess": "Password Set Successfully!",
+		"passwordSetMessage": "Your password has been set. You can now login to your account."
 	}
 }

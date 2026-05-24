@@ -361,6 +361,7 @@
 		"interest_areas": "Interesseområder",
 		"submit": "Send inn søknad",
 		"submit_another": "Send inn en annen søknad",
+		"go_to_homepage": "Gå til Hjemmesiden",
 		"reset": "Tilbakestill Skjema",
 		"success": "Takk for at du søkte! Vi vil gjennomgå søknaden din og komme tilbake til deg snart.",
 		"error": "Det oppstod en feil under innsending av søknaden. Vennligst prøv igjen senere.",
@@ -622,12 +623,19 @@
 		"subtitle": "Vennligst vent mens vi bekrefter din e-postadresse",
 		"verifying": "Bekrefter E-post...",
 		"success": "E-post Bekreftet!",
-		"successMessage": "Din e-post har blitt bekreftet. Din konto er nå aktiv.",
+		"successMessage": "Din e-post har blitt bekreftet! Vennligst sett passordet ditt nedenfor.",
 		"error": "Bekreftelse Mislyktes",
 		"invalidToken": "Ugyldig bekreftelses-token. Vennligst sjekk e-posten din og prøv igjen.",
 		"expiredToken": "Bekreftelseslinken har utløpt. Vennligst be om en ny bekreftelses-e-post.",
-		"redirecting": "Omdirigerer til medlemskapsside om",
+		"redirecting": "Omdirigerer til innloggingsside om",
 		"goToLogin": "Gå til Innlogging",
-		"goToMembership": "Gå til Medlemskap"
+		"goToMembership": "Gå til Medlemskap",
+		"setPassword": "Sett Passord",
+		"newPassword": "Nytt Passord",
+		"confirmPassword": "Bekreft Passord",
+		"passwordMismatch": "Passordene stemmer ikke overens",
+		"passwordTooShort": "Passordet må være minst 6 tegn langt",
+		"passwordSetSuccess": "Passord Satt!",
+		"passwordSetMessage": "Passordet ditt er satt. Du kan nå logge inn på kontoen din."
 	}
 }

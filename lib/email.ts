@@ -444,3 +444,82 @@ export async function sendEmailVerificationEmail({ name, email, verificationUrl,
 		throw new Error("Failed to send email verification");
 	}
 }
+
+// Password setup email
+type sendPasswordSetupEmail = {
+	name: string;
+	email: string;
+	setupUrl: string;
+	userType: string;
+};
+export async function sendPasswordSetupEmail({ name, email, setupUrl, userType }: sendPasswordSetupEmail) {
+	const mailOptions = {
+		from: `"PNSB-Norway" <${process.env.EMAIL_USER}>`,
+		to: email,
+		subject: "Set Your Password - PNSB-Norway",
+		text: `Hello ${name},\n\nYour email has been verified! Now you need to set your password for your PNSB-Norway ${userType} account.\n\nPlease click the link below to set your password:\n${setupUrl}\n\nThis link is valid for 24 hours.\n\nOnce you set your password, you'll be able to login to your account.\n\nBest regards,\nPNSB-Norway Team`,
+		html: `
+			<!DOCTYPE html>
+			<html>
+			<head>
+				<style>
+					body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+					.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+					.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+					.content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+					.button { display: inline-block; background: #667eea; color: white !important; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; text-align: center; }
+					.footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+					.success-box { background: #ecfdf5; border: 1px solid #10b981; padding: 15px; border-radius: 5px; margin: 20px 0; }
+				</style>
+			</head>
+			<body>
+				<div class="container">
+					<div class="header">
+						<h1>Set Your Password</h1>
+					</div>
+					<div class="content">
+						<p>Hello <strong>${name}</strong>,</p>
+						<p>Congratulations! Your email has been successfully verified. The final step is to set your password for your PNSB-Norway ${userType} account.</p>
+						
+						<div class="success-box">
+							<p><strong>✅ Email Verified Successfully!</strong></p>
+							<p>Your account is now ready for password setup.</p>
+						</div>
+						
+						<p>Click the button below to set your password:</p>
+						<center>
+							<a href="${setupUrl}" class="button">Set Your Password</a>
+						</center>
+						<p>Or copy and paste this link in your browser:</p>
+						<p style="background: white; padding: 10px; border-radius: 5px; word-break: break-all;">${setupUrl}</p>
+						
+						<p><strong>Note:</strong> This link is valid for 24 hours. If it expires, please contact our support team.</p>
+						
+						<p>Once you set your password, you'll be able to:</p>
+						<ul>
+							<li>Login to your account</li>
+							<li>Access member-only features</li>
+							<li>Update your profile information</li>
+							<li>Participate in community activities</li>
+						</ul>
+						
+						<p>If you have any questions, feel free to reach out to us.</p>
+						<p>Best regards,<br><strong>PNSB-Norway Team</strong></p>
+					</div>
+					<div class="footer">
+						<p>This is an automated email. Please do not reply to this message.</p>
+					</div>
+				</div>
+			</body>
+			</html>
+		`,
+	};
+
+	try {
+		await transporter.sendMail(mailOptions);
+		console.log("Password setup email sent to:", email);
+	} catch (error) {
+		console.error("Error sending password setup email:", error);
+		throw new Error("Failed to send password setup email");
+	}
+}
