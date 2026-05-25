@@ -163,7 +163,7 @@ export const authOptions = {
 			// If logging in from /login page, redirect based on user role
 			if (url === "/login" || url.includes("/login")) {
 				// This will be handled by the client-side logic
-				return `${baseUrl}/en`; // Fallback to home
+				return baseUrl; // Fallback to home
 			}
 			// Allows relative callback URLs
 			if (url.startsWith("/")) return `${baseUrl}${url}`;

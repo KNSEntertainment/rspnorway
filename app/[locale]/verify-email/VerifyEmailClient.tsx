@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, XCircle, Loader2, Eye, EyeOff } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface Translations {
 	title: string;
@@ -32,6 +33,7 @@ interface Props {
 export default function VerifyEmailClient({ translations: t }: Props) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const locale = useLocale();
 	const token = searchParams.get("token");
 
 	const [status, setStatus] = useState<"loading" | "verified" | "passwordSet" | "error">("loading");
@@ -140,7 +142,7 @@ export default function VerifyEmailClient({ translations: t }: Props) {
 				setCountdown((prev) => {
 					if (prev <= 1) {
 						clearInterval(interval);
-						router.push("/en/login");
+						router.push(`/${locale}/login`);
 						return 0;
 					}
 					return prev - 1;
@@ -267,7 +269,7 @@ export default function VerifyEmailClient({ translations: t }: Props) {
 						{t.redirecting} {countdown}...
 					</p>
 					<button 
-						onClick={() => router.push("/en/login")} 
+						onClick={() => router.push(`/${locale}/login`)} 
 						className="mt-4 text-blue-600 hover:text-blue-700 underline font-medium"
 					>
 						{t.goToLogin}
@@ -288,13 +290,13 @@ export default function VerifyEmailClient({ translations: t }: Props) {
 					<p className="text-gray-600 mb-6">{message}</p>
 					<div className="space-y-3">
 						<button 
-							onClick={() => router.push("/en/login")} 
+							onClick={() => router.push(`/${locale}/login`)} 
 							className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors"
 						>
 							{t.goToLogin}
 						</button>
 						<button 
-							onClick={() => router.push("/en/membership")} 
+							onClick={() => router.push(`/${locale}/membership`)} 
 							className="block w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-lg transition-colors"
 						>
 							{t.goToMembership}

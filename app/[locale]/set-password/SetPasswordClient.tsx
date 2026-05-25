@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Eye, EyeOff, CheckCircle } from "lucide-react";
+import { useLocale } from "next-intl";
 
 interface Translations {
 	title: string;
@@ -27,6 +28,7 @@ interface Props {
 export default function SetPasswordClient({ translations: t }: Props) {
 	const searchParams = useSearchParams();
 	const router = useRouter();
+	const locale = useLocale();
 	const token = searchParams.get("token");
 
 	const [formData, setFormData] = useState({
@@ -89,7 +91,7 @@ export default function SetPasswordClient({ translations: t }: Props) {
 
 			setSuccess(true);
 			setTimeout(() => {
-				router.push("/en/login");
+				router.push(`/${locale}/login`);
 			}, 3000);
 		} catch (error) {
 			setError(error instanceof Error ? error.message : String(error));
