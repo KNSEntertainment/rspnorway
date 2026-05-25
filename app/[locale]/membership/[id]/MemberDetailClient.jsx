@@ -81,7 +81,7 @@ export default function MemberDetailClient({ member }) {
 							{/* Profile Photo */}
 							<div className="relative">
 								<div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white shadow-xl overflow-hidden bg-light">
-									{member.profilePhoto ? (
+									{member.permissionPhotos && member.profilePhoto ? (
 										<Image src={member.profilePhoto} alt={member.fullName} width={160} height={160} className="w-full h-full object-cover" />
 									) : (
 										<div className="w-full h-full flex items-center justify-center bg-brand">

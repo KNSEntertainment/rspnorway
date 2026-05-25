@@ -55,14 +55,14 @@ import Link from "next/link";
  */
 
 
-function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact, session }) {
+function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact, session, member }) {
 	const initial = name?.charAt(0).toUpperCase() ?? "?";
 
 	return (
 		<div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
 			{/* Avatar / Photo */}
 			<div className="aspect-square overflow-hidden bg-light">
-				{imageUrl && !imageUrl.startsWith("data:") ? (
+				{member?.permissionPhotos && imageUrl && !imageUrl.startsWith("data:") ? (
 					<Image src={imageUrl} alt={name} width={200} height={200} className="w-full h-full object-cover" />
 				) : (
 					<div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${avatarGradient}`}>
@@ -76,19 +76,21 @@ function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact,
 				<h3 className="text-xl font-bold text-gray-900 mb-2">{name}</h3>
 				{/* {badgeLabel && <p className={`text-sm font-medium mb-3 ${badgeClass}`}>{badgeLabel}</p>} */}
 
-				{/* Contact — mirrors executive card: only show when session exists */}
+				{/* Contact — only show when session exists AND member has granted permission */}
 				{showContact && session?.user && (
 					<div className="space-y-2 mb-4">
-						{phone && (
+						{member?.permissionPhone && phone && (
 							<a href={`tel:${phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
 								<Phone className="w-4 h-4" />
 								{phone}
 							</a>
 						)}
-						<a href={`mailto:${email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
-							<Mail className="w-4 h-4" />
-							{email}
-						</a>
+						{member?.permissionEmail && (
+							<a href={`mailto:${email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
+								<Mail className="w-4 h-4" />
+								{email}
+							</a>
+						)}
 					</div>
 				)}
 			</div>
@@ -211,7 +213,12 @@ export default function Members() {
 		}
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
-			executiveFiltered = executiveFiltered.filter((m) => m.name.toLowerCase().includes(searchLower) || m.position?.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower));
+			executiveFiltered = executiveFiltered.filter((m) => {
+				const nameMatch = m.name.toLowerCase().includes(searchLower);
+				const positionMatch = m.position?.toLowerCase().includes(searchLower);
+				const emailMatch = m.permissionEmail && m.email.toLowerCase().includes(searchLower);
+				return nameMatch || positionMatch || emailMatch;
+			});
 		}
 
 		let generalFiltered = regularMembers.filter((m) => m.membershipType === "general");
@@ -239,7 +246,12 @@ export default function Members() {
 
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
-			generalFiltered = generalFiltered.filter((m) => m.fullName.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.profession?.toLowerCase().includes(searchLower));
+			generalFiltered = generalFiltered.filter((m) => {
+				const nameMatch = m.fullName.toLowerCase().includes(searchLower);
+				const emailMatch = m.permissionEmail && m.email.toLowerCase().includes(searchLower);
+				const professionMatch = m.profession?.toLowerCase().includes(searchLower);
+				return nameMatch || emailMatch || professionMatch;
+			});
 		}
 
 		// Sort filtered executive members by first name
@@ -468,7 +480,7 @@ export default function Members() {
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("executive_members")}</h2>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredExecutiveMembers.map((member) => (
-								<MemberCard key={member._id} name={member.name} email={member.email} phone={member.phone} imageUrl={member.imageUrl} avatarGradient="from-brand to-blue-600" showContact={true} session={session} />
+								<MemberCard key={member._id} name={member.name} email={member.email} phone={member.phone} imageUrl={member.imageUrl} avatarGradient="from-brand to-blue-600" showContact={true} session={session} member={member} />
 							))}
 						</div>
 					</div>
@@ -480,7 +492,7 @@ export default function Members() {
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("general_members")}</h2>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredGeneralMembers.map((member) => (
-								<MemberCard key={member._id} name={member.fullName} email={member.email} phone={member.phone} imageUrl={member.profilePhoto} avatarGradient="from-gray-500 to-gray-600" showContact={true} session={session} />
+								<MemberCard key={member._id} name={member.fullName} email={member.email} phone={member.phone} imageUrl={member.profilePhoto} avatarGradient="from-gray-500 to-gray-600" showContact={true} session={session} member={member} />
 							))}
 						</div>
 					</div>

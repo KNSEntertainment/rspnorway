@@ -17,6 +17,9 @@ interface MemberIDCardProps {
 		city?: string;
 		province?: string;
 		createdAt: string;
+		permissionPhotos?: boolean;
+		permissionPhone?: boolean;
+		permissionEmail?: boolean;
 	};
 	logo?: string;
 	locale?: string;
@@ -74,7 +77,7 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 
 						<div className="w-full flex justify-center mt-2 mb-4">
 							<div className="w-20 h-20 rounded-full overflow-hidden bg-light border-2 border-brand/20">
-								{memberData.profilePhoto ? (
+								{memberData.permissionPhotos && memberData.profilePhoto ? (
 									<Image src={memberData.profilePhoto} alt={memberData.fullName} width={80} height={80} className="w-full h-full object-cover" />
 								) : (
 									<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/20 to-brand/10">
@@ -99,7 +102,7 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 
 							{/* Contact Information */}
 							<div className="space-y-1">
-								{memberData.phone && (
+								{memberData.permissionPhone && memberData.phone && (
 									<div>
 										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Contact</p>
 										<p className="text-xs font-semibold text-gray-900">{memberData.phone}</p>
@@ -166,13 +169,13 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 						{/* Emergency Contact */}
 						<div>
 							<p className="text-xs font-bold text-gray-900 mb-2">Emergency Contact</p>
-							{memberData.email && (
+							{memberData.permissionEmail && memberData.email && (
 								<div className="flex items-center gap-2">
 									<span className="text-[10px] font-semibold text-gray-500">Email:</span>
 									<span className="text-[10px] text-gray-900">{memberData.email}</span>
 								</div>
 							)}
-							{memberData.phone && (
+							{memberData.permissionPhone && memberData.phone && (
 								<div className="flex items-center gap-2 mt-1">
 									<span className="text-[10px] font-semibold text-gray-500">Phone:</span>
 									<span className="text-[10px] text-gray-900">{memberData.phone}</span>
