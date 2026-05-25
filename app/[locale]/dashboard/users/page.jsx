@@ -6,9 +6,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import RegisterForm from "@/components/RegisterForm";
+import { Pencil } from "lucide-react";
 
 export default function UsersPage() {
 	const [openUserModal, setOpenUserModal] = useState(false);
+	const [editUser, setEditUser] = useState(null);
 	const [search, setSearch] = useState("");
 	const [roleFilter, setRoleFilter] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +41,7 @@ export default function UsersPage() {
 
 	const handleCloseUserModal = () => {
 		setOpenUserModal(false);
+		setEditUser(null);
 		mutate();
 	};
 
@@ -132,8 +135,8 @@ export default function UsersPage() {
 			{/* Inline Form Section */}
 			{openUserModal && (
 				<div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
-					<h2 className="text-2xl font-bold text-gray-900 mb-4">Register New User</h2>
-					<RegisterForm handleCloseUserModal={handleCloseUserModal} fetchUsers={users} />
+					<h2 className="text-2xl font-bold text-gray-900 mb-4">{editUser ? "Edit User" : "Register New User"}</h2>
+					<RegisterForm handleCloseUserModal={handleCloseUserModal} fetchUsers={users} editUser={editUser} />
 				</div>
 			)}
 
@@ -165,8 +168,11 @@ export default function UsersPage() {
 											<Button variant="ghost" size="icon" onClick={() => handleDelete(user._id)}>
 												<Trash2 className="w-6 h-6 text-red-600" />
 											</Button>
-											<Button variant="outline" size="sm" onClick={() => setEditUser(user)}>
-												Edit
+											<Button variant="outline" size="sm" onClick={() => {
+												setEditUser(user);
+												setOpenUserModal(true);
+											}}>
+												<Pencil className="w-4 h-4" />
 											</Button>
 										</div>
 									</TableCell>

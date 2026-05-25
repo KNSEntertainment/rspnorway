@@ -1,10 +1,14 @@
+import { NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import User from "@/models/User.Model";
+
 export async function PUT(request, { params }) {
 	const { id } = params;
 	try {
 		await connectDB();
 		const body = await request.json();
 		// Only allow updating certain fields for security
-		const allowedFields = ["fullName", "email", "userName", "role", "phone"];
+		const allowedFields = ["fullName", "email", "userName", "role", "phone", "password"];
 		const updateData = {};
 		for (const key of allowedFields) {
 			if (body[key] !== undefined) updateData[key] = body[key];
@@ -19,9 +23,6 @@ export async function PUT(request, { params }) {
 		return NextResponse.json({ success: false, error: error.message }, { status: 500 });
 	}
 }
-import { NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import User from "@/models/User.Model";
 
 export async function DELETE(request, { params }) {
 	const { id } = await params;

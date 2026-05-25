@@ -15,33 +15,43 @@ const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) =>
 
 InputField.displayName = "Input_Fields_User_Auth_Form";
 
-const RegisterForm = ({ handleCloseUserModal }) => {
+const RegisterForm = ({ handleCloseUserModal, editUser }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [error, setError] = useState("");
 	// const router = useRouter();
 	const [formData, setFormData] = useState({
-		fullName: "",
-		email: "",
-		userName: "",
+		fullName: editUser?.fullName || "",
+		email: editUser?.email || "",
+		userName: editUser?.userName || "",
 		password: "",
-		role: "user",
+		role: editUser?.role || "user",
 	});
 
 	const handleRegister = async (e) => {
 		e.preventDefault();
 		setError("");
 		// Frontend validation
-		if (!formData.fullName.trim() || !formData.email.trim() || !formData.userName.trim() || !formData.password.trim() || !formData.role.trim()) {
-			setError("All fields are required.");
+		if (!formData.fullName.trim() || !formData.email.trim() || !formData.userName.trim() || (!editUser && !formData.password.trim()) || !formData.role.trim()) {
+			setError(editUser ? "All fields except password are required." : "All fields are required.");
 			return;
 		}
 		try {
-			const response = await fetch("/api/register", {
-				method: "POST",
+			const url = editUser ? `/api/users/${editUser._id}` : "/api/register";
+			const method = editUser ? "PUT" : "POST";
+			const payload = editUser ? {
+				fullName: formData.fullName,
+				email: formData.email,
+				userName: formData.userName,
+				role: formData.role,
+				...(formData.password && { password: formData.password })
+			} : formData;
+			
+			const response = await fetch(url, {
+				method,
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(formData),
+				body: JSON.stringify(payload),
 			});
 			const result = await response.json();
 			if (result.success) {
@@ -52,7 +62,7 @@ const RegisterForm = ({ handleCloseUserModal }) => {
 					password: "",
 					role: "user",
 				});
-				alert("User created successfully");
+				alert(editUser ? "User updated successfully" : "User created successfully");
 				if (handleCloseUserModal) handleCloseUserModal();
 			} else if (result.error) {
 				setError(result.error);
@@ -103,10 +113,10 @@ const RegisterForm = ({ handleCloseUserModal }) => {
 				</div>
 
 				<div className="space-y-2">
-					<Label htmlFor="register-password">Password</Label>
+					<Label htmlFor="register-password">Password {editUser && "(leave blank to keep current)"}</Label>
 					<div className="relative">
 						<Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-900" />
-						<Input id="register-password" name="password" type={showPassword ? "text" : "password"} placeholder="Choose a password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="pl-10 pr-10" />
+						<Input id="register-password" name="password" type={showPassword ? "text" : "password"} placeholder={editUser ? "Enter new password (optional)" : "Choose a password"} value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="pl-10 pr-10" />
 						<button type="button" onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-900">
 							{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
 						</button>
@@ -116,7 +126,7 @@ const RegisterForm = ({ handleCloseUserModal }) => {
 			{error && <p className="mt-2 text-red-600">{error}</p>}
 			<div className="mt-6 flex justify-between">
 				<Button type="submit" className="bg-brand hover:bg-red-800">
-					Register
+					{editUser ? "Update" : "Register"}
 				</Button>
 				<Button type="button" variant="outline" onClick={handleCancel}>
 					Close

@@ -140,6 +140,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 
 	const [submitted, setSubmitted] = useState(false);
 	const [emailError, setEmailError] = useState("");
+	const [phoneError, setPhoneError] = useState("");
 	const [addressSuggestions, setAddressSuggestions] = useState<AddressSuggestion[]>([]);
 	const [addressLoading, setAddressLoading] = useState(false);
 	const [addressError, setAddressError] = useState("");
@@ -171,11 +172,27 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const target = e.target as HTMLInputElement | HTMLSelectElement;
 		const name = target.name;
-		const value = target.value;
+		let value = target.value;
 
 		// Clear email error when user changes email field
 		if (name === "email" && emailError) {
 			setEmailError("");
+		}
+
+		// Clear phone error when user changes phone field
+		if (name === "phone" && phoneError) {
+			setPhoneError("");
+		}
+
+		// Phone number validation - allow only digits and remove spaces
+		if (name === "phone") {
+			value = value.replace(/\s/g, ""); // Remove all spaces
+			if (value && !/^\d{0,8}$/.test(value)) {
+				setPhoneError("Phone number must be exactly 8 digits without spaces");
+				return; // Don't update if invalid
+			} else if (value.length === 8) {
+				setPhoneError("");
+			}
 		}
 
 		if (target instanceof HTMLInputElement && target.type === "checkbox" && name === "volunteerInterest") {
@@ -362,6 +379,12 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const handleSubmit = async (e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
 		e.preventDefault();
 		
+		// Validate phone number
+		if (formData.phone && formData.phone.length !== 8) {
+			setPhoneError("Phone number must be exactly 8 digits without spaces");
+			return;
+		}
+		
 		// Validate captcha
 		if (!captchaVerified || !captchaId) {
 			setCaptchaError("Please complete the captcha verification.");
@@ -436,6 +459,8 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			permissionPhone: false,
 			permissionEmail: false,
 		});
+		setEmailError("");
+		setPhoneError("");
 		setAddressSuggestions([]);
 		setAddressError("");
 		setActiveSuggestionIndex(-1);
@@ -507,7 +532,8 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 								<label className="block text-sm font-medium text-gray-900 mb-2">
 									{t.phone_number} <span className="text-red-500">*</span>
 								</label>
-								<input type="tel" maxLength={14} name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-light rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder={t.phone_number_placeholder} />
+								<input type="tel" maxLength={8} name="phone" value={formData.phone} onChange={handleChange} className={`w-full px-4 py-2 border ${phoneError ? "border-red-500" : "border-light"} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`} placeholder={t.phone_number_placeholder} />
+							{phoneError && <p className="text-red-600 text-sm mt-1">{phoneError}</p>}
 							</div>
 							<div>
 								<label className="block text-sm font-medium text-gray-900 mb-2">
