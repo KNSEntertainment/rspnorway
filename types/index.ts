@@ -56,6 +56,7 @@ export interface Membership {
 	profession?: string;
 	membershipType: "general" | "active" | "executive";
 	membershipStatus: "blocked" | "pending" | "approved";
+	position?: string; // Only for executive members
 	nationalMembershipNo?: string;
 	skills?: string;
 	volunteerInterest?: string[];

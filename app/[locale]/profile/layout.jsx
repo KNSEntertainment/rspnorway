@@ -2,15 +2,18 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 import { Toaster } from "@/components/ui/toaster";
 import { useSession } from "next-auth/react";
-import { memberMenuItems } from "@/components/MemberMenuItems";
+import { getMemberMenuItems } from "@/components/MemberMenuItems";
 
 function ProfileLayoutContent({ children }) {
 	const router = useRouter();
 	const pathname = usePathname();
+	const locale = useLocale();
 	const [profileOpen, setProfileOpen] = useState(false);
 	const { data: session, status } = useSession();
+	const memberMenuItems = getMemberMenuItems(locale);
 
 	// Protect profile: redirect if not authenticated
 	if (status === "loading") {

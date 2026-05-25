@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { MessageCircleReply, Trash2 } from "lucide-react";
 
 export default function EventsPage() {
-	const { data: messages, error, loading, mutate } = useFetchData("/api/messages", "messages");
+	const { data: messages, error, loading, mutate } = useFetchData("/api/contact-messages", "messages");
 
 	if (loading) return <p>Loading...</p>;
 	if (error) return <p>Error: {error}</p>;
 
 	const handleDelete = async (id) => {
 		try {
-			const response = await fetch(`/api/messages/${id}`, {
+			const response = await fetch(`/api/contact-messages?id=${id}`, {
 				method: "DELETE",
 			});
 			if (!response.ok) {
@@ -46,8 +46,8 @@ export default function EventsPage() {
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{messages?.length > 0 ? (
-							messages.map((message) => (
+						{messages?.messages?.length > 0 ? (
+							messages.messages.map((message) => (
 								<TableRow key={message._id}>
 									<TableCell className="font-semibold">{message.name}</TableCell>
 									<TableCell>{message.email}</TableCell>

@@ -374,10 +374,8 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
 		};
 
 		const result = await transporter.sendMail(mailOptions);
-		console.log('Email sent successfully:', result.messageId);
 		return { success: true, messageId: result.messageId };
 	} catch (error) {
-		console.error('Error sending email:', error);
 		return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
 	}
 };

@@ -6,15 +6,9 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
 	try {
-		console.log("=== RESET PASSWORD API CALLED ===");
 		await connectDB();
 		const { token, password } = await req.json();
 
-		console.log("Reset password request received:", { 
-			token: token?.substring(0, 10) + "...", 
-			passwordLength: password?.length,
-			fullToken: token
-		});
 
 		if (!token || !password) {
 			return NextResponse.json({ error: "Missing token or password" }, { status: 400 });
@@ -40,46 +34,23 @@ export async function POST(req: NextRequest) {
 
 		// If not found in User model, try Membership model with setup token
 		if (!user) {
-			console.log("Checking membership with setup token...");
 			const membership = await Membership.findOne({
 				passwordSetupToken: token,
 				passwordSetupTokenExpiry: { $gt: Date.now() },
 			});
 
 			if (!membership) {
-				console.log("Setup token not found, checking reset token...");
 				// Try reset token for membership
-				console.log("=== LOOKING FOR RESET TOKEN ===");
-				console.log("Looking for reset token:", token.substring(0, 10) + "...");
-				console.log("Full token being searched:", token);
 				
-				// First, let's see all members with reset tokens
-				const allMembersWithResetTokens = await Membership.find({ passwordResetToken: { $exists: true, $ne: null } });
-				console.log("All members with reset tokens:", allMembersWithResetTokens.length);
-				
-				if (allMembersWithResetTokens.length > 0) {
-					console.log("Members with reset tokens:");
-					allMembersWithResetTokens.forEach((member, index) => {
-						console.log(`  ${index + 1}. Email: ${member.email}`);
-						console.log(`      Full Token: ${member.passwordResetToken}`);
-						console.log(`      Token Length: ${member.passwordResetToken?.length}`);
-						console.log(`      Expiry: ${member.passwordResetTokenExpiry}`);
-						console.log(`      Searched Token: ${token}`);
-						console.log(`      Searched Length: ${token.length}`);
-						console.log(`      Tokens Match: ${member.passwordResetToken === token}`);
-					});
-				}
+		
 				
 				// First, find the token without expiry check
 				const membershipWithResetToken = await Membership.findOne({
 					passwordResetToken: token
 				});
 
-				console.log("Found membership with reset token (no expiry check):", !!membershipWithResetToken);
 
 				if (!membershipWithResetToken) {
-					console.log("=== TOKEN NOT FOUND ===");
-					console.log("No membership found with this reset token");
 					return NextResponse.json({ error: "Invalid or expired token" }, { status: 400 });
 				}
 
@@ -87,14 +58,8 @@ export async function POST(req: NextRequest) {
 				const currentTime = new Date();
 				const tokenExpiry = membershipWithResetToken.passwordResetTokenExpiry;
 				
-				console.log("Token expiry details:");
-				console.log("- Current time:", currentTime.toISOString());
-				console.log("- Token expiry:", tokenExpiry?.toISOString());
-				console.log("- Is token still valid?", tokenExpiry && currentTime < tokenExpiry);
-				console.log("- Time difference (ms):", tokenExpiry ? tokenExpiry.getTime() - currentTime.getTime() : "N/A");
-
+				
 				if (!tokenExpiry || currentTime >= tokenExpiry) {
-					console.log("Token has expired or has no expiry date");
 					// Clear expired token
 					await Membership.findByIdAndUpdate(membershipWithResetToken._id, {
 						passwordResetToken: undefined,
@@ -112,7 +77,6 @@ export async function POST(req: NextRequest) {
 				membershipWithResetToken.passwordResetTokenExpiry = undefined;
 				await membershipWithResetToken.save();
 
-				console.log("Password reset successfully for member:", membershipWithResetToken.email);
 				return NextResponse.json({ success: true, message: "Password reset successfully" }, { status: 200 });
 			}
 
@@ -141,10 +105,8 @@ export async function POST(req: NextRequest) {
 		user.setupTokenExpiry = undefined;
 		await user.save();
 
-		console.log("Password reset successfully for user:", user.email);
-		return NextResponse.json({ success: true, message: "Password reset successfully" }, { status: 200 });
+				return NextResponse.json({ success: true, message: "Password reset successfully" }, { status: 200 });
 	} catch (error: unknown) {
-		console.error("Error resetting password:", error);
 		return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to reset password" }, { status: 500 });
 	}
 }

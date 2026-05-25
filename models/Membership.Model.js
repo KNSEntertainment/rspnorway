@@ -24,6 +24,7 @@ const MembershipSchema = new mongoose.Schema({
 	// Membership Details
 	membershipType: { type: String, enum: ["general", "executive"], required: true, default: "general" },
 	membershipStatus: { type: String, enum: ["blocked", "pending", "approved"], required: true, default: "pending" },
+	position: { type: String }, // Only for executive members (e.g., Chairman, Treasurer, etc.)
 	volunteerInterest: { type: [String], default: [] },
 	
 	// Permissions and Consent

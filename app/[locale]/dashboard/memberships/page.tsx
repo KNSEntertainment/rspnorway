@@ -98,6 +98,7 @@ export default function MembershipsPage() {
 			profession: member.profession,
 			membershipType: member.membershipType,
 			membershipStatus: member.membershipStatus,
+			position: member.position || '',
 			memberSinceDate: member.memberSinceDate ? new Date(member.memberSinceDate).toISOString().split('T')[0] : '',
 			skills: member.skills,
 			volunteerInterest: member.volunteerInterest || [],
@@ -872,6 +873,21 @@ export default function MembershipsPage() {
 											<option value="executive">Executive</option>
 										</select>
 									</div>
+
+									{/* Position Field - Only for Executive Members */}
+									{editFormData.membershipType === "executive" && (
+										<div>
+											<label className="block text-sm font-medium text-gray-900 mb-2">Position</label>
+											<input
+												type="text"
+												value={editFormData.position || ''}
+												onChange={(e) => handleEditChange('position', e.target.value)}
+												placeholder="e.g., Chairman, Treasurer, Secretary"
+												className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											/>
+											<p className="text-xs text-gray-500 mt-1">Executive member position (e.g., Chairman, Treasurer, etc.)</p>
+										</div>
+									)}
 
 									<div>
 										<label className="block text-sm font-medium text-gray-900 mb-2">Membership Status</label>

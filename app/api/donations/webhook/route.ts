@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import connectDB from "@/lib/mongodb";
 import Donation from "@/models/Donation.Model";
 import Cause from "@/models/Cause.Model";
+import FinancialTransaction from "@/models/FinancialTransaction.Model";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 	apiVersion: "2026-02-25.clover",
@@ -57,6 +58,35 @@ export async function POST(request: Request) {
 				console.log("Donation updated:", updatedDonation?._id);
 				console.log("Payment completed for session:", session.id);
 
+				// Create financial transaction for the donation
+				if (updatedDonation && updatedDonation.amount > 0) {
+					try {
+						const financialTransaction = new FinancialTransaction({
+							type: "income",
+							category: "donations",
+							subcategory: updatedDonation.donationType === "cause_specific" ? "cause donations" : "general donations",
+							amount: updatedDonation.amount,
+							description: `${updatedDonation.donationType === "cause_specific" ? "Cause-specific" : "General"} donation ${updatedDonation.isAnonymous ? "from anonymous donor" : `from ${updatedDonation.firstName} ${updatedDonation.lastName}`}`,
+							date: new Date(),
+							paymentMethod: "card",
+							referenceNumber: session.payment_intent as string,
+							relatedTo: "donation",
+							relatedId: updatedDonation.causeId,
+							status: "verified",
+							verifiedBy: "system",
+							verifiedAt: new Date(),
+							notes: `Donation ID: ${updatedDonation._id}, Stripe Session: ${session.id}`,
+							tags: ["donation", "stripe", updatedDonation.donationType],
+							createdBy: "system@rspnorway.org",
+						});
+
+						await financialTransaction.save();
+						console.log('Financial transaction created for donation:', updatedDonation._id);
+					} catch (transactionError) {
+						console.error('Error creating financial transaction for donation:', transactionError);
+					}
+				}
+
 				// Update cause amounts if this is a cause-specific donation
 				if (updatedDonation && updatedDonation.causeId && updatedDonation.donationType === "cause_specific") {
 					await Cause.findByIdAndUpdate(
@@ -87,6 +117,35 @@ export async function POST(request: Request) {
 					);
 
 					console.log("Donation updated via charge:", updatedDonation?._id);
+
+					// Create financial transaction for the donation
+					if (updatedDonation && updatedDonation.amount > 0) {
+						try {
+							const financialTransaction = new FinancialTransaction({
+								type: "income",
+								category: "donations",
+								subcategory: updatedDonation.donationType === "cause_specific" ? "cause donations" : "general donations",
+								amount: updatedDonation.amount,
+								description: `${updatedDonation.donationType === "cause_specific" ? "Cause-specific" : "General"} donation ${updatedDonation.isAnonymous ? "from anonymous donor" : `from ${updatedDonation.firstName} ${updatedDonation.lastName}`}`,
+								date: new Date(),
+								paymentMethod: "card",
+								referenceNumber: charge.payment_intent as string,
+								relatedTo: "donation",
+								relatedId: updatedDonation.causeId,
+								status: "verified",
+								verifiedBy: "system",
+								verifiedAt: new Date(),
+								notes: `Donation ID: ${updatedDonation._id}, Stripe Charge: ${charge.id}`,
+								tags: ["donation", "stripe", updatedDonation.donationType],
+								createdBy: "system@rspnorway.org",
+							});
+
+							await financialTransaction.save();
+							console.log('Financial transaction created for donation via charge:', updatedDonation._id);
+						} catch (transactionError) {
+							console.error('Error creating financial transaction for donation via charge:', transactionError);
+						}
+					}
 
 					// Update cause amounts if this is a cause-specific donation
 					if (updatedDonation && updatedDonation.causeId && updatedDonation.donationType === "cause_specific") {

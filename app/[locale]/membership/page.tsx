@@ -58,6 +58,8 @@ export default async function MembershipPage({ params }: { params: Promise<{ loc
 		general_member_desc: t("general_member_desc"),
 		executive_member: t("executive_member"),
 		executive_member_desc: t("executive_member_desc"),
+		position: t("position"),
+		position_placeholder: t("position_placeholder"),
 		areas_of_interests: t("areas_of_interests"),
 		interest_politics: t("interest_politics"),
 		interest_social: t("interest_social"),

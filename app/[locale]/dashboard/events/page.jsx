@@ -76,13 +76,11 @@ export default function EventsPage() {
 					<TableHeader>
 						<TableRow>
 							<TableHead>Event Name</TableHead>
-							<TableHead>Event Description</TableHead>
 							<TableHead>Event Venue</TableHead>
 							<TableHead>Event Date</TableHead>
 							<TableHead>Event Time</TableHead>
 							<TableHead>Tickets</TableHead>
-							<TableHead>Seats</TableHead>
-							<TableHead>Collection</TableHead>
+							
 							<TableHead>Poster</TableHead>
 							<TableHead>Actions</TableHead>
 						</TableRow>
@@ -92,13 +90,11 @@ export default function EventsPage() {
 							events.map((event) => (
 								<TableRow key={event._id}>
 									<TableCell className="font-semibold max-w-40 truncate whitespace-normal break-words">{event.eventname}</TableCell>
-									<TableCell className="max-w-40 truncate whitespace-normal break-words">{event.eventdescription}</TableCell>
 									<TableCell>{event.eventvenue}</TableCell>
 									<TableCell className="w-24">{event.eventdate}</TableCell>
 									<TableCell className="w-28">{event.eventtime}</TableCell>
 									<TableCell className="w-32">Adult: NOK {event.price || 0}<br />Student: NOK {event.studentPrice || 0}</TableCell>
-									<TableCell className="w-28">{event.registeredSeats || 0}{event.maximumSeats ? ` / ${event.maximumSeats}` : ""}</TableCell>
-									<TableCell className="w-28">NOK {event.totalCollection || 0}</TableCell>
+									
 									<TableCell>
 										<Image src={event.eventposterUrl || "/ghanti.png"} width={100} height={100} alt={event.eventname || "alt"} className="w-16 h-20 object-cover rounded" />
 									</TableCell>

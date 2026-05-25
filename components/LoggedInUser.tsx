@@ -1,8 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { useLocale } from "next-intl";
+import { usePathname } from "next/navigation";
 import { completeSignOut } from "@/utils/authUtils";
 
 interface SessionUser {
@@ -19,6 +21,28 @@ interface SessionUser {
 
 const LoggedInUser = ({ user }: { user: SessionUser }) => {
 	const userRef = useRef<HTMLDivElement>(null);
+	const pathname = usePathname();
+	const localeFromHook = useLocale();
+	
+	// Extract locale from pathname as fallback
+	const getLocaleFromPath = useCallback(() => {
+		const pathSegments = pathname.split('/');
+		const firstSegment = pathSegments[1];
+		return ['en', 'ne', 'no'].includes(firstSegment) ? firstSegment : 'en';
+	}, [pathname]);
+	
+	const locale = localeFromHook || getLocaleFromPath();
+	
+	// Debug logging
+	useEffect(() => {
+		console.log("[LoggedInUser] Locale values:", { 
+			localeFromHook, 
+			pathname, 
+			extractedLocale: getLocaleFromPath(), 
+			finalLocale: locale 
+		});
+	}, [localeFromHook, pathname, getLocaleFromPath, locale]);
+	
 	const avatarInitial = typeof user?.email === "string" && user.email ? user.email.charAt(0).toUpperCase() : "U";
 	const [showUserDropdown, setShowUserDropdown] = useState(false);
 	const [memberPhoto, setMemberPhoto] = useState<string | null>(null);
@@ -90,12 +114,12 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 							<p className="text-xs text-gray-900 mt-1">{getUserRoleText()}</p>
 						</div>
 						{user.role === "admin" || user.isMember ? (
-							<Link href="/dashboard" onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
+							<Link href={locale ? `/${locale}/dashboard` : "/en/dashboard"} onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
 								<LayoutDashboard size={18} />
 								{user.role === "admin" ? "Admin Dashboard" : "Member Dashboard"}
 							</Link>
 						) : (
-							<Link href="/profile" onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
+							<Link href={locale ? `/${locale}/profile` : "/en/profile"} onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
 								<User size={18} />
 								My Profile
 							</Link>

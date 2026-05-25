@@ -389,6 +389,8 @@
 		"general_member_desc": "For personer som støtter PNSB-Norways misjon og ønsker å holde seg informert.",
 		"executive_member_desc": "For de som ønsker å ta en aktiv rolle i PNSB-Norways initiativer og arrangementer.",
 		"executive_member": "Styremedlem",
+		"position": "Styremedlem Stilling",
+		"position_placeholder": "Skriv inn din styremedlem-stilling (f.eks. Leder, Kasserer, Sekretær, etc.)",
 		"areas_of_interests": "Interesseområder (Valgfritt)",
 		"interest_politics": "Politikk og Styring",
 		"interest_culture": "Kulturelle Aktiviteter",

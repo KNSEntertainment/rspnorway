@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Membership from "@/models/Membership.Model";
 import { sendWelcomeEmail } from "@/lib/email";
+import bcrypt from "bcryptjs";
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
 	const { id } = await context.params;
@@ -28,6 +29,16 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 		return NextResponse.json({ error: "Not found" }, { status: 404 });
 	}
 
+	// Hash password if it's being updated
+	if (data.password && data.password !== existingMembership.password) {
+		// Only hash if the password is not already hashed (check length)
+		// Hashed passwords are typically 60 characters long (bcrypt)
+		if (data.password.length < 60) {
+			const salt = await bcrypt.genSalt(12);
+			data.password = await bcrypt.hash(data.password, salt);
+		}
+	}
+
 	const membership = await Membership.findByIdAndUpdate(id, data, { new: true });
 
 	// If membership is being approved for the first time
@@ -39,11 +50,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 				email: membership.email,
 			});
 
-			console.log("Welcome email sent for approved member:", membership.email);
-		} catch (error: unknown) {
-			console.error("Error sending welcome email:", error);
-			// Don't fail the membership approval if email fails
-		}
+					} catch (error: unknown) {
+console.error("Error", error)		}
 	}
 
 	return NextResponse.json(membership);

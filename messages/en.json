@@ -394,6 +394,8 @@
 		"general_member_desc": "For individuals who support PNSB-Norway's mission and want to stay informed.",
 		"executive_member_desc": "For those who wish to take an executive role in PNSB-Norway's initiatives and events.",
 		"executive_member": "Executive Member",
+		"position": "Executive Position",
+		"position_placeholder": "Enter your executive position (e.g., Chairman, Treasurer, Secretary, etc.)",
 		"areas_of_interests": "Areas of Interest (Optional)",
 		"interest_politics": "Politics and Governance",
 		"interest_culture": "Cultural Activities",

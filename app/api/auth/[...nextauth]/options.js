@@ -20,9 +20,6 @@ export const authOptions = {
 				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials) {
-				console.log("=== AUTHORIZE FUNCTION CALLED ===");
-				console.log("Email from credentials:", credentials?.email);
-
 				await ConnectDB();
 
 				try {
@@ -34,8 +31,6 @@ export const authOptions = {
 					const user = await User.findOne({ email: credentials.email });
 					
 					if (user) {
-						console.log("Found admin user in User model");
-						
 						// Validate admin password
 						const isValid = await bcrypt.compare(credentials.password, user.password);
 						if (!isValid) {

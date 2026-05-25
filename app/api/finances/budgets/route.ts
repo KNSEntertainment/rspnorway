@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 
     // Add calculated fields
     const budgetsWithMetrics = budgets.map(budget => ({
-      id: budget._id.toString(),
+      _id: budget._id.toString(),
       category: budget.category,
       allocated: budget.allocated,
       spent: budget.spent,
@@ -40,6 +40,15 @@ export async function GET(req: NextRequest) {
       year: budget.year,
       createdAt: budget.createdAt,
     }));
+
+    console.log("Budgets with metrics:", budgetsWithMetrics.map(b => ({
+      _id: b._id,
+      category: b.category,
+      allocated: b.allocated,
+      spent: b.spent,
+      remaining: b.remaining,
+      percentage: b.percentage
+    })));
 
     return NextResponse.json(budgetsWithMetrics);
   } catch (error: unknown) {
@@ -110,7 +119,7 @@ export async function POST(req: NextRequest) {
     console.log("Budget saved successfully:", newBudget);
 
     return NextResponse.json({
-      id: newBudget._id.toString(),
+      _id: newBudget._id.toString(),
       category: newBudget.category,
       allocated: newBudget.allocated,
       spent: newBudget.spent,

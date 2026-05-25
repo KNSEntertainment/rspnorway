@@ -3,12 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
   DollarSign, 
-  TrendingUp, 
   TrendingDown, 
   Calendar, 
   Ticket, 
@@ -18,7 +17,6 @@ import {
   PieChart,
   BarChart3,
   Download,
-  Plus,
   Eye,
   AlertCircle
 } from "lucide-react";
@@ -27,12 +25,17 @@ interface FinancialSummary {
   totalIncome: number;
   totalExpenses: number;
   netIncome: number;
-  ticketRevenue: number;
-  donationRevenue: number;
-  eventExpenses: number;
-  operationalExpenses: number;
-  monthlyGrowth: number;
-  yearlyGrowth: number;
+  pendingTransactions: number;
+  verifiedTransactions: number;
+  disputedTransactions: number;
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  weeklyIncome: number;
+  weeklyExpenses: number;
+  donationIncome: number;
+  eventIncome: number;
+  membershipIncome: number;
+  otherIncome: number;
 }
 
 interface EventFinancial {
@@ -64,9 +67,31 @@ interface MonthlyData {
   donations: number;
 }
 
+interface EventData {
+  _id: string;
+  eventname: string;
+  eventdate: string;
+  createdAt: string;
+  registeredSeats: number;
+  maximumSeats: number;
+}
+
+interface FinancialTransaction {
+  _id: string;
+  type: "income" | "expense";
+  category: string;
+  amount: number;
+  description: string;
+  date: string;
+  relatedTo: string;
+  eventId?: string;
+  budgetId?: string;
+}
+
 export default function FinancialDashboard() {
   const { data: session } = useSession();
   const params = useParams();
+  const router = useRouter();
   const locale = params.locale as string;
   
   const [loading, setLoading] = useState(true);
@@ -81,31 +106,107 @@ export default function FinancialDashboard() {
     try {
       setLoading(true);
       
-      // Fetch summary data
-      const summaryResponse = await fetch(`/api/finances/summary?period=${selectedPeriod}&year=${selectedYear}`);
+      // Fetch summary data using new transaction system
+      const summaryResponse = await fetch(`/api/financial-transactions/summary`);
       if (summaryResponse.ok) {
         const summaryData = await summaryResponse.json();
         setSummary(summaryData);
       }
 
-      // Fetch event financial data
-      const eventsResponse = await fetch(`/api/finances/events?period=${selectedPeriod}&year=${selectedYear}`);
-      if (eventsResponse.ok) {
-        const eventsData = await eventsResponse.json();
-        setEvents(eventsData);
+      // Fetch transactions for detailed analysis
+      const transactionsResponse = await fetch(`/api/financial-transactions`);
+      if (transactionsResponse.ok) {
+        const transactionsData = await transactionsResponse.json();
+        const allTransactions = transactionsData.transactions || [];
+        
+        // Fetch actual events and combine with financial data
+        const eventsResponse = await fetch(`/api/events`);
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          const actualEvents = eventsData.events || [];
+          
+          // Process financial transactions related to events
+          const eventTransactions = allTransactions.filter((t: FinancialTransaction) => 
+            t.relatedTo === "event" || 
+            t.category === "event revenue" ||
+            t.category === "event" ||
+            t.description?.toLowerCase().includes("event") ||
+            t.description?.toLowerCase().includes("registration")
+          );
+          
+          // Combine event data with financial data
+          const eventsWithFinancials = actualEvents.map((event: EventData) => {
+            // Find transactions related to this event
+            const relatedTransactions = eventTransactions.filter((t: FinancialTransaction) => 
+              t.eventId === event._id?.toString() || 
+              t.description?.toLowerCase().includes(event.eventname?.toLowerCase())
+            );
+            
+            const totalRevenue = relatedTransactions
+              .filter((t: FinancialTransaction) => t.type === "income")
+              .reduce((sum: number, t: FinancialTransaction) => sum + t.amount, 0);
+            
+            const totalExpenses = relatedTransactions
+              .filter((t: FinancialTransaction) => t.type === "expense")
+              .reduce((sum: number, t: FinancialTransaction) => sum + t.amount, 0);
+            
+            const netProfit = totalRevenue - totalExpenses;
+            
+            return {
+              id: event._id?.toString(),
+              title: event.eventname,
+              date: event.eventdate || event.createdAt,
+              status: "completed",
+              totalRevenue,
+              totalExpenses,
+              netProfit,
+              ticketsSold: event.registeredSeats || 0,
+              totalTickets: event.maximumSeats || 0,
+              averageTicketPrice: event.maximumSeats > 0 && event.registeredSeats > 0 ? totalRevenue / event.registeredSeats : 0
+            };
+          });
+          
+          setEvents(eventsWithFinancials);
+        } else {
+          setEvents([]);
+        }
       }
 
       // Fetch budget data
-      const budgetResponse = await fetch(`/api/finances/budgets?period=${selectedPeriod}&year=${selectedYear}`);
+      const budgetResponse = await fetch(`/api/finances/budgets`);
       if (budgetResponse.ok) {
         const budgetData = await budgetResponse.json();
         setBudgets(budgetData);
       }
 
-      // Fetch monthly data
-      const monthlyResponse = await fetch(`/api/finances/monthly?year=${selectedYear}`);
+      // Process monthly data from transactions
+      const monthlyResponse = await fetch(`/api/financial-transactions`);
       if (monthlyResponse.ok) {
-        const monthlyData = await monthlyResponse.json();
+        const transactionsData = await monthlyResponse.json();
+        const allTransactions = transactionsData.transactions || [];
+        
+        const monthlyData = allTransactions.reduce((acc: MonthlyData[], transaction: FinancialTransaction) => {
+          const date = new Date(transaction.date);
+          const monthKey = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+          
+          const existingMonth = acc.find((m: MonthlyData) => m.month === monthKey);
+          if (existingMonth) {
+            if (transaction.type === "income") {
+              existingMonth.income += transaction.amount;
+            } else {
+              existingMonth.expenses += transaction.amount;
+            }
+          } else {
+            acc.push({
+              month: monthKey,
+              income: transaction.type === "income" ? transaction.amount : 0,
+              expenses: transaction.type === "expense" ? transaction.amount : 0,
+              tickets: 0,
+              donations: transaction.relatedTo === "donation" ? transaction.amount : 0
+            });
+          }
+          return acc;
+        }, [] as MonthlyData[]);
         setMonthlyData(monthlyData);
       }
     } catch (error) {
@@ -113,7 +214,7 @@ export default function FinancialDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [selectedPeriod, selectedYear]);
+  }, []);
 
   useEffect(() => {
     if (session?.user?.role === "admin") {
@@ -153,21 +254,11 @@ export default function FinancialDashboard() {
     return months;
   };
 
-  const getGrowthColor = (growth: number) => {
-    return growth >= 0 ? "text-green-600" : "text-red-600";
-  };
 
-  const getGrowthIcon = (growth: number) => {
-    return growth >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />;
-  };
 
-  const getBudgetStatus = (allocated: number, spent: number) => {
-    const percentage = (spent / allocated) * 100;
-    if (percentage > 100) return "text-red-600";
-    if (percentage > 80) return "text-yellow-600";
-    return "text-green-600";
-  };
 
+
+  
   const handleExportReport = async () => {
     try {
       const response = await fetch(`/api/finances/export?period=${selectedPeriod}&year=${selectedYear}`);
@@ -189,14 +280,10 @@ export default function FinancialDashboard() {
     }
   };
 
-  const handleAddBudget = () => {
-    // Navigate to budget creation page or open modal
-    window.location.href = `/${locale}/dashboard/finances/budgets/create`;
-  };
-
+  
   const handleViewAllEvents = () => {
     // Navigate to detailed events financial page
-    window.location.href = `/${locale}/dashboard/finances/events`;
+    router.push(`/${locale}/dashboard/finances/events`);
   };
 
   if (session?.user?.role !== "admin") {
@@ -280,9 +367,8 @@ export default function FinancialDashboard() {
           <CardContent>
             <div className="text-2xl font-bold text-emerald-900">{summary ? formatCurrency(summary.totalIncome) : "NOK 0"}</div>
             <div className="flex items-center text-xs text-emerald-700 mt-1">
-              {summary && getGrowthIcon(summary.monthlyGrowth)}
-              <span className={`ml-1 ${summary ? getGrowthColor(summary.monthlyGrowth) : ""}`}>
-                {summary ? `${summary.monthlyGrowth >= 0 ? "+" : ""}${summary.monthlyGrowth}% from last month` : "+0% from last month"}
+              <span className="ml-1">
+                {summary ? `${formatCurrency(summary.monthlyIncome)} this month` : "NOK 0 this month"}
               </span>
             </div>
           </CardContent>
@@ -296,9 +382,8 @@ export default function FinancialDashboard() {
           <CardContent>
             <div className="text-2xl font-bold text-red-900">{summary ? formatCurrency(summary.totalExpenses) : "NOK 0"}</div>
             <div className="flex items-center text-xs text-red-700 mt-1">
-              {summary && getGrowthIcon(-summary.monthlyGrowth)}
-              <span className={`ml-1 ${summary ? getGrowthColor(-summary.monthlyGrowth) : ""}`}>
-                {summary ? `${summary.monthlyGrowth >= 0 ? "+" : ""}${summary.monthlyGrowth}% from last month` : "+0% from last month"}
+              <span className="ml-1">
+                {summary ? `${formatCurrency(summary.monthlyExpenses)} this month` : "NOK 0 this month"}
               </span>
             </div>
           </CardContent>
@@ -326,15 +411,15 @@ export default function FinancialDashboard() {
           <CardContent>
             <div className="space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="text-purple-700">Tickets:</span>
+                <span className="text-purple-700">Pending:</span>
                 <span className="font-semibold text-purple-900">
-                  {summary ? formatCurrency(summary.ticketRevenue) : "NOK 0"}
+                  {summary ? summary.pendingTransactions : 0} transactions
                 </span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-purple-700">Donations:</span>
+                <span className="text-purple-700">Verified:</span>
                 <span className="font-semibold text-purple-900">
-                  {summary ? formatCurrency(summary.donationRevenue) : "NOK 0"}
+                  {summary ? summary.verifiedTransactions : 0} transactions
                 </span>
               </div>
             </div>
@@ -342,49 +427,91 @@ export default function FinancialDashboard() {
         </Card>
       </div>
 
-      {/* Budget Overview */}
+      {/* Budget Overview Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Target className="h-5 w-5 text-blue-600" />
-              Budget Overview
+              Budget Summary
             </CardTitle>
-            <Button variant="outline" size="sm" onClick={handleAddBudget}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Budget
-            </Button>
+            <Button 
+                      variant="outline" 
+                      className="w-fit"
+                      onClick={() => router.push(`/${locale}/dashboard/finances/budget`)}
+                    >
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Manage Budget
+                    </Button>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-                            {budgets.length === 0 ? (
+              {budgets.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
+                  <Target className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                   <p>No budgets found for this period.</p>
-                  <p className="text-sm">Create a budget to start tracking your expenses.</p>
+                  <p className="text-sm">Create budgets to track your expenses effectively.</p>
+                  <Button 
+                    className="mt-4" 
+                    onClick={() => window.location.href = `/${locale}/dashboard/budget`}
+                  >
+                    Create Budget
+                  </Button>
                 </div>
               ) : (
-                budgets.map((budget, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{budget.category}</span>
-                    <span className={`text-sm font-semibold ${getBudgetStatus(budget.allocated, budget.spent)}`}>
-                      {formatCurrency(budget.spent)} / {formatCurrency(budget.allocated)}
-                    </span>
+                <>
+                  {/* Budget Summary Cards */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {budgets.length}
+                      </div>
+                      <div className="text-sm text-gray-600">Active Budgets</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">
+                        {budgets.filter(b => b.percentage < 80).length}
+                      </div>
+                      <div className="text-sm text-gray-600">On Track</div>
+                    </div>
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <div className="text-2xl font-bold text-red-600">
+                        {budgets.filter(b => b.percentage >= 80).length}
+                      </div>
+                      <div className="text-sm text-gray-600">Need Attention</div>
+                    </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full ${
-                        budget.percentage > 100 ? "bg-red-500" : budget.percentage > 80 ? "bg-yellow-500" : "bg-green-500"
-                      }`}
-                      style={{ width: `${Math.min(budget.percentage, 100)}%` }}
-                    ></div>
+                  
+                  {/* Overall Budget Progress */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Overall Budget Usage</span>
+                      <span className="text-sm font-semibold">
+                        {formatCurrency(budgets.reduce((sum, b) => sum + b.spent, 0))} / {formatCurrency(budgets.reduce((sum, b) => sum + b.allocated, 0))}
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className={`h-3 rounded-full ${
+                          budgets.reduce((sum, b) => sum + b.spent, 0) > budgets.reduce((sum, b) => sum + b.allocated, 0) 
+                            ? "bg-red-500" 
+                            : (budgets.reduce((sum, b) => sum + b.spent, 0) / budgets.reduce((sum, b) => sum + b.allocated, 0)) * 100 > 80 
+                              ? "bg-yellow-500" 
+                              : "bg-green-500"
+                        }`}
+                        style={{ 
+                          width: `${Math.min((budgets.reduce((sum, b) => sum + b.spent, 0) / budgets.reduce((sum, b) => sum + b.allocated, 0)) * 100, 100)}%` 
+                        }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-600">
+                      <span>{((budgets.reduce((sum, b) => sum + b.spent, 0) / budgets.reduce((sum, b) => sum + b.allocated, 0)) * 100).toFixed(1)}% used</span>
+                      <span>{formatCurrency(budgets.reduce((sum, b) => sum + b.remaining, 0))} remaining</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-600">
-                    <span>{budget.percentage.toFixed(1)}% used</span>
-                    <span>{formatCurrency(budget.remaining)} remaining</span>
-                  </div>
-                </div>
-                ))
+                  
+             
+                </>
               )}
             </div>
           </CardContent>
@@ -439,9 +566,9 @@ export default function FinancialDashboard() {
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-600">
-                  {summary ? formatCurrency(summary.ticketRevenue) : "NOK 0"}
+                  {formatCurrency(events.reduce((sum, event) => sum + event.totalRevenue, 0))}
                 </div>
-                <div className="text-sm text-gray-600">Total ticket sales</div>
+                <div className="text-sm text-gray-600">Total event revenue</div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -475,20 +602,22 @@ export default function FinancialDashboard() {
             <div className="space-y-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-pink-600">
-                  {summary ? formatCurrency(summary.donationRevenue) : "NOK 0"}
+                  {summary ? formatCurrency(summary.donationIncome) : "NOK 0"}
                 </div>
                 <div className="text-sm text-gray-600">Total donations</div>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Monthly average:</span>
+                  <span>Event Revenue:</span>
                   <span className="font-semibold">
-                    {summary ? formatCurrency(summary.donationRevenue / 12) : "NOK 0"}
+                    {summary ? formatCurrency(summary.eventIncome) : "NOK 0"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span>Growth rate:</span>
-                  <span className="font-semibold text-green-600">+12.5%</span>
+                  <span>Membership Revenue:</span>
+                  <span className="font-semibold">
+                    {summary ? formatCurrency(summary.membershipIncome) : "NOK 0"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -505,10 +634,10 @@ export default function FinancialDashboard() {
           <CardContent>
             <div className="space-y-4">
               <div className="text-center">
-                <div className={`text-3xl font-bold ${summary ? getGrowthColor(summary.yearlyGrowth) : "text-gray-600"}`}>
-                  {summary ? `${summary.yearlyGrowth}%` : "0%"}
+                <div className="text-3xl font-bold text-green-600">
+                  {summary ? formatCurrency(summary.totalIncome) : "NOK 0"}
                 </div>
-                <div className="text-sm text-gray-600">Yearly growth</div>
+                <div className="text-sm text-gray-600">Total income</div>
               </div>
               <div className="space-y-2">
                 {getLastThreeMonths().map((month, index) => (

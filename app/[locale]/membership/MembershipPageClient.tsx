@@ -49,6 +49,8 @@ interface Translations {
 	skills_expertise: string;
 	skills_expertise_ph: string;
 	membership_type: string;
+	position: string;
+	position_placeholder: string;
 	general_member: string;
 	general_member_desc: string;
 	areas_of_interests: string;
@@ -130,6 +132,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		profession: "",
 		membershipType: "general",
 		membershipStatus: "pending",
+		position: "", // Only for executive members
 		skills: "",
 		volunteerInterest: [] as string[],
 		agreeTerms: false,
@@ -420,6 +423,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				profession: "",
 				membershipType: "general",
 				membershipStatus: "pending",
+				position: "",
 				skills: "",
 				volunteerInterest: [],
 				agreeTerms: false,
@@ -450,6 +454,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			profession: "",
 			membershipType: "general",
 			membershipStatus: "pending",
+			position: "",
 			skills: "",
 			volunteerInterest: [],
 			agreeTerms: false,
@@ -673,6 +678,24 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 							</label>
 						</div>
 					</div>
+
+					{/* Position Field - Only for Executive Members */}
+					{formData.membershipType === "executive" && (
+						<div>
+							<label htmlFor="position" className="block text-xl font-semibold text-gray-900 mb-4">
+								{t.position}
+							</label>
+							<input
+								type="text"
+								id="position"
+								name="position"
+								value={formData.position}
+								onChange={handleChange}
+								placeholder={t.position_placeholder}
+								className="w-full px-4 py-3 border border-light rounded-lg focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all"
+							/>
+						</div>
+					)}
 
 					{/* Volunteer Interests */}
 					<div>

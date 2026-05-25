@@ -61,11 +61,8 @@ export function useOptimizedFetch(url, options = {}) {
       return result;
     } catch (err) {
       if (err.name === 'AbortError') {
-        console.log('Request was aborted');
         return;
       }
-      
-      console.error('Fetch error:', err);
       setError(err);
       setLoading(false);
       throw err;

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, Users } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import SectionHeader from "./SectionHeader";
 import { useState, useEffect } from "react";
 import EventPopup from "./EventPopup";
 import ViewAllButton from "./ViewAllButton";
+import EventRegistrationModal from "./EventRegistrationModal";
 
 interface Event {
 	_id: string;
@@ -21,6 +22,13 @@ interface Event {
 	eventposter2Url?: string;
 	eventposter3Url?: string;
 	eventvideoUrl?: string;
+	price?: number;
+	studentPrice?: number;
+	maximumSeats?: number;
+	registeredSeats?: number;
+	registrationEnabled?: boolean;
+	paymentCollectionEnabled?: boolean;
+	practicalInfo?: string;
 	createdAt: string;
 }
 
@@ -29,6 +37,7 @@ export default function EventsTimeline() {
 	const [events, setEvents] = useState<Event[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [latestEvent, setLatestEvent] = useState<Event | null>(null);
+	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
 
 	// Function to get most recent events (regardless of date)
 	const getRecentEvents = (allEvents: Event[]) => {
@@ -101,6 +110,24 @@ export default function EventsTimeline() {
 		return event.eventdescription || "";
 	};
 
+	const isEventPast = (eventDate: string) => {
+		return new Date(eventDate).getTime() < new Date().setHours(0, 0, 0, 0);
+	};
+
+	// const getPriceLines = (event: Event) => {
+	// 	if (event.paymentCollectionEnabled === false) return [];
+	// 	const lines = [];
+	// 	if (event.price !== undefined && event.price !== null) lines.push(`Adult: NOK ${event.price}`);
+	// 	if (event.studentPrice !== undefined && event.studentPrice !== null) lines.push(`Student: NOK ${event.studentPrice}`);
+	// 	return lines;
+	// };
+
+	// const getSeatsRemaining = (event: Event) => {
+	// 	const maximumSeats = Number(event.maximumSeats || 0);
+	// 	if (maximumSeats <= 0) return null;
+	// 	return Math.max(maximumSeats - Number(event.registeredSeats || 0), 0);
+	// };
+
 	// const getEventTypeColor = (type?: string) => {
 	// 	return "from-blue-500 to-blue-600";
 	// };
@@ -139,7 +166,7 @@ export default function EventsTimeline() {
 						className="text-center mb-16"
 					>
 						<SectionHeader 
-							heading="Recent Events" 
+							heading="Events" 
 							seeAllLink={`/${locale}/events`}
 							seeAllText="See All"
 						/>
@@ -211,6 +238,46 @@ export default function EventsTimeline() {
 															View Details
 														</button>
 													</Link>
+													
+													{/* Register Button */}
+													<div onClick={(e) => e.stopPropagation()} className="flex-1">
+														{(() => {
+															if (event.registrationEnabled === false) {
+																return (
+																	<button
+																		disabled
+																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																	>
+																		<Users className="w-5 h-5" />
+																		Registration Closed
+																	</button>
+																);
+															} else if (isEventPast(event.eventdate)) {
+																return (
+																	<button
+																		disabled
+																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																	>
+																		<Users className="w-5 h-5" />
+																		Completed
+																	</button>
+																);
+															} else {
+																return (
+																	<button
+																		onClick={(e) => {
+																			e.stopPropagation();
+																			setRegistrationModal(event);
+																		}}
+																		className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+																	>
+																		<Users className="w-5 h-5" />
+																		Register Now
+																	</button>
+																);
+															}
+														})()}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -238,6 +305,11 @@ export default function EventsTimeline() {
 				</div>
 			</section>
 			<EventPopup latestEvent={latestEvent} />
+			<EventRegistrationModal
+				event={registrationModal}
+				isOpen={!!registrationModal}
+				onClose={() => setRegistrationModal(null)}
+			/>
 		</>
 	);
 }

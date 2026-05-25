@@ -652,11 +652,7 @@ function PaymentStep({
                       <span>NOK {studentTotal}</span>
                     </div>
                   )}
-                  {data.children > 0 && (
-                    <div className="text-xs text-red-600">
-                      DEBUG: studentPrice={studentPrice}, studentTotal={studentTotal}, rawStudentPrice={event.studentPrice}
-                    </div>
-                  )}
+             
                 </div>
               </div>
               

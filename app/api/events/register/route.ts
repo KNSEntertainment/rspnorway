@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import ConnectDB from "@/lib/mongodb";
 import Event from "@/models/Event.Model";
 import EventRegistration from "@/models/EventRegistration.Model";
+import FinancialTransaction from "@/models/FinancialTransaction.Model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import QRCode from "qrcode";
@@ -166,6 +167,37 @@ export async function POST(request: NextRequest) {
         totalCollection: totalAmount,
       },
     });
+
+    // Create financial transaction for the registration income
+    if (totalAmount > 0) {
+      try {
+        const financialTransaction = new FinancialTransaction({
+          type: "income",
+          category: "event revenue",
+          subcategory: "ticket sales",
+          amount: totalAmount,
+          description: `Event registration for ${event.eventname} - ${adults} adult(s)${children > 0 ? `, ${children} child(ren)` : ''}`,
+          date: new Date(),
+          paymentMethod: "online",
+          referenceNumber: registrationId,
+          relatedTo: "event",
+          relatedId: eventId,
+          eventId: eventId,
+          status: "verified",
+          verifiedBy: "system",
+          verifiedAt: new Date(),
+          notes: `Registration ID: ${registrationId}, Attendees: ${firstName} ${lastName} (${email})`,
+          tags: ["event-registration", "ticket-sales", event.eventname.toLowerCase().replace(/\s+/g, '-')],
+          createdBy: session?.user?.email || "system@rspnorway.org",
+        });
+
+        await financialTransaction.save();
+        console.log('Financial transaction created for registration:', registrationId);
+      } catch (transactionError) {
+        console.error('Error creating financial transaction:', transactionError);
+        // Don't fail the registration if transaction creation fails
+      }
+    }
     
     // Send email with QR code and receipt
     try {

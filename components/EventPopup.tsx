@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Calendar, Clock, MapPin, ArrowRight, Users } from "lucide-react";
+import { X, Calendar, Clock, MapPin, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import EventRegistrationModal from "./EventRegistrationModal";
 
 interface Event {
 	_id: string;
@@ -22,7 +23,7 @@ interface EventPopupProps {
 export default function EventPopup({ latestEvent }: EventPopupProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [hasSeenPopup, setHasSeenPopup] = useState(false);
-	const [isTicketPopupOpen, setIsTicketPopupOpen] = useState(false);
+	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
 
 	useEffect(() => {
 		// Check if user has seen the popup before
@@ -48,11 +49,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 
 	const handleBookTicket = () => {
 		setIsOpen(false);
-		setIsTicketPopupOpen(true);
-	};
-
-	const handleTicketPopupClose = () => {
-		setIsTicketPopupOpen(false);
+		setRegistrationModal(latestEvent);
 	};
 
 	if (!latestEvent) return null;
@@ -172,65 +169,11 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 				)}
 			</AnimatePresence>
 
-			{/* Ticket Booking Popup */}
-			<AnimatePresence>
-				{isTicketPopupOpen && (
-					<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-						{/* Backdrop */}
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleTicketPopupClose} />
-
-						{/* Modal Content */}
-						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full z-10">
-							{/* Close Button */}
-							<button onClick={handleTicketPopupClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
-								<X className="w-5 h-5" />
-							</button>
-
-							{/* Content */}
-							<div className="p-8">
-								{/* Icon */}
-								<div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-									<Users className="w-8 h-8 text-white" />
-								</div>
-
-								{/* Title */}
-								<h3 className="text-2xl font-bold text-gray-900 text-center mb-4">Ticket Booking</h3>
-
-								{/* Message */}
-								<div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-									<p className="text-gray-700 text-center leading-relaxed">
-										Please contact <span className="font-semibold text-blue-600">Mr. Saroj Thapa</span> for ticket booking by calling on
-									</p>
-									<div className="mt-3 text-center">
-										<a href="tel:47734203" className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-											<Calendar className="w-5 h-5 mr-2" />
-											477 342 03
-										</a>
-									</div>
-								</div>
-
-								{/* Additional Info */}
-								<div className="text-center text-sm text-gray-500">
-									<p className="mb-2">Available Monday - Friday, 10:00 AM - 6:00 PM</p>
-									<p>
-										Or email us at{" "}
-										<a href="mailto:info@pnsbnorway.org" className="text-blue-600 hover:text-blue-700 font-medium">
-											info@pnsbnorway.org
-										</a>
-									</p>
-								</div>
-
-								{/* Close Button */}
-								<div className="mt-6">
-									<button onClick={handleTicketPopupClose} className="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all duration-300">
-										Close
-									</button>
-								</div>
-							</div>
-						</motion.div>
-					</div>
-				)}
-			</AnimatePresence>
+			<EventRegistrationModal
+				event={registrationModal}
+				isOpen={!!registrationModal}
+				onClose={() => setRegistrationModal(null)}
+			/>
 		</>
 	);
 }
