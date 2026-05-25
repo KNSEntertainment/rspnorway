@@ -149,6 +149,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const [captchaVerified, setCaptchaVerified] = useState(false);
 	const [captchaError, setCaptchaError] = useState("");
 	const [captchaId, setCaptchaId] = useState("");
+	const [captchaInput, setCaptchaInput] = useState("");
 
 	// Cascading dropdown state
 	const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
@@ -343,9 +344,10 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		}
 	};
 
-	const handleCaptchaVerify = (isValid: boolean, captchaId?: string) => {
+	const handleCaptchaVerify = (isValid: boolean, captchaId?: string, userInput?: string) => {
 		setCaptchaVerified(isValid);
 		setCaptchaId(captchaId || "");
+		setCaptchaInput(userInput || "");
 		if (!isValid) {
 			setCaptchaError("Please complete the captcha verification.");
 		} else {
@@ -374,7 +376,8 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				},
 				body: JSON.stringify({
 					...formData,
-					captchaId: captchaId
+					captchaId: captchaId,
+					captchaInput: captchaInput
 				}),
 			});
 			const result = await res.json();

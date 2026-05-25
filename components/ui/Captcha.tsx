@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "./button";
 
 interface CaptchaProps {
-	onVerify: (isValid: boolean, captchaId?: string) => void;
+	onVerify: (isValid: boolean, captchaId?: string, userInput?: string) => void;
 	onError?: (error: string) => void;
 	className?: string;
 }
@@ -46,7 +46,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 			setCaptchaId(newCaptchaId);
 			setUserInput("");
 			setIsVerified(false);
-			onVerifyRef.current(false, newCaptchaId);
+			onVerifyRef.current(false, newCaptchaId, "");
 		} catch (error) {
 			console.error('Captcha fetch error:', error);
 			onErrorRef.current?.('Failed to load captcha');
@@ -89,16 +89,16 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 
 			if (response.ok) {
 				setIsVerified(result.valid);
-				onVerifyRef.current(result.valid, captchaId);
+				onVerifyRef.current(result.valid, captchaId, value);
 			} else {
 				setIsVerified(false);
-				onVerifyRef.current(false, captchaId);
+				onVerifyRef.current(false, captchaId, value);
 				onErrorRef.current?.(result.error || 'Validation failed');
 			}
 		} catch (error) {
 			console.error('Captcha validation error:', error);
 			setIsVerified(false);
-			onVerifyRef.current(false, captchaId);
+			onVerifyRef.current(false, captchaId, "");
 			onErrorRef.current?.('Failed to validate captcha');
 		}
 	};
@@ -112,7 +112,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 			validateCaptcha(value);
 		} else {
 			setIsVerified(false);
-			onVerifyRef.current(false, captchaId);
+			onVerifyRef.current(false, captchaId, value);
 		}
 	};
 

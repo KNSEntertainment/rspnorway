@@ -84,6 +84,12 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Captcha expired or invalid" }, { status: 400 });
 		}
 
+		// Validate captcha text (case-insensitive)
+		if (!data.captchaInput || data.captchaInput.toLowerCase() !== storedCaptcha.text) {
+			captchaStore.delete(data.captchaId);
+			return NextResponse.json({ error: "Invalid captcha text" }, { status: 400 });
+		}
+
 		// Remove captcha after validation attempt (one-time use)
 		captchaStore.delete(data.captchaId);
 

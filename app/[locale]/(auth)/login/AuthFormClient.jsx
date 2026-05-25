@@ -11,7 +11,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import Captcha from "@/components/ui/Captcha";
 
 const InputField = memo(({ id, icon: Icon, name, value, onChange, ...props }) => (
 	<div className="relative">
@@ -43,9 +42,6 @@ export default function AuthFormContent() {
 	const [success, setSuccess] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [submitting, setSubmitting] = useState(false);
-	const [captchaVerified, setCaptchaVerified] = useState(false);
-	const [captchaError, setCaptchaError] = useState("");
-	const [captchaId, setCaptchaId] = useState("");
 
 	const hasInvite = Boolean(inviteToken);
 
@@ -82,12 +78,6 @@ export default function AuthFormContent() {
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		
-		// Validate captcha
-		if (!captchaVerified || !captchaId) {
-			setCaptchaError("Please complete the captcha verification.");
-			return;
-		}
-		
 		setError("");
 		setSuccess("");
 		setSubmitting(true);
@@ -108,8 +98,6 @@ export default function AuthFormContent() {
 		} else {
 			console.log("Login failed:", result?.error);
 			setError(result?.error || t("error"));
-			// Reset captcha on failed login
-			setCaptchaVerified(false);
 		}
 	};
 
@@ -123,21 +111,6 @@ export default function AuthFormContent() {
 		setError("");
 		router.push("/");
 	}, [router]);
-
-	// Captcha handlers
-	const handleCaptchaVerify = useCallback((isValid, captchaId) => {
-		setCaptchaVerified(isValid);
-		setCaptchaId(captchaId || "");
-		if (!isValid) {
-			setCaptchaError("Please complete the captcha verification.");
-		} else {
-			setCaptchaError("");
-		}
-	}, []);
-
-	const handleCaptchaError = useCallback((error) => {
-		setCaptchaError(error);
-	}, []);
 
 	// Password visibility toggle
 	const togglePasswordVisibility = useCallback(() => {
@@ -210,15 +183,6 @@ export default function AuthFormContent() {
 										<Link href={`/${locale}/forgot-password`} className="text-sm text-brand hover:underline">
 											{t("forgot_password")}
 										</Link>
-									</div>
-									<div className="mt-4">
-										<Captcha 
-											onVerify={handleCaptchaVerify} 
-											onError={handleCaptchaError}
-										/>
-										{captchaError && (
-											<p className="text-red-600 text-sm mt-2">{captchaError}</p>
-										)}
 									</div>
 									<div className="mt-6 flex justify-between">
 										<Button type="button" variant="outline" onClick={handleCancel}>
