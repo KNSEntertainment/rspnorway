@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Invalid captcha text" }, { status: 400 });
 		}
 
-		// Remove captcha after validation attempt (one-time use)
+		// Remove captcha after successful validation (one-time use)
 		captchaStore.delete(data.captchaId);
 
 		// Validate required fields

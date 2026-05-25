@@ -65,51 +65,15 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 		fetchCaptcha();
 	};
 
-	// Validate captcha
-	const validateCaptcha = async (value: string) => {
-		if (!captchaId || value.length !== 6) {
-			setIsVerified(false);
-			onVerifyRef.current(false, captchaId);
-			return;
-		}
-
-		try {
-			const response = await fetch('/api/captcha/validate', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					captchaId,
-					userInput: value
-				})
-			});
-
-			const result = await response.json();
-
-			if (response.ok) {
-				setIsVerified(result.valid);
-				onVerifyRef.current(result.valid, captchaId, value);
-			} else {
-				setIsVerified(false);
-				onVerifyRef.current(false, captchaId, value);
-				onErrorRef.current?.(result.error || 'Validation failed');
-			}
-		} catch (error) {
-			console.error('Captcha validation error:', error);
-			setIsVerified(false);
-			onVerifyRef.current(false, captchaId, "");
-			onErrorRef.current?.('Failed to validate captcha');
-		}
-	};
-
+	
 	// Handle input change
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
 		setUserInput(value);
 		
+		// Don't auto-validate - just notify parent of the input
 		if (value.length === 6) {
-			validateCaptcha(value);
+			onVerifyRef.current(true, captchaId, value); // Assume valid for form submission
 		} else {
 			setIsVerified(false);
 			onVerifyRef.current(false, captchaId, value);
