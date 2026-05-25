@@ -57,12 +57,23 @@ import Link from "next/link";
 
 function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact, session, member }) {
 	const initial = name?.charAt(0).toUpperCase() ?? "?";
+	
+	// Debug logging for production vs localhost differences
+	if (member?.profilePhoto && process.env.NODE_ENV === 'production') {
+		console.log('MemberCard Debug:', {
+			name,
+			permissionPhotos: member?.permissionPhotos,
+			permissionType: typeof member?.permissionPhotos,
+			hasPhoto: !!member?.profilePhoto,
+			imageUrl
+		});
+	}
 
 	return (
 		<div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
 			{/* Avatar / Photo */}
 			<div className="aspect-square overflow-hidden bg-light">
-				{member?.permissionPhotos && imageUrl && !imageUrl.startsWith("data:") ? (
+				{(member?.permissionPhotos !== false && imageUrl && !imageUrl.startsWith("data:")) ? (
 					<Image src={imageUrl} alt={name} width={200} height={200} className="w-full h-full object-cover" />
 				) : (
 					<div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${avatarGradient}`}>
@@ -76,16 +87,16 @@ function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact,
 				<h3 className="text-xl font-bold text-gray-900 mb-2">{name}</h3>
 				{/* {badgeLabel && <p className={`text-sm font-medium mb-3 ${badgeClass}`}>{badgeLabel}</p>} */}
 
-				{/* Contact — only show when session exists AND member has granted permission */}
+				{/* Contact — only show when session exists AND member has granted permission (or undefined for executive members) */}
 				{showContact && session?.user && (
 					<div className="space-y-2 mb-4">
-						{member?.permissionPhone && phone && (
+						{(member?.permissionPhone !== false || member?.permissionPhone === undefined) && phone && (
 							<a href={`tel:${phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
 								<Phone className="w-4 h-4" />
 								{phone}
 							</a>
 						)}
-						{member?.permissionEmail && (
+						{(member?.permissionEmail !== false || member?.permissionEmail === undefined) && (
 							<a href={`mailto:${email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
 								<Mail className="w-4 h-4" />
 								{email}
