@@ -58,6 +58,7 @@ const MembershipSchema = new mongoose.Schema({
 	// Metadata
 	approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Admin who approved this member
 	approvedAt: { type: Date },
+	memberSinceDate: { type: Date, default: Date.now }, // Editable member since date for ID cards
 	lastLoginAt: { type: Date },
 	loginAttempts: { type: Number, default: 0 },
 	lockUntil: { type: Date },

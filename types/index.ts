@@ -64,6 +64,7 @@ export interface Membership {
 	permissionPhone?: boolean;
 	permissionEmail?: boolean;
 	profilePhoto?: string;
+	memberSinceDate?: string;
 	createdAt: string;
 }
 

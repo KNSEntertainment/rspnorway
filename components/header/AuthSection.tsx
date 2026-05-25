@@ -21,7 +21,7 @@ export default function AuthSection() {
 	if (user) return <LoggedInUser user={user} />;
 
 	return (
-		<Link href="/en/login" locale={locale} className="flex btn-white">
+		<Link href="/login" locale={locale} className="flex btn-white">
 			{t("login")}
 		</Link>
 	);

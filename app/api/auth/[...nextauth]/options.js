@@ -165,8 +165,16 @@ export const authOptions = {
 				// This will be handled by the client-side logic
 				return baseUrl; // Fallback to home
 			}
-			// Allows relative callback URLs
-			if (url.startsWith("/")) return `${baseUrl}${url}`;
+			// Allows relative callback URLs, but ensure no duplicate locale prefix
+			if (url.startsWith("/")) {
+				// Check if URL already has a locale prefix
+				const localeMatch = url.match(/^\/(en|no|ne)\//);
+				if (localeMatch) {
+					return `${baseUrl}${url}`; // Already has locale, use as-is
+				}
+				// No locale prefix, add default locale
+				return `${baseUrl}/en${url}`;
+			}
 			// Allows callback URLs on the same origin
 			else if (new URL(url).origin === baseUrl) return url;
 			return baseUrl;

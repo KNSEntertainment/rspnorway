@@ -17,6 +17,7 @@ interface MemberIDCardProps {
 		city?: string;
 		province?: string;
 		createdAt: string;
+		memberSinceDate?: string;
 		permissionPhotos?: boolean;
 		permissionPhone?: boolean;
 		permissionEmail?: boolean;
@@ -41,8 +42,8 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 	const qrData = `${baseUrl}/${locale}/members/${memberData._id}`;
 
 
-	// Format membership date
-	const membershipDate = new Date(memberData.createdAt).toLocaleDateString("en-US", {
+	// Format membership date - use memberSinceDate if available, otherwise fallback to createdAt
+	const membershipDate = new Date(memberData.memberSinceDate || memberData.createdAt).toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "short",
 		day: "numeric",
@@ -77,7 +78,7 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 
 						<div className="w-full flex justify-center mt-2 mb-4">
 							<div className="w-20 h-20 rounded-full overflow-hidden bg-light border-2 border-brand/20">
-								{memberData.permissionPhotos && memberData.profilePhoto ? (
+								{memberData.profilePhoto ? (
 									<Image src={memberData.profilePhoto} alt={memberData.fullName} width={80} height={80} className="w-full h-full object-cover" />
 								) : (
 									<div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-brand/20 to-brand/10">
@@ -96,13 +97,13 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 
 							{/* Membership Date */}
 							<div>
-								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Since</p>
-								<p className="text-xs font-semibold text-gray-900">{membershipDate}</p>
+								<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Member Type</p>
+								<p className="text-xs font-semibold text-gray-900">{memberData.membershipType.charAt(0).toUpperCase() + memberData.membershipType.slice(1)} Member</p>
 							</div>
 
 							{/* Contact Information */}
 							<div className="space-y-1">
-								{memberData.permissionPhone && memberData.phone && (
+								{memberData.phone && (
 									<div>
 										<p className="text-[10px] text-gray-500 font-semibold uppercase tracking-wide">Contact</p>
 										<p className="text-xs font-semibold text-gray-900">{memberData.phone}</p>
@@ -169,13 +170,13 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 						{/* Emergency Contact */}
 						<div>
 							<p className="text-xs font-bold text-gray-900 mb-2">Emergency Contact</p>
-							{memberData.permissionEmail && memberData.email && (
+							{memberData.email && (
 								<div className="flex items-center gap-2">
 									<span className="text-[10px] font-semibold text-gray-500">Email:</span>
 									<span className="text-[10px] text-gray-900">{memberData.email}</span>
 								</div>
 							)}
-							{memberData.permissionPhone && memberData.phone && (
+							{memberData.phone && (
 								<div className="flex items-center gap-2 mt-1">
 									<span className="text-[10px] font-semibold text-gray-500">Phone:</span>
 									<span className="text-[10px] text-gray-900">{memberData.phone}</span>
