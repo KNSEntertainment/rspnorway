@@ -543,9 +543,12 @@
 		"mobile": "Mobile",
 		"executive_members": "Executive Members",
 		"executive_member": "Executive Member",
+		"executive": "Executive",
 		"email": "Email",
 		"active_members": "Active Members",
 		"general_members": "General Members",
+		"general": "General",
+		"all_members": "All Members",
 		"general_member": "General Member"
 	},
 	"newsletter": {

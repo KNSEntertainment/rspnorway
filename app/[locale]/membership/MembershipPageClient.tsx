@@ -149,8 +149,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	const geoapifyKey = process.env.NEXT_PUBLIC_GEOAPIFY_KEY;
 	const [captchaVerified, setCaptchaVerified] = useState(false);
 	const [captchaError, setCaptchaError] = useState("");
-	const [captchaId, setCaptchaId] = useState("");
-	const [captchaInput, setCaptchaInput] = useState("");
+	const [captchaSuccess, setCaptchaSuccess] = useState(false);
 
 	// Cascading dropdown state
 	const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
@@ -361,19 +360,20 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		}
 	};
 
-	const handleCaptchaVerify = (isValid: boolean, captchaId?: string, userInput?: string) => {
+	const handleCaptchaVerify = (isValid: boolean) => {
 		setCaptchaVerified(isValid);
-		setCaptchaId(captchaId || "");
-		setCaptchaInput(userInput || "");
 		if (!isValid) {
 			setCaptchaError("Please complete the captcha verification.");
+			setCaptchaSuccess(false);
 		} else {
 			setCaptchaError("");
+			setCaptchaSuccess(true);
 		}
 	};
 
 	const handleCaptchaError = (error: string) => {
 		setCaptchaError(error);
+		setCaptchaSuccess(false);
 	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) => {
@@ -386,7 +386,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 		}
 		
 		// Validate captcha
-		if (!captchaVerified || !captchaId) {
+		if (!captchaVerified) {
 			setCaptchaError("Please complete the captcha verification.");
 			return;
 		}
@@ -397,11 +397,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					...formData,
-					captchaId: captchaId,
-					captchaInput: captchaInput
-				}),
+				body: JSON.stringify(formData),
 			});
 			const result = await res.json();
 			
@@ -432,6 +428,8 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 				permissionEmail: false,
 			});
 			setCaptchaVerified(false);
+			setCaptchaSuccess(false);
+			setCaptchaError("");
 		} catch (error) {
 			alert("There was an error submitting your application. Please try again. " + (error instanceof Error ? error.message : ""));
 		}
@@ -459,11 +457,14 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 			permissionPhone: false,
 			permissionEmail: false,
 		});
-		setEmailError("");
-		setPhoneError("");
-		setAddressSuggestions([]);
-		setAddressError("");
-		setActiveSuggestionIndex(-1);
+			setEmailError("");
+			setPhoneError("");
+			setAddressSuggestions([]);
+			setAddressError("");
+			setActiveSuggestionIndex(-1);
+			setCaptchaError("");
+			setCaptchaSuccess(false);
+			setCaptchaVerified(false);
 	};
 
 	if (submitted) {
@@ -733,6 +734,9 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 						/>
 						{captchaError && (
 							<p className="text-red-600 text-sm mt-2">{captchaError}</p>
+						)}
+						{captchaSuccess && !captchaError && (
+							<p className="text-green-600 text-sm mt-2">✓ Verified</p>
 						)}
 					</div>
 

@@ -104,7 +104,6 @@ export default function Members() {
 	const [regularMembers, setRegularMembers] = useState([]);
 	const [departments, setDepartments] = useState([]);
 	const [filteredExecutiveMembers, setFilteredExecutiveMembers] = useState([]);
-	const [filteredActiveMembers, setFilteredActiveMembers] = useState([]);
 	const [filteredGeneralMembers, setFilteredGeneralMembers] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [filters, setFilters] = useState({
@@ -171,7 +170,6 @@ export default function Members() {
 				setExecutiveMembers([]);
 				setRegularMembers([]);
 				setFilteredExecutiveMembers([]);
-				setFilteredActiveMembers([]);
 				setFilteredGeneralMembers([]);
 				setDepartments([]);
 			} finally {
@@ -183,11 +181,24 @@ export default function Members() {
 	}, []);
 
 	useEffect(() => {
-		const activeMembers = regularMembers.filter((m) => m.membershipType === "active");
 		const generalMembers = regularMembers.filter((m) => m.membershipType === "general");
-		setFilteredExecutiveMembers(executiveMembers);
-		setFilteredActiveMembers(activeMembers);
-		setFilteredGeneralMembers(generalMembers);
+		
+		// Sort executive members by first name
+		const sortedExecutiveMembers = [...executiveMembers].sort((a, b) => {
+			const firstNameA = a.name.split(' ')[0] || a.name;
+			const firstNameB = b.name.split(' ')[0] || b.name;
+			return firstNameA.localeCompare(firstNameB);
+		});
+		
+		// Sort general members by first name
+		const sortedGeneralMembers = [...generalMembers].sort((a, b) => {
+			const firstNameA = a.fullName.split(' ')[0] || a.fullName;
+			const firstNameB = b.fullName.split(' ')[0] || b.fullName;
+			return firstNameA.localeCompare(firstNameB);
+		});
+		
+		setFilteredExecutiveMembers(sortedExecutiveMembers);
+		setFilteredGeneralMembers(sortedGeneralMembers);
 	}, [regularMembers, executiveMembers]);
 
 	const applyFilters = useCallback(() => {
@@ -203,7 +214,6 @@ export default function Members() {
 			executiveFiltered = executiveFiltered.filter((m) => m.name.toLowerCase().includes(searchLower) || m.position?.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower));
 		}
 
-		let activeFiltered = regularMembers.filter((m) => m.membershipType === "active");
 		let generalFiltered = regularMembers.filter((m) => m.membershipType === "general");
 
 		if (filters.department) {
@@ -212,7 +222,6 @@ export default function Members() {
 			};
 			const targetProvince = departmentProvinceMap[filters.department];
 			if (targetProvince) {
-				activeFiltered = activeFiltered.filter((m) => m.province === targetProvince);
 				generalFiltered = generalFiltered.filter((m) => m.province === targetProvince);
 			}
 		}
@@ -224,20 +233,31 @@ export default function Members() {
 			};
 			const targetCity = subdepartmentCityMap[filters.subdepartment];
 			if (targetCity) {
-				activeFiltered = activeFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
 				generalFiltered = generalFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
 			}
 		}
 
 		if (filters.search) {
 			const searchLower = filters.search.toLowerCase();
-			activeFiltered = activeFiltered.filter((m) => m.fullName.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.profession?.toLowerCase().includes(searchLower));
 			generalFiltered = generalFiltered.filter((m) => m.fullName.toLowerCase().includes(searchLower) || m.email.toLowerCase().includes(searchLower) || m.profession?.toLowerCase().includes(searchLower));
 		}
 
-		setFilteredExecutiveMembers(executiveFiltered);
-		setFilteredActiveMembers(activeFiltered);
-		setFilteredGeneralMembers(generalFiltered);
+		// Sort filtered executive members by first name
+		const sortedExecutiveFiltered = executiveFiltered.sort((a, b) => {
+			const firstNameA = a.name.split(' ')[0] || a.name;
+			const firstNameB = b.name.split(' ')[0] || b.name;
+			return firstNameA.localeCompare(firstNameB);
+		});
+		
+		// Sort filtered general members by first name
+		const sortedGeneralFiltered = generalFiltered.sort((a, b) => {
+			const firstNameA = a.fullName.split(' ')[0] || a.fullName;
+			const firstNameB = b.fullName.split(' ')[0] || b.fullName;
+			return firstNameA.localeCompare(firstNameB);
+		});
+		
+		setFilteredExecutiveMembers(sortedExecutiveFiltered);
+		setFilteredGeneralMembers(sortedGeneralFiltered);
 	}, [executiveMembers, regularMembers, filters]);
 
 	useEffect(() => {
@@ -454,18 +474,6 @@ export default function Members() {
 					</div>
 				)}
 
-				{/* Active Members */}
-				{filteredActiveMembers.length > 0 && (
-					<div className="mb-8 md:mb-20 p-6">
-						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("active_members")}</h2>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-							{filteredActiveMembers.map((member) => (
-								<MemberCard key={member._id} name={member.fullName} email={member.email} phone={member.phone} imageUrl={member.profilePhoto} avatarGradient="from-green-500 to-green-600" showContact={true} session={session} />
-							))}
-						</div>
-					</div>
-				)}
-
 				{/* General Members */}
 				{filteredGeneralMembers.length > 0 && (
 					<div className="mb-8">
@@ -479,7 +487,7 @@ export default function Members() {
 				)}
 
 				{/* No Results */}
-				{filteredExecutiveMembers.length === 0 && filteredActiveMembers.length === 0 && filteredGeneralMembers.length === 0 && (
+				{filteredExecutiveMembers.length === 0 && filteredGeneralMembers.length === 0 && (
 					<div className="bg-white rounded-lg shadow-sm p-12 text-center">
 						<div className="max-w-md mx-auto">
 							<svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

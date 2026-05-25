@@ -113,7 +113,7 @@ export default async function MemberDetailsPage({ params }: { params: Promise<{ 
 											<div className="flex items-center space-x-3">
 												<Calendar className="w-4 h-4 text-gray-400" />
 												<span className="text-gray-700">
-													Member since {new Date(memberData.createdAt).toLocaleDateString()}
+													Membership Updated on {new Date(memberData.createdAt).toLocaleDateString()}
 												</span>
 											</div>
 											{(!isExecutiveMember && memberData.address) && (

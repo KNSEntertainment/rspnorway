@@ -542,8 +542,11 @@
 		"email": "इमेल",
 		"executive_members": "कार्यकारी सदस्यहरू",
 		"executive_member": "कार्यकारी सदस्य",
+		"executive": "कार्यकारी",
 		"active_members": "सक्रिय सदस्यहरू",
 		"general_members": "साधारण सदस्यहरू",
+		"general": "साधारण",
+		"all_members": "सबै सदस्यहरू",
 		"general_member": "साधारण सदस्य"
 	},
 	"newsletter": {

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "./button";
 
 interface CaptchaProps {
-	onVerify: (isValid: boolean, captchaId?: string, userInput?: string) => void;
+	onVerify: (isValid: boolean) => void;
 	onError?: (error: string) => void;
 	className?: string;
 }
@@ -46,7 +46,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 			setCaptchaId(newCaptchaId);
 			setUserInput("");
 			setIsVerified(false);
-			onVerifyRef.current(false, newCaptchaId, "");
+			// Don't call onVerify on initial load to prevent error message showing
 		} catch (error) {
 			console.error('Captcha fetch error:', error);
 			onErrorRef.current?.('Failed to load captcha');
@@ -62,6 +62,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 
 	// Refresh captcha
 	const refreshCaptcha = () => {
+		setIsVerified(false);
 		fetchCaptcha();
 	};
 
@@ -71,14 +72,50 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 		const value = e.target.value;
 		setUserInput(value);
 		
-		// Don't auto-validate - just notify parent of the input
-		if (value.length === 6) {
-			onVerifyRef.current(true, captchaId, value); // Assume valid for form submission
-		} else {
+		// Clear any previous verification state when user starts typing
+		if (value.length > 0 && value.length < 6) {
 			setIsVerified(false);
-			onVerifyRef.current(false, captchaId, value);
+			// Don't call onVerify here - let the parent handle the validation logic
 		}
 	};
+
+	// Handle verification when user completes the captcha
+	const handleVerification = useCallback(async () => {
+		if (userInput.length === 6 && captchaId) {
+			try {
+				const response = await fetch('/api/captcha/validate', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ captchaId, userInput }),
+				});
+
+				if (response.ok) {
+					setIsVerified(true);
+					onVerifyRef.current(true);
+				} else {
+					setIsVerified(false);
+					onErrorRef.current?.('Invalid captcha. Please try again.');
+					onVerifyRef.current(false);
+				}
+			} catch (error) {
+				console.error('Captcha verification error:', error);
+				setIsVerified(false);
+				onErrorRef.current?.('Verification failed. Please try again.');
+				onVerifyRef.current(false);
+			}
+		}
+	}, [userInput, captchaId]);
+
+	// Auto-verify when input reaches 6 characters
+	useEffect(() => {
+		if (userInput.length === 6) {
+			handleVerification();
+		} else if (userInput.length < 6) {
+			setIsVerified(false);
+		}
+	}, [userInput, captchaId, handleVerification]);
 
 	return (
 		<div className={`space-y-3 ${className}`}>

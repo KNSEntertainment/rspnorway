@@ -539,8 +539,11 @@
 		"email": "E-post",
 		"executive_members": "Styremedlemmer",
 		"executive_member": "Styremedlem",
+		"executive": "Styremedlem",
 		"active_members": "Aktive Medlemmer",
 		"general_members": "Generelle Medlemmer",
+		"general": "Generelt",
+		"all_members": "Alle Medlemmer",
 		"general_member": "Generelt Medlem"
 	},
 	"newsletter": {
