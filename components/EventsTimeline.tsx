@@ -233,7 +233,7 @@ export default function EventsTimeline() {
 												<div className="flex gap-4">
 													<Link href={`/${locale}/events?eventId=${event._id}`}>
 														<button
-															className="flex-1 bg-brand text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200"
+															className="flex-1 bg-brand text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200"
 														>
 															View Details
 														</button>
@@ -246,7 +246,7 @@ export default function EventsTimeline() {
 																return (
 																	<button
 																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																		className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
 																	>
 																		<Users className="w-5 h-5" />
 																		Registration Closed
@@ -256,7 +256,7 @@ export default function EventsTimeline() {
 																return (
 																	<button
 																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																		className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
 																	>
 																		<Check className="w-5 h-5" />
 																		Completed

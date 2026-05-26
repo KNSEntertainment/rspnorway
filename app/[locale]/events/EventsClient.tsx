@@ -104,118 +104,146 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 		return (
 			<>
 				<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-					<div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-						<button onClick={() => setSelectedEvent(null)} className="group inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-8">
+					<div className="container max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
+						<button onClick={() => setSelectedEvent(null)} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-4 sm:mb-8">
 							<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 							</svg>
-							<span className="font-medium">{t.back}</span>
+							<span className="font-medium text-sm sm:text-base">{t.back}</span>
 						</button>
 
-						<div className="grid lg:grid-cols-3 gap-8">
+						<div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
 							{/* ── Main Content ── */}
-							<div className="lg:col-span-2 space-y-6">
-								<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+							<div className="lg:col-span-2 space-y-4 sm:space-y-6">
+								<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
 									{/* Gradient Header */}
-									<div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8">
+									<div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-4 sm:p-6 lg:p-8">
 										<div className="absolute inset-0 bg-black/10" />
-										<div className="relative flex items-start gap-6">
-											<div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 shadow-2xl border border-white/30 min-w-[100px] text-center flex-shrink-0">
-												<div className="text-4xl md:text-5xl font-bold text-white leading-none drop-shadow-lg">{day}</div>
-												<div className="text-sm md:text-base uppercase tracking-wider text-white mt-2 font-semibold">{month}</div>
-											</div>
-											<div className="flex-1">
-												<h1 className="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight drop-shadow-lg">{selectedEvent.eventname}</h1>
-												<div className="flex flex-wrap gap-4 text-white/95">
-													{selectedEvent.eventtime && (
-														<div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-															<Clock className="w-4 h-4" />
-															<span className="text-sm font-medium">{selectedEvent.eventtime}</span>
-														</div>
-													)}
-													{selectedEvent.eventvenue && (
-														<div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-															<MapPin className="w-4 h-4" />
-															<span className="text-sm font-medium">{selectedEvent.eventvenue}</span>
-														</div>
-													)}
-													{selectedPriceLines.length > 0 && (
-														<div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-															<span className="text-sm font-medium">{selectedPriceLines.join(" | ")}</span>
-														</div>
-													)}
-													{selectedSeatsRemaining !== null && (
-														<div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-															<Users className="w-4 h-4" />
-															<span className="text-sm font-medium">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats left` : "Sold out"}</span>
-														</div>
-													)}
+										<div className="relative">
+											<h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-lg">{selectedEvent.eventname}</h1>
+											<div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 text-white/95">
+												{/* Date Badge */}
+												<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
+													<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+													<span className="text-xs sm:text-sm font-medium">{day} {month}</span>
 												</div>
+												{selectedEvent.eventtime && (
+													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
+														<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+														<span className="text-xs sm:text-sm font-medium">{selectedEvent.eventtime}</span>
+													</div>
+												)}
+												{selectedEvent.eventvenue && (
+													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
+														<MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+														<span className="text-xs sm:text-sm font-medium">{selectedEvent.eventvenue}</span>
+													</div>
+												)}
+												{selectedPriceLines.length > 0 && (
+													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
+														<span className="text-xs sm:text-sm font-medium">{selectedPriceLines.join(" | ")}</span>
+													</div>
+												)}
+												{selectedSeatsRemaining !== null && (
+													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
+														<Users className="w-3 h-3 sm:w-4 sm:h-4" />
+														<span className="text-xs sm:text-sm font-medium">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats left` : "Sold out"}</span>
+													</div>
+												)}
 											</div>
 										</div>
 									</div>
 
 									{/* Body */}
-									<div className="p-8 space-y-6">
+									<div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
 										{/* Main Image */}
-										<div className="relative overflow-hidden rounded-xl bg-gray-50 border border-gray-200">
+										<div className="relative overflow-hidden rounded-lg sm:rounded-xl bg-gray-50 border border-gray-200">
 											{eventImages.length > 0 ? (
 												<div className="aspect-video sm:aspect-square relative">
 													<Image src={eventImages[0]} alt={selectedEvent.eventname} fill className="object-cover transition-transform duration-300 hover:scale-105" priority />
 												</div>
 											) : (
 												<div className="aspect-video sm:aspect-square flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-													<Calendar className="w-16 h-16 text-gray-400" />
+													<Calendar className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
 												</div>
 											)}
 										</div>
 
 										{/* Description */}
-										<div className="bg-white rounded-xl p-6 border border-gray-100">
-											<div className="flex items-center gap-3 mb-4">
-												<div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-													<svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100">
+											<div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+												<div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+													<svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
 													</svg>
 												</div>
-												<h2 className="text-xl font-bold text-gray-900">About this event</h2>
+												<h2 className="text-lg sm:text-xl font-bold text-gray-900">About this event</h2>
 											</div>
 											{selectedEvent.eventdescription && selectedEvent.eventdescription !== "" ? (
-												<div className="prose prose-lg max-w-none">
-													<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">{selectedEvent.eventdescription}</p>
+												<div className="prose prose-sm sm:prose-lg max-w-none">
+													<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">{selectedEvent.eventdescription}</p>
 												</div>
 											) : (
-												<div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6 text-center">
-													<div className="w-12 h-12 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
-														<svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg sm:rounded-xl p-4 sm:p-6 text-center">
+													<div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+														<svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 														</svg>
 													</div>
-													<h3 className="text-amber-800 font-semibold mb-2">Coming Soon</h3>
-													<p className="text-amber-700">Event description will be available soon. Thank you for your patience.</p>
+													<h3 className="text-amber-800 font-semibold mb-2 text-sm sm:text-base">Coming Soon</h3>
+													<p className="text-amber-700 text-sm sm:text-base">Event description will be available soon. Thank you for your patience.</p>
 												</div>
 											)}
 										</div>
 
 										{selectedEvent.practicalInfo && (
-											<div className="bg-emerald-50 rounded-xl p-6 border border-emerald-100">
-												<h2 className="text-xl font-bold text-gray-900 mb-3">Practical Information</h2>
-												<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">{selectedEvent.practicalInfo}</p>
+											<div className="bg-emerald-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-emerald-100">
+												<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Practical Information</h2>
+												<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">{selectedEvent.practicalInfo}</p>
 											</div>
 										)}
 
 										{selectedHasTicketInfo && (
-											<div className="bg-brand/5 rounded-xl p-6 border border-brand/10">
-												<h2 className="text-xl font-bold text-gray-900 mb-4">Ticket Information</h2>
-												<div className="space-y-3 text-gray-700">
+											<div className="bg-brand/5 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-brand/10">
+												<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Ticket Information</h2>
+												<div className="space-y-2 sm:space-y-3 text-gray-700">
 													{selectedPriceLines.length > 0 && (
-														<div className="font-semibold text-brand">{selectedPriceLines.join(" | ")}</div>
+														<div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>
 													)}
 													{selectedSeatsRemaining !== null && (
-														<div>{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>
+														<div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>
 													)}
 													{selectedEvent.practicalInfo && (
-														<div className="text-sm text-gray-600 whitespace-pre-wrap">{selectedEvent.practicalInfo}</div>
+														<div className="text-xs sm:text-sm text-gray-600 whitespace-pre-wrap">{selectedEvent.practicalInfo}</div>
+													)}
+												</div>
+												
+												{/* Register Button */}
+												<div className="mt-4 sm:mt-6">
+													{isEventPast(selectedEvent.eventdate) ? (
+														<button
+															disabled
+															className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+														>
+															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
+															Event Completed
+														</button>
+													) : selectedEvent.registrationEnabled === false ? (
+														<button
+															disabled
+															className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+														>
+															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
+															Registration Closed
+														</button>
+													) : (
+														<button
+															onClick={() => setRegistrationModal(selectedEvent)}
+															className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2"
+														>
+															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
+															Register Now
+														</button>
 													)}
 												</div>
 											</div>
@@ -223,14 +251,14 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 
 										{/* Gallery */}
 										{eventImages.length > 1 && (
-											<div className="bg-white rounded-xl p-6 border border-gray-100">
-												<h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-													<svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100">
+												<h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+													<svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
 													</svg>
 													Event Gallery
 												</h3>
-												<div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+												<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
 													{eventImages.slice(1).map((url, index) => (
 														<div key={`${url}-${index}`} className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:border-indigo-300 transition-all duration-300">
 															<div className="aspect-square relative">
@@ -246,32 +274,45 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 								</div>
 							</div>
 
+							{/* ── Floating Register Button (Mobile) ── */}
+							<div className="lg:hidden fixed bottom-4 right-4 z-50">
+								{!isEventPast(selectedEvent.eventdate) && (
+									<button
+										onClick={() => setRegistrationModal(selectedEvent)}
+										className="bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm"
+									>
+										<Users className="w-4 h-4" />
+										Register Now
+									</button>
+								)}
+							</div>
+
 							{/* ── Sidebar ── */}
 							<div className="lg:col-span-1">
-								<div className="sticky top-8 space-y-6">
-									<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-										<div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+								<div className="sticky top-4 sm:top-8 space-y-4 sm:space-y-6">
+									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
+										<div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6">
 											<div className="flex items-center gap-3">
 												<Calendar className="w-6 h-6 text-white" />
 												<h3 className="text-xl font-bold text-white">{t.other_events}</h3>
 											</div>
 										</div>
-										<div className="p-6 space-y-4">
+										<div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
 											{sortedEvents
 												.filter((e) => e._id !== selectedEvent._id)
 												.slice(0, 4)
 												.map((event) => {
 													const { day, month } = formatEventDate(event.eventdate);
 													return (
-														<div key={event._id} className="group cursor-pointer rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-4" onClick={() => setSelectedEvent(event)}>
-															<div className="flex gap-4">
-																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-xl p-4 text-center min-w-[80px] flex-shrink-0">
-																	<div className="text-2xl font-bold leading-none">{day}</div>
+														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => setSelectedEvent(event)}>
+															<div className="flex gap-3 sm:gap-4">
+																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center min-w-[60px] sm:min-w-[80px] flex-shrink-0">
+																	<div className="text-lg sm:text-2xl font-bold leading-none">{day}</div>
 																	<div className="text-xs uppercase tracking-wider mt-1 font-semibold">{month}</div>
 																</div>
 																<div className="flex-1 min-w-0">
-																	<h4 className="font-bold text-gray-900 line-clamp-2 mb-2 group-hover:text-indigo-600 transition-colors">{event.eventname}</h4>
-																	<p className="text-sm text-gray-600 line-clamp-2">{event.eventvenue}</p>
+																	<h4 className="font-bold text-gray-900 line-clamp-2 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-sm sm:text-base">{event.eventname}</h4>
+																	<p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{event.eventvenue}</p>
 																</div>
 															</div>
 														</div>
@@ -281,15 +322,15 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 									</div>
 
 									{/* Registration Section */}
-									<div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-										<div className="bg-gradient-to-r from-brand to-emerald-600 p-6">
-											<div className="flex items-center gap-3">
-												<Users className="w-6 h-6 text-white" />
-												<h3 className="text-xl font-bold text-white">Event Registration</h3>
+									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden hidden lg:block">
+										<div className="bg-gradient-to-r from-brand to-emerald-600 p-4 sm:p-6">
+											<div className="flex items-center gap-2 sm:gap-3">
+												<Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+												<h3 className="text-lg sm:text-xl font-bold text-white">Event Registration</h3>
 											</div>
 										</div>
-										<div className="p-6">
-											<div className="space-y-4">
+										<div className="p-4 sm:p-6">
+											<div className="space-y-3 sm:space-y-4">
 												<div className="text-center">
 													{(() => {
 														// Debug log to check event properties
@@ -305,12 +346,12 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														if (selectedEvent.registrationEnabled === false) {
 															return (
 																<>
-																	<p className="text-gray-600 mb-4">Registration for this event is currently disabled</p>
+																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Registration for this event is currently disabled</p>
 																	<Button 
 																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
+																		className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed text-sm sm:text-base"
 																	>
-																		<Users className="w-5 h-5" />
+																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
 																		Registration Closed
 																	</Button>
 																</>
@@ -318,16 +359,16 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														} else {
 															return (
 																<>
-																	<p className="text-gray-600 mb-4">
+																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
 																		{selectedEvent.paymentCollectionEnabled === false 
 																			? "Register now for this free event!" 
 																			: "Register now to secure your spot!"}
 																	</p>
 																	<Button 
 																		onClick={() => setRegistrationModal(selectedEvent)}
-																		className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+																		className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
 																	>
-																		<Users className="w-5 h-5" />
+																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
 																		Register Now
 																	</Button>
 																</>

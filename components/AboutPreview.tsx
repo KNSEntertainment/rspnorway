@@ -6,10 +6,30 @@ import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import ViewAllButton from "@/components/ViewAllButton";
+import useFetchData from "@/hooks/useFetchData";
 
 export default function AboutPreview() {
 	const t = useTranslations("about-us");
 	const locale = useLocale();
+
+	// Calculate months from January 2025 to current date
+	const calculateMonthsActive = () => {
+		const startDate = new Date(2025, 0, 1); // January 2025
+		const currentDate = new Date();
+		
+		const yearDiff = currentDate.getFullYear() - startDate.getFullYear();
+		const monthDiff = currentDate.getMonth() - startDate.getMonth();
+		
+		const totalMonths = yearDiff * 12 + monthDiff + 1; // +1 to include January
+		
+		return totalMonths > 0 ? `${totalMonths}+` : "0+";
+	};
+
+	const monthsActive = calculateMonthsActive();
+
+	// Fetch membership data
+	const { data: memberships } = useFetchData("/api/membership");
+	const totalMembers = memberships ? (Array.isArray(memberships) ? memberships.length : 0) : 0;
 
 
 
@@ -45,7 +65,7 @@ export default function AboutPreview() {
 									<Users className="w-6 h-6 text-brand" />
 								</div>
 								<div>
-									<p className="text-2xl font-bold text-gray-900">200+</p>
+									<p className="text-2xl font-bold text-gray-900">{totalMembers}+</p>
 									<p className="text-sm text-gray-600">Members</p>
 								</div>
 							</div>
@@ -54,7 +74,7 @@ export default function AboutPreview() {
 									<RefreshCcw className="w-6 h-6 text-brand" />
 								</div>
 								<div>
-									<p className="text-2xl font-bold text-gray-900">6+</p>
+									<p className="text-2xl font-bold text-gray-900">{monthsActive}</p>
 									<p className="text-sm text-gray-600">Months Active</p>
 								</div>
 							</div>

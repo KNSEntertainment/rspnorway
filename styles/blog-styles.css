@@ -183,6 +183,10 @@
     font-size: 1rem;
   }
   
+  .blog-content p {
+    text-align: left;
+  }
+  
   .blog-content h1 {
     font-size: 2rem;
   }

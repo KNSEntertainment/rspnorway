@@ -14,7 +14,7 @@ function BlogSidebar({ blogs, locale: propLocale }) {
 		return blog.blogTitle_en || blog.blogTitle || "";
 	};
 	return (
-		<div className="space-y-6 md:sticky md:top-36 h-auto overflow-y-scroll p-6 rounded-lg shadow-md">
+		<div className="space-y-6 md:sticky md:top-36 h-auto overflow-y-scroll p-0 md:p-6 rounded-lg shadow-md">
 			{/* Share Box */}
 
 			{/* Other Blogs */}
@@ -28,7 +28,7 @@ function BlogSidebar({ blogs, locale: propLocale }) {
 									<Image src={relBlog?.blogMainPicture || "/ghanti.png"} alt={getLocalizedTitle(relBlog) || "Blog Title"} fill sizes="64px" className="object-cover" />
 								</div>
 								<div>
-									<h4 className="font-medium text-gray-900 group-hover:text-brand transition duration-200">{getLocalizedTitle(relBlog)}</h4>
+									<h4 className="font-semibold text-sm md:text-md text-gray-900 group-hover:text-brand transition duration-200">{getLocalizedTitle(relBlog)}</h4>
 									<p className="text-sm text-gray-900">{relBlog?.blogDate ? new Date(relBlog.blogDate).toISOString().slice(0, 10) : ""}</p>
 								</div>
 							</Link>

@@ -1,13 +1,11 @@
 "use client";
 import Image from "next/image";
-import { Calendar, NotebookPen } from "lucide-react";
+import { Calendar, Pencil } from "lucide-react";
 import BlogSidebar from "@/components/BlogSidebar";
-import { useLocale, useTranslations } from "next-intl";
 import "@/styles/blog-styles.css";
 
 export default function BlogPageClient({ blogData, blogsData }) {
 	const locale = useLocale();
-	const t = useTranslations("blogs");
 	const blog = blogData?.blog;
 	const blogs = blogsData?.blogs || [];
 
@@ -36,30 +34,32 @@ export default function BlogPageClient({ blogData, blogsData }) {
 				{/* Article Header */}
 				<article className="prose prose-lg prose-gray max-w-none">
 					{/* Blog Title */}
-					<h1 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6 text-center lg:text-left">
+					<h1 className="mt-4 text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6 text-center lg:text-left">
 						{getLocalizedTitle(blog)}
 					</h1>
 					
 					{/* Article Meta */}
-					<div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 pb-6 mb-8">
-						<div className="flex items-center gap-3 mb-4 sm:mb-0">
-							<div className="w-12 h-12 bg-gradient-to-br from-brand to-emerald-500 rounded-full flex items-center justify-center">
-								<NotebookPen className="w-6 h-6 text-white" />
+					<div className="border-b border-gray-200 pb-6 mb-8">
+						<div className="flex flex-row items-center justify-between gap-4">
+							{/* Author Section */}
+							<div className="flex items-center gap-1">
+									<Pencil className="w-5 h-5" />
+								<div>
+									<p className="text-gray-700">{blog.blogAuthor || "PNSB-Norway"}</p>
+								</div>
 							</div>
-							<div>
-								<p className="font-semibold text-gray-900">{blog.blogAuthor || "PNSB-Norway"}</p>
-								<p className="text-sm text-gray-500">{t("author")}</p>
+							
+							{/* Date Section */}
+							<div className="flex items-center gap-1">
+								<Calendar className="w-5 h-5" />
+								<time dateTime={blog.createdAt}>
+									{new Date(blog.createdAt).toLocaleDateString(locale, { 
+										year: 'numeric', 
+										month: 'long', 
+										day: 'numeric' 
+									})}
+								</time>
 							</div>
-						</div>
-						<div className="flex items-center gap-2 text-gray-500">
-							<Calendar className="w-5 h-5" />
-							<time dateTime={blog.createdAt} className="text-sm font-medium">
-								{new Date(blog.createdAt).toLocaleDateString(locale, { 
-									year: 'numeric', 
-									month: 'long', 
-									day: 'numeric' 
-								})}
-							</time>
 						</div>
 					</div>
 

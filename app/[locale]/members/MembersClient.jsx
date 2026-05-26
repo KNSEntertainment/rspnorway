@@ -83,8 +83,8 @@ function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact,
 			</div>
 
 			{/* Info */}
-			<div className="p-6">
-				<h3 className="text-xl font-bold text-gray-900 mb-2">{name}</h3>
+			<div className="p-3 md:p-6">
+				<h3 className="text-sm md:text-xl font-bold text-gray-900 mb-2">{name}</h3>
 				{/* {badgeLabel && <p className={`text-sm font-medium mb-3 ${badgeClass}`}>{badgeLabel}</p>} */}
 
 				{/* Contact — only show when session exists AND member has granted permission (or undefined for executive members) */}
@@ -487,9 +487,9 @@ export default function Members() {
 
 				{/* Executive Members */}
 				{filteredExecutiveMembers.length > 0 && (
-					<div className="mb-8 md:mb-20 p-6 bg-brand/5">
+					<div className="mb-8 md:mb-20 px-0 p-6 sm:bg-brand/5">
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("executive_members")}</h2>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+						<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredExecutiveMembers.map((member) => (
 								<MemberCard key={member._id} name={member.name} email={member.email} phone={member.phone} imageUrl={member.imageUrl} avatarGradient="from-brand to-blue-600" showContact={true} session={session} member={member} />
 							))}
@@ -501,7 +501,7 @@ export default function Members() {
 				{filteredGeneralMembers.length > 0 && (
 					<div className="mb-8">
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("general_members")}</h2>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+						<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredGeneralMembers.map((member) => (
 								<MemberCard key={member._id} name={member.fullName} email={member.email} phone={member.phone} imageUrl={member.profilePhoto} avatarGradient="from-gray-500 to-gray-600" showContact={true} session={session} member={member} />
 							))}

@@ -6,12 +6,32 @@ import { useTranslations } from "next-intl";
 import SectionHeader from "@/components/SectionHeader";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import useFetchData from "@/hooks/useFetchData";
 
 export default function AboutUsClient() {
 	const t = useTranslations("about-us");
 	const ta = useTranslations("about");
 	const [activeIndex, setActiveIndex] = useState(0);
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+	// Fetch membership data
+	const { data: memberships } = useFetchData("/api/membership");
+	const totalMembers = memberships ? (Array.isArray(memberships) ? memberships.length : 0) : 0;
+
+	// Calculate months from January 2025 to current date
+	const calculateMonthsActive = () => {
+		const startDate = new Date(2025, 0, 1); // January 2025
+		const currentDate = new Date();
+		
+		const yearDiff = currentDate.getFullYear() - startDate.getFullYear();
+		const monthDiff = currentDate.getMonth() - startDate.getMonth();
+		
+		const totalMonths = yearDiff * 12 + monthDiff + 1; // +1 to include January
+		
+		return totalMonths > 0 ? `${totalMonths}+` : "0+";
+	};
+
+	const monthsActive = calculateMonthsActive();
 
 	const values = [
 		{ icon: Landmark, title: ta("value_cultural_preservation_title"), description: ta("value_cultural_preservation_desc") },
@@ -137,7 +157,7 @@ export default function AboutUsClient() {
 							<div className="absolute inset-0 bg-gradient-to-br from-green-600 to-brand rounded-2xl transform -rotate-2 group-hover:-rotate-3 transition-transform duration-500" />
 
 							<div className="relative rounded-2xl overflow-hidden shadow-2xl">
-								<Image src="" alt="Event Experience" width={200} height={200} className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700" />
+								<Image src="/about.jpg" alt="Event Experience" width={200} height={200} className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700" />
 
 								{/* Overlay Gradient */}
 								<div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -179,7 +199,7 @@ export default function AboutUsClient() {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 						</svg>
 					</div>
-					<p className="text-2xl font-bold text-gray-900">500+</p>
+					<p className="text-2xl font-bold text-gray-900">{totalMembers}+</p>
 					<p className="text-sm text-gray-900">Members</p>
 				</div>
 				<div className="text-center">
@@ -188,8 +208,8 @@ export default function AboutUsClient() {
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 						</svg>
 					</div>
-					<p className="text-2xl font-bold text-gray-900">10+</p>
-					<p className="text-sm text-gray-900">Years Active</p>
+					<p className="text-2xl font-bold text-gray-900">{monthsActive}</p>
+					<p className="text-sm text-gray-900">Months Active</p>
 				</div>
 			</div>
 

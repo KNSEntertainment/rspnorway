@@ -101,25 +101,28 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
 
 								return (
 									<div key={item.href}>
-										<button
-											onClick={() => {
-												if (hasDropdown) {
-													toggleDropdown(item.title);
-												} else {
-													setIsOpen(false);
-												}
-											}}
-											className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? "bg-brand/10 text-brand font-semibold border-l-4 border-brand" : "text-gray-700 hover:bg-gray-100"}`}
-										>
-											<span>{item.title}</span>
+										{hasDropdown ? (
+											<button
+												onClick={() => toggleDropdown(item.title)}
+												className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? "bg-brand/10 text-brand font-semibold border-l-4 border-brand" : "text-gray-700 hover:bg-gray-100"}`}
+											>
+												<span>{item.title}</span>
 
-											{/* Dropdown Toggle Icon */}
-											{hasDropdown && (
+												{/* Dropdown Toggle Icon */}
 												<motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
 													<ChevronDown size={18} />
 												</motion.div>
-											)}
-										</button>
+											</button>
+										) : (
+											<Link 
+												href={item.href} 
+												locale={locale} 
+												onClick={() => setIsOpen(false)}
+												className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? "bg-brand/10 text-brand font-semibold border-l-4 border-brand" : "text-gray-700 hover:bg-gray-100"}`}
+											>
+												<span>{item.title}</span>
+											</Link>
+										)}
 
 										{/* Dropdown Items */}
 										<AnimatePresence>
