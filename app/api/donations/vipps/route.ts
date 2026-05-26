@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 		// Create donation record with completed status (simulated Vipps payment)
 		const donation = await Donation.create({
 			donorName: isAnonymous ? "Anonymous" : donorName,
-			donorEmail: isAnonymous ? "anonymous@rspnorway.org" : donorEmail,
+			donorEmail: isAnonymous ? "anonymous@pnsbnorway.org" : donorEmail,
 			donorPhone,
 			amount,
 			currency: "NOK",

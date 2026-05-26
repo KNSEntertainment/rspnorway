@@ -51,7 +51,7 @@ async function syncEventRegistrations() {
           verifiedAt: registration.createdAt,
           notes: `Registration ID: ${registration.registrationId}, Attendees: ${registration.firstName} ${registration.lastName} (${registration.email})`,
           tags: ["event-registration", "ticket-sales", registration.eventId?.eventname?.toLowerCase().replace(/\s+/g, '-') || 'unknown-event'],
-          createdBy: "system@rspnorway.org",
+          createdBy: "system@pnsbnorway.org",
         });
 
         await transaction.save();

@@ -114,7 +114,7 @@ export default function FooterClient({ settings }) {
 					{/* Developer Credit */}
 					<div className="text-sm text-gray-900 text-center md:text-right">
 						<span>{t("developed_by")} </span>
-						<a href="https://harisanjel.com.np" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand hover:underline transition-all">
+						<a href="https://sanjeltech.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand hover:underline transition-all">
 							{t("developer")}
 						</a>
 					</div>

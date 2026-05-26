@@ -507,7 +507,7 @@ export default function MembershipPageClient({ translations: t, locale }: Props)
 	}
 
 	return (
-		<div className="md:px-4 py-12">
+		<div className="md:px-4 md:py-12">
 			{/* Membership Form */}
 			<div className="mx-auto max-w-3xl md:shadow-md p-8 md:px-12 bg-cover bg-center bg-no-repeat relative overflow-hidden">
 				<div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-50" style={{ backgroundImage: "url('/nepalipaper.jpg')" }} />

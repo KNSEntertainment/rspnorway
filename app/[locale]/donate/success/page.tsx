@@ -11,11 +11,33 @@ export default function DonationSuccessPage() {
 	const searchParams = useSearchParams();
 	const sessionId = searchParams.get("session_id");
 	const [loading, setLoading] = useState(true);
+	const [contactEmail, setContactEmail] = useState("contact@pnsbnorway.org"); // Default fallback
 	// const [donationDetails, setDonationDetails] = useState<any>(null);
 
 	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Fetch contact email from settings
+				const settingsResponse = await fetch('/api/settings');
+				if (settingsResponse.ok) {
+					const settings = await settingsResponse.json();
+					const contactSetting = settings.find((setting: { email?: string }) => 
+						 setting.email
+					);
+					if (contactSetting) {
+						setContactEmail(contactSetting.email);
+					}
+				}
+			} catch {
+				setContactEmail("info@pnsbnorway.org");
+			} finally {
+				setLoading(false);
+			}
+		};
+
 		if (sessionId) {
-			// Optionally fetch donation details from your API
+			fetchData();
+		} else {
 			setLoading(false);
 		}
 	}, [sessionId]);
@@ -90,7 +112,7 @@ export default function DonationSuccessPage() {
 					</div>
 
 					<div className="text-center pt-4 border-t border-gray-200">
-						<p className="text-sm text-gray-500">Questions? Contact us at contact@rspnorway.org</p>
+						<p className="text-sm text-gray-500">Questions? Contact us at {contactEmail}</p>
 					</div>
 				</CardContent>
 			</Card>

@@ -152,7 +152,7 @@ async function initializeCategories() {
     const categories = await FinancialCategory.insertMany(
       defaultCategories.map(cat => ({
         ...cat,
-        createdBy: "system@rspnorway.org"
+        createdBy: "system@pnsbnorway.org"
       }))
     );
 

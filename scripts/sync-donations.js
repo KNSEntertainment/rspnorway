@@ -49,7 +49,7 @@ async function syncDonations() {
           verifiedAt: donation.createdAt,
           notes: `Donation ID: ${donation._id}, Email: ${donation.email}`,
           tags: ["donation", "stripe", donation.donationType],
-          createdBy: "system@rspnorway.org",
+          createdBy: "system@pnsbnorway.org",
         });
 
         await transaction.save();

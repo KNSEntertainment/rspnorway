@@ -20,7 +20,7 @@ export default function FullWidthHero() {
 	// Pre-optimized fallback slides with smaller images
 	const fallbackSlides = useMemo(() => [
 		{
-			image: "/rabibalen.jpg",
+			image: "/hast.jpg",
 			title: t("title_1"),
 			description: t("subtitle_1"),
 			primaryLink: "/membership",
@@ -95,7 +95,7 @@ export default function FullWidthHero() {
 				<AnimatePresence mode="wait">
 					<motion.div key={currentSlide} className="absolute inset-0 z-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
 						<Image 
-							src={slides[currentSlide]?.image || "/ghanti.png"} 
+							src={slides[currentSlide]?.image || "/hast.jpg"} 
 							alt="Background" 
 							fill 
 							className="object-cover" 

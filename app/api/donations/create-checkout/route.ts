@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 		// Create donation record
 		const donation = await Donation.create({
 			donorName: isAnonymous ? "Anonymous" : donorName,
-			donorEmail: isAnonymous ? "anonymous@rspnorway.org" : donorEmail,
+			donorEmail: isAnonymous ? "anonymous@pnsbnorway.org" : donorEmail,
 			donorPhone,
 			amount,
 			currency: "NOK",

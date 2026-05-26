@@ -12,6 +12,7 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 	const [userInput, setUserInput] = useState("");
 	const [captchaId, setCaptchaId] = useState("");
 	const [captchaSvg, setCaptchaSvg] = useState("");
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [isVerified, setIsVerified] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	
@@ -79,43 +80,55 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 		}
 	};
 
-	// Handle verification when user completes the captcha
-	const handleVerification = useCallback(async () => {
-		if (userInput.length === 6 && captchaId) {
-			try {
-				const response = await fetch('/api/captcha/validate', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ captchaId, userInput }),
-				});
-
-				if (response.ok) {
-					setIsVerified(true);
-					onVerifyRef.current(true);
-				} else {
-					setIsVerified(false);
-					onErrorRef.current?.('Invalid captcha. Please try again.');
-					onVerifyRef.current(false);
-				}
-			} catch (error) {
-				console.error('Captcha verification error:', error);
-				setIsVerified(false);
-				onErrorRef.current?.('Verification failed. Please try again.');
-				onVerifyRef.current(false);
-			}
-		}
-	}, [userInput, captchaId]);
-
+	
 	// Auto-verify when input reaches 6 characters
 	useEffect(() => {
-		if (userInput.length === 6) {
-			handleVerification();
+		if (userInput.length === 6 && captchaId) {
+			const verifyCaptcha = async () => {
+				try {
+					const response = await fetch('/api/captcha/validate', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ captchaId, userInput }),
+					});
+
+					if (response.ok) {
+						const result = await response.json();
+						setIsVerified(result.valid);
+						if (result.valid) {
+							onVerifyRef.current(true);
+						} else {
+							onErrorRef.current?.('Invalid captcha. Please try again.');
+							onVerifyRef.current(false);
+						}
+					} else {
+						const errorData = await response.json();
+						setIsVerified(false);
+						
+						// If captcha expired or not found, auto-refresh
+						if (errorData.error?.includes('expired') || errorData.error?.includes('not found')) {
+							onErrorRef.current?.('Captcha expired. Generating new one...');
+							fetchCaptcha(); // Auto-refresh on expired/missing captcha
+						} else {
+							onErrorRef.current?.(errorData.error || 'Invalid captcha. Please try again.');
+						}
+						onVerifyRef.current(false);
+					}
+				} catch (error) {
+					console.error('Captcha verification error:', error);
+					setIsVerified(false);
+					onErrorRef.current?.('Verification failed. Please try again.');
+					onVerifyRef.current(false);
+				}
+			};
+			
+			verifyCaptcha();
 		} else if (userInput.length < 6) {
 			setIsVerified(false);
 		}
-	}, [userInput, captchaId, handleVerification]);
+	}, [userInput, captchaId, fetchCaptcha]);
 
 	return (
 		<div className={`space-y-3 ${className}`}>
@@ -150,9 +163,6 @@ export default function Captcha({ onVerify, onError, className = "" }: CaptchaPr
 					maxLength={6}
 					className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
 				/>
-				{isVerified && (
-					<div className="text-green-600 font-semibold">✓ Verified</div>
-				)}
 			</div>
 		</div>
 	);

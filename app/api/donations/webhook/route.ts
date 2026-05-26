@@ -77,7 +77,7 @@ export async function POST(request: Request) {
 							verifiedAt: new Date(),
 							notes: `Donation ID: ${updatedDonation._id}, Stripe Session: ${session.id}`,
 							tags: ["donation", "stripe", updatedDonation.donationType],
-							createdBy: "system@rspnorway.org",
+							createdBy: "system@pnsbnorway.org",
 						});
 
 						await financialTransaction.save();
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
 								verifiedAt: new Date(),
 								notes: `Donation ID: ${updatedDonation._id}, Stripe Charge: ${charge.id}`,
 								tags: ["donation", "stripe", updatedDonation.donationType],
-								createdBy: "system@rspnorway.org",
+								createdBy: "system@pnsbnorway.org",
 							});
 
 							await financialTransaction.save();

@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
           verifiedAt: new Date(),
           notes: `Registration ID: ${registrationId}, Attendees: ${firstName} ${lastName} (${email})`,
           tags: ["event-registration", "ticket-sales", event.eventname.toLowerCase().replace(/\s+/g, '-')],
-          createdBy: session?.user?.email || "system@rspnorway.org",
+          createdBy: session?.user?.email || "system@pnsbnorway.org",
         });
 
         await financialTransaction.save();

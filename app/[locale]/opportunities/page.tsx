@@ -11,10 +11,10 @@ const opportunitiesData = [
 		icon: "🎪",
 		color: "bg-blue-500",
 		gradient: "from-blue-400 to-blue-600",
-		fullDescription: "As a Community Organizer, you'll be at the forefront of building strong local networks of Nepalis in Norway. You'll create meaningful connections, organize impactful events, and ensure RSP's vision reaches every corner of the Norwegian Nepali community.",
-		responsibilities: ["Organize and coordinate local community events, meetups, and cultural programs", "Build and maintain relationships with local Nepali organizations and community leaders", "Recruit new members and volunteers for PNSB-Norway", "Represent RSP values and principles at community gatherings", "Coordinate with the national team on local campaign initiatives", "Create monthly reports on community engagement activities"],
+		fullDescription: "As a Community Organizer, you'll be at the forefront of building strong local networks of Nepalis in Norway. You'll create meaningful connections, organize impactful events, and ensure PNSBN's vision reaches every corner of the Norwegian Nepali community.",
+		responsibilities: ["Organize and coordinate local community events, meetups, and cultural programs", "Build and maintain relationships with local Nepali organizations and community leaders", "Recruit new members and volunteers for PNSB-Norway", "Represent PNSBN values and principles at community gatherings", "Coordinate with the national team on local campaign initiatives", "Create monthly reports on community engagement activities"],
 		requirements: ["Strong interpersonal and communication skills", "Experience in event planning or community organizing (preferred)", "Passion for Nepali politics and social change", "Ability to commit 5-10 hours per week", "Fluency in Nepali and English/Norwegian"],
-		benefits: ["Leadership development opportunities", "Network with influential community members", "Access to RSP national events and training", "Certificate of recognition for your service", "Direct impact on community building"],
+		benefits: ["Leadership development opportunities", "Network with influential community members", "Access to PNSBN national events and training", "Certificate of recognition for your service", "Direct impact on community building"],
 		timeCommitment: "5-10 hours per week",
 		location: "Your local city in Norway",
 		contact: "info@pnsbnorway.org",
@@ -26,7 +26,7 @@ const opportunitiesData = [
 		icon: "📱",
 		color: "bg-brand",
 		gradient: "from-purple-400 to-purple-600",
-		fullDescription: "Digital Activists are the voice of RSP in the online world. You'll craft compelling narratives, engage with our community on social media, and help build RSP's digital presence across platforms. Your creativity and digital savvy will help us reach thousands.",
+		fullDescription: "Digital Activists are the voice of PNSBN in the online world. You'll craft compelling narratives, engage with our community on social media, and help build PNSBN's digital presence across platforms. Your creativity and digital savvy will help us reach thousands.",
 		responsibilities: ["Create and schedule engaging social media content across platforms", "Monitor and respond to comments and messages on social channels", "Design graphics and videos for online campaigns", "Track social media analytics and optimize content strategy", "Participate in online activism campaigns and trending discussions", "Collaborate with the communications team on digital strategy"],
 		requirements: ["Strong social media skills (Facebook, Instagram, Twitter, TikTok)", "Creative content creation abilities", "Understanding of digital marketing trends", "Basic graphic design or video editing skills (preferred)", "Available for 8-12 hours per week", "Excellent written communication in English and Nepali"],
 		benefits: ["Build your digital portfolio", "Learn advanced social media strategies", "Certificate in digital activism", "Networking with digital professionals", "Amplify your voice on important issues"],
@@ -37,11 +37,11 @@ const opportunitiesData = [
 	{
 		id: "policy-contributor",
 		title: "Policy Contributor",
-		shortDescription: "Help shape RSP's policies and strategic direction",
+		shortDescription: "Help shape PNSBN's policies and strategic direction",
 		icon: "📋",
 		color: "bg-indigo-500",
 		gradient: "from-indigo-400 to-indigo-600",
-		fullDescription: "Policy Contributors are the intellectual backbone of RSP. You'll research critical issues facing Nepal, contribute to policy discussions, and help develop evidence-based positions on key matters. Your expertise will directly influence RSP's policy platform.",
+		fullDescription: "Policy Contributors are the intellectual backbone of PNSBN. You'll research critical issues facing Nepal, contribute to policy discussions, and help develop evidence-based positions on key matters. Your expertise will directly influence PNSBN's policy platform.",
 		responsibilities: ["Research and analyze policy issues relevant to Nepal and diaspora", "Draft policy briefs and position papers", "Participate in policy discussion forums and working groups", "Provide expert insights in your area of specialization", "Review and provide feedback on proposed policies", "Present findings to the policy committee"],
 		requirements: ["Background in public policy, economics, law, or related fields", "Strong research and analytical skills", "Excellent writing abilities", "Critical thinking and objectivity", "Available for 6-10 hours per week", "Graduate degree preferred but not required"],
 		benefits: ["Shape national policies", "Work with policy experts", "Access to research resources", "Published work recognition", "Policy development experience"],
@@ -56,10 +56,10 @@ const opportunitiesData = [
 		icon: "💰",
 		color: "bg-success",
 		gradient: "from-green-400 to-green-600",
-		fullDescription: "Fundraising Team members ensure RSP has the resources to achieve its mission. You'll develop creative fundraising campaigns, build relationships with donors, and organize events that generate support for our cause while engaging the community.",
+		fullDescription: "Fundraising Team members ensure PNSBN has the resources to achieve its mission. You'll develop creative fundraising campaigns, build relationships with donors, and organize events that generate support for our cause while engaging the community.",
 		responsibilities: ["Plan and execute fundraising events and campaigns", "Identify and cultivate relationships with potential donors", "Create compelling fundraising materials and appeals", "Manage donor databases and maintain records", "Thank and recognize donors appropriately", "Collaborate with finance team on budget planning"],
 		requirements: ["Experience in fundraising or sales (preferred)", "Excellent interpersonal and persuasion skills", "Creative thinking and event planning abilities", "Detail-oriented with good organizational skills", "Available for 8-15 hours per week", "Understanding of non-profit fundraising principles"],
-		benefits: ["Fundraising expertise development", "Network with business leaders", "Event management experience", "Recognition for campaign success", "Direct impact on RSP's capacity"],
+		benefits: ["Fundraising expertise development", "Network with business leaders", "Event management experience", "Recognition for campaign success", "Direct impact on PNSBN's capacity"],
 		timeCommitment: "8-15 hours per week",
 		location: "Hybrid (mix of remote and in-person)",
 		contact: "info@pnsbnorway.org",
@@ -71,8 +71,8 @@ const opportunitiesData = [
 		icon: "🎓",
 		color: "bg-brand",
 		gradient: "from-orange-400 to-orange-600",
-		fullDescription: "Youth Ambassadors are the bridge between RSP and Nepal's future leaders. You'll engage with young Nepalis in Norway, organize campus activities, and ensure youth voices are heard in party decisions. Your energy will inspire the next generation.",
-		responsibilities: ["Organize youth-focused events, workshops, and discussions", "Build networks with student organizations and youth groups", "Recruit young members and volunteers", "Advocate for youth issues within RSP", "Manage youth social media channels", "Mentor younger members and new volunteers"],
+		fullDescription: "Youth Ambassadors are the bridge between PNSBN and Nepal's future leaders. You'll engage with young Nepalis in Norway, organize campus activities, and ensure youth voices are heard in party decisions. Your energy will inspire the next generation.",
+		responsibilities: ["Organize youth-focused events, workshops, and discussions", "Build networks with student organizations and youth groups", "Recruit young members and volunteers", "Advocate for youth issues within PNSBN", "Manage youth social media channels", "Mentor younger members and new volunteers"],
 		requirements: ["Age 18-35 (flexible)", "Active in student or youth communities", "Passionate about youth empowerment", "Strong communication and leadership skills", "Available for 6-10 hours per week", "Creative and energetic personality"],
 		benefits: ["Leadership training programs", "Scholarship opportunities", "Youth conference attendance", "Mentorship from senior leaders", "Build youth movement experience"],
 		timeCommitment: "6-10 hours per week",
@@ -86,8 +86,8 @@ const opportunitiesData = [
 		icon: "🎨",
 		color: "bg-pink-500",
 		gradient: "from-pink-400 to-pink-600",
-		fullDescription: "Creative Team members bring RSP's message to life through stunning visuals. You'll design graphics, create videos, and develop creative materials that capture attention and inspire action. Your artistic vision will shape how people see RSP.",
-		responsibilities: ["Design graphics for social media, events, and campaigns", "Create and edit videos for digital platforms", "Develop branding materials and visual guidelines", "Design posters, banners, and promotional materials", "Collaborate with other teams on creative needs", "Maintain RSP's visual identity consistency"],
+		fullDescription: "Creative Team members bring PNSBN's message to life through stunning visuals. You'll design graphics, create videos, and develop creative materials that capture attention and inspire action. Your artistic vision will shape how people see PNSBN.",
+		responsibilities: ["Design graphics for social media, events, and campaigns", "Create and edit videos for digital platforms", "Develop branding materials and visual guidelines", "Design posters, banners, and promotional materials", "Collaborate with other teams on creative needs", "Maintain PNSBN's visual identity consistency"],
 		requirements: ["Proficiency in design tools (Photoshop, Illustrator, Canva, etc.)", "Video editing skills (Premiere, Final Cut, or similar)", "Strong portfolio of creative work", "Understanding of branding and visual identity", "Available for 5-10 hours per week", "Eye for aesthetics and current design trends"],
 		benefits: ["Build professional portfolio", "Access to design software licenses", "Recognition for creative work", "Networking with creative professionals", "Creative freedom and expression"],
 		timeCommitment: "5-10 hours per week",
@@ -361,7 +361,7 @@ function QuickApplyForm({ opportunity }: { opportunity: Opportunity }) {
 			<input type="tel" placeholder="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
 			<textarea placeholder="Why are you interested in this role? (Optional)" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} className="w-full px-4 py-3 border-2 border-light rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
 			<button onClick={handleSubmit} className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-bold hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105">
-				Submit Application
+				Submit
 			</button>
 		</div>
 	);

@@ -102,7 +102,7 @@ export default function DonationModal({ isOpen, onClose, cause, onDonationSucces
 					body: JSON.stringify({
 						amount,
 						donorName: isAnonymous ? "Anonymous" : donorName,
-						donorEmail: isAnonymous ? "anonymous@rspnorway.org" : donorEmail,
+						donorEmail: isAnonymous ? "anonymous@pnsbnorway.org" : donorEmail,
 						donorPhone,
 						message,
 						isAnonymous,

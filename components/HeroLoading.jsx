@@ -19,7 +19,7 @@ export default function HeroLoading() {
 					<div className="relative z-10">
 						<Image
 							src="/rsp-norway-logo.png"
-							alt="RSP Norway Loading"
+							alt="PNSBN Norway Loading"
 							width={48}
 							height={48}
 							className="w-12 h-12 md:w-16 md:h-16 drop-shadow-2xl"
@@ -62,7 +62,7 @@ export default function HeroLoading() {
 						{/* Logo Image */}
 						<Image
 							src="/rsp-norway-logo.png"
-							alt="RSP Norway Loading"
+							alt="PNSBN Norway Loading"
 							width={48}
 							height={48}
 							className="w-12 h-12 md:w-16 md:h-16 relative z-10 drop-shadow-2xl"

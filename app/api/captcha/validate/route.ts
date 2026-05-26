@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 		
 		if (!storedCaptcha) {
 			return NextResponse.json(
-				{ error: 'Captcha not found or expired' },
+				{ error: 'Captcha not found or expired. Please refresh and try again.' },
 				{ status: 400 }
 			);
 		}
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 		if (storedCaptcha.expires < Date.now()) {
 			captchaStore.delete(captchaId);
 			return NextResponse.json(
-				{ error: 'Captcha expired' },
+				{ error: 'Captcha expired. Please refresh and try again.' },
 				{ status: 400 }
 			);
 		}

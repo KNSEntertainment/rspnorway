@@ -294,7 +294,7 @@ For support and inquiries:
 
 - **Email**: info@pnsbnorway.org
 - **Phone**: +47 967 80 0984
-- **Website**: [https://rspnorway.org](https://rspnorway.org)
+- **Website**: [https://pnsbnorway.org](https://pnsbnorway.org)
 
 ## 🙏 Acknowledgments
 

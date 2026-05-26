@@ -76,7 +76,7 @@ export default function AboutPreview() {
 
 								<div className="relative rounded-2xl overflow-hidden shadow-2xl">
 									<Image 
-										src="/rabibalen.jpg" 
+										src="/about.jpg" 
 										alt="Community Experience" 
 										width={400} 
 										height={400} 

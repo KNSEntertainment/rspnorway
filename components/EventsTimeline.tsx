@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, MapPin, Clock, Users } from "lucide-react";
+import { Calendar, MapPin, Clock, Users, Check } from "lucide-react";
 import { useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
@@ -258,7 +258,7 @@ export default function EventsTimeline() {
 																		disabled
 																		className="w-full bg-gray-100 text-gray-600 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
 																	>
-																		<Users className="w-5 h-5" />
+																		<Check className="w-5 h-5" />
 																		Completed
 																	</button>
 																);
