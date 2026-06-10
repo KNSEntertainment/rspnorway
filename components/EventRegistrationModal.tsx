@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { X, Calendar, MapPin, Clock, ArrowRight, CheckCircle, CreditCard } from "lucide-react";
+import { X, Calendar, MapPin, Clock, ArrowRight, CheckCircle, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,10 @@ interface Event {
   eventposterUrl?: string;
   price?: number;
   studentPrice?: number;
+  childPrice?: number;
+  childAgeLimit?: string;
+  elderlyPrice?: number;
+  elderlyAgeLimit?: string;
   maximumSeats?: number;
   registeredSeats?: number;
   registrationEnabled?: boolean;
@@ -40,82 +44,30 @@ interface RegistrationData {
   email: string;
   phone: string;
   adults: number;
+  students: number;
   children: number;
+  elders: number;
   specialRequests?: string;
 }
-
-const extractPriceFromDescription = (description: string | undefined, type: 'adult' | 'student') => {
-  if (!description) return 0;
-  
-  console.log("[EventRegistrationModal] Extracting price from description:", { description, type });
-  
-  // Look for price patterns in description
-  const patterns = {
-    student: [/student.*?(\d+)\s*nok/i, /child.*?(\d+)\s*nok/i, /barn.*?(\d+)\s*nok/i],
-    adult: [/standard.*?(\d+)\s*nok/i, /adult.*?(\d+)\s*nok/i, /voksen.*?(\d+)\s*nok/i]
-  };
-  
-  const typePatterns = patterns[type];
-  for (const pattern of typePatterns) {
-    const match = description.match(pattern);
-    if (match && match[1]) {
-      const extractedPrice = parseInt(match[1]);
-      console.log("[EventRegistrationModal] Price extracted from description:", { extractedPrice, pattern: pattern.toString() });
-      return extractedPrice;
-    }
-  }
-  
-  return 0;
-};
-
-const getTicketPrice = (value: number | undefined, description?: string, type?: 'adult' | 'student') => {
-  // If database value exists and is not 0, use it
-  if (value !== undefined && value !== null && value > 0) {
-    console.log("[EventRegistrationModal] Using database price:", { value });
-    return Number(value);
-  }
-  
-  // Fallback to description parsing
-  if (description && type) {
-    const extractedPrice = extractPriceFromDescription(description, type);
-    if (extractedPrice > 0) {
-      console.log("[EventRegistrationModal] Using extracted price from description:", { extractedPrice });
-      return extractedPrice;
-    }
-  }
-  
-  console.log("[EventRegistrationModal] Using default price 0");
-  return 0;
-};
 
 export default function EventRegistrationModal({ event, isOpen, onClose }: EventRegistrationModalProps) {
   const { data: session } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [registrationResult, setRegistrationResult] = useState<{ qrCode?: string; registrationId?: string } | null>(null);
+  const [registrationResult, setRegistrationResult] = useState<{ registrationId?: string; message?: string } | null>(null);
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
+  const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
   const [registrationData, setRegistrationData] = useState<RegistrationData>({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
     adults: 1,
+    students: 0,
     children: 0,
+    elders: 0,
     specialRequests: "",
   });
-
-  // Log the complete event object when modal opens
-  useEffect(() => {
-    if (event && isOpen) {
-      console.log("[EventRegistrationModal] Event data received:", {
-        eventId: event._id,
-        eventName: event.eventname,
-        eventdescription: event.eventdescription,
-        price: event.price,
-        studentPrice: event.studentPrice,
-        paymentCollectionEnabled: event.paymentCollectionEnabled,
-      });
-    }
-  }, [event, isOpen]);
 
   // Pre-fill member data if logged in
   useEffect(() => {
@@ -132,23 +84,15 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 
   const calculateTotal = () => {
     if (!event) return 0;
-    const adultPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.price, event.eventdescription, 'adult');
-    const studentPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.studentPrice, event.eventdescription, 'student');
-    console.log("[EventRegistrationModal] calculateTotal:", {
-      eventId: event._id,
-      eventName: event.eventname,
-      rawPrice: event.price,
-      rawStudentPrice: event.studentPrice,
-      paymentCollectionEnabled: event.paymentCollectionEnabled,
-      adultPrice,
-      studentPrice,
-      adults: registrationData.adults,
-      children: registrationData.children,
-    });
-    
+    const adultPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.price || 0);
+    const studentPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.studentPrice || 0);
+    const childPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.childPrice || 0);
+    const elderlyPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.elderlyPrice || 0);
     const adultTotal = (registrationData.adults || 0) * adultPrice;
-    const studentTotal = (registrationData.children || 0) * studentPrice;
-    return adultTotal + studentTotal;
+    const studentTotal = (registrationData.students || 0) * studentPrice;
+    const childTotal = (registrationData.children || 0) * childPrice;
+    const elderlyTotal = (registrationData.elders || 0) * elderlyPrice;
+    return adultTotal + studentTotal + childTotal + elderlyTotal;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,54 +100,63 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
     setLoading(true);
 
     try {
-      // API call to create registration
       if (!event) {
         console.error("No event data");
         return;
       }
 
-      console.log("Current session:", session);
-      
-      const payload = {
-        eventId: event._id,
-        ...registrationData,
-        totalAmount: calculateTotal(),
-      };
-      
-      console.log("Submitting registration:", payload);
-      
+      const formData = new FormData();
+      formData.append("eventId", event._id);
+      formData.append("firstName", registrationData.firstName);
+      formData.append("lastName", registrationData.lastName);
+      formData.append("email", registrationData.email);
+      formData.append("phone", registrationData.phone);
+      formData.append("adults", String(registrationData.adults));
+      formData.append("students", String(registrationData.students));
+      formData.append("children", String(registrationData.children));
+      formData.append("elders", String(registrationData.elders));
+      formData.append("totalAmount", String(calculateTotal()));
+      if (registrationData.specialRequests) {
+        formData.append("specialRequests", registrationData.specialRequests);
+      }
+      if (paymentProof) {
+        formData.append("paymentProof", paymentProof);
+      }
+
       const response = await fetch("/api/events/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         credentials: "include",
-        body: JSON.stringify(payload),
+        body: formData,
       });
-
-      console.log("Response status:", response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Registration successful:", data);
-        console.log("QR Code length:", data.qrCode?.length);
-        console.log("QR Code preview:", data.qrCode?.substring(0, 100));
         setRegistrationResult({
-          qrCode: data.qrCode,
-          registrationId: data.registrationId
+          registrationId: data.registrationId,
+          message: data.message
         });
-        setCurrentStep(4); // Success step
+        setCurrentStep(4);
       } else {
         const errorData = await response.json();
-        console.error("Registration failed:", errorData);
         alert("Registration failed: " + (errorData.error || "Unknown error"));
       }
     } catch (error) {
-      console.error("Registration error:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
       alert("Registration failed: " + errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePaymentProofChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPaymentProof(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPaymentProofPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -215,7 +168,6 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 
   if (!isOpen) return null;
 
-  // If event is in the past, show completed message
   if (isEventPast) {
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -300,12 +252,15 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
               onSubmit={handleSubmit}
               onBack={() => setCurrentStep(2)}
               loading={loading}
+              paymentProof={paymentProof}
+              paymentProofPreview={paymentProofPreview}
+              onPaymentProofChange={handlePaymentProofChange}
             />
           )}
           {currentStep === 4 && (
             <ConfirmationStep
-              qrCode={registrationResult?.qrCode}
               registrationId={registrationResult?.registrationId}
+              message={registrationResult?.message}
               onClose={onClose}
             />
           )}
@@ -365,20 +320,32 @@ function EventDetailsStep({ event, onNext, disabled, seatsRemaining }: { event: 
               )}
             </div>
           </div>
-          
-          {event.paymentCollectionEnabled !== false && (event.price !== undefined || event.studentPrice !== undefined) && (
+
+          {event.paymentCollectionEnabled !== false && (
             <div className="bg-gray-50 rounded-lg p-4">
               <h4 className="font-semibold text-gray-900 mb-2">Pricing</h4>
-              {event.price !== undefined && (
+              {(event.price !== undefined && event.price !== null) && (
                 <div className="flex justify-between text-sm">
                   <span>Adults</span>
-                  <span className="font-medium">NOK {getTicketPrice(event.price, event.eventdescription, 'adult')}</span>
+                  <span className="font-medium">NOK {Number(event.price || 0)}</span>
                 </div>
               )}
-              {event.studentPrice !== undefined && (
+              {(event.studentPrice !== undefined && event.studentPrice !== null) && (
                 <div className="flex justify-between text-sm">
                   <span>Students</span>
-                  <span className="font-medium">NOK {getTicketPrice(event.studentPrice, event.eventdescription, 'student')}</span>
+                  <span className="font-medium">NOK {Number(event.studentPrice)}</span>
+                </div>
+              )}
+              {(event.childPrice !== undefined && event.childPrice !== null) && (
+                <div className="flex justify-between text-sm">
+                  <span>Children{event.childAgeLimit ? ` (${event.childAgeLimit})` : ""}</span>
+                  <span className="font-medium">NOK {Number(event.childPrice)}</span>
+                </div>
+              )}
+              {(event.elderlyPrice !== undefined && event.elderlyPrice !== null) && (
+                <div className="flex justify-between text-sm">
+                  <span>Elderly{event.elderlyAgeLimit ? ` (${event.elderlyAgeLimit})` : ""}</span>
+                  <span className="font-medium">NOK {Number(event.elderlyPrice)}</span>
                 </div>
               )}
             </div>
@@ -390,13 +357,6 @@ function EventDetailsStep({ event, onNext, disabled, seatsRemaining }: { event: 
           )}
         </div>
       </div>
-
-      {/* {event.practicalInfo && (
-        <div>
-          <h4 className="font-semibold text-gray-900 mb-2">Practical Information</h4>
-          <p className="text-gray-600 whitespace-pre-wrap">{event.practicalInfo}</p>
-        </div>
-      )} */}
 
       <div className="flex justify-end">
         <Button onClick={onNext} disabled={disabled} className="flex items-center gap-2">
@@ -423,11 +383,9 @@ function AttendeeInfoStep({
 
   const updateData = (field: keyof RegistrationData, value: string | number) => {
     onChange({ ...data, [field]: value });
-    // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
-    // Also clear adult error when adults field is changed
     if (field === 'adults' && errors.adults) {
       setErrors(prev => ({ ...prev, adults: '' }));
     }
@@ -436,7 +394,6 @@ function AttendeeInfoStep({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    // Validate required fields
     if (!data.firstName.trim()) {
       newErrors.firstName = 'First name is required';
     }
@@ -526,7 +483,7 @@ function AttendeeInfoStep({
 
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Number of Attendees</h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="adults">Adults *</Label>
             <Select value={data.adults.toString()} onValueChange={(value) => updateData("adults", parseInt(value))}>
@@ -546,8 +503,8 @@ function AttendeeInfoStep({
             )}
           </div>
           <div>
-            <Label htmlFor="children">Students</Label>
-            <Select value={data.children.toString()} onValueChange={(value) => updateData("children", parseInt(value))}>
+            <Label htmlFor="students">Students</Label>
+            <Select value={data.students.toString()} onValueChange={(value) => updateData("students", parseInt(value))}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -555,6 +512,36 @@ function AttendeeInfoStep({
                 {[0, 1, 2, 3, 4, 5, 6].map((num) => (
                   <SelectItem key={num} value={num.toString()}>
                     {num} {num === 1 ? "Student" : "Students"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="children">Children</Label>
+            <Select value={data.children.toString()} onValueChange={(value) => updateData("children", parseInt(value))}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[0, 1, 2, 3, 4, 5, 6].map((num) => (
+                  <SelectItem key={num} value={num.toString()}>
+                    {num} {num === 1 ? "Child" : "Children"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="elders">Elderly</Label>
+            <Select value={data.elders.toString()} onValueChange={(value) => updateData("elders", parseInt(value))}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[0, 1, 2, 3, 4, 5, 6].map((num) => (
+                  <SelectItem key={num} value={num.toString()}>
+                    {num} {num === 1 ? "Elderly" : "Elderly"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -594,30 +581,31 @@ function PaymentStep({
   onSubmit,
   onBack,
   loading,
+  paymentProof,
+  paymentProofPreview,
+  onPaymentProofChange,
 }: {
   event: Event | null;
   data: RegistrationData;
   onSubmit: (e: React.FormEvent) => void;
   onBack: () => void;
   loading: boolean;
+  paymentProof: File | null;
+  paymentProofPreview: string | null;
+  onPaymentProofChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   if (!event) return null;
-  
-  const adultPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.price, event.eventdescription, 'adult');
-  const studentPrice = event.paymentCollectionEnabled === false ? 0 : getTicketPrice(event.studentPrice, event.eventdescription, 'student');
-  console.log("[EventRegistrationModal] PaymentStep price values:", {
-    eventId: event._id,
-    eventName: event.eventname,
-    rawPrice: event.price,
-    rawStudentPrice: event.studentPrice,
-    paymentCollectionEnabled: event.paymentCollectionEnabled,
-    adultPrice,
-    studentPrice,
-  });
-  
+
+  const adultPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.price || 0);
+  const studentPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.studentPrice || 0);
+  const childPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.childPrice || 0);
+  const elderlyPrice = event.paymentCollectionEnabled === false ? 0 : Number(event.elderlyPrice || 0);
+
   const adultTotal = (data.adults || 0) * adultPrice;
-  const studentTotal = (data.children || 0) * studentPrice;
-  const totalAmount = adultTotal + studentTotal;
+  const studentTotal = (data.students || 0) * studentPrice;
+  const childTotal = (data.children || 0) * childPrice;
+  const elderlyTotal = (data.elders || 0) * elderlyPrice;
+  const totalAmount = adultTotal + studentTotal + childTotal + elderlyTotal;
 
   return (
     <div className="space-y-6">
@@ -637,7 +625,7 @@ function PaymentStep({
                   })}
                 </p>
               </div>
-              
+
               <div className="border-t pt-4">
                 <div className="space-y-3">
                   {data.adults > 0 && (
@@ -646,81 +634,122 @@ function PaymentStep({
                       <span>NOK {adultTotal}</span>
                     </div>
                   )}
-                  {data.children > 0 && (
+                  {data.students > 0 && (
                     <div className="flex justify-between text-sm text-gray-600">
-                      <span>{data.children} Student{data.children > 1 ? "s" : ""} × NOK {studentPrice}</span>
+                      <span>{data.students} Student{data.students > 1 ? "s" : ""} × NOK {studentPrice}</span>
                       <span>NOK {studentTotal}</span>
                     </div>
                   )}
-             
+                  {data.children > 0 && (
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>{data.children} Child{data.children > 1 ? "ren" : ""} × NOK {childPrice}</span>
+                      <span>NOK {childTotal}</span>
+                    </div>
+                  )}
+                  {data.elders > 0 && (
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>{data.elders} Elderly × NOK {elderlyPrice}</span>
+                      <span>NOK {elderlyTotal}</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              
+
               <div className="border-t pt-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
                     <span>NOK {totalAmount}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Processing Fee</span>
-                    <span>NOK 0</span>
-                  </div>
                 </div>
               </div>
-              
+
               <div className="border-t pt-4">
                 <div className="flex justify-between font-semibold">
                   <span>Total Amount</span>
                   <span className="text-lg">NOK {totalAmount}</span>
                 </div>
-                <div className="text-xs text-green-600 mt-1">
-                  ✓ No additional fees
-                </div>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
-        <Card>
-          <CardContent className="p-6">
-            <div className="space-y-4">
-              <label className="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input type="radio" name="payment" defaultChecked className="text-brand" />
-                <CreditCard className="w-5 h-5 text-gray-600" />
+      {totalAmount > 0 && (
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment</h3>
+          <Card>
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                  <p className="text-sm font-semibold text-blue-800 mb-2">Pay with Vipps</p>
+                  <p className="text-xs text-blue-600 mb-3">Scan the QR code below to pay with Vipps</p>
+                  <div className="w-48 h-48 mx-auto bg-white rounded-lg border-2 border-blue-300 flex items-center justify-center mb-3">
+                    <svg viewBox="0 0 100 100" className="w-40 h-40">
+                      <rect x="0" y="0" width="100" height="100" fill="white" />
+                      <rect x="5" y="5" width="30" height="30" fill="#1a1a1a" rx="2" />
+                      <rect x="65" y="5" width="30" height="30" fill="#1a1a1a" rx="2" />
+                      <rect x="5" y="65" width="30" height="30" fill="#1a1a1a" rx="2" />
+                      <rect x="40" y="40" width="20" height="20" fill="#1a1a1a" rx="2" />
+                      {[15, 25, 40, 50, 60, 75, 85].map((x, i) =>
+                        [15, 25, 40, 50, 60, 75, 85].map((y, j) =>
+                          (i + j) % 3 !== 0 ? null : (
+                            <rect key={`${i}-${j}`} x={x} y={y} width="5" height="5" fill="#1a1a1a" rx="1" />
+                          )
+                        )
+                      )}
+                    </svg>
+                  </div>
+                  <p className="text-xs text-gray-500">Vipps number: <strong>123456</strong></p>
+                </div>
+
                 <div>
-                  <div className="font-medium">Credit/Debit Card</div>
-                  <div className="text-sm text-gray-600">Pay with VISA, Mastercard, or other cards</div>
+                  <Label htmlFor="paymentProof">Upload Payment Proof</Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mt-2">
+                    <input
+                      type="file"
+                      id="paymentProof"
+                      accept="image/*,.pdf"
+                      onChange={onPaymentProofChange}
+                      className="hidden"
+                    />
+                    <label htmlFor="paymentProof" className="cursor-pointer">
+                      <Upload className="mx-auto h-10 w-10 text-gray-400" />
+                      <p className="mt-2 text-sm text-gray-600">Click to upload payment screenshot or receipt</p>
+                      <p className="text-xs text-gray-500">Images or PDF (Max 5MB)</p>
+                    </label>
+                  </div>
+                  {paymentProofPreview && (
+                    <div className="mt-3">
+                      <p className="text-sm text-gray-600 mb-2">Payment proof preview:</p>
+                      <Image
+                        src={paymentProofPreview}
+                        alt="Payment proof preview"
+                        width={300}
+                        height={200}
+                        className="max-h-48 rounded border object-contain"
+                      />
+                    </div>
+                  )}
+                  {paymentProof && !paymentProofPreview && (
+                    <p className="text-sm text-gray-600 mt-2">File selected: {paymentProof.name}</p>
+                  )}
                 </div>
-              </label>
-              
-              <label className="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
-                <input type="radio" name="payment" className="text-brand" />
-                <div className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">V</span>
-                </div>
-                <div>
-                  <div className="font-medium">Vipps</div>
-                  <div className="text-sm text-gray-600">Pay with Vipps mobile payment</div>
-                </div>
-              </label>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onSubmit} disabled={loading} className="flex items-center gap-2">
+        <Button onClick={onSubmit} disabled={loading || (totalAmount > 0 && !paymentProof)} className="flex items-center gap-2">
           {loading ? (
             <>
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Processing...
+              Submitting...
             </>
           ) : (
             <>
@@ -730,14 +759,14 @@ function PaymentStep({
           )}
         </Button>
       </div>
+      {totalAmount > 0 && !paymentProof && (
+        <p className="text-xs text-amber-600 text-center">Please upload payment proof to complete registration</p>
+      )}
     </div>
   );
 }
 
-function ConfirmationStep({ qrCode, registrationId, onClose }: { qrCode?: string; registrationId?: string; onClose: () => void }) {
-  console.log("ConfirmationStep - QR Code length:", qrCode?.length);
-  console.log("ConfirmationStep - QR Code type:", qrCode?.substring(0, 30));
-
+function ConfirmationStep({ registrationId, message, onClose }: { registrationId?: string; message?: string; onClose: () => void }) {
   return (
     <div className="text-center space-y-6">
       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -745,37 +774,26 @@ function ConfirmationStep({ qrCode, registrationId, onClose }: { qrCode?: string
       </div>
 
       <div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Registration Successful!</h3>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h3>
         <p className="text-gray-600">
-          Your event registration has been confirmed. A QR code has been sent to your email.
+          {message || "Your registration has been submitted and is pending verification. You will receive a confirmation email with your QR code once your payment is verified by our team."}
         </p>
       </div>
 
-      {qrCode && qrCode.length > 100 ? (
-        <div className="bg-gray-50 rounded-lg p-6">
-          <div className="w-48 h-48 bg-white rounded-lg mx-auto mb-4 flex items-center justify-center border-2 border-gray-200 overflow-hidden">
-            <Image src={qrCode} alt="Registration QR Code" width={192} height={192} className="w-full h-full object-contain" />
-          </div>
-          <p className="text-sm text-gray-600 mb-2">
-            Please show this QR code at the event entrance for quick check-in.
-          </p>
-          {registrationId && (
-            <p className="text-xs text-gray-500 font-mono">
-              Registration ID: {registrationId}
-            </p>
-          )}
-        </div>
-      ) : (
-        <div className="bg-gray-50 rounded-lg p-6">
-          <p className="text-sm text-gray-600 mb-2">
-            Your registration ID has been sent to your email. Please present it at the event entrance.
-          </p>
-          {registrationId && (
-            <p className="text-xs text-gray-500 font-mono">
-              Registration ID: {registrationId}
-            </p>
-          )}
-        </div>
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
+        <p className="text-sm text-amber-800 font-medium mb-2">What happens next?</p>
+        <ul className="text-sm text-amber-700 text-left space-y-2">
+          <li>✓ Our team will verify your payment</li>
+          <li>✓ Once approved, you will receive a confirmation email</li>
+          <li>✓ The email will contain your entry QR code</li>
+          <li>✓ Please present the QR code at the event entrance</li>
+        </ul>
+      </div>
+
+      {registrationId && (
+        <p className="text-xs text-gray-500 font-mono">
+          Registration ID: {registrationId}
+        </p>
       )}
 
       <div className="flex justify-center">

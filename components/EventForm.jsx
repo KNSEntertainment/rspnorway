@@ -17,6 +17,10 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 		eventvideo: null,
 		price: "",
 		studentPrice: "",
+		childPrice: "",
+		childAgeLimit: "",
+		elderlyPrice: "",
+		elderlyAgeLimit: "",
 		maximumSeats: "",
 		registrationEnabled: true,
 		paymentCollectionEnabled: true,
@@ -30,7 +34,7 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 	useEffect(() => {
 		if (eventToEdit) {
 			const eventDateValue = eventToEdit.eventdate ? String(eventToEdit.eventdate).split("T")[0] : "";
-			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime", "price", "studentPrice", "maximumSeats", "practicalInfo"];
+			const stringKeys = ["eventname", "eventdescription", "eventvenue", "eventtime", "price", "studentPrice", "childPrice", "childAgeLimit", "elderlyPrice", "elderlyAgeLimit", "maximumSeats", "practicalInfo"];
 			const sanitizedStrings = stringKeys.reduce((acc, key) => {
 				acc[key] = toSafeString(eventToEdit[key]);
 				return acc;
@@ -98,6 +102,10 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 					eventvideo: null,
 					price: "",
 					studentPrice: "",
+					childPrice: "",
+					childAgeLimit: "",
+					elderlyPrice: "",
+					elderlyAgeLimit: "",
 					maximumSeats: "",
 					registrationEnabled: true,
 					paymentCollectionEnabled: true,
@@ -179,6 +187,30 @@ export default function EventForm({ handleCloseEventModal, eventToEdit = null })
 						Student Ticket Price (NOK)
 					</label>
 					<input type="number" min="0" id="studentPrice" value={formData.studentPrice} onChange={(e) => setFormData({ ...formData, studentPrice: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="childPrice" className="block mb-2 font-bold">
+						Children Ticket Price (NOK)
+					</label>
+					<input type="number" min="0" id="childPrice" value={formData.childPrice} onChange={(e) => setFormData({ ...formData, childPrice: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="childAgeLimit" className="block mb-2 font-bold">
+						Children Age Limit
+					</label>
+					<input type="text" id="childAgeLimit" value={formData.childAgeLimit} onChange={(e) => setFormData({ ...formData, childAgeLimit: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g., Under 8 years" />
+				</div>
+				<div>
+					<label htmlFor="elderlyPrice" className="block mb-2 font-bold">
+						Elderly Ticket Price (NOK)
+					</label>
+					<input type="number" min="0" id="elderlyPrice" value={formData.elderlyPrice} onChange={(e) => setFormData({ ...formData, elderlyPrice: e.target.value })} className="w-full p-2 border rounded" />
+				</div>
+				<div>
+					<label htmlFor="elderlyAgeLimit" className="block mb-2 font-bold">
+						Elderly Age Limit
+					</label>
+					<input type="text" id="elderlyAgeLimit" value={formData.elderlyAgeLimit} onChange={(e) => setFormData({ ...formData, elderlyAgeLimit: e.target.value })} className="w-full p-2 border rounded" placeholder="e.g., Over 80 years" />
 				</div>
 				<div>
 					<label htmlFor="maximumSeats" className="block mb-2 font-bold">

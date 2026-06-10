@@ -18,7 +18,10 @@ interface Event {
 	eventposter3Url?: string;
 	price?: number;
 	studentPrice?: number;
-	maximumSeats?: number;
+tchildPrice?: number;
+tchildAgeLimit?: string;
+telderlyPrice?: number;
+telderlyAgeLimit?: string;	maximumSeats?: number;
 	registeredSeats?: number;
 	registrationEnabled?: boolean;
 	paymentCollectionEnabled?: boolean;
@@ -60,6 +63,8 @@ const getPriceLines = (event: Event) => {
 	const lines = [];
 	if (event.price !== undefined && event.price !== null) lines.push(`Adult: NOK ${event.price}`);
 	if (event.studentPrice !== undefined && event.studentPrice !== null) lines.push(`Student: NOK ${event.studentPrice}`);
+	if (event.childPrice !== undefined && event.childPrice !== null) lines.push(`Children: NOK ${event.childPrice}${event.childAgeLimit ? ` (${event.childAgeLimit})` : ""}`);
+	if (event.elderlyPrice !== undefined && event.elderlyPrice !== null) lines.push(`Elderly: NOK ${event.elderlyPrice}${event.elderlyAgeLimit ? ` (${event.elderlyAgeLimit})` : ""}`);
 	return lines;
 };
 

@@ -47,6 +47,17 @@ const EventRegistrationSchema = new mongoose.Schema(
 			min: 0,
 			default: 0,
 		},
+		elders: {
+			type: Number,
+			required: true,
+			min: 0,
+			default: 0,
+		},
+		students: {
+			type: Number,
+			min: 0,
+			default: 0,
+		},
 		specialRequests: {
 			type: String,
 			trim: true,
@@ -56,14 +67,16 @@ const EventRegistrationSchema = new mongoose.Schema(
 			required: true,
 			min: 0,
 		},
+		paymentProofUrl: {
+			type: String,
+		},
 		qrCode: {
 			type: String,
-			required: true,
 		},
 		status: {
 			type: String,
 			enum: ["pending", "confirmed", "cancelled"],
-			default: "confirmed",
+			default: "pending",
 		},
 		paymentStatus: {
 			type: String,
@@ -102,13 +115,12 @@ EventRegistrationSchema.virtual("fullName").get(function () {
 
 // Method to get total attendees
 EventRegistrationSchema.methods.getTotalAttendees = function () {
-	return this.adults + this.children;
+	return (this.adults || 0) + (this.students || 0) + (this.children || 0) + (this.elders || 0);
 };
 
 // Pre-save middleware to generate registration ID if not provided
 EventRegistrationSchema.pre("save", function (next) {
 	if (!this.registrationId) {
-		// Generate a unique ID using timestamp and random string
 		const timestamp = Date.now().toString(36);
 		const randomStr = Math.random().toString(36).substring(2, 8);
 		this.registrationId = `REG-${timestamp}-${randomStr}`.toUpperCase();

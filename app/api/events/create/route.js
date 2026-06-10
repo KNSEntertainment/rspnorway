@@ -29,6 +29,10 @@ export async function POST(request) {
 		const eventtime = formData.get("eventtime");
 		const price = getNumberField(formData, "price");
 		const studentPrice = getNumberField(formData, "studentPrice");
+		const childPrice = getNumberField(formData, "childPrice");
+		const childAgeLimit = formData.get("childAgeLimit") || "";
+		const elderlyPrice = getNumberField(formData, "elderlyPrice");
+		const elderlyAgeLimit = formData.get("elderlyAgeLimit") || "";
 		const maximumSeats = getNumberField(formData, "maximumSeats");
 		const registrationEnabled = formData.get("registrationEnabled") !== "false";
 		const paymentCollectionEnabled = formData.get("paymentCollectionEnabled") !== "false";
@@ -70,6 +74,10 @@ export async function POST(request) {
 			eventvideoUrl,
 			price,
 			studentPrice,
+			childPrice,
+			childAgeLimit,
+			elderlyPrice,
+			elderlyAgeLimit,
 			maximumSeats,
 			registrationEnabled,
 			paymentCollectionEnabled,

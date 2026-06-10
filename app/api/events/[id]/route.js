@@ -35,7 +35,7 @@ export async function PUT(request, { params }) {
 		const urlsToDelete = [];
 
 		const eventData = {};
-		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime", "practicalInfo"];
+		const textKeys = ["eventname", "eventdescription", "eventvenue", "eventdate", "eventtime", "practicalInfo", "childAgeLimit", "elderlyAgeLimit"];
 		for (const key of textKeys) {
 			if (formData.has(key)) {
 				const value = formData.get(key);
@@ -46,7 +46,7 @@ export async function PUT(request, { params }) {
 				}
 			}
 		}
-		for (const key of ["price", "studentPrice", "maximumSeats"]) {
+		for (const key of ["price", "studentPrice", "childPrice", "elderlyPrice", "maximumSeats"]) {
 			if (formData.has(key)) {
 				eventData[key] = getNumberField(formData, key);
 			}
