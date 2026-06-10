@@ -31,6 +31,11 @@ export async function PUT(request, { params }) {
     }
 
     // Handle other updates
+    if (data.category) transaction.category = data.category;
+    if (data.subcategory !== undefined) transaction.subcategory = data.subcategory;
+    if (data.amount) transaction.amount = data.amount;
+    if (data.date) transaction.date = data.date;
+    if (data.paymentMethod) transaction.paymentMethod = data.paymentMethod;
     if (data.description) transaction.description = data.description;
     if (data.notes) transaction.notes = data.notes;
     if (data.tags) transaction.tags = data.tags;

@@ -453,7 +453,7 @@ export default function FinancialDashboard() {
                   <p className="text-sm">Create budgets to track your expenses effectively.</p>
                   <Button 
                     className="mt-4" 
-                    onClick={() => window.location.href = `/${locale}/dashboard/budget`}
+                    onClick={() => router.push(`/${locale}/dashboard/finances/budget`)}
                   >
                     Create Budget
                   </Button>

@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 
 interface Budget {
-  id: string;
+  _id: string;
   category: string;
   allocated: number;
   spent: number;
@@ -50,7 +50,9 @@ export default function BudgetManagement() {
   const [selectedPeriod, setSelectedPeriod] = useState("monthly");
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-    const [alerts, setAlerts] = useState<BudgetAlert[]>([]);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
+  const [alerts, setAlerts] = useState<BudgetAlert[]>([]);
   const [formData, setFormData] = useState({
     category: "",
     allocated: "",
@@ -105,13 +107,13 @@ export default function BudgetManagement() {
         newAlerts.push({
           type: "danger",
           message: `Budget for ${budget.category} has been exceeded (${percentage.toFixed(1)}%)`,
-          budgetId: budget.id
+          budgetId: budget._id
         });
       } else if (percentage >= 80) {
         newAlerts.push({
           type: "warning", 
           message: `Budget for ${budget.category} is ${percentage.toFixed(1)}% used`,
-          budgetId: budget.id
+          budgetId: budget._id
         });
       }
     });
@@ -143,7 +145,48 @@ export default function BudgetManagement() {
     }
   };
 
+  const handleEdit = (budget: Budget) => {
+    setEditingBudget(budget);
+    setFormData({
+      category: budget.category,
+      allocated: budget.allocated.toString(),
+      description: budget.description || "",
+      period: budget.period,
+    });
+    setShowEditDialog(true);
+  };
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBudget) return;
+    try {
+      const response = await fetch(`/api/finances/budgets/${editingBudget._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: formData.category,
+          allocated: parseFloat(formData.allocated),
+          description: formData.description,
+          period: formData.period,
+        }),
+      });
+
+      if (response.ok) {
+        setShowEditDialog(false);
+        setEditingBudget(null);
+        setFormData({ category: "", allocated: "", description: "", period: "monthly" });
+        fetchBudgets();
+      } else {
+        const error = await response.json();
+        console.error("Error updating budget:", error);
+      }
+    } catch (error) {
+      console.error("Error updating budget:", error);
+    }
+  };
+
   const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this budget?")) return;
     try {
       const response = await fetch(`/api/finances/budgets/${id}`, {
         method: 'DELETE'
@@ -270,6 +313,76 @@ export default function BudgetManagement() {
               </form>
             </DialogContent>
           </Dialog>
+
+          {/* Edit Budget Dialog */}
+          <Dialog open={showEditDialog} onOpenChange={(open) => {
+            if (!open) {
+              setShowEditDialog(false);
+              setEditingBudget(null);
+              setFormData({ category: "", allocated: "", description: "", period: "monthly" });
+            }
+          }}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Budget</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-category">Category *</Label>
+                  <Input
+                    id="edit-category"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="e.g., Marketing, Operations, Events"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-allocated">Allocated Amount (NOK) *</Label>
+                  <Input
+                    id="edit-allocated"
+                    type="number"
+                    value={formData.allocated}
+                    onChange={(e) => setFormData({ ...formData, allocated: e.target.value })}
+                    placeholder="10000"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-period">Period</Label>
+                  <Select value={formData.period} onValueChange={(value) => setFormData({ ...formData, period: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="quarterly">Quarterly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-description">Description</Label>
+                  <Textarea
+                    id="edit-description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Optional description for this budget"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit">Update Budget</Button>
+                  <Button type="button" variant="outline" onClick={() => {
+                    setShowEditDialog(false);
+                    setEditingBudget(null);
+                    setFormData({ category: "", allocated: "", description: "", period: "monthly" });
+                  }}>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -365,7 +478,7 @@ export default function BudgetManagement() {
           ) : (
             <div className="space-y-4">
               {budgets.map((budget) => (
-                <div key={budget.id} className="border rounded-lg p-4">
+                <div key={budget._id} className="border rounded-lg p-4">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <h3 className="font-semibold text-lg">{budget.category}</h3>
@@ -379,13 +492,13 @@ export default function BudgetManagement() {
                     </div>
                     <div className="flex items-center gap-2">
                       {getBudgetStatusIcon(budget.allocated, budget.spent)}
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => handleEdit(budget)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        onClick={() => handleDelete(budget.id)}
+                        onClick={() => handleDelete(budget._id)}
                         className="text-red-600 hover:text-red-700"
                       >
                         <Trash2 className="h-4 w-4" />

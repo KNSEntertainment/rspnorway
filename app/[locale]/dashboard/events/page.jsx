@@ -56,9 +56,12 @@ export default function EventsPage() {
 	};
 
 	return (
-		<div className="w-full max-w-full px-2 sm:px-6">
-			<div className="flex flex-col sm:flex-row sm:justify-between items-stretch gap-2 mb-4">
-				<h1 className="text-2xl font-bold">Manage Events</h1>
+		<div className="space-y-6">
+			<div className="flex flex-col sm:flex-row sm:justify-between items-stretch gap-2">
+				<div>
+					<h1 className="text-3xl font-bold text-gray-900">Manage Events</h1>
+					<p className="text-gray-600 mt-1">Create and manage events</p>
+				</div>
 				<button onClick={handleCreateEvent} className="bg-brand text-neutral-200 font-bold px-4 py-2 rounded w-full sm:w-auto text-center hover:bg-red-700 transition-colors">
 					{openEventModal ? "Cancel" : "Create Event"}
 				</button>
@@ -66,21 +69,20 @@ export default function EventsPage() {
 
 			{/* Inline Form Section */}
 			{openEventModal && (
-				<div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg mb-6 border-2 border-brand">
+				<div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg border-2 border-brand">
 					<h2 className="text-base sm:text-lg font-bold text-white bg-brand p-2 sm:p-4 mb-4 text-center rounded">{eventToEdit ? "Edit Event" : "Create Event"}</h2>
 					<EventForm handleCloseEventModal={handleCloseEventModal} eventToEdit={eventToEdit} />
 				</div>
 			)}
 			<div className="bg-white rounded-lg shadow overflow-x-auto">
-				<Table className="min-w-[1000px]">
+				<Table>
 					<TableHeader>
 						<TableRow>
 							<TableHead>Event Name</TableHead>
-							<TableHead>Event Venue</TableHead>
-							<TableHead>Event Date</TableHead>
-							<TableHead>Event Time</TableHead>
+							<TableHead>Venue</TableHead>
+							<TableHead>Date</TableHead>
+							<TableHead>Time</TableHead>
 							<TableHead>Tickets</TableHead>
-							
 							<TableHead>Poster</TableHead>
 							<TableHead>Actions</TableHead>
 						</TableRow>
@@ -89,17 +91,16 @@ export default function EventsPage() {
 						{events.length > 0 ? (
 							events.map((event) => (
 								<TableRow key={event._id}>
-									<TableCell className="font-semibold max-w-40 truncate whitespace-normal break-words">{event.eventname}</TableCell>
+									<TableCell className="font-semibold whitespace-normal break-words">{event.eventname}</TableCell>
 									<TableCell>{event.eventvenue}</TableCell>
-									<TableCell className="w-24">{event.eventdate}</TableCell>
-									<TableCell className="w-28">{event.eventtime}</TableCell>
-									<TableCell className="w-32">Adult: NOK {event.price || 0}<br />Student: NOK {event.studentPrice || 0}</TableCell>
-									
+									<TableCell>{event.eventdate}</TableCell>
+									<TableCell>{event.eventtime}</TableCell>
+									<TableCell>Adult: NOK {event.price || 0}<br />Student: NOK {event.studentPrice || 0}</TableCell>
 									<TableCell>
 										<Image src={event.eventposterUrl || "/ghanti.png"} width={100} height={100} alt={event.eventname || "alt"} className="w-16 h-20 object-cover rounded" />
 									</TableCell>
 									<TableCell>
-										<div className="flex flex-col sm:flex-row gap-2">
+										<div className="flex gap-2">
 											<Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="w-8 h-8">
 												<Pencil className="w-5 h-5 text-brand" />
 											</Button>

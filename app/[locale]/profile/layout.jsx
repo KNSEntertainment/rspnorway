@@ -13,7 +13,7 @@ function ProfileLayoutContent({ children }) {
 	const locale = useLocale();
 	const [profileOpen, setProfileOpen] = useState(false);
 	const { data: session, status } = useSession();
-	const memberMenuItems = getMemberMenuItems(locale);
+	const memberMenuItems = getMemberMenuItems(locale, session?.user?.membershipType);
 
 	// Protect profile: redirect if not authenticated
 	if (status === "loading") {

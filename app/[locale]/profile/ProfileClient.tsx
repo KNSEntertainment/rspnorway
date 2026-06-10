@@ -128,11 +128,11 @@ export default function ProfileClient({ translations: t }: Props) {
 			fetch(`/api/membership?email=${encodeURIComponent(session.user.email)}`)
 				.then((res) => res.json())
 				.then((data) => {
-					if (Array.isArray(data) && data.length > 0) {
-						setMembershipData(data[0]);
-						// Set profile photo from membership data
-						if (data[0].profilePhoto) {
-							setProfilePhoto(data[0].profilePhoto);
+					const memberData = Array.isArray(data) ? data[0] : data;
+					if (memberData) {
+						setMembershipData(memberData);
+						if (memberData.profilePhoto) {
+							setProfilePhoto(memberData.profilePhoto);
 						}
 					}
 					setLoading(false);
@@ -426,6 +426,7 @@ export default function ProfileClient({ translations: t }: Props) {
 						</CardContent>
 					</Card>
 				</div>
+			</div>
 
 				{/* Membership Details */}
 				{membershipData && (
@@ -510,8 +511,6 @@ export default function ProfileClient({ translations: t }: Props) {
 				)}
 
 			
-			</div>
-
 			{/* File Size Alert Dialog */}
 			<AlertDialog open={showSizeAlert} onOpenChange={setShowSizeAlert}>
 				<AlertDialogContent>
