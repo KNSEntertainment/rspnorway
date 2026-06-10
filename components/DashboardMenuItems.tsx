@@ -21,6 +21,7 @@ export const menuItems: MenuItem[] = [
 	{ id: "financial-management", label: "Financial Management", icon: Receipt, color: "bg-blue-600", href: "/en/dashboard/financial-management", roles: ["admin", "treasurer"] },
 	{ id: "downloads", label: "Downloads", icon: Download, color: "bg-rose-600", href: "/en/dashboard/downloads", roles: ["admin"] },
 	{ id: "events", label: "Events", icon: BookImage, color: "bg-pink-600", href: "/en/dashboard/events", roles: ["admin"] },
+	{ id: "executive-contributions", label: "Executive Contributions", icon: DollarSign, color: "bg-emerald-600", href: "/en/dashboard/executive-contributions", roles: ["admin", "treasurer"] },
 	{ id: "executive-members", label: "Executive Members", icon: Users, color: "bg-cyan-600", href: "/en/dashboard/executive-members", roles: ["admin"] },
 	{ id: "gallery", label: "Gallery", icon: GalleryThumbnails, color: "bg-emerald-600", href: "/en/dashboard/gallery", roles: ["admin"] },
 	{ id: "hero", label: "Hero Section", icon: Image, color: "bg-gradient-to-r from-purple-600 to-pink-600", href: "/en/dashboard/hero", roles: ["admin"] },

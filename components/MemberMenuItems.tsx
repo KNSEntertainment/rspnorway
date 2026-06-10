@@ -1,4 +1,4 @@
-import { User, Settings, Lock, Mail, Wallet, Calendar, TrendingUp, LucideIcon } from "lucide-react";
+import { User, Settings, Lock, Mail, Wallet, Calendar, TrendingUp, DollarSign, LucideIcon } from "lucide-react";
 
 export interface MemberMenuItem {
 	id: string;
@@ -20,6 +20,7 @@ export const getMemberMenuItems = (locale: string, membershipType?: string): Mem
 
 	if (membershipType === "executive") {
 		items.splice(2, 0, { id: "finances", label: "Finances", icon: TrendingUp, href: `/${locale}/profile/finances` });
+		items.splice(3, 0, { id: "contributions", label: "Contributions", icon: DollarSign, href: `/${locale}/profile/contributions` });
 	}
 
 	return items;
