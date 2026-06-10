@@ -25,7 +25,7 @@ export default function CreateBudget() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  if (!session || session.user.role !== "admin") {
+  if (!session || session.user.role !== "admin" && session.user.role !== "treasurer") {
     return (
       <div className="text-center py-12">
         <Target className="mx-auto h-16 w-16 text-gray-400 mb-4" />

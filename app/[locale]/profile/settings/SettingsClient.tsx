@@ -137,7 +137,7 @@ export default function SettingsPage({ translations: t }: Props) {
     }
 
     // Redirect admins to dashboard
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
       router.push(`/${locale}/dashboard`);
       return;
     }

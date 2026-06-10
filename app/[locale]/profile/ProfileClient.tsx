@@ -118,7 +118,7 @@ export default function ProfileClient({ translations: t }: Props) {
 		}
 
 		// Redirect admins to dashboard
-		if (session?.user?.role === "admin") {
+		if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
 			router.push("/en/dashboard");
 			return;
 		}

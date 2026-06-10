@@ -49,7 +49,7 @@ export default function AuthFormContent() {
 	useEffect(() => {
 		if (status === "authenticated" && session?.user) {
 			// Redirect based on role
-			if (session.user.role === "admin") {
+			if (session.user.role === "admin" || session.user.role === "treasurer") {
 				console.log("Redirecting admin to dashboard");
 				window.location.href = `/en/dashboard`;
 			} else {

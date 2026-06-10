@@ -218,12 +218,12 @@ export default function BudgetManagement() {
   };
 
   useEffect(() => {
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
       fetchBudgets();
     }
   }, [session, selectedPeriod, selectedYear, fetchBudgets]);
 
-  if (session?.user?.role !== "admin") {
+  if (session?.user?.role !== "admin" && session?.user?.role !== "treasurer") {
     return (
       <div className="container mx-auto py-8">
         <Alert>

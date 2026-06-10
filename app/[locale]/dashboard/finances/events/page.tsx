@@ -61,7 +61,7 @@ export default function EventsFinancial() {
   }, [selectedPeriod, selectedYear]);
 
   useEffect(() => {
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
       fetchEventsFinancial();
     }
   }, [session, selectedPeriod, selectedYear, fetchEventsFinancial]);
@@ -98,7 +98,7 @@ export default function EventsFinancial() {
   const totalProfit = totalRevenue - totalExpenses;
   const totalTicketsSold = events.reduce((sum, event) => sum + event.ticketsSold, 0);
 
-  if (!session || session.user.role !== "admin") {
+  if (!session || session.user.role !== "admin" && session.user.role !== "treasurer") {
     return (
       <div className="text-center py-12">
         <Calendar className="mx-auto h-16 w-16 text-gray-400 mb-4" />

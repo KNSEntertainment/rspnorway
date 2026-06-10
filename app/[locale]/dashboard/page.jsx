@@ -1,14 +1,21 @@
 "use client";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useActiveMenu } from "@/context/ActiveMenuContext";
 import { menuItems } from "@/components/DashboardMenuItems";
 
 export default function DashboardGrid() {
 	const { setActiveMenu } = useActiveMenu();
+	const { data: session } = useSession();
+
+	const visibleItems = menuItems.filter((item) => {
+		if (!item.roles) return session?.user?.role === "admin";
+		return item.roles.includes(session?.user?.role);
+	});
 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-			{menuItems.map((item) => (
+			{visibleItems.map((item) => (
 				<Link key={item.label} href={item.href} className="group relative overflow-hidden rounded-lg shadow-lg transition-transform hover:scale-105" onClick={() => setActiveMenu(item.id)}>
 					<div className={`${item.color} p-6 h-auto`}>
 						<div className="flex items-center justify-between">

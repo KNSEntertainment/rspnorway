@@ -150,7 +150,7 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
 							{user ? (
 								<div className="text-xs text-gray-600 space-y-1">
 									<p className="font-semibold text-gray-900">{user.email}</p>
-									<p>{user.role === "admin" ? "Admin Account" : user.isMember ? `${user.membershipType || "Member"}` : "Regular User"}</p>
+<p>{user.role === "admin" ? "Admin Account" : user.role === "treasurer" ? "Treasurer Account" : user.isMember ? `${user.membershipType || "Member"}` : "Regular User"}</p>
 								</div>
 							) : (
 								<p className="text-xs text-gray-600 text-center">Sign in to access exclusive member features and dashboard</p>

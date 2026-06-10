@@ -13,7 +13,7 @@ function DashboardLayoutContent({ children }) {
 	const [profileOpen, setProfileOpen] = useState(false);
 	const { data: session, status } = useSession();
 
-	// Protect dashboard: redirect if not authenticated or not admin
+	// Protect dashboard: redirect if not authenticated or not admin/treasurer
 	if (status === "loading") {
 		return (
 			<div className="flex flex-col space-y-6 items-center justify-center min-h-screen w-full">
@@ -26,11 +26,15 @@ function DashboardLayoutContent({ children }) {
 		router.replace("/en/login");
 		return null;
 	}
-	// Redirect non-admin users to profile page
-	if (session.user.role !== "admin") {
+	if (session.user.role !== "admin" && session.user.role !== "treasurer") {
 		router.replace("/en/profile");
 		return null;
 	}
+
+	const visibleMenuItems = menuItems.filter((item) => {
+		if (!item.roles) return session.user.role === "admin";
+		return item.roles.includes(session.user.role);
+	});
 
 	return (
 		<div
@@ -44,7 +48,7 @@ function DashboardLayoutContent({ children }) {
 			{/* Sidebar */}
 			<div className="hidden py-6 md:flex w-64 bg-brand/20 flex-col shadow-lg">
 				<nav className="overflow-y-hidden no-scrollbar">
-					{menuItems.map((item) => {
+					{visibleMenuItems.map((item) => {
 						const Icon = item.icon;
 						const isActive = activeMenu === item.id;
 						return (

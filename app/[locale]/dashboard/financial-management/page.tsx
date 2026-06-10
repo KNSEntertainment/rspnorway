@@ -215,7 +215,7 @@ export default function FinancialManagementPage() {
 	}, []);
 
 	useEffect(() => {
-		if (session?.user?.role === "admin") {
+		if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
 			setLoading(true);
 			Promise.all([fetchTransactions(), fetchCategories(), fetchEvents(), fetchSummary(), fetchBudgets()]).finally(() => setLoading(false));
 		}
@@ -558,7 +558,7 @@ export default function FinancialManagementPage() {
 		}
 	};
 
-	if (session?.user?.role !== "admin") {
+	if (session?.user?.role !== "admin" && session?.user?.role !== "treasurer") {
 		return (
 			<div className="text-center py-12">
 				<AlertCircle className="mx-auto h-16 w-16 text-gray-400 mb-4" />

@@ -105,7 +105,7 @@ export default function UsersPage() {
 					<select className="border rounded px-2 py-2" value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
 						<option value="">All Roles</option>
 						<option value="admin">Admin</option>
-						<option value="user">User</option>
+						<option value="treasurer">Treasurer</option>
 					</select>
 				</div>
 				<button onClick={() => setOpenUserModal(!openUserModal)} className="bg-brand text-neutral-200 font-bold px-4 py-2">
@@ -124,7 +124,7 @@ export default function UsersPage() {
 					<select className="border rounded px-2 py-1" value={bulkRole} onChange={(e) => setBulkRole(e.target.value)} disabled={selectedUserIds.length === 0}>
 						<option value="">Change Role</option>
 						<option value="admin">Admin</option>
-						<option value="user">User</option>
+						<option value="treasurer">Treasurer</option>
 					</select>
 					<button className="bg-brand text-white px-3 py-1 rounded disabled:opacity-50" onClick={handleBulkRoleChange} disabled={selectedUserIds.length === 0 || !bulkRole}>
 						Apply Role

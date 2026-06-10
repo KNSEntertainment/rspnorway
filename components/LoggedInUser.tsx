@@ -113,10 +113,10 @@ const LoggedInUser = ({ user }: { user: SessionUser }) => {
 							<p className="font-semibold text-gray-900 truncate">{user.email}</p>
 							<p className="text-xs text-gray-900 mt-1">{getUserRoleText()}</p>
 						</div>
-						{user.role === "admin" || user.isMember ? (
+						{user.role === "admin" || user.role === "treasurer" || user.isMember ? (
 							<Link href={locale ? `/${locale}/dashboard` : "/en/dashboard"} onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">
 								<LayoutDashboard size={18} />
-								{user.role === "admin" ? "Admin Dashboard" : "Member Dashboard"}
+								{user.role === "admin" || user.role === "treasurer" ? "Admin Dashboard" : "Member Dashboard"}
 							</Link>
 						) : (
 							<Link href={locale ? `/${locale}/profile` : "/en/profile"} onClick={() => setShowUserDropdown(false)} className="flex items-center gap-3 px-5 py-3.5 text-brand hover:bg-brand/10 w-full transition-all duration-200 font-medium">

@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
 			email,
 			userName,
 			password: hashedPassword,
-			role: "admin", // Always admin role
+			role: data.role || "admin", // Use provided role or default to admin
 			emailVerified: true, // Auto-verify admin users
 			createdBy: (session.user as { _id: string })?._id, // Track who created this user
 		});
@@ -114,12 +114,12 @@ export async function POST(req: NextRequest) {
 
 		return NextResponse.json({ 
 			success: true, 
-			message: "Admin user created successfully!",
+			message: "User created successfully!",
 			user: userResponse
 		});
 	} catch (error: unknown) {
-		console.error("Error creating admin user:", error);
-		return NextResponse.json({ error: "Failed to create admin user." }, { status: 500 });
+		console.error("Error creating user:", error);
+		return NextResponse.json({ error: "Failed to create user." }, { status: 500 });
 	}
 }
 

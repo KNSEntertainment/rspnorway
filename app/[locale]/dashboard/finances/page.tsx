@@ -217,7 +217,7 @@ export default function FinancialDashboard() {
   }, []);
 
   useEffect(() => {
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "admin" || session?.user?.role === "treasurer") {
       fetchFinancialData();
     }
   }, [session, selectedPeriod, selectedYear, fetchFinancialData]);
@@ -286,7 +286,7 @@ export default function FinancialDashboard() {
     router.push(`/${locale}/dashboard/finances/events`);
   };
 
-  if (session?.user?.role !== "admin") {
+  if (session?.user?.role !== "admin" && session?.user?.role !== "treasurer") {
     return (
       <div className="text-center py-12">
         <AlertCircle className="mx-auto h-16 w-16 text-gray-400 mb-4" />

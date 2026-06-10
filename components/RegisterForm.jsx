@@ -24,7 +24,7 @@ const RegisterForm = ({ handleCloseUserModal, editUser }) => {
 		email: editUser?.email || "",
 		userName: editUser?.userName || "",
 		password: "",
-		role: editUser?.role || "user",
+		role: editUser?.role || "admin",
 	});
 
 	const handleRegister = async (e) => {
@@ -60,7 +60,7 @@ const RegisterForm = ({ handleCloseUserModal, editUser }) => {
 					email: "",
 					userName: "",
 					password: "",
-					role: "user",
+					role: "admin",
 				});
 				alert(editUser ? "User updated successfully" : "User created successfully");
 				if (handleCloseUserModal) handleCloseUserModal();
@@ -79,7 +79,7 @@ const RegisterForm = ({ handleCloseUserModal, editUser }) => {
 			email: "",
 			userName: "",
 			password: "",
-			role: "user",
+			role: "admin",
 		});
 		setError("");
 		if (handleCloseUserModal) handleCloseUserModal();
@@ -96,7 +96,7 @@ const RegisterForm = ({ handleCloseUserModal, editUser }) => {
 					<Label htmlFor="register-role">User Role</Label>
 					<select id="register-role" name="role" value={formData.role} onChange={(e) => setFormData({ ...formData, role: e.target.value })} className="block w-full rounded-md border-light shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 px-3 py-2">
 						<option value="admin">Admin</option>
-						<option value="user">User</option>
+						<option value="treasurer">Treasurer</option>
 					</select>
 				</div>
 				<div className="space-y-2">

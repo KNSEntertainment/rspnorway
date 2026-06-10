@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
 		email: { type: String, required: true, unique: true },
 		userName: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
-		role: { type: String, enum: ["admin"], default: "admin", required: true }, // Only admin role allowed
+		role: { type: String, enum: ["admin", "treasurer"], default: "admin", required: true },
 		phone: { type: String },
 		isActive: { type: Boolean, default: true },
 		// Password reset tokens
