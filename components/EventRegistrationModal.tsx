@@ -591,10 +591,10 @@ function PaymentStep({ event, data, onSubmit, onBack, loading, paymentProof, pay
                       )}
                     </svg>
                   </div> */}
-									<p className="text-xl text-gray-500">
+									<p className="text-xl text-gray-700">
 										Vipps number: <strong>40387207</strong>
 									</p>
-									<p className="text-lg text-gray-500">Anusuiya Timilsina</p>
+									<p className="text-lg text-gray-500">(Anusuiya Timilsina)</p>
 								</div>
 
 								<div>

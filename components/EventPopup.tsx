@@ -63,7 +63,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
 						{/* Modal Content */}
-						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden z-10">
+						<motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} transition={{ duration: 0.3, ease: "easeOut" }} className="relative bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-scroll z-10">
 							{/* Close Button */}
 							<button onClick={handleClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white transition-all duration-200 shadow-lg">
 								<X className="w-5 h-5" />
@@ -169,11 +169,7 @@ export default function EventPopup({ latestEvent }: EventPopupProps) {
 				)}
 			</AnimatePresence>
 
-			<EventRegistrationModal
-				event={registrationModal}
-				isOpen={!!registrationModal}
-				onClose={() => setRegistrationModal(null)}
-			/>
+			<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
 		</>
 	);
 }
