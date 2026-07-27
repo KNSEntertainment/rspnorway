@@ -18,10 +18,11 @@ interface Event {
 	eventposter3Url?: string;
 	price?: number;
 	studentPrice?: number;
-tchildPrice?: number;
-tchildAgeLimit?: string;
-telderlyPrice?: number;
-telderlyAgeLimit?: string;	maximumSeats?: number;
+	tchildPrice?: number;
+	tchildAgeLimit?: string;
+	telderlyPrice?: number;
+	telderlyAgeLimit?: string;
+	maximumSeats?: number;
 	registeredSeats?: number;
 	registrationEnabled?: boolean;
 	paymentCollectionEnabled?: boolean;
@@ -88,7 +89,6 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 		return new Date(eventDate).getTime() < new Date().setHours(0, 0, 0, 0);
 	};
 
-	
 	useEffect(() => {
 		if (!initialEventId) {
 			setSelectedEvent(null);
@@ -130,7 +130,9 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 												{/* Date Badge */}
 												<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
 													<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-													<span className="text-xs sm:text-sm font-medium">{day} {month}</span>
+													<span className="text-xs sm:text-sm font-medium">
+														{day} {month}
+													</span>
 												</div>
 												{selectedEvent.eventtime && (
 													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
@@ -212,42 +214,27 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 											<div className="bg-brand/5 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-brand/10">
 												<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Ticket Information</h2>
 												<div className="space-y-2 sm:space-y-3 text-gray-700">
-													{selectedPriceLines.length > 0 && (
-														<div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>
-													)}
-													{selectedSeatsRemaining !== null && (
-														<div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>
-													)}
-													{selectedEvent.practicalInfo && (
-														<div className="text-xs sm:text-sm text-gray-600 whitespace-pre-wrap">{selectedEvent.practicalInfo}</div>
-													)}
+													{selectedPriceLines.length > 0 && <div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>}
+													{selectedSeatsRemaining !== null && <div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
+													{selectedEvent.practicalInfo && <div className="text-xs sm:text-sm text-gray-600 whitespace-pre-wrap">{selectedEvent.practicalInfo}</div>}
 												</div>
-												
+
 												{/* Register Button */}
 												<div className="mt-4 sm:mt-6">
 													{isEventPast(selectedEvent.eventdate) ? (
-														<button
-															disabled
-															className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-														>
+														<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
 															Event Completed
 														</button>
 													) : selectedEvent.registrationEnabled === false ? (
-														<button
-															disabled
-															className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-														>
+														<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
 															Registration Closed
 														</button>
 													) : (
-														<button
-															onClick={() => setRegistrationModal(selectedEvent)}
-															className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2"
-														>
+														<button onClick={() => setRegistrationModal(selectedEvent)} className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2">
 															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-															Register Now
+															Register
 														</button>
 													)}
 												</div>
@@ -282,12 +269,9 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 							{/* ── Floating Register Button (Mobile) ── */}
 							<div className="lg:hidden fixed bottom-4 right-4 z-50">
 								{!isEventPast(selectedEvent.eventdate) && (
-									<button
-										onClick={() => setRegistrationModal(selectedEvent)}
-										className="bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm"
-									>
+									<button onClick={() => setRegistrationModal(selectedEvent)} className="bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm">
 										<Users className="w-4 h-4" />
-										Register Now
+										Register
 									</button>
 								)}
 							</div>
@@ -345,17 +329,14 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 															registrationEnabled: selectedEvent.registrationEnabled,
 															paymentCollectionEnabled: selectedEvent.paymentCollectionEnabled,
 															isPast: isEventPast(selectedEvent.eventdate),
-															eventData: selectedEvent
+															eventData: selectedEvent,
 														});
-														
+
 														if (selectedEvent.registrationEnabled === false) {
 															return (
 																<>
 																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Registration for this event is currently disabled</p>
-																	<Button 
-																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed text-sm sm:text-base"
-																	>
+																	<Button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed text-sm sm:text-base">
 																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
 																		Registration Closed
 																	</Button>
@@ -364,17 +345,10 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														} else {
 															return (
 																<>
-																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
-																		{selectedEvent.paymentCollectionEnabled === false 
-																			? "Register now for this free event!" 
-																			: "Register now to secure your spot!"}
-																	</p>
-																	<Button 
-																		onClick={() => setRegistrationModal(selectedEvent)}
-																		className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
-																	>
+																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{selectedEvent.paymentCollectionEnabled === false ? "Register now for this free event!" : "Register now to secure your spot!"}</p>
+																	<Button onClick={() => setRegistrationModal(selectedEvent)} className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base">
 																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-																		Register Now
+																		Register
 																	</Button>
 																</>
 															);
@@ -396,11 +370,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 						</div>
 					</div>
 				</section>
-				<EventRegistrationModal
-					event={registrationModal}
-					isOpen={!!registrationModal}
-					onClose={() => setRegistrationModal(null)}
-				/>
+				<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
 			</>
 		);
 	}
@@ -475,14 +445,11 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 														</svg>
 													</span>
-												
+
 													{/* Register Button */}
 													<div onClick={(e) => e.stopPropagation()} className="flex-1">
 														{isEventPast(event.eventdate) ? (
-															<button
-																disabled
-																className="w-full bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-															>
+															<button disabled className="w-full bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 																<Users className="w-4 h-4" />
 																Completed
 															</button>
@@ -495,7 +462,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 																className="w-full bg-brand hover:bg-brand/90 text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2"
 															>
 																<Users className="w-4 h-4" />
-																Register Now
+																Register
 															</button>
 														)}
 													</div>
@@ -517,11 +484,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 					)}
 				</div>
 			</section>
-			<EventRegistrationModal
-				event={registrationModal}
-				isOpen={!!registrationModal}
-				onClose={() => setRegistrationModal(null)}
-			/>
+			<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
 		</>
 	);
 }

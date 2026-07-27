@@ -204,7 +204,7 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 					<div className="flex items-center justify-between">
 						{[1, 2, 3, 4].map((step) => (
 							<div key={step} className="flex items-center">
-								<div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= step ? "bg-brand text-white" : "bg-gray-200 text-gray-600"}`}>{currentStep > step ? <CheckCircle className="w-4 h-4" /> : step}</div>
+								<div className={`w-4 md:w-8 h-4 md:h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep >= step ? "bg-brand text-white" : "bg-gray-200 text-gray-600"}`}>{currentStep > step ? <CheckCircle className="w-4 h-4" /> : step}</div>
 								{step < 4 && <div className={`w-16 h-1 mx-2 ${currentStep > step ? "bg-brand" : "bg-gray-200"}`} />}
 							</div>
 						))}

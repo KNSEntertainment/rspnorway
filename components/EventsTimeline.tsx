@@ -42,52 +42,50 @@ export default function EventsTimeline() {
 	// Function to get most recent events (regardless of date)
 	const getRecentEvents = (allEvents: Event[]) => {
 		// Sort events by date (newest first) and take the latest 4
-		return allEvents
-			.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime())
-			.slice(0, 4);
+		return allEvents.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()).slice(0, 4);
 	};
 
 	useEffect(() => {
 		const fetchEvents = async () => {
 			try {
 				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
-				
+
 				// Use no-cache and proper headers
-				const res = await fetch(`${baseUrl}/api/events`, { 
+				const res = await fetch(`${baseUrl}/api/events`, {
 					cache: "no-store",
 					headers: {
-						'Content-Type': 'application/json',
-					}
+						"Content-Type": "application/json",
+					},
 				});
-				
+
 				console.log("Events response status:", res.status);
-				
+
 				if (!res.ok) {
 					throw new Error(`HTTP error! status: ${res.status}`);
 				}
-				
+
 				const data = await res.json();
-				
+
 				// Get all events and sort by most recent
 				const allEvents = data.events || [];
 				const recentEvents = getRecentEvents(allEvents);
 				setEvents(recentEvents);
-				
+
 				// Set latest event for popup
 				if (recentEvents.length > 0) {
 					setLatestEvent(recentEvents[0]);
 				}
-			} catch  {
+			} catch {
 				// Try fallback to relative URL
 				try {
-					const fallbackRes = await fetch('/api/events', { cache: "no-store" });
+					const fallbackRes = await fetch("/api/events", { cache: "no-store" });
 					const fallbackData = await fallbackRes.json();
 					console.log("Fallback events response data:", fallbackData);
-					
+
 					const allEvents = fallbackData.events || [];
 					const recentEvents = getRecentEvents(allEvents);
 					setEvents(recentEvents);
-					
+
 					if (recentEvents.length > 0) {
 						setLatestEvent(recentEvents[0]);
 					}
@@ -153,24 +151,13 @@ export default function EventsTimeline() {
 		);
 	}
 
-	
 	return (
 		<>
 			<section className="pb-12 md:pb-20 bg-white px-4">
 				<div className="container mx-auto">
 					{/* Section Header */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6 }}
-						className="text-center mb-16"
-					>
-						<SectionHeader 
-							heading="Events" 
-							seeAllLink={`/${locale}/events`}
-							seeAllText="See All"
-						/>
-				
+					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-16">
+						<SectionHeader heading="Events" seeAllLink={`/${locale}/events`} seeAllText="See All" />
 					</motion.div>
 
 					{events.length > 0 ? (
@@ -178,40 +165,24 @@ export default function EventsTimeline() {
 							{/* Two Events Display */}
 							<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
 								{events.slice(0, 2).map((event, index) => (
-									<motion.div
-										key={event._id}
-										initial={{ opacity: 0, y: 20 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.6, delay: index * 0.1 }}
-									>
+									<motion.div key={event._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: index * 0.1 }}>
 										<div className="bg-gray-50 transition-all duration-300 overflow-hidden group h-full">
 											{/* Event Poster */}
 											<div className="relative aspect-[16/9] w-full">
-												<Image 
-													src={event.eventposterUrl || "/ghanti.png"} 
-													alt={getLocalizedTitle(event)} 
-													fill 
-													className="object-cover bg-gray-50 transition-transform duration-700 group-hover:scale-105" 
-												/>
+												<Image src={event.eventposterUrl || "/ghanti.png"} alt={getLocalizedTitle(event)} fill className="object-cover bg-gray-50 transition-transform duration-700 group-hover:scale-105" />
 												{/* Gradient Overlay */}
 												<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 											</div>
 
 											{/* Event Information */}
 											<div className="p-6 flex flex-col justify-center">
-											
-
 												{/* Event Title */}
 												<Link href={`/${locale}/events?eventId=${event._id}`}>
-													<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-brand transition-colors duration-300 cursor-pointer">
-														{getLocalizedTitle(event)}
-													</h3>
+													<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-brand transition-colors duration-300 cursor-pointer">{getLocalizedTitle(event)}</h3>
 												</Link>
 
 												{/* Event Description */}
-												<p className="text-gray-600 mb-6 line-clamp-3 text-base leading-relaxed">
-													{getLocalizedDescription(event)}
-												</p>
+												<p className="text-gray-600 mb-6 line-clamp-3 text-base leading-relaxed">{getLocalizedDescription(event)}</p>
 
 												{/* Event Details Grid */}
 												<div className="grid grid-cols-1 gap-4 mb-6">
@@ -232,32 +203,22 @@ export default function EventsTimeline() {
 												{/* Action Buttons */}
 												<div className="flex gap-4">
 													<Link href={`/${locale}/events?eventId=${event._id}`}>
-														<button
-															className="flex-1 bg-brand text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200"
-														>
-															View Details
-														</button>
+														<button className="flex-1 bg-brand text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200">View Details</button>
 													</Link>
-													
+
 													{/* Register Button */}
 													<div onClick={(e) => e.stopPropagation()} className="flex-1">
 														{(() => {
 															if (event.registrationEnabled === false) {
 																return (
-																	<button
-																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-																	>
+																	<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 																		<Users className="w-5 h-5" />
 																		Registration Closed
 																	</button>
 																);
 															} else if (isEventPast(event.eventdate)) {
 																return (
-																	<button
-																		disabled
-																		className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed"
-																	>
+																	<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 																		<Check className="w-5 h-5" />
 																		Completed
 																	</button>
@@ -269,10 +230,9 @@ export default function EventsTimeline() {
 																			e.stopPropagation();
 																			setRegistrationModal(event);
 																		}}
-																		className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+																		className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 md:py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
 																	>
-																		<Users className="w-5 h-5" />
-																		Register Now
+																		Register
 																	</button>
 																);
 															}
@@ -286,14 +246,9 @@ export default function EventsTimeline() {
 							</div>
 
 							{/* View All Events Button */}
-							<motion.div
-												initial={{ opacity: 0, y: 20 }}
-												animate={{ opacity: 1, y: 0 }}
-												transition={{ duration: 0.6, delay: 0.4 }}
-												className="flex justify-center pt-12"
-											>
-												<ViewAllButton href={`/${locale}/events`} label="View All Events" />
-											</motion.div>
+							<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="flex justify-center pt-12">
+								<ViewAllButton href={`/${locale}/events`} label="View All Events" />
+							</motion.div>
 						</div>
 					) : (
 						<div className="text-center py-12">
@@ -305,11 +260,7 @@ export default function EventsTimeline() {
 				</div>
 			</section>
 			<EventPopup latestEvent={latestEvent} />
-			<EventRegistrationModal
-				event={registrationModal}
-				isOpen={!!registrationModal}
-				onClose={() => setRegistrationModal(null)}
-			/>
+			<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
 		</>
 	);
 }
