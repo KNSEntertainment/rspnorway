@@ -426,7 +426,7 @@ function AttendeeInfoStep({ data, onChange, onNext, onBack }: { data: Registrati
 						</Select>
 					</div>
 					<div>
-						<Label htmlFor="children">Children</Label>
+						<Label htmlFor="children">Children(Under 12 years only)</Label>
 						<Select value={data.children.toString()} onValueChange={(value) => updateData("children", parseInt(value))}>
 							<SelectTrigger>
 								<SelectValue />
@@ -441,7 +441,7 @@ function AttendeeInfoStep({ data, onChange, onNext, onBack }: { data: Registrati
 						</Select>
 					</div>
 					<div>
-						<Label htmlFor="elders">Elderly</Label>
+						<Label htmlFor="elders">Elderly(Over 70 years only)</Label>
 						<Select value={data.elders.toString()} onValueChange={(value) => updateData("elders", parseInt(value))}>
 							<SelectTrigger>
 								<SelectValue />
