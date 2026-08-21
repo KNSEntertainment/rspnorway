@@ -26,6 +26,7 @@ export default function MainHeader() {
 			href: "/updates",
 			dropdown: [
 				{ title: t("events"), href: "/events" },
+				{ title: t("feedback"), href: "/events/feedback" },
 				{ title: t("notices"), href: "/notices" },
 				{ title: t("circulars"), href: "/circulars" },
 				{ title: t("downloads"), href: "/downloads" },

@@ -17,9 +17,19 @@ export async function GET(request: NextRequest) {
     const eventId = searchParams.get("eventId");
     const status = searchParams.get("status");
 
-    const filter: Record<string, string> = {};
+    const filter: Record<string, unknown> = {};
     if (eventId) filter.eventId = eventId;
-    if (status) filter.status = status;
+    if (status === "attended") {
+      // "Attended" is a derived state (confirmed + checked in), not a stored status value.
+      filter.status = "confirmed";
+      filter.checkedIn = true;
+    } else if (status === "confirmed") {
+      // Keep "Confirmed" and "Attended" mutually exclusive in the filter dropdown.
+      filter.status = "confirmed";
+      filter.checkedIn = { $ne: true };
+    } else if (status) {
+      filter.status = status;
+    }
 
     const registrations = await EventRegistration.find(filter)
       .populate("eventId", "eventname eventdate eventtime eventvenue")

@@ -1,10 +1,13 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { Calendar, MapPin, Clock, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Calendar, MapPin, Clock, Users, MessageSquare } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 import EventRegistrationModal from "@/components/EventRegistrationModal";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import { isEventPast } from "@/lib/eventStatus";
 
 interface Event {
 	_id: string;
@@ -80,14 +83,11 @@ const getSeatsRemaining = (event: Event) => {
 };
 
 export default function EventsClientWrapper({ events, translations: t, initialEventId }: EventsColumnProps) {
+	const tFeedback = useTranslations("eventFeedback");
 	const sortedEvents = useMemo(() => [...(events || [])].sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()), [events]);
 
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
-
-	const isEventPast = (eventDate: string) => {
-		return new Date(eventDate).getTime() < new Date().setHours(0, 0, 0, 0);
-	};
 
 	useEffect(() => {
 		if (!initialEventId) {
@@ -238,6 +238,27 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														</button>
 													)}
 												</div>
+											</div>
+										)}
+
+										{/* Feedback */}
+										{isEventPast(selectedEvent.eventdate) && (
+											<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+												<div className="flex items-center gap-2 sm:gap-3">
+													<div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+														<MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+													</div>
+													<div>
+														<h3 className="font-bold text-gray-900 text-sm sm:text-base">{tFeedback("attendedPromptTitle")}</h3>
+														<p className="text-gray-600 text-xs sm:text-sm">{tFeedback("attendedPromptSubtitle")}</p>
+													</div>
+												</div>
+												<Link
+													href={`/events/feedback?eventId=${selectedEvent._id}`}
+													className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all duration-200 flex-shrink-0"
+												>
+													{tFeedback("leaveFeedback")}
+												</Link>
 											</div>
 										)}
 

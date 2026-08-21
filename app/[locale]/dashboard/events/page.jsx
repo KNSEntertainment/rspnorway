@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, CheckCircle, XCircle, Eye, X } from "lucide-react";
+import { Pencil, Trash2, CheckCircle, XCircle, Eye, X, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import EventForm from "@/components/EventForm";
 import useFetchData from "@/hooks/useFetchData";
+import { isEventPast } from "@/lib/eventStatus";
 
 export default function EventsPage() {
 	const [openEventModal, setOpenEventModal] = useState(false);
@@ -15,7 +16,12 @@ export default function EventsPage() {
 	const [selectedEventId, setSelectedEventId] = useState("");
 	const [statusFilter, setStatusFilter] = useState("pending");
 	const [paymentProofModal, setPaymentProofModal] = useState(null);
+	const [viewingEvent, setViewingEvent] = useState(null);
 	const { data: events, mutate } = useFetchData("/api/events", "events");
+	const { data: eventFeedback, loading: feedbackLoading } = useFetchData(
+		viewingEvent ? `/api/events/feedback?eventId=${viewingEvent._id}` : null,
+		"feedback"
+	);
 	const { data: registrations, error: regError, loading: regLoading, mutate: regMutate } = useFetchData(
 		`/api/events/registrations${selectedEventId ? `?eventId=${selectedEventId}` : ""}${statusFilter ? `${selectedEventId ? "&" : "?"}status=${statusFilter}` : ""}`,
 		"registrations"
@@ -141,6 +147,9 @@ export default function EventsPage() {
 											</TableCell>
 											<TableCell>
 												<div className="flex gap-2">
+													<Button variant="ghost" size="icon" onClick={() => setViewingEvent(event)} className="w-8 h-8" title="View Details">
+														<Eye className="w-5 h-5 text-gray-600" />
+													</Button>
 													<Button variant="ghost" size="icon" onClick={() => handleEdit(event)} className="w-8 h-8">
 														<Pencil className="w-5 h-5 text-brand" />
 													</Button>
@@ -190,6 +199,7 @@ export default function EventsPage() {
 								<option value="">All Status</option>
 								<option value="pending">Pending</option>
 								<option value="confirmed">Confirmed</option>
+								<option value="attended">Attended</option>
 								<option value="cancelled">Cancelled</option>
 							</select>
 						</div>
@@ -232,13 +242,20 @@ export default function EventsPage() {
 											</TableCell>
 											<TableCell>NOK {reg.totalAmount || 0}</TableCell>
 											<TableCell>
-												<span className={`px-2 py-1 rounded-full text-xs font-medium ${
-													reg.status === "confirmed" ? "bg-green-100 text-green-800" :
-													reg.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-													"bg-red-100 text-red-800"
-												}`}>
-													{reg.status}
-												</span>
+												{(() => {
+													const attended = reg.status === "confirmed" && reg.checkedIn;
+													const displayStatus = attended ? "attended" : reg.status;
+													return (
+														<span className={`px-2 py-1 rounded-full text-xs font-medium ${
+															attended ? "bg-blue-100 text-blue-800" :
+															reg.status === "confirmed" ? "bg-green-100 text-green-800" :
+															reg.status === "pending" ? "bg-yellow-100 text-yellow-800" :
+															"bg-red-100 text-red-800"
+														}`}>
+															{displayStatus}
+														</span>
+													);
+												})()}
 											</TableCell>
 											<TableCell>
 												{reg.paymentProofUrl ? (
@@ -303,6 +320,62 @@ export default function EventsPage() {
 								height={600}
 								className="w-full h-auto rounded"
 							/>
+						</div>
+					</div>
+				</div>
+			)}
+			{viewingEvent && (
+				<div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setViewingEvent(null)}>
+					<div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+						<div className="flex items-center justify-between p-4 border-b">
+							<h3 className="font-semibold text-lg">{viewingEvent.eventname}</h3>
+							<button onClick={() => setViewingEvent(null)} className="p-1 hover:bg-gray-100 rounded">
+								<X className="w-5 h-5" />
+							</button>
+						</div>
+						<div className="p-4 space-y-4">
+							<div className="flex gap-4">
+								<Image
+									src={viewingEvent.eventposterUrl || "/ghanti.png"}
+									width={100}
+									height={100}
+									alt={viewingEvent.eventname || "alt"}
+									className="w-20 h-24 object-cover rounded flex-shrink-0"
+								/>
+								<div className="text-sm text-gray-700 space-y-1">
+									<div><span className="font-semibold">Venue:</span> {viewingEvent.eventvenue || "N/A"}</div>
+									<div><span className="font-semibold">Date:</span> {viewingEvent.eventdate}</div>
+									<div><span className="font-semibold">Time:</span> {viewingEvent.eventtime || "N/A"}</div>
+									{isEventPast(viewingEvent.eventdate) && (
+										<span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Completed</span>
+									)}
+								</div>
+							</div>
+
+							<div className="border-t pt-4">
+								<h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+									<MessageSquare className="w-4 h-4 text-brand" /> Feedback
+								</h4>
+								{feedbackLoading ? (
+									<p className="text-sm text-gray-500">Loading feedback...</p>
+								) : eventFeedback?.length > 0 ? (
+									<div className="space-y-3">
+										{eventFeedback.map((fb) => (
+											<div key={fb._id} className="bg-light rounded-lg p-3">
+												<div className="flex items-center justify-between mb-1">
+													<span className="font-medium text-sm text-gray-900">{fb.name}</span>
+													<span className="text-xs text-gray-500">{new Date(fb.createdAt).toLocaleDateString()}</span>
+												</div>
+												{fb.email && <div className="text-xs text-gray-500 mb-1">{fb.email}</div>}
+												{/* Safe: fb.message is allow-list sanitized server-side on write (see lib/sanitizeFeedback.ts) */}
+												<div className="text-sm text-gray-700 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: fb.message }} />
+											</div>
+										))}
+									</div>
+								) : (
+									<p className="text-sm text-gray-500">No feedback yet for this event.</p>
+								)}
+							</div>
 						</div>
 					</div>
 				</div>
