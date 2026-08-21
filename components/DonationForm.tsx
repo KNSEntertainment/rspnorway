@@ -257,7 +257,7 @@ export default function DonationForm() {
 					{/* Payment Method Selection */}
 					<div>
 						<label className="block text-sm font-semibold text-gray-900 mb-3">{t("payment_method") || "Payment Method"}</label>
-						<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+						<div className="grid grid-cols-1 gap-3">
 							<button
 								type="button"
 								onClick={() => setPaymentMethod('card')}
@@ -275,20 +275,7 @@ export default function DonationForm() {
 									<span>{t("card_payment") || "Card Payment"}</span>
 								</div>
 							</button>
-							<button
-								type="button"
-								onClick={() => setPaymentMethod('vipps')}
-								className={`p-2 md:p-4 rounded-lg border-2 font-semibold transition-all ${
-									paymentMethod === 'vipps'
-										? 'border-brand bg-brand text-white'
-										: 'border-gray-300 text-gray-900 hover:border-brand'
-								}`}
-							>
-								<div className="flex items-center justify-center gap-2">
-									<Image src="/Vipps.webp" alt="Vipps" width={64} height={64} className="w-12 rounded-full" />
-									<span>{t("vipps_payment") || "Vipps Payment"}</span>
-								</div>
-							</button>
+							{/* Vipps payment button temporarily hidden — see components/DonationForm.tsx history. Vipps backend/API logic below is left intact. */}
 						</div>
 					</div>
 
