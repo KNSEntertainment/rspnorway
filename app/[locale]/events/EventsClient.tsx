@@ -300,37 +300,6 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 							{/* ── Sidebar ── */}
 							<div className="lg:col-span-1">
 								<div className="sticky top-4 sm:top-8 space-y-4 sm:space-y-6">
-									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
-										<div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6">
-											<div className="flex items-center gap-3">
-												<Calendar className="w-6 h-6 text-white" />
-												<h3 className="text-xl font-bold text-white">{t.other_events}</h3>
-											</div>
-										</div>
-										<div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-											{sortedEvents
-												.filter((e) => e._id !== selectedEvent._id)
-												.slice(0, 4)
-												.map((event) => {
-													const { day, month } = formatEventDate(event.eventdate);
-													return (
-														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => setSelectedEvent(event)}>
-															<div className="flex gap-3 sm:gap-4">
-																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center min-w-[60px] sm:min-w-[80px] flex-shrink-0">
-																	<div className="text-lg sm:text-2xl font-bold leading-none">{day}</div>
-																	<div className="text-xs uppercase tracking-wider mt-1 font-semibold">{month}</div>
-																</div>
-																<div className="flex-1 min-w-0">
-																	<h4 className="font-bold text-gray-900 line-clamp-2 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-sm sm:text-base">{event.eventname}</h4>
-																	<p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{event.eventvenue}</p>
-																</div>
-															</div>
-														</div>
-													);
-												})}
-										</div>
-									</div>
-
 									{/* Registration Section */}
 									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden hidden lg:block">
 										<div className="bg-gradient-to-r from-brand to-emerald-600 p-4 sm:p-6">
@@ -383,6 +352,38 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 													</div>
 												)}
 											</div>
+										</div>
+									</div>
+
+									{/* Other Events Section */}
+									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
+										<div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6">
+											<div className="flex items-center gap-3">
+												<Calendar className="w-6 h-6 text-white" />
+												<h3 className="text-xl font-bold text-white">{t.other_events}</h3>
+											</div>
+										</div>
+										<div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+											{sortedEvents
+												.filter((e) => e._id !== selectedEvent._id)
+												.slice(0, 4)
+												.map((event) => {
+													const { day, month } = formatEventDate(event.eventdate);
+													return (
+														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => setSelectedEvent(event)}>
+															<div className="flex gap-3 sm:gap-4">
+																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center min-w-[60px] sm:min-w-[80px] flex-shrink-0">
+																	<div className="text-lg sm:text-2xl font-bold leading-none">{day}</div>
+																	<div className="text-xs uppercase tracking-wider mt-1 font-semibold">{month}</div>
+																</div>
+																<div className="flex-1 min-w-0">
+																	<h4 className="font-bold text-gray-900 line-clamp-2 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-sm sm:text-base">{event.eventname}</h4>
+																	<p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{event.eventvenue}</p>
+																</div>
+															</div>
+														</div>
+													);
+												})}
 										</div>
 									</div>
 								</div>
