@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { CheckCircle2, AlertTriangle, XCircle, RotateCcw, ScanLine, Loader2, Download, Search, Users, UserCheck, Clock, Calendar, ArrowRight, Check } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, RotateCcw, ScanLine, Loader2, Download, Search, Users, UserCheck, Clock, Calendar, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -131,10 +131,12 @@ export default function CheckInPage() {
 			const res = await fetch("/api/events");
 			if (res.ok) {
 				const data = await res.json();
-				setEvents(data || []);
+				const eventList = Array.isArray(data) ? data : Array.isArray(data?.events) ? data.events : [];
+				setEvents(eventList);
 			}
 		} catch (err) {
 			console.error("Failed to fetch events:", err);
+			setEvents([]);
 		}
 	}, []);
 
@@ -146,10 +148,12 @@ export default function CheckInPage() {
 			const res = await fetch(`/api/events/registrations${query}`);
 			if (res.ok) {
 				const data = await res.json();
-				setRegistrations(data || []);
+				const regList = Array.isArray(data) ? data : Array.isArray(data?.registrations) ? data.registrations : [];
+				setRegistrations(regList);
 			}
 		} catch (err) {
 			console.error("Failed to fetch registrations:", err);
+			setRegistrations([]);
 		} finally {
 			setLoadingRegistrations(false);
 		}
@@ -299,7 +303,8 @@ export default function CheckInPage() {
 
 	// Filtered registrations
 	const filteredRegistrations = useMemo(() => {
-		return registrations.filter((reg) => {
+		const list = Array.isArray(registrations) ? registrations : [];
+		return list.filter((reg) => {
 			// Attendance filter
 			if (attendanceFilter === "checked_in" && !reg.checkedIn) return false;
 			if (attendanceFilter === "not_checked_in" && reg.checkedIn) return false;
@@ -322,10 +327,11 @@ export default function CheckInPage() {
 
 	// Stats
 	const stats = useMemo(() => {
-		const totalRegs = registrations.length;
-		const totalAttendees = registrations.reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
-		const checkedInRegs = registrations.filter((r) => r.checkedIn).length;
-		const checkedInAttendees = registrations.filter((r) => r.checkedIn).reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
+		const list = Array.isArray(registrations) ? registrations : [];
+		const totalRegs = list.length;
+		const totalAttendees = list.reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
+		const checkedInRegs = list.filter((r) => r.checkedIn).length;
+		const checkedInAttendees = list.filter((r) => r.checkedIn).reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
 
 		return {
 			totalRegs,
@@ -371,7 +377,8 @@ export default function CheckInPage() {
 		const url = window.URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		const eventName = events.find((e) => e._id === selectedEventId)?.eventname;
+		const eventList = Array.isArray(events) ? events : [];
+		const eventName = eventList.find((e) => e._id === selectedEventId)?.eventname;
 		const eventSlug = eventName ? eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "all-events";
 		const dateStr = new Date().toISOString().split("T")[0];
 		a.download = `attendees-${eventSlug}-${dateStr}.csv`;
@@ -400,7 +407,7 @@ export default function CheckInPage() {
 						<Calendar className="w-4 h-4 text-gray-500" />
 						<select value={selectedEventId} onChange={handleEventChange} className="bg-transparent text-sm font-medium text-gray-800 outline-none">
 							<option value="">All Events</option>
-							{events.map((ev) => (
+							{(Array.isArray(events) ? events : []).map((ev) => (
 								<option key={ev._id} value={ev._id}>
 									{ev.eventname}
 								</option>

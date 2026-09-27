@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import nodemailer from "nodemailer";
 import { v2 as cloudinary } from "cloudinary";
+import QRCode from "qrcode";
 
 const getTicketPrice = (value: unknown) => {
 	const price = Number(value || 0);
@@ -17,6 +18,31 @@ cloudinary.config({
 	api_key: process.env.CLOUDINARY_API_KEY,
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+function uploadBase64ToCloudinary(base64Data: string, folder: string, publicId: string): Promise<string> {
+	return new Promise((resolve, reject) => {
+		cloudinary.uploader.upload(
+			base64Data,
+			{
+				folder,
+				public_id: publicId,
+				overwrite: true,
+				resource_type: "image",
+			},
+			(error, result) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				if (!result?.secure_url) {
+					reject(new Error("Cloudinary upload did not return a secure URL"));
+					return;
+				}
+				resolve(result.secure_url);
+			},
+		);
+	});
+}
 
 async function uploadToCloudinary(file: File, folder: string, publicId: string): Promise<string> {
 	const buffer = Buffer.from(await file.arrayBuffer());
@@ -104,6 +130,26 @@ export async function POST(request: NextRequest) {
 		const randomStr = Math.random().toString(36).substring(2, 8);
 		const registrationId = `REG-${timestamp}-${randomStr}`.toUpperCase();
 
+		let qrCodeUrl = "";
+		if (!needsPayment) {
+			try {
+				const qrCodeDataURL = await QRCode.toDataURL(registrationId, {
+					width: 300,
+					margin: 2,
+					errorCorrectionLevel: "H",
+					color: { dark: "#000000", light: "#FFFFFF" },
+				});
+				try {
+					qrCodeUrl = await uploadBase64ToCloudinary(qrCodeDataURL, "event-registration-qr-codes", registrationId);
+				} catch (cloudErr) {
+					console.warn("Cloudinary upload for QR code failed, falling back to data URL:", cloudErr);
+					qrCodeUrl = qrCodeDataURL;
+				}
+			} catch (qrErr) {
+				console.error("QR code generation failed:", qrErr);
+			}
+		}
+
 		const registration = new EventRegistration({
 			registrationId,
 			eventId,
@@ -122,6 +168,7 @@ export async function POST(request: NextRequest) {
 			specialRequests: specialRequests || undefined,
 			totalAmount,
 			paymentProofUrl: paymentProofUrl || undefined,
+			qrCode: qrCodeUrl || undefined,
 			status: needsPayment ? "pending" : "confirmed",
 			paymentStatus: needsPayment ? "pending" : "completed",
 		});
@@ -184,6 +231,20 @@ export async function POST(request: NextRequest) {
             ${children > 0 ? `<div class="detail-row"><span class="detail-label">Children:</span><span class="detail-value">${children}</span></div>` : ""}
             ${elders > 0 ? `<div class="detail-row"><span class="detail-label">Elderly:</span><span class="detail-value">${elders}</span></div>` : ""}
         </div>
+        ${
+					qrCodeUrl
+						? `
+        <div style="text-align: center; margin: 30px 0; padding: 20px; border: 2px dashed #2563eb; border-radius: 8px; background-color: #f8fafc;">
+            <h3 style="margin-top: 0; color: #1e3a8a;">Your Entry QR Code</h3>
+            <p style="font-size: 14px; color: #6b7280; margin-bottom: 15px;">Please present this QR code at the event entrance for quick check-in.</p>
+            <img src="${qrCodeUrl}" alt="Entry QR Code" style="max-width: 220px; height: auto; margin: 0 auto; display: block;" />
+            <div style="margin-top: 15px; font-family: monospace; background-color: #e2e8f0; padding: 6px 12px; border-radius: 4px; font-size: 13px; display: inline-block;">
+                Registration ID: <strong>${registrationId}</strong>
+            </div>
+        </div>
+        `
+						: ""
+				}
         <div class="footer">
             <p>Registration ID: <span class="registration-id">${registrationId}</span></p>
             <p>© 2024 PNSB-Norway. All rights reserved.</p>
@@ -206,7 +267,8 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json({
 			success: true,
 			registrationId,
-			message: needsPayment ? "Registration submitted! Your payment is pending verification. You will receive a confirmation email once approved." : "Registration successful! Check your email for confirmation.",
+			qrCode: qrCodeUrl || undefined,
+			message: needsPayment ? "Registration submitted! Your payment is pending verification. You will receive a confirmation email with your entry QR code once approved." : "Registration successful! Your entry QR code is ready.",
 		});
 	} catch (error) {
 		console.error("Registration error:", error);

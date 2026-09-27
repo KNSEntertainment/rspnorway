@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, CheckCircle, XCircle, Eye, X, MessageSquare } from "lucide-react";
+import { Pencil, Trash2, CheckCircle, XCircle, Eye, X, MessageSquare, Download } from "lucide-react";
 import Image from "next/image";
 import EventForm from "@/components/EventForm";
 import useFetchData from "@/hooks/useFetchData";
@@ -77,6 +77,31 @@ export default function EventsPage() {
 			console.error(`Error ${action}ing registration:`, error);
 			alert(`Error: ${error.message}`);
 		}
+	};
+
+	const handleExportCSV = () => {
+		if (!registrations || registrations.length === 0) {
+			alert("No registrations available to export");
+			return;
+		}
+
+		const headers = ["Registration ID", "Event Name", "First Name", "Last Name", "Email", "Phone", "Adults", "Students", "Children", "Elders", "Total Attendees", "Total Amount (NOK)", "Status", "Checked In", "Checked In At", "Registered At"];
+
+		const rows = registrations.map((r) => {
+			const totalAttendees = (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0);
+			return [r.registrationId || "", r.eventId?.eventname || "", r.firstName || "", r.lastName || "", r.email || "", r.phone || "", r.adults || 0, r.students || 0, r.children || 0, r.elders || 0, totalAttendees, r.totalAmount || 0, r.status || "", r.checkedIn ? "Yes" : "No", r.checkedInAt ? new Date(r.checkedInAt).toLocaleString() : "", r.createdAt ? new Date(r.createdAt).toLocaleString() : ""];
+		});
+
+		const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((row) => row.map((val) => `"${String(val).replace(/"/g, '""')}"`).join(","))].join("\n");
+
+		const encodedUri = encodeURI(csvContent);
+		const link = document.createElement("a");
+		link.setAttribute("href", encodedUri);
+		const eventName = selectedEventId ? (events?.find((e) => e._id === selectedEventId)?.eventname || "event").toLowerCase().replace(/[^a-z0-9]/g, "-") : "all-events";
+		link.setAttribute("download", `registrations-${eventName}-${new Date().toISOString().split("T")[0]}.csv`);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	};
 
 	return (
@@ -194,6 +219,10 @@ export default function EventsPage() {
 								<option value="attended">Attended</option>
 								<option value="cancelled">Cancelled</option>
 							</select>
+							<Button onClick={handleExportCSV} variant="outline" className="flex items-center gap-1.5 text-sm" title="Export registrations as CSV">
+								<Download className="w-4 h-4" />
+								<span>Export CSV</span>
+							</Button>
 						</div>
 					</div>
 
