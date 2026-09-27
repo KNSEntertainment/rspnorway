@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Calendar, MapPin, Clock, Users, MessageSquare } from "lucide-react";
+import { Calendar, MapPin, Clock, Users, MessageSquare, Share2, Check } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 import EventRegistrationModal from "@/components/EventRegistrationModal";
 import { Button } from "@/components/ui/button";
@@ -93,6 +93,36 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 
 	const [selectedEventId, setSelectedEventId] = useState<string | null>(initialEventId || null);
 	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
+	const [copiedId, setCopiedId] = useState<string | null>(null);
+
+	const handleShareEvent = async (eventToShare: Event) => {
+		const origin = typeof window !== "undefined" ? window.location.origin : "";
+		const shareUrl = `${origin}/events?eventId=${eventToShare._id}`;
+		const shareData = {
+			title: eventToShare.eventname,
+			text: `Check out ${eventToShare.eventname} on PNSB-Norway!`,
+			url: shareUrl,
+		};
+
+		if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+			try {
+				await navigator.share(shareData);
+				return;
+			} catch (err) {
+				if ((err as Error)?.name !== "AbortError") {
+					console.error("Error sharing:", err);
+				}
+			}
+		}
+
+		try {
+			await navigator.clipboard.writeText(shareUrl);
+			setCopiedId(eventToShare._id);
+			setTimeout(() => setCopiedId(null), 2500);
+		} catch (err) {
+			console.error("Clipboard copy failed:", err);
+		}
+	};
 
 	// Synchronize when URL changes (e.g. browser back/forward or direct navigation)
 	useEffect(() => {
@@ -128,12 +158,28 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 			<>
 				<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
 					<div className="container max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
-						<button onClick={handleBack} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-4 sm:mb-8">
-							<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-							</svg>
-							<span className="font-medium text-sm sm:text-base">{t.back}</span>
-						</button>
+						<div className="flex items-center justify-between gap-3 mb-4 sm:mb-8">
+							<button onClick={handleBack} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200">
+								<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+								</svg>
+								<span className="font-medium text-sm sm:text-base">{t.back}</span>
+							</button>
+
+							<button onClick={() => handleShareEvent(selectedEvent)} className="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200" title="Share this event">
+								{copiedId === selectedEvent._id ? (
+									<>
+										<Check className="w-4 h-4 text-emerald-600" />
+										<span className="font-medium text-sm sm:text-base text-emerald-600">Copied Link!</span>
+									</>
+								) : (
+									<>
+										<Share2 className="w-4 h-4 text-brand" />
+										<span className="font-medium text-sm sm:text-base">Share Event</span>
+									</>
+								)}
+							</button>
+						</div>
 
 						<div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
 							{/* ── Main Content ── */}
@@ -481,7 +527,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 												)}
 											</div>
 											<div className="pt-3 border-t border-gray-100">
-												<div className="flex gap-2">
+												<div className="flex items-center gap-2">
 													{/* View Detail Link */}
 													<Link
 														href={`/events?eventId=${event._id}`}
@@ -496,6 +542,18 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 														</svg>
 													</Link>
+
+													{/* Share Button */}
+													<button
+														onClick={(e) => {
+															e.stopPropagation();
+															handleShareEvent(event);
+														}}
+														className="p-1.5 text-gray-400 hover:text-brand hover:bg-brand/5 rounded-md transition-colors flex-shrink-0"
+														title="Share event link"
+													>
+														{copiedId === event._id ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+													</button>
 
 													{/* Register Button */}
 													<div onClick={(e) => e.stopPropagation()} className="flex-1">
