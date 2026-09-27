@@ -2,22 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import {
-	CheckCircle2,
-	AlertTriangle,
-	XCircle,
-	RotateCcw,
-	ScanLine,
-	Loader2,
-	Download,
-	Search,
-	Users,
-	UserCheck,
-	Clock,
-	Calendar,
-	ArrowRight,
-	Check,
-} from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, RotateCcw, ScanLine, Loader2, Download, Search, Users, UserCheck, Clock, Calendar, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -146,12 +131,10 @@ export default function CheckInPage() {
 			const res = await fetch("/api/events");
 			if (res.ok) {
 				const data = await res.json();
-				const eventList = Array.isArray(data) ? data : Array.isArray(data?.events) ? data.events : [];
-				setEvents(eventList);
+				setEvents(data || []);
 			}
 		} catch (err) {
 			console.error("Failed to fetch events:", err);
-			setEvents([]);
 		}
 	}, []);
 
@@ -163,12 +146,10 @@ export default function CheckInPage() {
 			const res = await fetch(`/api/events/registrations${query}`);
 			if (res.ok) {
 				const data = await res.json();
-				const regList = Array.isArray(data) ? data : Array.isArray(data?.registrations) ? data.registrations : [];
-				setRegistrations(regList);
+				setRegistrations(data || []);
 			}
 		} catch (err) {
 			console.error("Failed to fetch registrations:", err);
-			setRegistrations([]);
 		} finally {
 			setLoadingRegistrations(false);
 		}
@@ -227,7 +208,7 @@ export default function CheckInPage() {
 				setProcessing(false);
 			}
 		},
-		[stopCamera, handleValidateQr, fetchRegistrations, selectedEventId]
+		[stopCamera, handleValidateQr, fetchRegistrations, selectedEventId],
 	);
 
 	const startCamera = useCallback(async () => {
@@ -240,7 +221,7 @@ export default function CheckInPage() {
 				{ facingMode: "environment" },
 				{ fps: 10, qrbox: { width: 260, height: 260 } },
 				(decodedText) => handleDecoded(decodedText),
-				() => {}
+				() => {},
 			);
 			setCameraReady(true);
 		} catch (err: unknown) {
@@ -318,8 +299,7 @@ export default function CheckInPage() {
 
 	// Filtered registrations
 	const filteredRegistrations = useMemo(() => {
-		const list = Array.isArray(registrations) ? registrations : [];
-		return list.filter((reg) => {
+		return registrations.filter((reg) => {
 			// Attendance filter
 			if (attendanceFilter === "checked_in" && !reg.checkedIn) return false;
 			if (attendanceFilter === "not_checked_in" && reg.checkedIn) return false;
@@ -342,13 +322,10 @@ export default function CheckInPage() {
 
 	// Stats
 	const stats = useMemo(() => {
-		const list = Array.isArray(registrations) ? registrations : [];
-		const totalRegs = list.length;
-		const totalAttendees = list.reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
-		const checkedInRegs = list.filter((r) => r.checkedIn).length;
-		const checkedInAttendees = list
-			.filter((r) => r.checkedIn)
-			.reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
+		const totalRegs = registrations.length;
+		const totalAttendees = registrations.reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
+		const checkedInRegs = registrations.filter((r) => r.checkedIn).length;
+		const checkedInAttendees = registrations.filter((r) => r.checkedIn).reduce((sum, r) => sum + (r.adults || 0) + (r.students || 0) + (r.children || 0) + (r.elders || 0), 0);
 
 		return {
 			totalRegs,
@@ -367,45 +344,13 @@ export default function CheckInPage() {
 			return;
 		}
 
-		const headers = [
-			"Registration ID",
-			"Event Name",
-			"First Name",
-			"Last Name",
-			"Email",
-			"Phone",
-			"Adults",
-			"Students",
-			"Children",
-			"Elders",
-			"Total Attendees",
-			"Status",
-			"Checked In",
-			"Checked In At",
-			"Checked In By",
-		];
+		const headers = ["Registration ID", "Event Name", "First Name", "Last Name", "Email", "Phone", "Adults", "Students", "Children", "Elders", "Total Attendees", "Status", "Checked In", "Checked In At", "Checked In By"];
 
 		const rows = filteredRegistrations.map((reg) => {
 			const eventName = typeof reg.eventId === "object" ? reg.eventId?.eventname || "" : "";
 			const totalPeople = (reg.adults || 0) + (reg.students || 0) + (reg.children || 0) + (reg.elders || 0);
 			const checkedInAt = reg.checkedInAt ? new Date(reg.checkedInAt).toLocaleString() : "";
-			return [
-				reg.registrationId || "",
-				eventName,
-				reg.firstName || "",
-				reg.lastName || "",
-				reg.email || "",
-				reg.phone || "",
-				reg.adults || 0,
-				reg.students || 0,
-				reg.children || 0,
-				reg.elders || 0,
-				totalPeople,
-				reg.status || "",
-				reg.checkedIn ? "Yes" : "No",
-				checkedInAt,
-				reg.checkedInBy || "",
-			];
+			return [reg.registrationId || "", eventName, reg.firstName || "", reg.lastName || "", reg.email || "", reg.phone || "", reg.adults || 0, reg.students || 0, reg.children || 0, reg.elders || 0, totalPeople, reg.status || "", reg.checkedIn ? "Yes" : "No", checkedInAt, reg.checkedInBy || ""];
 		});
 
 		const csvContent = [headers, ...rows]
@@ -418,7 +363,7 @@ export default function CheckInPage() {
 						}
 						return str;
 					})
-					.join(",")
+					.join(","),
 			)
 			.join("\n");
 
@@ -426,8 +371,7 @@ export default function CheckInPage() {
 		const url = window.URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		const eventList = Array.isArray(events) ? events : [];
-		const eventName = eventList.find((e) => e._id === selectedEventId)?.eventname;
+		const eventName = events.find((e) => e._id === selectedEventId)?.eventname;
 		const eventSlug = eventName ? eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "all-events";
 		const dateStr = new Date().toISOString().split("T")[0];
 		a.download = `attendees-${eventSlug}-${dateStr}.csv`;
@@ -456,7 +400,7 @@ export default function CheckInPage() {
 						<Calendar className="w-4 h-4 text-gray-500" />
 						<select value={selectedEventId} onChange={handleEventChange} className="bg-transparent text-sm font-medium text-gray-800 outline-none">
 							<option value="">All Events</option>
-							{(Array.isArray(events) ? events : []).map((ev) => (
+							{events.map((ev) => (
 								<option key={ev._id} value={ev._id}>
 									{ev.eventname}
 								</option>
@@ -519,7 +463,11 @@ export default function CheckInPage() {
 							<h2 className="font-semibold text-gray-900 flex items-center gap-2">
 								<ScanLine className="w-4 h-4 text-brand" /> QR Scanner
 							</h2>
-							{cameraReady && <Badge variant="outline" className="text-emerald-700 border-emerald-300 bg-emerald-50">Camera Active</Badge>}
+							{cameraReady && (
+								<Badge variant="outline" className="text-emerald-700 border-emerald-300 bg-emerald-50">
+									Camera Active
+								</Badge>
+							)}
 						</div>
 
 						{/* Camera view */}
@@ -570,18 +518,26 @@ export default function CheckInPage() {
 										{result.event && (
 											<div className="text-xs text-gray-600 border-t pt-2 space-y-0.5">
 												<div className="font-semibold text-gray-800">{result.event.eventName}</div>
-												<div>{result.event.eventDate} {result.event.eventTime ? `· ${result.event.eventTime}` : ""}</div>
+												<div>
+													{result.event.eventDate} {result.event.eventTime ? `· ${result.event.eventTime}` : ""}
+												</div>
 											</div>
 										)}
 
 										<div className="text-xs text-gray-700 border-t pt-2 grid grid-cols-2 gap-x-2 gap-y-1">
-											<div>Adults: <span className="font-semibold">{result.registration.adults}</span></div>
-											<div>Students: <span className="font-semibold">{result.registration.students}</span></div>
-											<div>Children: <span className="font-semibold">{result.registration.children}</span></div>
-											<div>Elders: <span className="font-semibold">{result.registration.elders}</span></div>
-											<div className="col-span-2 pt-1 border-t mt-1 font-semibold text-gray-900">
-												Total Attendees: {result.registration.totalAttendees}
+											<div>
+												Adults: <span className="font-semibold">{result.registration.adults}</span>
 											</div>
+											<div>
+												Students: <span className="font-semibold">{result.registration.students}</span>
+											</div>
+											<div>
+												Children: <span className="font-semibold">{result.registration.children}</span>
+											</div>
+											<div>
+												Elders: <span className="font-semibold">{result.registration.elders}</span>
+											</div>
+											<div className="col-span-2 pt-1 border-t mt-1 font-semibold text-gray-900">Total Attendees: {result.registration.totalAttendees}</div>
 										</div>
 
 										{result.registration.checkedInAt && (
@@ -605,22 +561,12 @@ export default function CheckInPage() {
 						<h3 className="text-sm font-semibold text-gray-800">Manual Check-In</h3>
 						<p className="text-xs text-gray-500">If QR cannot be scanned, enter the Registration ID directly (e.g. REG-XXXXX):</p>
 						<form onSubmit={handleManualCheckIn} className="flex gap-2">
-							<input
-								type="text"
-								placeholder="Registration ID"
-								value={manualId}
-								onChange={(e) => setManualId(e.target.value)}
-								className="flex-1 border rounded-lg px-3 py-2 text-sm uppercase font-mono"
-							/>
+							<input type="text" placeholder="Registration ID" value={manualId} onChange={(e) => setManualId(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-sm uppercase font-mono" />
 							<Button type="submit" disabled={manualLoading || !manualId.trim()} size="sm" className="bg-brand hover:bg-brand/90">
 								{manualLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Check In"}
 							</Button>
 						</form>
-						{manualMessage && (
-							<div className={`text-xs p-2.5 rounded-lg ${manualMessage.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-800 border border-red-200"}`}>
-								{manualMessage.text}
-							</div>
-						)}
+						{manualMessage && <div className={`text-xs p-2.5 rounded-lg ${manualMessage.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-red-50 text-red-800 border border-red-200"}`}>{manualMessage.text}</div>}
 					</div>
 				</div>
 
@@ -637,22 +583,13 @@ export default function CheckInPage() {
 
 								{/* Status Tabs */}
 								<div className="flex rounded-lg border border-gray-200 p-0.5 bg-gray-50 text-xs">
-									<button
-										onClick={() => setAttendanceFilter("all")}
-										className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
-									>
+									<button onClick={() => setAttendanceFilter("all")} className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "all" ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
 										All
 									</button>
-									<button
-										onClick={() => setAttendanceFilter("checked_in")}
-										className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "checked_in" ? "bg-white text-emerald-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
-									>
+									<button onClick={() => setAttendanceFilter("checked_in")} className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "checked_in" ? "bg-white text-emerald-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
 										Checked In
 									</button>
-									<button
-										onClick={() => setAttendanceFilter("not_checked_in")}
-										className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "not_checked_in" ? "bg-white text-amber-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}
-									>
+									<button onClick={() => setAttendanceFilter("not_checked_in")} className={`px-3 py-1.5 rounded-md font-medium transition-colors ${attendanceFilter === "not_checked_in" ? "bg-white text-amber-700 shadow-sm" : "text-gray-600 hover:text-gray-900"}`}>
 										Pending
 									</button>
 								</div>
@@ -661,13 +598,7 @@ export default function CheckInPage() {
 							{/* Search input */}
 							<div className="relative">
 								<Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
-								<input
-									type="text"
-									placeholder="Search attendee by name, email, phone, or REG ID..."
-									value={searchTerm}
-									onChange={(e) => setSearchTerm(e.target.value)}
-									className="w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none focus:border-brand"
-								/>
+								<input type="text" placeholder="Search attendee by name, email, phone, or REG ID..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-9 pr-4 py-2 border rounded-lg text-sm outline-none focus:border-brand" />
 							</div>
 						</div>
 
@@ -704,24 +635,19 @@ export default function CheckInPage() {
 											const eventName = typeof reg.eventId === "object" ? reg.eventId?.eventname : "";
 
 											return (
-												<TableRow
-													key={reg._id}
-													className={`transition-colors ${isHighlighted ? "bg-emerald-50 border-emerald-300" : ""}`}
-												>
-													<TableCell className="font-mono text-xs font-semibold text-gray-700">
-														{reg.registrationId}
-													</TableCell>
+												<TableRow key={reg._id} className={`transition-colors ${isHighlighted ? "bg-emerald-50 border-emerald-300" : ""}`}>
+													<TableCell className="font-mono text-xs font-semibold text-gray-700">{reg.registrationId}</TableCell>
 													<TableCell>
 														<div className="font-medium text-gray-900">
 															{reg.firstName} {reg.lastName}
 														</div>
 														<div className="text-xs text-gray-500">{reg.email}</div>
-														{eventName && selectedEventId === "" && (
-															<div className="text-[11px] text-brand font-medium line-clamp-1">{eventName}</div>
-														)}
+														{eventName && selectedEventId === "" && <div className="text-[11px] text-brand font-medium line-clamp-1">{eventName}</div>}
 													</TableCell>
 													<TableCell className="text-xs text-gray-700">
-														<div className="font-semibold text-gray-900">{totalTickets} seat{totalTickets > 1 ? "s" : ""}</div>
+														<div className="font-semibold text-gray-900">
+															{totalTickets} seat{totalTickets > 1 ? "s" : ""}
+														</div>
 														<div className="text-gray-500 text-[11px]">
 															{reg.adults > 0 ? `${reg.adults} Ad` : ""}
 															{reg.students ? ` · ${reg.students} St` : ""}
@@ -735,11 +661,7 @@ export default function CheckInPage() {
 																<Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 gap-1 text-[11px]">
 																	<Check className="w-3 h-3" /> Checked In
 																</Badge>
-																{reg.checkedInAt && (
-																	<div className="text-[10px] text-gray-500 mt-0.5">
-																		{new Date(reg.checkedInAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-																	</div>
-																)}
+																{reg.checkedInAt && <div className="text-[10px] text-gray-500 mt-0.5">{new Date(reg.checkedInAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>}
 															</div>
 														) : (
 															<Badge variant="outline" className="text-gray-600 bg-gray-50 text-[11px]">
@@ -749,12 +671,7 @@ export default function CheckInPage() {
 													</TableCell>
 													<TableCell className="text-right">
 														{!reg.checkedIn ? (
-															<Button
-																onClick={() => handleRowCheckIn(reg.registrationId)}
-																size="sm"
-																variant="outline"
-																className="text-xs border-emerald-500 text-emerald-700 hover:bg-emerald-50 h-7 px-2.5"
-															>
+															<Button onClick={() => handleRowCheckIn(reg.registrationId)} size="sm" variant="outline" className="text-xs border-emerald-500 text-emerald-700 hover:bg-emerald-50 h-7 px-2.5">
 																Check In
 															</Button>
 														) : (

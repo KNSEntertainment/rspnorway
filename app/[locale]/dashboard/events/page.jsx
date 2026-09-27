@@ -18,14 +18,8 @@ export default function EventsPage() {
 	const [paymentProofModal, setPaymentProofModal] = useState(null);
 	const [viewingEvent, setViewingEvent] = useState(null);
 	const { data: events, mutate } = useFetchData("/api/events", "events");
-	const { data: eventFeedback, loading: feedbackLoading } = useFetchData(
-		viewingEvent ? `/api/events/feedback?eventId=${viewingEvent._id}` : null,
-		"feedback"
-	);
-	const { data: registrations, error: regError, loading: regLoading, mutate: regMutate } = useFetchData(
-		`/api/events/registrations${selectedEventId ? `?eventId=${selectedEventId}` : ""}${statusFilter ? `${selectedEventId ? "&" : "?"}status=${statusFilter}` : ""}`,
-		"registrations"
-	);
+	const { data: eventFeedback, loading: feedbackLoading } = useFetchData(viewingEvent ? `/api/events/feedback?eventId=${viewingEvent._id}` : null, "feedback");
+	const { data: registrations, error: regError, loading: regLoading, mutate: regMutate } = useFetchData(`/api/events/registrations${selectedEventId ? `?eventId=${selectedEventId}` : ""}${statusFilter ? `${selectedEventId ? "&" : "?"}status=${statusFilter}` : ""}`, "registrations");
 
 	const handleEdit = (event) => {
 		setEventToEdit(event);
@@ -88,16 +82,10 @@ export default function EventsPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4 border-b border-gray-200">
-				<button
-					onClick={() => setActiveTab("events")}
-					className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === "events" ? "border-brand text-brand" : "border-transparent text-gray-500 hover:text-gray-700"}`}
-				>
+				<button onClick={() => setActiveTab("events")} className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === "events" ? "border-brand text-brand" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
 					Events
 				</button>
-				<button
-					onClick={() => setActiveTab("registrations")}
-					className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === "registrations" ? "border-brand text-brand" : "border-transparent text-gray-500 hover:text-gray-700"}`}
-				>
+				<button onClick={() => setActiveTab("registrations")} className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${activeTab === "registrations" ? "border-brand text-brand" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
 					Registrations
 				</button>
 			</div>
@@ -141,7 +129,17 @@ export default function EventsPage() {
 											<TableCell>{event.eventvenue}</TableCell>
 											<TableCell>{event.eventdate}</TableCell>
 											<TableCell>{event.eventtime}</TableCell>
-											<TableCell>Adult: NOK {event.price || 0}<br />Student: NOK {event.studentPrice || 0}<br />Child: NOK {event.childPrice || 0}{event.childAgeLimit ? ` (${event.childAgeLimit})` : ""}<br />Elderly: NOK {event.elderlyPrice || 0}{event.elderlyAgeLimit ? ` (${event.elderlyAgeLimit})` : ""}</TableCell>
+											<TableCell>
+												Adult: NOK {event.price || 0}
+												<br />
+												Student: NOK {event.studentPrice || 0}
+												<br />
+												Child: NOK {event.childPrice || 0}
+												{event.childAgeLimit ? ` (${event.childAgeLimit})` : ""}
+												<br />
+												Elderly: NOK {event.elderlyPrice || 0}
+												{event.elderlyAgeLimit ? ` (${event.elderlyAgeLimit})` : ""}
+											</TableCell>
 											<TableCell>
 												<Image src={event.eventposterUrl || "/ghanti.png"} width={100} height={100} alt={event.eventname || "alt"} className="w-16 h-20 object-cover rounded" />
 											</TableCell>
@@ -181,21 +179,15 @@ export default function EventsPage() {
 							<p className="text-gray-600 mt-1">View and manage event registrations</p>
 						</div>
 						<div className="flex gap-2">
-							<select
-								value={selectedEventId}
-								onChange={(e) => setSelectedEventId(e.target.value)}
-								className="border border-gray-300 rounded px-3 py-2 text-sm"
-							>
+							<select value={selectedEventId} onChange={(e) => setSelectedEventId(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm">
 								<option value="">All Events</option>
 								{events?.map((event) => (
-									<option key={event._id} value={event._id}>{event.eventname}</option>
+									<option key={event._id} value={event._id}>
+										{event.eventname}
+									</option>
 								))}
 							</select>
-							<select
-								value={statusFilter}
-								onChange={(e) => setStatusFilter(e.target.value)}
-								className="border border-gray-300 rounded px-3 py-2 text-sm"
-							>
+							<select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="border border-gray-300 rounded px-3 py-2 text-sm">
 								<option value="">All Status</option>
 								<option value="pending">Pending</option>
 								<option value="confirmed">Confirmed</option>
@@ -231,7 +223,9 @@ export default function EventsPage() {
 										<TableRow key={reg._id}>
 											<TableCell className="font-mono text-xs">{reg.registrationId}</TableCell>
 											<TableCell>{reg.eventId?.eventname || "N/A"}</TableCell>
-											<TableCell>{reg.firstName} {reg.lastName}</TableCell>
+											<TableCell>
+												{reg.firstName} {reg.lastName}
+											</TableCell>
 											<TableCell>{reg.email}</TableCell>
 											<TableCell>{reg.phone}</TableCell>
 											<TableCell>
@@ -245,16 +239,7 @@ export default function EventsPage() {
 												{(() => {
 													const attended = reg.status === "confirmed" && reg.checkedIn;
 													const displayStatus = attended ? "attended" : reg.status;
-													return (
-														<span className={`px-2 py-1 rounded-full text-xs font-medium ${
-															attended ? "bg-blue-100 text-blue-800" :
-															reg.status === "confirmed" ? "bg-green-100 text-green-800" :
-															reg.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-															"bg-red-100 text-red-800"
-														}`}>
-															{displayStatus}
-														</span>
-													);
+													return <span className={`px-2 py-1 rounded-full text-xs font-medium ${attended ? "bg-blue-100 text-blue-800" : reg.status === "confirmed" ? "bg-green-100 text-green-800" : reg.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>{displayStatus}</span>;
 												})()}
 											</TableCell>
 											<TableCell>
@@ -270,22 +255,10 @@ export default function EventsPage() {
 											<TableCell>
 												{reg.status === "pending" ? (
 													<div className="flex gap-1">
-														<Button
-															variant="ghost"
-															size="icon"
-															onClick={() => handleApproveReject(reg._id, "approve")}
-															className="w-8 h-8 text-green-600 hover:text-green-800"
-															title="Approve"
-														>
+														<Button variant="ghost" size="icon" onClick={() => handleApproveReject(reg._id, "approve")} className="w-8 h-8 text-green-600 hover:text-green-800" title="Approve">
 															<CheckCircle className="w-5 h-5" />
 														</Button>
-														<Button
-															variant="ghost"
-															size="icon"
-															onClick={() => handleApproveReject(reg._id, "reject")}
-															className="w-8 h-8 text-red-600 hover:text-red-800"
-															title="Reject"
-														>
+														<Button variant="ghost" size="icon" onClick={() => handleApproveReject(reg._id, "reject")} className="w-8 h-8 text-red-600 hover:text-red-800" title="Reject">
 															<XCircle className="w-5 h-5" />
 														</Button>
 													</div>
@@ -313,13 +286,7 @@ export default function EventsPage() {
 							</button>
 						</div>
 						<div className="p-4">
-							<Image
-								src={paymentProofModal}
-								alt="Payment proof"
-								width={800}
-								height={600}
-								className="w-full h-auto rounded"
-							/>
+							<Image src={paymentProofModal} alt="Payment proof" width={800} height={600} className="w-full h-auto rounded" />
 						</div>
 					</div>
 				</div>
@@ -335,20 +302,18 @@ export default function EventsPage() {
 						</div>
 						<div className="p-4 space-y-4">
 							<div className="flex gap-4">
-								<Image
-									src={viewingEvent.eventposterUrl || "/ghanti.png"}
-									width={100}
-									height={100}
-									alt={viewingEvent.eventname || "alt"}
-									className="w-20 h-24 object-cover rounded flex-shrink-0"
-								/>
+								<Image src={viewingEvent.eventposterUrl || "/ghanti.png"} width={100} height={100} alt={viewingEvent.eventname || "alt"} className="w-20 h-24 object-cover rounded flex-shrink-0" />
 								<div className="text-sm text-gray-700 space-y-1">
-									<div><span className="font-semibold">Venue:</span> {viewingEvent.eventvenue || "N/A"}</div>
-									<div><span className="font-semibold">Date:</span> {viewingEvent.eventdate}</div>
-									<div><span className="font-semibold">Time:</span> {viewingEvent.eventtime || "N/A"}</div>
-									{isEventPast(viewingEvent.eventdate) && (
-										<span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Completed</span>
-									)}
+									<div>
+										<span className="font-semibold">Venue:</span> {viewingEvent.eventvenue || "N/A"}
+									</div>
+									<div>
+										<span className="font-semibold">Date:</span> {viewingEvent.eventdate}
+									</div>
+									<div>
+										<span className="font-semibold">Time:</span> {viewingEvent.eventtime || "N/A"}
+									</div>
+									{isEventPast(viewingEvent.eventdate) && <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700">Completed</span>}
 								</div>
 							</div>
 

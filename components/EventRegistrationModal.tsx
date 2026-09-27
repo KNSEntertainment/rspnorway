@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { X, Calendar, MapPin, Clock, ArrowRight, CheckCircle, Upload } from "lucide-react";
+import { X, Calendar, MapPin, Clock, ArrowRight, CheckCircle, Upload, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,7 +54,7 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 	const { data: session } = useSession();
 	const [currentStep, setCurrentStep] = useState(1);
 	const [loading, setLoading] = useState(false);
-	const [registrationResult, setRegistrationResult] = useState<{ registrationId?: string; message?: string } | null>(null);
+	const [registrationResult, setRegistrationResult] = useState<{ registrationId?: string; qrCode?: string; message?: string } | null>(null);
 	const [paymentProof, setPaymentProof] = useState<File | null>(null);
 	const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null);
 	const [registrationData, setRegistrationData] = useState<RegistrationData>({
@@ -133,6 +133,7 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 				const data = await response.json();
 				setRegistrationResult({
 					registrationId: data.registrationId,
+					qrCode: data.qrCode,
 					message: data.message,
 				});
 				setCurrentStep(4);
@@ -222,7 +223,7 @@ export default function EventRegistrationModal({ event, isOpen, onClose }: Event
 					{currentStep === 1 && <EventDetailsStep event={event} onNext={() => setCurrentStep(2)} disabled={isRegistrationClosed || isEventPast || seatsRemaining === 0} seatsRemaining={seatsRemaining} />}
 					{currentStep === 2 && <AttendeeInfoStep data={registrationData} onChange={setRegistrationData} onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />}
 					{currentStep === 3 && <PaymentStep event={event} data={registrationData} onSubmit={handleSubmit} onBack={() => setCurrentStep(2)} loading={loading} paymentProof={paymentProof} paymentProofPreview={paymentProofPreview} onPaymentProofChange={handlePaymentProofChange} />}
-					{currentStep === 4 && <ConfirmationStep registrationId={registrationResult?.registrationId} message={registrationResult?.message} onClose={onClose} />}
+					{currentStep === 4 && <ConfirmationStep registrationId={registrationResult?.registrationId} qrCode={registrationResult?.qrCode} message={registrationResult?.message} onClose={onClose} />}
 				</div>
 			</div>
 		</div>
@@ -644,7 +645,17 @@ function PaymentStep({ event, data, onSubmit, onBack, loading, paymentProof, pay
 	);
 }
 
-function ConfirmationStep({ registrationId, message, onClose }: { registrationId?: string; message?: string; onClose: () => void }) {
+function ConfirmationStep({ registrationId, qrCode, message, onClose }: { registrationId?: string; qrCode?: string; message?: string; onClose: () => void }) {
+	const handleDownloadQR = () => {
+		if (!qrCode) return;
+		const a = document.createElement("a");
+		a.href = qrCode;
+		a.download = `event-ticket-${registrationId || "qr"}.png`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	};
+
 	return (
 		<div className="text-center space-y-6">
 			<div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -652,24 +663,40 @@ function ConfirmationStep({ registrationId, message, onClose }: { registrationId
 			</div>
 
 			<div>
-				<h3 className="text-2xl font-bold text-gray-900 mb-2">Registration Submitted!</h3>
-				<p className="text-gray-600">{message || "Your registration has been submitted and is pending verification. You will receive a confirmation email with your QR code once your payment is verified by our team."}</p>
+				<h3 className="text-2xl font-bold text-gray-900 mb-2">{qrCode ? "Registration Confirmed!" : "Registration Submitted!"}</h3>
+				<p className="text-gray-600">{message || (qrCode ? "Your registration is confirmed! Please present this QR code at the entrance." : "Your registration has been submitted and is pending verification. You will receive a confirmation email with your QR code once verified.")}</p>
 			</div>
 
-			<div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
-				<p className="text-sm text-amber-800 font-medium mb-2">What happens next?</p>
-				<ul className="text-sm text-amber-700 text-left space-y-2">
-					<li>✓ Our team will verify your payment</li>
-					<li>✓ Once approved, you will receive a confirmation email</li>
-					<li>✓ The email will contain your entry QR code</li>
-					<li>✓ Please present the QR code at the event entrance</li>
-				</ul>
-			</div>
-
-			{registrationId && <p className="text-xs text-gray-500 font-mono">Registration ID: {registrationId}</p>}
+			{qrCode ? (
+				<div className="bg-gray-50 border border-gray-200 rounded-xl p-6 max-w-sm mx-auto space-y-4">
+					<div className="text-sm font-semibold text-gray-700">Your Entry Ticket QR Code</div>
+					<div className="bg-white p-4 rounded-lg shadow-sm border inline-block">
+						{/* eslint-disable-next-line @next/next/no-img-element */}
+						<img src={qrCode} alt="Entry QR Code" className="w-48 h-48 mx-auto object-contain" />
+					</div>
+					{registrationId && <p className="text-xs text-gray-500 font-mono">Registration ID: {registrationId}</p>}
+					<div className="pt-2">
+						<Button onClick={handleDownloadQR} variant="outline" size="sm" className="gap-2">
+							<Download className="w-4 h-4" /> Download QR Code
+						</Button>
+					</div>
+					<p className="text-xs text-gray-500">We have also emailed this entry QR code to your registered email address.</p>
+				</div>
+			) : (
+				<div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
+					<p className="text-sm text-amber-800 font-medium mb-2">What happens next?</p>
+					<ul className="text-sm text-amber-700 text-left space-y-2">
+						<li>✓ Our team will verify your payment</li>
+						<li>✓ Once approved, you will receive a confirmation email</li>
+						<li>✓ The email will contain your entry QR code</li>
+						<li>✓ Please present the QR code at the event entrance</li>
+					</ul>
+					{registrationId && <p className="text-xs text-gray-500 font-mono mt-4">Registration ID: {registrationId}</p>}
+				</div>
+			)}
 
 			<div className="flex justify-center">
-				<Button onClick={onClose}>Close</Button>
+				<Button onClick={onClose}>{qrCode ? "Done" : "Close"}</Button>
 			</div>
 		</div>
 	);
