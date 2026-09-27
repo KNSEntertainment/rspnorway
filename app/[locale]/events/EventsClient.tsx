@@ -6,7 +6,8 @@ import { Calendar, MapPin, Clock, Users, MessageSquare } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
 import EventRegistrationModal from "@/components/EventRegistrationModal";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { isEventPast } from "@/lib/eventStatus";
 
 interface Event {
@@ -84,19 +85,36 @@ const getSeatsRemaining = (event: Event) => {
 
 export default function EventsClientWrapper({ events, translations: t, initialEventId }: EventsColumnProps) {
 	const tFeedback = useTranslations("eventFeedback");
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const eventIdFromUrl = searchParams.get("eventId");
+
 	const sortedEvents = useMemo(() => [...(events || [])].sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()), [events]);
 
-	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+	const [selectedEventId, setSelectedEventId] = useState<string | null>(initialEventId || null);
 	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
 
+	// Synchronize when URL changes (e.g. browser back/forward or direct navigation)
 	useEffect(() => {
-		if (!initialEventId) {
-			setSelectedEvent(null);
-			return;
-		}
+		setSelectedEventId(eventIdFromUrl || null);
+	}, [eventIdFromUrl]);
 
-		setSelectedEvent(sortedEvents.find((e) => e._id === initialEventId) ?? null);
-	}, [initialEventId, sortedEvents]);
+	const selectedEvent = useMemo(() => {
+		if (!selectedEventId) return null;
+		return sortedEvents.find((e) => e._id === selectedEventId) ?? null;
+	}, [selectedEventId, sortedEvents]);
+
+	const handleSelectEvent = (eventId: string) => {
+		setSelectedEventId(eventId);
+		router.push(`/events?eventId=${eventId}`);
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
+
+	const handleBack = () => {
+		setSelectedEventId(null);
+		router.push("/events");
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	};
 
 	// ── Detail View ──────────────────────────────────────────────────────────
 	if (selectedEvent) {
@@ -110,7 +128,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 			<>
 				<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
 					<div className="container max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
-						<button onClick={() => setSelectedEvent(null)} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-4 sm:mb-8">
+						<button onClick={handleBack} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200 mb-4 sm:mb-8">
 							<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
 							</svg>
@@ -370,7 +388,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 												.map((event) => {
 													const { day, month } = formatEventDate(event.eventdate);
 													return (
-														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => setSelectedEvent(event)}>
+														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => handleSelectEvent(event._id)}>
 															<div className="flex gap-3 sm:gap-4">
 																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center min-w-[60px] sm:min-w-[80px] flex-shrink-0">
 																	<div className="text-lg sm:text-2xl font-bold leading-none">{day}</div>
@@ -410,7 +428,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 								const seatsRemaining = getSeatsRemaining(event);
 								const eventHasTicketInfo = hasTicketInfo(event);
 								return (
-									<div key={event._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden h-full flex flex-col" onClick={() => setSelectedEvent(event)}>
+									<div key={event._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden h-full flex flex-col" onClick={() => handleSelectEvent(event._id)}>
 										{/* Image Section */}
 										<div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
 											{event.eventposterUrl ? (
@@ -465,12 +483,19 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 											<div className="pt-3 border-t border-gray-100">
 												<div className="flex gap-2">
 													{/* View Detail Link */}
-													<span className="text-brand font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all flex-1">
+													<Link
+														href={`/events?eventId=${event._id}`}
+														onClick={(e) => {
+															e.preventDefault();
+															handleSelectEvent(event._id);
+														}}
+														className="text-brand font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all flex-1"
+													>
 														{t.view_detail}
 														<svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
 														</svg>
-													</span>
+													</Link>
 
 													{/* Register Button */}
 													<div onClick={(e) => e.stopPropagation()} className="flex-1">
