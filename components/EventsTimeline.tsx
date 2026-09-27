@@ -169,7 +169,7 @@ export default function EventsTimeline() {
 										<div className="bg-gray-50 transition-all duration-300 overflow-hidden group h-full">
 											{/* Event Poster */}
 											<div className="relative aspect-[16/9] w-full">
-												<Image src={event.eventposterUrl || "/ghanti.png"} alt={getLocalizedTitle(event)} fill className="object-cover bg-gray-50 transition-transform duration-700 group-hover:scale-105" />
+												<Image src={event.eventposterUrl || "/ghanti.png"} alt={getLocalizedTitle(event)} fill className="object-cover object-top origin-top bg-gray-50 transition-transform duration-700 group-hover:scale-105" />
 												{/* Gradient Overlay */}
 												<div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
 											</div>

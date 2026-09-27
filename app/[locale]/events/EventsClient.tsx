@@ -73,7 +73,7 @@ const getPriceLines = (event: Event) => {
 };
 
 const hasTicketInfo = (event: Event) => {
-	return getPriceLines(event).length > 0 || getSeatsRemaining(event) !== null || Boolean(event.practicalInfo);
+	return getPriceLines(event).length > 0 || getSeatsRemaining(event) !== null;
 };
 
 const getSeatsRemaining = (event: Event) => {
@@ -167,7 +167,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 										<div className="relative overflow-hidden rounded-lg sm:rounded-xl bg-gray-50 border border-gray-200">
 											{eventImages.length > 0 ? (
 												<div className="aspect-video sm:aspect-square relative">
-													<Image src={eventImages[0]} alt={selectedEvent.eventname} fill className="object-cover transition-transform duration-300 hover:scale-105" priority />
+													<Image src={eventImages[0]} alt={selectedEvent.eventname} fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover object-top origin-top transition-transform duration-300 hover:scale-105" priority />
 												</div>
 											) : (
 												<div className="aspect-video sm:aspect-square flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
@@ -210,17 +210,20 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 											</div>
 										)}
 
-										{selectedHasTicketInfo && (
+										{(selectedHasTicketInfo || selectedEvent.registrationEnabled !== false) && (
 											<div className="bg-brand/5 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-brand/10">
-												<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Ticket Information</h2>
-												<div className="space-y-2 sm:space-y-3 text-gray-700">
-													{selectedPriceLines.length > 0 && <div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>}
-													{selectedSeatsRemaining !== null && <div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
-													{selectedEvent.practicalInfo && <div className="text-xs sm:text-sm text-gray-600 whitespace-pre-wrap">{selectedEvent.practicalInfo}</div>}
-												</div>
+												{selectedHasTicketInfo && (
+													<div className="mb-4">
+														<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Ticket Information</h2>
+														<div className="space-y-2 sm:space-y-3 text-gray-700">
+															{selectedPriceLines.length > 0 && <div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>}
+															{selectedSeatsRemaining !== null && <div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
+														</div>
+													</div>
+												)}
 
 												{/* Register Button */}
-												<div className="mt-4 sm:mt-6">
+												<div className={selectedHasTicketInfo ? "mt-4 sm:mt-6" : ""}>
 													{isEventPast(selectedEvent.eventdate) ? (
 														<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
 															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -253,10 +256,7 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														<p className="text-gray-600 text-xs sm:text-sm">{tFeedback("attendedPromptSubtitle")}</p>
 													</div>
 												</div>
-												<Link
-													href={`/events/feedback?eventId=${selectedEvent._id}`}
-													className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all duration-200 flex-shrink-0"
-												>
+												<Link href={`/events/feedback?eventId=${selectedEvent._id}`} className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all duration-200 flex-shrink-0">
 													{tFeedback("leaveFeedback")}
 												</Link>
 											</div>
@@ -376,11 +376,10 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 														}
 													})()}
 												</div>
-												{(selectedPriceLines.length > 0 || selectedSeatsRemaining !== null || selectedEvent.practicalInfo) && (
+												{(selectedPriceLines.length > 0 || selectedSeatsRemaining !== null) && (
 													<div className="text-xs text-gray-500 text-center space-y-1">
 														{selectedPriceLines.length > 0 && <div>{selectedPriceLines.join(" | ")}</div>}
 														{selectedSeatsRemaining !== null && <div>{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
-														{selectedEvent.practicalInfo && <div className="line-clamp-2">{selectedEvent.practicalInfo}</div>}
 													</div>
 												)}
 											</div>
@@ -412,9 +411,9 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 								return (
 									<div key={event._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden h-full flex flex-col" onClick={() => setSelectedEvent(event)}>
 										{/* Image Section */}
-										<div className="relative h-56 overflow-hidden">
+										<div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
 											{event.eventposterUrl ? (
-												<Image src={event.eventposterUrl} alt={event.eventname} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+												<Image src={event.eventposterUrl} alt={event.eventname} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover object-top origin-top group-hover:scale-105 transition-transform duration-500" />
 											) : (
 												<div className="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
 													<Calendar className="w-12 h-12 text-indigo-300" />
@@ -444,16 +443,21 @@ export default function EventsClientWrapper({ events, translations: t, initialEv
 													</div>
 												)}
 												{eventHasTicketInfo && (
-													<div className="rounded-xl bg-brand/5 border border-brand/10 p-4 space-y-2">
+													<div className="rounded-xl bg-brand/5 border border-brand/10 p-3 space-y-1.5">
 														<div className="text-xs uppercase tracking-wide font-bold text-brand">Ticket Information</div>
-														{priceLines.length > 0 && <div className="font-semibold text-brand">{priceLines.join(" | ")}</div>}
+														{priceLines.length > 0 && <div className="font-semibold text-brand text-xs sm:text-sm">{priceLines.join(" | ")}</div>}
 														{seatsRemaining !== null && (
-															<div className="flex items-start gap-2 text-gray-700">
-																<Users className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
+															<div className="flex items-start gap-2 text-gray-700 text-xs">
+																<Users className="w-3.5 h-3.5 text-brand flex-shrink-0 mt-0.5" />
 																<span className="line-clamp-1">{seatsRemaining > 0 ? `${seatsRemaining} seats remaining` : "Sold out"}</span>
 															</div>
 														)}
-														{event.practicalInfo && <div className="text-xs text-gray-500 line-clamp-2">{event.practicalInfo}</div>}
+													</div>
+												)}
+												{event.practicalInfo && (
+													<div className="rounded-xl bg-emerald-50 border border-emerald-100 p-3 space-y-1">
+														<div className="text-xs uppercase tracking-wide font-bold text-emerald-700">Practical Information</div>
+														<p className="text-xs text-gray-600 line-clamp-2">{event.practicalInfo}</p>
 													</div>
 												)}
 											</div>

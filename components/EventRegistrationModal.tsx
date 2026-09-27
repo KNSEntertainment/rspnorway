@@ -244,7 +244,7 @@ function EventDetailsStep({ event, onNext, disabled, seatsRemaining }: { event: 
 			<div className="grid md:grid-cols-2 gap-6">
 				<div>
 					{event.eventposterUrl ? (
-						<Image src={event.eventposterUrl} alt={event.eventname} width={400} height={192} className="w-full h-48 object-cover rounded-lg" />
+						<Image src={event.eventposterUrl} alt={event.eventname} width={400} height={192} className="w-full h-48 object-cover object-top rounded-lg" />
 					) : (
 						<div className="w-full h-48 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center">
 							<Calendar className="w-12 h-12 text-indigo-300" />
