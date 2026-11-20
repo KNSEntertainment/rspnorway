@@ -185,11 +185,11 @@ export default function CheckInPage() {
 		const res = await fetch("/api/events/validate-qr", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ qrData: qrString }),
+			body: JSON.stringify({ qrData: qrString, eventId: selectedEventId }),
 		});
 		const data = await res.json();
 		return { ok: res.ok, data };
-	}, []);
+	}, [selectedEventId]);
 
 	const handleDecoded = useCallback(
 		async (decodedText: string) => {

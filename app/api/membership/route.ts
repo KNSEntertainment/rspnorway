@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Membership from "@/models/Membership.Model";
+import User from "@/models/User.Model";
+import ExecutiveMember from "@/models/ExecutiveMember.Model";
 import crypto from "crypto";
 import { sendEmailVerificationEmail } from "@/lib/email";
 
@@ -38,15 +40,97 @@ function rateLimit(ip: string, limit: number = 3, windowMs: number = 60 * 60 * 1
 	return { success: true };
 }
 
+interface MemberDoc {
+	_id?: unknown;
+	fullName?: string;
+	email?: string;
+	phone?: string;
+	membershipType?: string;
+	membershipStatus?: string;
+	position?: string;
+	profilePhoto?: string;
+	[key: string]: unknown;
+}
+
+interface UserDoc {
+	_id?: unknown;
+	fullName?: string;
+	email?: string;
+	phone?: string;
+	role?: string;
+	createdAt?: Date | string;
+	profilePhoto?: string;
+}
+
+interface ExecDoc {
+	_id?: unknown;
+	name?: string;
+	email?: string;
+	phone?: string;
+	position?: string;
+	department?: string;
+	imageUrl?: string;
+	createdAt?: Date | string;
+}
+
 export async function GET(req: NextRequest) {
 	await connectDB();
 	const { searchParams } = new URL(req.url);
 	const email = searchParams.get("email");
 
 	if (email) {
-		// Check if email exists
-		const membership = await Membership.findOne({ email });
-		return NextResponse.json(membership);
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
+
+		// 1. Check if email exists in Membership collection
+		const membership = (await Membership.findOne({ email: emailRegex }).lean()) as MemberDoc | null;
+
+		// 2. Also check if email belongs to an Admin/Treasurer User or ExecutiveMember
+		const user = (await User.findOne({ email: emailRegex }).lean()) as UserDoc | null;
+		const execMember = (await ExecutiveMember.findOne({ email: emailRegex }).lean()) as ExecDoc | null;
+
+		if (membership) {
+			// If user is also an admin or executive member, ensure their card is executive & approved
+			if (user || execMember || membership.membershipType === "executive") {
+				membership.membershipType = "executive";
+				if (membership.membershipStatus !== "blocked") {
+					membership.membershipStatus = "approved";
+				}
+				if (!membership.position) {
+					membership.position = execMember?.position || (user?.role === "treasurer" ? "Treasurer" : "Executive Member");
+				}
+				if (execMember?.imageUrl && !membership.profilePhoto) {
+					membership.profilePhoto = execMember.imageUrl;
+				}
+			}
+			return NextResponse.json(membership);
+		}
+
+		// 3. If no membership record exists, but user is an Executive Member or Admin User, synthesize approved executive card
+		if (user || execMember) {
+			const synthesized = {
+				_id: (execMember?._id || user?._id || "").toString(),
+				fullName: execMember?.name || user?.fullName || "Executive Member",
+				email: email,
+				phone: execMember?.phone || user?.phone || "",
+				address: "Oslo, Norway",
+				city: "Oslo",
+				postalCode: "0150",
+				dateOfBirth: "",
+				gender: "prefer-not-to-say",
+				membershipType: "executive",
+				membershipStatus: "approved",
+				position: execMember?.position || (user?.role === "treasurer" ? "Treasurer" : "Executive Member"),
+				department: execMember?.department || "Executive Committee",
+				profilePhoto: execMember?.imageUrl || "",
+				nationalMembershipNo: "EXEC-" + (user?._id || execMember?._id || "0001").toString().slice(-4).toUpperCase(),
+				memberSinceDate: user?.createdAt || execMember?.createdAt || new Date(),
+				createdAt: user?.createdAt || execMember?.createdAt || new Date(),
+				updatedAt: new Date(),
+			};
+			return NextResponse.json(synthesized);
+		}
+
+		return NextResponse.json(null);
 	}
 
 	// Return all memberships if no email filter

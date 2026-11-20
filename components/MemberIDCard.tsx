@@ -14,6 +14,7 @@ interface MemberIDCardProps {
 		profilePhoto?: string;
 		nationalMembershipNo?: string;
 		membershipType: string;
+		position?: string;
 		city?: string;
 		province?: string;
 		createdAt: string;
@@ -50,20 +51,20 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 	});
 
 	return (
-		<div className="flex max-w-2xl mt-6 items-start" key={cacheKey}>
+		<div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 max-w-3xl mx-auto my-6" key={cacheKey}>
 		
 
 			{/* ID Card - Front */}
-			<div ref={cardRef} className="relative w-full max-w-[300px] mx-auto">
+			<div ref={cardRef} className="relative w-full max-w-[300px] rounded-2xl shadow-lg border border-slate-200/80 overflow-hidden bg-white">
 				{/* Card Container */}
-				<div className="w-full h-full bg-white shadow-lg overflow-hidden min-h-[475px]">
+				<div className="w-full h-full min-h-[475px] relative">
 					{/* Header Section */}
 					<div className="relative bg-gradient-to-r from-brand to-blue-700 text-white px-6 pt-4 pb-8">
 						<div className="flex items-center justify-between">
 							<div>
 								<h2 className="text-lg font-bold mt-0.5">PNSB-Norway</h2>
 								<p className="text-[10px] text-white font-semibold">Oslo, Norway</p>
-								<h3 className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md px-2 py-1 rounded-2xl text-xs font-semibold tracking-wide text-brand">MEMBERSHIP CARD</h3>
+								<h3 className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white shadow-md px-3 py-1 rounded-2xl text-xs font-semibold tracking-wide text-brand">MEMBERSHIP CARD</h3>
 							</div>
 							{/* Logo */}
 							<div className="w-12 h-12 border border-white bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
@@ -157,9 +158,9 @@ export default function MemberIDCard({ memberData, locale = "en" }: MemberIDCard
 			</div>
 
 			{/* ID Card - Back */}
-			<div className="relative block relative w-full max-w-[300px] mx-auto">
+			<div className="relative w-full max-w-[300px] rounded-2xl shadow-lg border border-slate-200/80 overflow-hidden bg-white">
 				{/* Card Container */}
-				<div className="bg-white shadow-lg overflow-hidden min-h-[475px]">
+				<div className="w-full h-full min-h-[475px] relative">
 					{/* Header Section */}
 					<div className="bg-gradient-to-r from-brand to-blue-700 text-white px-6 py-6">
 						<h3 className="text-sm font-bold text-center">Emergency Contact & Guidelines</h3>

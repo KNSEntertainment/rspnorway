@@ -5,23 +5,24 @@ import { usePathname } from "next/navigation";
 
 const ActiveMenuContext = createContext({
 	activeMenu: "dashboard",
-	setActiveMenu: (menu) => {},
+	setActiveMenu: () => {},
 });
 
 export const useActiveMenu = () => useContext(ActiveMenuContext);
 
 export const ActiveMenuProvider = ({ children }) => {
 	const [activeMenu, setActiveMenu] = useState("dashboard");
-	const pathname = usePathname();
+	const pathname = usePathname() || "";
 
 	useEffect(() => {
-		// Extract menu id from pathname
-		// e.g. /dashboard/blogs => blogs, /dashboard => dashboard
+		// Extract menu id from pathname for any locale (e.g. /en/dashboard/blogs or /dashboard/blogs)
 		let menuId = "dashboard";
-		if (pathname.startsWith("/en/dashboard")) {
-			const parts = pathname.split("/").filter(Boolean); // removes empty
-			// parts[0] === 'dashboard', parts[1] === menu id (if exists)
-			menuId = parts[2] || "dashboard";
+		if (pathname.includes("/dashboard")) {
+			const parts = pathname.split("/").filter(Boolean);
+			const dashIndex = parts.indexOf("dashboard");
+			if (dashIndex !== -1 && parts[dashIndex + 1]) {
+				menuId = parts[dashIndex + 1];
+			}
 		}
 		setActiveMenu(menuId);
 	}, [pathname]);

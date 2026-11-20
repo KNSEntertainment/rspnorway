@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import connectDB from "@/lib/mongodb";
 import Membership from "@/models/Membership.Model";
+import ExecutiveMember from "@/models/ExecutiveMember.Model";
+import User from "@/models/User.Model";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
 
 export async function GET(req: NextRequest) {
@@ -14,15 +16,39 @@ export async function GET(req: NextRequest) {
 			return NextResponse.json({ error: "Email parameter is required" }, { status: 400 });
 		}
 
-		// Fetch membership with the given email
-		const membership = await Membership.findOne({ email });
-		if (!membership) {
-			return NextResponse.json({ error: "Membership not found" }, { status: 404 });
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
+
+		// 1. Fetch membership with the given email
+		const membership = await Membership.findOne({ email: emailRegex });
+		if (membership?.profilePhoto) {
+			return NextResponse.json({
+				success: true,
+				profilePhoto: membership.profilePhoto,
+			});
 		}
 
+		// 2. Check if email belongs to ExecutiveMember
+		const exec = await ExecutiveMember.findOne({ email: emailRegex });
+		if (exec?.imageUrl) {
+			return NextResponse.json({
+				success: true,
+				profilePhoto: exec.imageUrl,
+			});
+		}
+
+		// 3. Check if email belongs to Admin User
+		const user = await User.findOne({ email: emailRegex });
+		if (user?.profilePhoto) {
+			return NextResponse.json({
+				success: true,
+				profilePhoto: user.profilePhoto,
+			});
+		}
+
+		// Return 200 with null photo instead of 404 so clients don't log errors
 		return NextResponse.json({
 			success: true,
-			profilePhoto: membership.profilePhoto || null,
+			profilePhoto: null,
 		});
 	} catch (error: unknown) {
 		console.error("Error fetching profile photo:", error);
@@ -33,7 +59,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (!session || !session.user) {
+		if (!session || !session.user || !session.user.email) {
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
 
@@ -56,24 +82,50 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "File size must be less than 300KB" }, { status: 400 });
 		}
 
-		// Get existing membership to retrieve old photo URL
-		const existingMembership = await Membership.findOne({ email: session.user.email });
-		if (!existingMembership) {
-			console.error("Membership not found for email:", session.user.email);
-			return NextResponse.json({ error: "Membership not found" }, { status: 404 });
-		}
+		const email = session.user.email;
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
 
-		const oldPhotoUrl = existingMembership.profilePhoto;
+		// Get existing records
+		const existingMembership = await Membership.findOne({ email: emailRegex });
+		const exec = await ExecutiveMember.findOne({ email: emailRegex });
+		const user = await User.findOne({ email: emailRegex });
+		const isExecutiveOrAdmin = session.user.role === "admin" || session.user.role === "treasurer" || Boolean(exec) || Boolean(user);
+
+		const oldPhotoUrl = existingMembership?.profilePhoto || exec?.imageUrl || user?.profilePhoto;
 
 		// Upload new photo to Cloudinary
 		const photoUrl = await uploadToCloudinary(file, "profile-photos");
 
-		// Update membership's profile photo in database
-		const membership = await Membership.findOneAndUpdate({ email: session.user.email }, { profilePhoto: photoUrl }, { new: true });
+		// 1. If membership exists, update it; otherwise if executive/admin, create one
+		if (existingMembership) {
+			existingMembership.profilePhoto = photoUrl;
+			await existingMembership.save();
+		} else if (isExecutiveOrAdmin) {
+			await Membership.create({
+				fullName: exec?.name || user?.fullName || session.user.fullName || "Executive Member",
+				email: email,
+				phone: exec?.phone || user?.phone || session.user.phone || "",
+				address: "Oslo, Norway",
+				city: "Oslo",
+				postalCode: "0150",
+				dateOfBirth: "1990-01-01",
+				gender: "prefer-not-to-say",
+				membershipType: "executive",
+				membershipStatus: "approved",
+				position: exec?.position || (session.user.role === "treasurer" ? "Treasurer" : "Executive Member"),
+				profilePhoto: photoUrl,
+				agreeTerms: true,
+			});
+		}
 
-		if (!membership) {
-			console.error("Membership not found for email:", session.user.email);
-			return NextResponse.json({ error: "Membership not found" }, { status: 404 });
+		// 2. Sync to ExecutiveMember if it exists
+		if (exec) {
+			await ExecutiveMember.findOneAndUpdate({ email: emailRegex }, { imageUrl: photoUrl });
+		}
+
+		// 3. Sync to User if it exists
+		if (user) {
+			await User.findOneAndUpdate({ email: emailRegex }, { profilePhoto: photoUrl });
 		}
 
 		// Delete old photo from Cloudinary if it exists
@@ -82,7 +134,6 @@ export async function POST(req: NextRequest) {
 				await deleteFromCloudinary(oldPhotoUrl, "image");
 			} catch (deleteError) {
 				console.error("Error deleting old photo from Cloudinary:", deleteError);
-				// Don't fail the request if deletion fails - the new photo is already uploaded
 			}
 		}
 
