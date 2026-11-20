@@ -14,12 +14,20 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userId = session.user._id;
-    const memberObjectId = new mongoose.Types.ObjectId(userId);
+    const userId = session.user._id || session.user.id;
+    const isValidId = userId && mongoose.Types.ObjectId.isValid(userId);
+    const memberObjectId = isValidId ? new mongoose.Types.ObjectId(userId) : null;
+    const email = session.user.email || "";
+    const emailRegex = new RegExp(`^${email.trim()}$`, "i");
 
-    const contributions = await ExecutiveContribution.find({
-      $or: [{ memberId: memberObjectId }, { memberEmail: session.user.email }],
-    })
+    const query = {
+      $or: [
+        ...(memberObjectId ? [{ memberId: memberObjectId }] : []),
+        { memberEmail: emailRegex },
+      ],
+    };
+
+    const contributions = await ExecutiveContribution.find(query)
       .sort({ year: -1 })
       .lean();
 

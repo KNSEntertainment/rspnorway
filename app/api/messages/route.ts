@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import connectDB from "@/lib/mongodb";
 import AdminMessage from "@/models/AdminMessage.Model";
 import Membership from "@/models/Membership.Model";
+import ExecutiveMember from "@/models/ExecutiveMember.Model";
 import User from "@/models/User.Model";
 import { sendBulkMessages } from "@/lib/emailService";
 
@@ -20,13 +21,30 @@ export async function GET(req: NextRequest) {
 
 		await connectDB();
 
-		// Get the current member's information
-		const currentMember = await Membership.findOne({ email: session.user.email });
+		// Get the current member's information (admins are also considered executive members)
+		const email = session.user.email;
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
+		const sessionUser = session.user as { id?: string; _id?: string };
+		const fallbackUserId = sessionUser._id || sessionUser.id || "";
+		const currentMember = await Membership.findOne({ email: emailRegex });
+		
+		let membershipType = currentMember?.membershipType || "executive";
+		let currentMemberId = (currentMember?._id || fallbackUserId).toString();
+
 		if (!currentMember) {
-			return NextResponse.json(
-				{ error: "Member not found" },
-				{ status: 404 }
-			);
+			const user = await User.findOne({ email: emailRegex });
+			const exec = await ExecutiveMember.findOne({ email: emailRegex });
+			const isAdminOrTreasurer = session.user.role === "admin" || session.user.role === "treasurer";
+
+			if (user || exec || isAdminOrTreasurer) {
+				membershipType = "executive";
+				currentMemberId = (user?._id || exec?._id || fallbackUserId).toString();
+			} else {
+				return NextResponse.json(
+					{ error: "Member not found" },
+					{ status: 404 }
+				);
+			}
 		}
 
 		const { searchParams } = new URL(req.url);
@@ -36,10 +54,14 @@ export async function GET(req: NextRequest) {
 		const priority = searchParams.get("priority");
 		const unreadOnly = searchParams.get("unread") === "true";
 
-		// Build query
+		// Build query: executive members and admins receive "all" and "executive" messages
+		const recipientTypes = membershipType === "executive" 
+			? ["all", "executive"] 
+			: ["all", membershipType];
+
 		const query: {
 			isActive: boolean;
-			$or: Array<{ recipientType: string } | { recipientType: string }>;
+			recipientType: { $in: string[] };
 			$and: Array<{
 				$or: Array<{ expiresAt: null } | { expiresAt: { $gt: Date } }>;
 			}>;
@@ -48,10 +70,7 @@ export async function GET(req: NextRequest) {
 			"readBy.memberId"?: { $ne: string };
 		} = {
 			isActive: true,
-			$or: [
-				{ recipientType: "all" },
-				{ recipientType: currentMember.membershipType },
-			],
+			recipientType: { $in: recipientTypes },
 			$and: [
 				{
 					$or: [
@@ -74,7 +93,7 @@ export async function GET(req: NextRequest) {
 
 		// Add unread filter if specified
 		if (unreadOnly) {
-			query["readBy.memberId"] = { $ne: currentMember._id };
+			query["readBy.memberId"] = { $ne: currentMemberId };
 		}
 
 		// Get total count for pagination
@@ -108,16 +127,16 @@ export async function GET(req: NextRequest) {
 		}));
 
 		// Mark messages as read
-		if (messages.length > 0) {
+		if (messages.length > 0 && currentMemberId) {
 			await AdminMessage.updateMany(
 				{
 					_id: { $in: messages.map(msg => msg._id) },
-					"readBy.memberId": { $ne: currentMember._id },
+					"readBy.memberId": { $ne: currentMemberId },
 				},
 				{
 					$push: {
 						readBy: {
-							memberId: currentMember._id,
+							memberId: currentMemberId,
 							readAt: new Date(),
 						},
 					},

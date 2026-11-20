@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import Membership from '@/models/Membership.Model';
+import User from '@/models/User.Model';
+import ExecutiveMember from '@/models/ExecutiveMember.Model';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
@@ -19,8 +21,21 @@ export async function GET() {
 			await mongoose.connect(process.env.MONGODB_URI!);
 		}
 
-		const member = await Membership.findOne({ email: session.user.email.toLowerCase() });
+		const emailRegex = new RegExp(`^${session.user.email.trim()}$`, "i");
+		const member = await Membership.findOne({ email: emailRegex });
 		if (!member) {
+			const isAdminOrExec = session.user.role === "admin" || session.user.role === "treasurer";
+			const user = await User.findOne({ email: emailRegex });
+			const exec = await ExecutiveMember.findOne({ email: emailRegex });
+
+			if (isAdminOrExec || user || exec) {
+				return NextResponse.json({
+					permissionPhotos: false,
+					permissionPhone: false,
+					permissionEmail: false,
+				});
+			}
+
 			return NextResponse.json(
 				{ error: 'Member not found' },
 				{ status: 404 }
@@ -67,8 +82,9 @@ export async function PATCH(request: NextRequest) {
 			await mongoose.connect(process.env.MONGODB_URI!);
 		}
 
-		const member = await Membership.findOneAndUpdate(
-			{ email: session.user.email.toLowerCase() },
+		const emailRegex = new RegExp(`^${session.user.email.trim()}$`, "i");
+		let member = await Membership.findOneAndUpdate(
+			{ email: emailRegex },
 			{
 				permissionPhotos,
 				permissionPhone,
@@ -76,6 +92,32 @@ export async function PATCH(request: NextRequest) {
 			},
 			{ new: true }
 		);
+
+		if (!member) {
+			const isAdminOrExec = session.user.role === "admin" || session.user.role === "treasurer";
+			const user = await User.findOne({ email: emailRegex });
+			const exec = await ExecutiveMember.findOne({ email: emailRegex });
+
+			if (isAdminOrExec || user || exec) {
+				member = await Membership.create({
+					fullName: user?.fullName || exec?.name || session.user.fullName || "Executive Member",
+					email: session.user.email,
+					phone: user?.phone || exec?.phone || session.user.phone || "",
+					address: "Oslo, Norway",
+					city: "Oslo",
+					postalCode: "0150",
+					dateOfBirth: "1990-01-01",
+					gender: "prefer-not-to-say",
+					membershipType: "executive",
+					membershipStatus: "approved",
+					position: exec?.position || (session.user.role === "treasurer" ? "Treasurer" : "Executive Member"),
+					agreeTerms: true,
+					permissionPhotos,
+					permissionPhone,
+					permissionEmail,
+				});
+			}
+		}
 
 		if (!member) {
 			return NextResponse.json(

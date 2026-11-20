@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import Membership from '@/models/Membership.Model';
+import User from '@/models/User.Model';
+import ExecutiveMember from '@/models/ExecutiveMember.Model';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
 
@@ -49,11 +51,47 @@ export async function PATCH(request: NextRequest) {
 			await mongoose.connect(process.env.MONGODB_URI!);
 		}
 
-		const member = await Membership.findOneAndUpdate(
-			{ email: session.user.email.toLowerCase() },
+		const emailRegex = new RegExp(`^${session.user.email.trim()}$`, "i");
+		let member = await Membership.findOneAndUpdate(
+			{ email: emailRegex },
 			filteredData,
 			{ new: true }
 		);
+
+		if (!member) {
+			const isAdminOrExec = session.user.role === "admin" || session.user.role === "treasurer";
+			const user = await User.findOne({ email: emailRegex });
+			const exec = await ExecutiveMember.findOne({ email: emailRegex });
+
+			if (isAdminOrExec || user || exec) {
+				if (filteredData.phone && user) {
+					await User.findOneAndUpdate({ email: emailRegex }, { phone: filteredData.phone });
+				}
+				if (filteredData.phone && exec) {
+					await ExecutiveMember.findOneAndUpdate({ email: emailRegex }, { phone: filteredData.phone });
+				}
+
+				member = await Membership.create({
+					fullName: user?.fullName || exec?.name || session.user.fullName || "Executive Member",
+					email: session.user.email,
+					phone: (filteredData.phone as string) || user?.phone || exec?.phone || session.user.phone || "",
+					address: (filteredData.address as string) || "Oslo, Norway",
+					city: (filteredData.city as string) || "Oslo",
+					postalCode: (filteredData.postalCode as string) || "0150",
+					province: (filteredData.province as string) || "",
+					district: (filteredData.district as string) || "",
+					profession: (filteredData.profession as string) || "",
+					skills: (filteredData.skills as string) || "",
+					volunteerInterest: (filteredData.volunteerInterest as string[]) || [],
+					dateOfBirth: "1990-01-01",
+					gender: "prefer-not-to-say",
+					membershipType: "executive",
+					membershipStatus: "approved",
+					position: exec?.position || (session.user.role === "treasurer" ? "Treasurer" : "Executive Member"),
+					agreeTerms: true,
+				});
+			}
+		}
 
 		if (!member) {
 			return NextResponse.json(

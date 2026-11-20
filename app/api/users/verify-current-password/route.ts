@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import Membership from '@/models/Membership.Model';
+import User from '@/models/User.Model';
 
 export async function POST(request: NextRequest) {
 	try {
@@ -19,17 +20,22 @@ export async function POST(request: NextRequest) {
 			await mongoose.connect(process.env.MONGODB_URI!);
 		}
 
-		// Find the member by email
-		const member = await Membership.findOne({ email: email.toLowerCase() });
-		if (!member) {
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
+
+		// Find the member or user by email
+		const member = await Membership.findOne({ email: emailRegex });
+		const user = !member ? await User.findOne({ email: emailRegex }) : null;
+
+		if (!member && !user) {
 			return NextResponse.json(
-				{ error: 'Member not found', isValid: false },
+				{ error: 'User or member not found', isValid: false },
 				{ status: 404 }
 			);
 		}
 
 		// Verify the password
-		const isPasswordValid = await bcrypt.compare(password, member.password || '');
+		const storedPassword = member?.password || user?.password || '';
+		const isPasswordValid = await bcrypt.compare(password, storedPassword);
 
 		return NextResponse.json({
 			isValid: isPasswordValid,

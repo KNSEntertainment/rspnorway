@@ -134,7 +134,13 @@ export default function MyEvents() {
     volunteer: events.filter(e => e.role === "Volunteer").length,
   };
 
-  if (!session?.user?.isMember) {
+  const isAuthorized = Boolean(
+    session?.user?.isMember || 
+    session?.user?.role === "admin" || 
+    session?.user?.role === "treasurer"
+  );
+
+  if (!isAuthorized) {
     return (
       <div className="text-center py-12">
         <Calendar className="mx-auto h-16 w-16 text-gray-400 mb-4" />

@@ -25,9 +25,12 @@ function ProfileLayoutContent({ children }) {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const { data: session, status } = useSession();
 
+	const isAdminOrTreasurer = session?.user?.role === "admin" || session?.user?.role === "treasurer";
+	const effectiveMembershipType = session?.user?.membershipType || (isAdminOrTreasurer ? "executive" : "general");
+
 	const memberMenuItems = useMemo(
-		() => getMemberMenuItems(locale, session?.user?.membershipType),
-		[locale, session?.user?.membershipType]
+		() => getMemberMenuItems(locale, effectiveMembershipType),
+		[locale, effectiveMembershipType]
 	);
 
 	// Protect profile: redirect if not authenticated
@@ -44,8 +47,7 @@ function ProfileLayoutContent({ children }) {
 		return null;
 	}
 
-	const membershipType = session.user?.membershipType || "general";
-	const isAdminOrTreasurer = session.user?.role === "admin" || session.user?.role === "treasurer";
+	const membershipType = effectiveMembershipType;
 
 	// Group member menu items by category
 	const categories = ["Account", "Engagement", "Executive", "Security"];

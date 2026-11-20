@@ -167,9 +167,11 @@ export default function MessagesClient() {
 	};
 
 	const isMessageRead = (message: Message) => {
+		const userAny = session?.user as { _id?: string; id?: string; email?: string } | undefined;
 		return message.readBy.some(read => 
-			read.memberId === session?.user?.id || 
-			read.memberId === session?.user?.email
+			read.memberId === userAny?._id ||
+			read.memberId === userAny?.id || 
+			read.memberId === userAny?.email
 		);
 	};
 

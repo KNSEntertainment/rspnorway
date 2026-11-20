@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import Membership from '@/models/Membership.Model';
+import User from '@/models/User.Model';
 import nodemailer from 'nodemailer';
 
 // Create nodemailer transporter using existing configuration
@@ -37,17 +38,22 @@ export async function POST(request: NextRequest) {
 			await mongoose.connect(process.env.MONGODB_URI!);
 		}
 
-		// Find the member by email
-		const member = await Membership.findOne({ email: email.toLowerCase() });
-		if (!member) {
+		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
+
+		// Find the member or admin user by email
+		const member = await Membership.findOne({ email: emailRegex });
+		const user = !member ? await User.findOne({ email: emailRegex }) : null;
+
+		if (!member && !user) {
 			return NextResponse.json(
-				{ error: 'Member not found with this email' },
+				{ error: 'Account not found with this email' },
 				{ status: 404 }
 			);
 		}
 
 		// Verify current password
-		const isCurrentPasswordValid = await bcrypt.compare(currentPassword, member.password || '');
+		const storedPassword = member?.password || user?.password || '';
+		const isCurrentPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
 		if (!isCurrentPasswordValid) {
 			return NextResponse.json(
 				{ error: 'Current password is incorrect' },
@@ -58,12 +64,23 @@ export async function POST(request: NextRequest) {
 		// Hash the new password
 		const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-		// Update the member's password and clear any reset tokens
-		await Membership.findByIdAndUpdate(member._id, { 
-			password: hashedNewPassword,
-			passwordResetToken: null,
-			passwordResetTokenExpiry: null
-		});
+		// Update the member's or user's password and clear any reset tokens
+		if (member) {
+			await Membership.findByIdAndUpdate(member._id, { 
+				password: hashedNewPassword,
+				passwordResetToken: null,
+				passwordResetTokenExpiry: null
+			});
+		}
+		if (user) {
+			await User.findByIdAndUpdate(user._id, {
+				password: hashedNewPassword,
+				resetToken: null,
+				resetTokenExpiry: null
+			});
+		}
+
+		const recipientName = member?.fullName || user?.fullName || 'Member';
 
 		// Send password change notification email
 		const mailOptions = {
@@ -73,8 +90,8 @@ export async function POST(request: NextRequest) {
 			html: `
 				<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f9f9; border-radius: 8px;">
 					<h2 style="color: #333; margin-bottom: 20px;">Password Changed Successfully</h2>
-					<p>Dear ${member.fullName},</p>
-					<p>Your password for your PNSB-Norway membership account has been successfully changed.</p>
+					<p>Dear ${recipientName},</p>
+					<p>Your password for your PNSB-Norway account has been successfully changed.</p>
 					
 					<div style="background: #d4edda; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #28a745;">
 						<h3 style="color: #155724; margin-bottom: 10px;">Security Information:</h3>
@@ -116,7 +133,11 @@ export async function POST(request: NextRequest) {
 			`,
 		};
 
-		await transporter.sendMail(mailOptions);
+		try {
+			await transporter.sendMail(mailOptions);
+		} catch (mailError) {
+			console.warn("Could not send email notification:", mailError);
+		}
 
 		return NextResponse.json(
 			{ 

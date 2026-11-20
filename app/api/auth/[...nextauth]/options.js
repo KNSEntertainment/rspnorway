@@ -37,14 +37,17 @@ export const authOptions = {
 							throw new Error("Invalid credentials");
 						}
 						
-						// Return admin user data
+						// Return admin user data (considered members as well)
 						return {
 							_id: user._id,
 							email: user.email,
 							fullName: user.fullName,
 							phone: user.phone,
 							role: user.role,
-							isMember: false, // Flag to identify this is an admin user
+							isMember: true, // Flag to identify this user has full member access
+							membershipType: "executive",
+							membershipStatus: "approved",
+							emailVerified: user.emailVerified ?? true,
 						};
 					}
 
@@ -128,27 +131,29 @@ export const authOptions = {
 				token.fullName = user.fullName;
 				token.role = user.role;
 				token.phone = user.phone;
-				// Member-specific fields
-				token.isMember = user.isMember;
-				token.membershipType = user.membershipType;
-				token.membershipStatus = user.membershipStatus;
-				token.emailVerified = user.emailVerified;
+				// Member-specific fields (admins are considered members too)
+				const isAdmin = user.role === "admin" || user.role === "treasurer";
+				token.isMember = Boolean(user.isMember || isAdmin);
+				token.membershipType = user.membershipType || (isAdmin ? "executive" : undefined);
+				token.membershipStatus = user.membershipStatus || (isAdmin ? "approved" : undefined);
+				token.emailVerified = user.emailVerified ?? true;
 			}
 			return token;
 		},
 		async session({ session, token }) {
 			if (token) {
+				const isAdmin = token.role === "admin" || token.role === "treasurer";
 				session.user = {
 					_id: token._id,
 					email: token.email,
 					fullName: token.fullName,
 					role: token.role,
 					phone: token.phone,
-					// Member-specific fields
-					isMember: token.isMember,
-					membershipType: token.membershipType,
-					membershipStatus: token.membershipStatus,
-					emailVerified: token.emailVerified,
+					// Member-specific fields (admins are considered members too)
+					isMember: Boolean(token.isMember || isAdmin),
+					membershipType: token.membershipType || (isAdmin ? "executive" : undefined),
+					membershipStatus: token.membershipStatus || (isAdmin ? "approved" : undefined),
+					emailVerified: token.emailVerified ?? true,
 				};
 			}
 
