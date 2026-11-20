@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Toaster } from "@/components/ui/toaster";
 import { useSession, signOut } from "next-auth/react";
 import { useLocale } from "next-intl";
@@ -10,6 +10,7 @@ import { ActiveMenuProvider, useActiveMenu } from "@/context/ActiveMenuContext";
 import { getDashboardMenuItems } from "@/components/DashboardMenuItems";
 import { 
 	Shield, 
+	ShieldAlert,
 	Search, 
 	X, 
 	Menu, 
@@ -22,6 +23,7 @@ import {
 function DashboardLayoutContent({ children }) {
 	const { activeMenu, setActiveMenu } = useActiveMenu();
 	const router = useRouter();
+	const pathname = usePathname() || "";
 	const locale = useLocale() || "en";
 	const { data: session, status } = useSession();
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -48,6 +50,16 @@ function DashboardLayoutContent({ children }) {
 	}
 
 	const role = session.user.role;
+
+	// Route-level authorization check: protect against direct URL navigation
+	const matchingMenuItem = allMenuItems.find((item) => {
+		if (item.href === `/${locale}/dashboard` || item.href === `/dashboard`) {
+			return pathname === item.href;
+		}
+		return pathname === item.href || pathname.startsWith(item.href + "/");
+	});
+
+	const isRouteAuthorized = !matchingMenuItem || !matchingMenuItem.roles || matchingMenuItem.roles.includes(role);
 
 	// Filter menu items by role
 	const visibleMenuItems = allMenuItems.filter((item) => {
@@ -82,8 +94,16 @@ function DashboardLayoutContent({ children }) {
 		}))
 		.filter((group) => group.items.length > 0);
 
-	// Find current active item details for breadcrumbs
-	const currentActiveItem = visibleMenuItems.find((i) => i.id === activeMenu) || visibleMenuItems[0];
+	// Find current active item details for breadcrumbs (URL-aware)
+	const currentActiveItem =
+		visibleMenuItems.find((item) => {
+			if (item.href === `/${locale}/dashboard` || item.href === `/dashboard`) {
+				return pathname === item.href;
+			}
+			return pathname === item.href || pathname.startsWith(item.href + "/");
+		}) ||
+		visibleMenuItems.find((i) => i.id === activeMenu) ||
+		visibleMenuItems[0];
 	const ActiveIcon = currentActiveItem?.icon || SlidersHorizontal;
 
 	const renderNavList = (isMobile = false) => (
@@ -333,7 +353,35 @@ function DashboardLayoutContent({ children }) {
 					</div>
 
 					{/* Child View */}
-					<main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">{children}</main>
+					<main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
+						{!isRouteAuthorized ? (
+							<div className="max-w-md mx-auto my-12 p-8 bg-white border border-slate-200/90 rounded-2xl shadow-xs text-center space-y-4">
+								<div className="w-14 h-14 rounded-full bg-red-50 text-red-600 border border-red-100 flex items-center justify-center mx-auto">
+									<ShieldAlert className="w-7 h-7" />
+								</div>
+								<h2 className="text-xl font-bold text-slate-900">Access Restricted</h2>
+								<p className="text-sm text-slate-600 leading-relaxed">
+									This section is restricted to administrative officers. As a <strong className="capitalize">{role}</strong>, your permissions are focused on financial management and money operations.
+								</p>
+								<div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+									<Link
+										href={`/${locale}/dashboard/finances`}
+										className="inline-flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg text-xs font-semibold hover:bg-brand/90 transition-colors shadow-xs"
+									>
+										Financial Analytics
+									</Link>
+									<Link
+										href={`/${locale}/dashboard`}
+										className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold hover:bg-slate-200 transition-colors"
+									>
+										Dashboard Home
+									</Link>
+								</div>
+							</div>
+						) : (
+							children
+						)}
+					</main>
 				</div>
 			</div>
 			<Toaster />

@@ -13,9 +13,9 @@ export async function GET() {
 
     const isExecutiveMember =
       session?.user?.role === "member" && session?.user?.membershipType === "executive";
-    const isAdmin = session?.user?.role === "admin";
+    const isAdminOrTreasurer = session?.user?.role === "admin" || session?.user?.role === "treasurer";
 
-    if (!session || !(isAdmin || isExecutiveMember)) {
+    if (!session || !(isAdminOrTreasurer || isExecutiveMember)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

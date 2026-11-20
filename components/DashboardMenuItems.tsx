@@ -138,7 +138,7 @@ export const getDashboardMenuItems = (locale = "en"): MenuItem[] => [
 		href: `/${locale}/dashboard/checkin`, 
 		category: "Events & Programs",
 		description: "Scan QR codes and verify attendee check-ins live",
-		roles: ["admin", "treasurer"] 
+		roles: ["admin"] 
 	},
 	{ 
 		id: "causes", 
@@ -262,7 +262,7 @@ export const getDashboardMenuItems = (locale = "en"): MenuItem[] => [
 		href: `/${locale}/dashboard/donations`, 
 		category: "Finances & Operations",
 		description: "Online contributions, Stripe receipts and donor data",
-		roles: ["admin"] 
+		roles: ["admin", "treasurer"] 
 	},
 	{ 
 		id: "executive-contributions", 

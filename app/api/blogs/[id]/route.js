@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Blog from "@/models/Blog.Model";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export const config = {
 	api: {
@@ -33,6 +35,11 @@ export async function PUT(request, { params }) {
 	const { id } = await params;
 
 	try {
+		const session = await getServerSession(authOptions);
+		if (!session?.user || session.user.role !== "admin") {
+			return NextResponse.json({ success: false, error: "Unauthorized. Admin access required." }, { status: 401 });
+		}
+
 		await connectDB();
 
 		// Fetch form data
@@ -113,6 +120,11 @@ export async function DELETE(request, { params }) {
 	const { id } = await params;
 
 	try {
+		const session = await getServerSession(authOptions);
+		if (!session?.user || session.user.role !== "admin") {
+			return NextResponse.json({ success: false, error: "Unauthorized. Admin access required." }, { status: 401 });
+		}
+
 		await connectDB();
 
 		console.log("Deleting blog with ID:", id);

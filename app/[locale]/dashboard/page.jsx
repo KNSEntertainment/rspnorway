@@ -16,6 +16,8 @@ import {
 	Users, 
 	Calendar, 
 	TrendingUp, 
+	Receipt,
+	DollarSign,
 	X
 } from "lucide-react";
 
@@ -53,50 +55,85 @@ export default function DashboardGrid() {
 		});
 	}, [visibleItems, activeCategory, searchQuery]);
 
-	// Summary stats
-	const stats = [
-		{
-			label: "Community Members",
-			description: "Manage registrations & accounts",
-			href: `/${locale}/dashboard/memberships`,
-			menuId: "memberships",
-			icon: Users,
-			badge: "Registry",
-		},
-		{
-			label: "Active Events",
-			description: "Schedules, tickets & check-in",
-			href: `/${locale}/dashboard/events`,
-			menuId: "events",
-			icon: Calendar,
-			badge: "Programs",
-		},
-		{
-			label: "Financial Analytics",
-			description: "Budgets, revenues & reports",
-			href: `/${locale}/dashboard/finances`,
-			menuId: "finances",
-			icon: TrendingUp,
-			badge: "Finances",
-		},
-		{
-			label: "Security & Access",
-			description: "System roles & credentials",
-			href: `/${locale}/dashboard/users`,
-			menuId: "users",
-			icon: ShieldCheck,
-			badge: "Security",
-		},
-	];
+	// Summary stats - role adapted
+	const stats = useMemo(() => {
+		if (role === "treasurer") {
+			return [
+				{
+					label: "Financial Analytics",
+					description: "Budgets, revenues & reports",
+					href: `/${locale}/dashboard/finances`,
+					menuId: "finances",
+					icon: TrendingUp,
+					badge: "Analytics",
+				},
+				{
+					label: "Financial Ledger",
+					description: "Expenses, invoices & records",
+					href: `/${locale}/dashboard/financial-management`,
+					menuId: "financial-management",
+					icon: Receipt,
+					badge: "Operations",
+				},
+				{
+					label: "Donation Records",
+					description: "Online contributions & receipts",
+					href: `/${locale}/dashboard/donations`,
+					menuId: "donations",
+					icon: DollarSign,
+					badge: "Donations",
+				},
+				{
+					label: "Executive Levies",
+					description: "Executive dues & tracking",
+					href: `/${locale}/dashboard/executive-contributions`,
+					menuId: "executive-contributions",
+					icon: DollarSign,
+					badge: "Contributions",
+				},
+			];
+		}
 
-	const categories = [
-		"All",
-		"Community & People",
-		"Events & Programs",
-		"Content & Media",
-		"Finances & Operations",
-		"Communications & Settings",
-	];
+		return [
+			{
+				label: "Community Members",
+				description: "Manage registrations & accounts",
+				href: `/${locale}/dashboard/memberships`,
+				menuId: "memberships",
+				icon: Users,
+				badge: "Registry",
+			},
+			{
+				label: "Active Events",
+				description: "Schedules, tickets & check-in",
+				href: `/${locale}/dashboard/events`,
+				menuId: "events",
+				icon: Calendar,
+				badge: "Programs",
+			},
+			{
+				label: "Financial Analytics",
+				description: "Budgets, revenues & reports",
+				href: `/${locale}/dashboard/finances`,
+				menuId: "finances",
+				icon: TrendingUp,
+				badge: "Finances",
+			},
+			{
+				label: "Security & Access",
+				description: "System roles & credentials",
+				href: `/${locale}/dashboard/users`,
+				menuId: "users",
+				icon: ShieldCheck,
+				badge: "Security",
+			},
+		];
+	}, [locale, role]);
+
+	const categories = useMemo(() => {
+		const distinctCategories = Array.from(new Set(visibleItems.map((item) => item.category)));
+		return ["All", ...distinctCategories];
+	}, [visibleItems]);
 
 	const todayFormatted = new Date().toLocaleDateString(locale === "no" ? "nb-NO" : "en-US", {
 		weekday: "long",
@@ -114,15 +151,17 @@ export default function DashboardGrid() {
 						<div className="flex items-center gap-2">
 							<span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-brand/20 text-sky-300 border border-brand/30">
 								<Activity className="w-3.5 h-3.5 text-brand" />
-								<span>Admin Console Live</span>
+								<span>{role === "treasurer" ? "Treasury Console Live" : "Admin Console Live"}</span>
 							</span>
 							<span className="text-xs text-slate-400">• {todayFormatted}</span>
 						</div>
 						<h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-							Welcome back, {session?.user?.fullName || "Administrator"}
+							Welcome back, {session?.user?.fullName || (role === "treasurer" ? "Treasurer" : "Administrator")}
 						</h1>
 						<p className="text-sm text-slate-300 leading-relaxed">
-							Welcome to the central administrative command center. Oversee community members, manage registrations, publish notices, track events, and monitor organization finances.
+							{role === "treasurer"
+								? "Welcome to the treasury & financial management center. Oversee organization finances, track revenues and expenses, verify donations, and monitor budgets."
+								: "Welcome to the central administrative command center. Oversee community members, manage registrations, publish notices, track events, and monitor organization finances."}
 						</p>
 					</div>
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Blog from "@/models/Blog.Model";
 import { uploadToCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export const config = {
 	api: {
@@ -11,6 +13,11 @@ export const config = {
 
 export async function POST(request) {
 	try {
+		const session = await getServerSession(authOptions);
+		if (!session?.user || session.user.role !== "admin") {
+			return NextResponse.json({ success: false, error: "Unauthorized. Admin access required." }, { status: 401 });
+		}
+
 		await connectDB();
 
 		const formData = await request.formData();

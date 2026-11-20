@@ -3,10 +3,17 @@ import connectDB from "@/lib/mongodb";
 import User from "@/models/User.Model";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function POST(request, { params }) {
-	const { id } = params;
+	const { id } = await params;
 	try {
+		const session = await getServerSession(authOptions);
+		if (!session?.user || session.user.role !== "admin") {
+			return NextResponse.json({ success: false, error: "Unauthorized. Admin access required." }, { status: 401 });
+		}
+
 		await connectDB();
 		const user = await User.findById(id);
 		if (!user) {

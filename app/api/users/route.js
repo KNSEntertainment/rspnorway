@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User.Model";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 
 export async function GET(req) {
 	try {
+		const session = await getServerSession(authOptions);
+		if (!session?.user || session.user.role !== "admin") {
+			return NextResponse.json({ success: false, error: "Unauthorized. Admin access required." }, { status: 401 });
+		}
+
 		await connectDB();
 		const { searchParams } = new URL(req.url);
 		const email = searchParams.get("email");
