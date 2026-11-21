@@ -1,5 +1,5 @@
 "use client";
-import { MapPin, Mail, Phone, Facebook, Instagram, ArrowUpRight} from "lucide-react";
+import { MapPin, Mail, Phone, Facebook, Instagram, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from "next-intl";
 export default function FooterClient({ settings }) {
 	const t = useTranslations("footer");
 	const locale = useLocale();
-	
+
 	return (
 		<footer className="bg-gradient-to-b from-gray-100 to-gray-50 text-gray-900 pt-12 pb-6">
 			<div className="container mx-auto px-4">
@@ -16,33 +16,29 @@ export default function FooterClient({ settings }) {
 					<Image src={settings?.[0]?.companyLogo || "/rsp-norway-logo.png"} alt={t("logo_alt")} width={100} height={100} className="w-20 h-20 object-contain mb-4" />
 					<h2 className="text-xl font-bold text-gray-900 mb-2">{t("logo_head")}</h2>
 					<p className="text-sm text-gray-900 max-w-xs leading-relaxed mb-6">{t("tagline")}</p>
-					
-			
 				</div>
 
-				
 				{/* Main Footer Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
 					{/* About Column */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+						<h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
 							<span className="w-1 h-5 bg-brand rounded-full"></span>
 							{t("about_us")}
 						</h3>
-						<p className="text-md md:text-xl text-gray-900 leading-relaxed">{t("about_description")}</p>
+						<p className="text-sm md:text-lg text-gray-900 leading-relaxed">{t("about_description")}</p>
 					</div>
 
 					{/* Logo Column - Desktop Only */}
 					<div className="hidden md:flex flex-col items-center justify-start text-center">
 						<Image src={settings?.[0]?.companyLogo || "/rsp-norway-logo.png"} alt={t("logo_alt")} width={100} height={100} className="w-24 h-24 object-contain mb-4" />
-						<h2 className="text-2xl font-bold text-gray-900 mb-2">{t("logo_head")}</h2>
-						<p className="text-md text-gray-900 max-w-md leading-relaxed mb-6">{t("tagline")}</p>
-			
+						<h2 className="text-xl font-bold text-gray-900 mb-2">{t("logo_head")}</h2>
+						<p className="text-sm text-gray-900 max-w-md leading-relaxed mb-6">{t("tagline")}</p>
 					</div>
 
 					{/* Contact Column */}
 					<div className="space-y-4">
-						<h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+						<h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
 							<span className="w-1 h-5 bg-brand rounded-full"></span>
 							{t("contact_details")}
 						</h3>
@@ -50,24 +46,24 @@ export default function FooterClient({ settings }) {
 							{/* Address */}
 							<div className="flex items-start gap-3 group">
 								<MapPin className="h-4 w-4 text-brand mt-0.5 flex-shrink-0 transition-transform group-hover:scale-110" />
-								<p className="text-md md:text-xl text-gray-900 leading-relaxed">{t("address")}</p>
+								<p className="text-sm md:text-lg text-gray-900 leading-relaxed">{t("address")}</p>
 							</div>
 
 							{/* Email */}
 							<a href={`mailto:${settings?.[0]?.email}`} className="flex items-center gap-3 group hover:translate-x-1 transition-transform">
 								<Mail className="h-4 w-4 text-brand flex-shrink-0 transition-transform group-hover:scale-110" />
-								<span className="text-md md:text-xl text-gray-900 hover:text-brand transition-colors">{settings?.[0]?.email}</span>
+								<span className="text-sm md:text-lg text-gray-900 hover:text-brand transition-colors">{settings?.[0]?.email}</span>
 							</a>
 
 							{/* Phone */}
 							<a href={`tel:${t("phone")}`} className="flex items-center gap-3 group hover:translate-x-1 transition-transform">
 								<Phone className="h-4 w-4 text-brand flex-shrink-0 transition-transform group-hover:scale-110" />
-								<span className="text-md md:text-xl text-gray-900 hover:text-brand transition-colors">{t("phone")}</span>
+								<span className="text-sm md:text-lg text-gray-900 hover:text-brand transition-colors">{t("phone")}</span>
 							</a>
 
 							{/* Social Media */}
 							<div className="pt-6 border-t border-light">
-								<h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+								<h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
 									<span className="w-1 h-5 bg-brand rounded-full"></span>
 									{t("follow_us")}
 								</h3>
