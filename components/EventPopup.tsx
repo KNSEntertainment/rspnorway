@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, Clock, MapPin, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import EventRegistrationModal from "./EventRegistrationModal";
+import EventRegistrationModal, { Event as RegistrationModalEvent } from "./EventRegistrationModal";
 
-interface Event {
+interface Event extends Partial<RegistrationModalEvent> {
 	_id: string;
 	eventname: string;
 	eventdescription: string;

@@ -1,599 +1,196 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { Calendar, MapPin, Clock, Users, MessageSquare, Share2, Check } from "lucide-react";
+
+import { useMemo, useState } from "react";
+import { Calendar, Search, X } from "lucide-react";
 import SectionHeader from "@/components/SectionHeader";
-import EventRegistrationModal from "@/components/EventRegistrationModal";
-import { Button } from "@/components/ui/button";
-import { Link, useRouter } from "@/i18n/navigation";
-import { useSearchParams } from "next/navigation";
+import EventCard from "@/components/events/EventCard";
+import { EventItem, EventTranslations } from "@/components/events/types";
 import { isEventPast } from "@/lib/eventStatus";
 
-interface Event {
-	_id: string;
-	eventname: string;
-	eventdate: string;
-	eventtime?: string;
-	eventvenue?: string;
-	eventdescription?: string;
-	eventposterUrl?: string;
-	eventposter2Url?: string;
-	eventposter3Url?: string;
-	price?: number;
-	studentPrice?: number;
-	tchildPrice?: number;
-	tchildAgeLimit?: string;
-	telderlyPrice?: number;
-	telderlyAgeLimit?: string;
-	maximumSeats?: number;
-	registeredSeats?: number;
-	registrationEnabled?: boolean;
-	paymentCollectionEnabled?: boolean;
-	practicalInfo?: string;
-	[key: string]: unknown;
+interface EventsClientProps {
+	events: EventItem[];
+	translations: EventTranslations;
 }
 
-interface Translations {
-	events_tab: string;
-	events_subtitle: string;
-	back: string;
-	other_events: string;
-	view_detail: string;
-	no_events: string;
-	no_events_desc: string;
-}
+type EventFilterType = "all" | "upcoming" | "past";
 
-interface EventsColumnProps {
-	events: Event[];
-	translations: Translations;
-	initialEventId?: string;
-}
+export default function EventsClient({ events = [], translations: t }: EventsClientProps) {
+	const [activeFilter, setActiveFilter] = useState<EventFilterType>("all");
+	const [searchQuery, setSearchQuery] = useState("");
 
-const formatEventDate = (dateString: string) => {
-	try {
-		const date = new Date(dateString);
-		const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-		return {
-			day: date.getDate(),
-			month: months[date.getMonth()],
-		};
-	} catch {
-		return { day: "—", month: "—" };
-	}
-};
-
-const getPriceLines = (event: Event) => {
-	if (event.paymentCollectionEnabled === false) return [];
-	const lines = [];
-	if (event.price !== undefined && event.price !== null) lines.push(`Adult: NOK ${event.price}`);
-	if (event.studentPrice !== undefined && event.studentPrice !== null) lines.push(`Student: NOK ${event.studentPrice}`);
-	if (event.childPrice !== undefined && event.childPrice !== null) lines.push(`Children: NOK ${event.childPrice}${event.childAgeLimit ? ` (${event.childAgeLimit})` : ""}`);
-	if (event.elderlyPrice !== undefined && event.elderlyPrice !== null) lines.push(`Elderly: NOK ${event.elderlyPrice}${event.elderlyAgeLimit ? ` (${event.elderlyAgeLimit})` : ""}`);
-	return lines;
-};
-
-const hasTicketInfo = (event: Event) => {
-	return getPriceLines(event).length > 0 || getSeatsRemaining(event) !== null;
-};
-
-const getSeatsRemaining = (event: Event) => {
-	const maximumSeats = Number(event.maximumSeats || 0);
-	if (maximumSeats <= 0) return null;
-	return Math.max(maximumSeats - Number(event.registeredSeats || 0), 0);
-};
-
-export default function EventsClientWrapper({ events, translations: t, initialEventId }: EventsColumnProps) {
-	const tFeedback = useTranslations("eventFeedback");
-	const router = useRouter();
-	const searchParams = useSearchParams();
-	const eventIdFromUrl = searchParams.get("eventId");
-
-	const sortedEvents = useMemo(() => [...(events || [])].sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime()), [events]);
-
-	const [selectedEventId, setSelectedEventId] = useState<string | null>(initialEventId || null);
-	const [registrationModal, setRegistrationModal] = useState<Event | null>(null);
-	const [copiedId, setCopiedId] = useState<string | null>(null);
-
-	const handleShareEvent = async (eventToShare: Event) => {
-		const origin = typeof window !== "undefined" ? window.location.origin : "";
-		const shareUrl = `${origin}/events?eventId=${eventToShare._id}`;
-		const shareData = {
-			title: eventToShare.eventname,
-			text: `Check out ${eventToShare.eventname} on PNSB-Norway!`,
-			url: shareUrl,
-		};
-
-		if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-			try {
-				await navigator.share(shareData);
-				return;
-			} catch (err) {
-				if ((err as Error)?.name !== "AbortError") {
-					console.error("Error sharing:", err);
-				}
+	// Categorize and compute counts
+	const counts = useMemo(() => {
+		let upcoming = 0;
+		let past = 0;
+		for (const ev of events) {
+			if (isEventPast(ev.eventdate)) {
+				past++;
+			} else {
+				upcoming++;
 			}
 		}
+		return { all: events.length, upcoming, past };
+	}, [events]);
 
-		try {
-			await navigator.clipboard.writeText(shareUrl);
-			setCopiedId(eventToShare._id);
-			setTimeout(() => setCopiedId(null), 2500);
-		} catch (err) {
-			console.error("Clipboard copy failed:", err);
+	// Filter and sort events
+	const filteredEvents = useMemo(() => {
+		let list = [...events];
+
+		// Filter by tab
+		if (activeFilter === "upcoming") {
+			list = list.filter((e) => !isEventPast(e.eventdate));
+			// Sort upcoming by closest date first
+			list.sort((a, b) => new Date(a.eventdate).getTime() - new Date(b.eventdate).getTime());
+		} else if (activeFilter === "past") {
+			list = list.filter((e) => isEventPast(e.eventdate));
+			// Sort past by most recent first
+			list.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime());
+		} else {
+			// All: sort by date descending (newest / most recent first)
+			list.sort((a, b) => new Date(b.eventdate).getTime() - new Date(a.eventdate).getTime());
 		}
+
+		// Filter by search query
+		if (searchQuery.trim()) {
+			const query = searchQuery.toLowerCase().trim();
+			list = list.filter((e) => {
+				const nameMatch = e.eventname?.toLowerCase().includes(query);
+				const venueMatch = e.eventvenue?.toLowerCase().includes(query);
+				const descMatch = e.eventdescription?.toLowerCase().includes(query);
+				return nameMatch || venueMatch || descMatch;
+			});
+		}
+
+		return list;
+	}, [events, activeFilter, searchQuery]);
+
+	const handleResetFilters = () => {
+		setActiveFilter("all");
+		setSearchQuery("");
 	};
 
-	// Synchronize when URL changes (e.g. browser back/forward or direct navigation)
-	useEffect(() => {
-		setSelectedEventId(eventIdFromUrl || null);
-	}, [eventIdFromUrl]);
-
-	const selectedEvent = useMemo(() => {
-		if (!selectedEventId) return null;
-		return sortedEvents.find((e) => e._id === selectedEventId) ?? null;
-	}, [selectedEventId, sortedEvents]);
-
-	const handleSelectEvent = (eventId: string) => {
-		setSelectedEventId(eventId);
-		router.push(`/events?eventId=${eventId}`);
-		window.scrollTo({ top: 0, behavior: "smooth" });
-	};
-
-	const handleBack = () => {
-		setSelectedEventId(null);
-		router.push("/events");
-		window.scrollTo({ top: 0, behavior: "smooth" });
-	};
-
-	// ── Detail View ──────────────────────────────────────────────────────────
-	if (selectedEvent) {
-		const { day, month } = formatEventDate(selectedEvent.eventdate);
-		const eventImages = [selectedEvent.eventposterUrl, selectedEvent.eventposter2Url, selectedEvent.eventposter3Url].filter(Boolean) as string[];
-		const selectedPriceLines = getPriceLines(selectedEvent);
-		const selectedSeatsRemaining = getSeatsRemaining(selectedEvent);
-		const selectedHasTicketInfo = hasTicketInfo(selectedEvent);
-
-		return (
-			<>
-				<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-					<div className="container max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-8">
-						<div className="flex items-center justify-between gap-3 mb-4 sm:mb-8">
-							<button onClick={handleBack} className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200">
-								<svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-								</svg>
-								<span className="font-medium text-sm sm:text-base">{t.back}</span>
-							</button>
-
-							<button onClick={() => handleShareEvent(selectedEvent)} className="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 rounded-lg border border-gray-200 shadow-sm transition-all duration-200" title="Share this event">
-								{copiedId === selectedEvent._id ? (
-									<>
-										<Check className="w-4 h-4 text-emerald-600" />
-										<span className="font-medium text-sm sm:text-base text-emerald-600">Copied Link!</span>
-									</>
-								) : (
-									<>
-										<Share2 className="w-4 h-4 text-brand" />
-										<span className="font-medium text-sm sm:text-base">Share Event</span>
-									</>
-								)}
-							</button>
-						</div>
-
-						<div className="grid lg:grid-cols-3 gap-4 sm:gap-8">
-							{/* ── Main Content ── */}
-							<div className="lg:col-span-2 space-y-4 sm:space-y-6">
-								<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
-									{/* Gradient Header */}
-									<div className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-4 sm:p-6 lg:p-8">
-										<div className="absolute inset-0 bg-black/10" />
-										<div className="relative">
-											<h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight drop-shadow-lg">{selectedEvent.eventname}</h1>
-											<div className="flex flex-wrap gap-2 sm:gap-3 lg:gap-4 text-white/95">
-												{/* Date Badge */}
-												<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
-													<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-													<span className="text-xs sm:text-sm font-medium">
-														{day} {month}
-													</span>
-												</div>
-												{selectedEvent.eventtime && (
-													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
-														<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-														<span className="text-xs sm:text-sm font-medium">{selectedEvent.eventtime}</span>
-													</div>
-												)}
-												{selectedEvent.eventvenue && (
-													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
-														<MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-														<span className="text-xs sm:text-sm font-medium">{selectedEvent.eventvenue}</span>
-													</div>
-												)}
-												{selectedPriceLines.length > 0 && (
-													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
-														<span className="text-xs sm:text-sm font-medium">{selectedPriceLines.join(" | ")}</span>
-													</div>
-												)}
-												{selectedSeatsRemaining !== null && (
-													<div className="inline-flex items-center gap-1 sm:gap-2 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1 sm:px-3 sm:py-1">
-														<Users className="w-3 h-3 sm:w-4 sm:h-4" />
-														<span className="text-xs sm:text-sm font-medium">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats left` : "Sold out"}</span>
-													</div>
-												)}
-											</div>
-										</div>
-									</div>
-
-									{/* Body */}
-									<div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
-										{/* Main Image */}
-										<div className="relative overflow-hidden rounded-lg sm:rounded-xl bg-gray-50 border border-gray-200">
-											{eventImages.length > 0 ? (
-												<div className="aspect-video sm:aspect-square relative">
-													<Image src={eventImages[0]} alt={selectedEvent.eventname} fill sizes="(max-width: 1024px) 100vw, 66vw" className="object-cover object-top origin-top transition-transform duration-300 hover:scale-105" priority />
-												</div>
-											) : (
-												<div className="aspect-video sm:aspect-square flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-													<Calendar className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
-												</div>
-											)}
-										</div>
-
-										{/* Description */}
-										<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100">
-											<div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-												<div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-													<svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-													</svg>
-												</div>
-												<h2 className="text-lg sm:text-xl font-bold text-gray-900">About this event</h2>
-											</div>
-											{selectedEvent.eventdescription && selectedEvent.eventdescription !== "" ? (
-												<div className="prose prose-sm sm:prose-lg max-w-none">
-													<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">{selectedEvent.eventdescription}</p>
-												</div>
-											) : (
-												<div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg sm:rounded-xl p-4 sm:p-6 text-center">
-													<div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-														<svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-														</svg>
-													</div>
-													<h3 className="text-amber-800 font-semibold mb-2 text-sm sm:text-base">Coming Soon</h3>
-													<p className="text-amber-700 text-sm sm:text-base">Event description will be available soon. Thank you for your patience.</p>
-												</div>
-											)}
-										</div>
-
-										{selectedEvent.practicalInfo && (
-											<div className="bg-emerald-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-emerald-100">
-												<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">Practical Information</h2>
-												<p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">{selectedEvent.practicalInfo}</p>
-											</div>
-										)}
-
-										{(selectedHasTicketInfo || selectedEvent.registrationEnabled !== false) && (
-											<div className="bg-brand/5 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-brand/10">
-												{selectedHasTicketInfo && (
-													<div className="mb-4">
-														<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Ticket Information</h2>
-														<div className="space-y-2 sm:space-y-3 text-gray-700">
-															{selectedPriceLines.length > 0 && <div className="font-semibold text-brand text-sm sm:text-base">{selectedPriceLines.join(" | ")}</div>}
-															{selectedSeatsRemaining !== null && <div className="text-sm sm:text-base">{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
-														</div>
-													</div>
-												)}
-
-												{/* Register Button */}
-												<div className={selectedHasTicketInfo ? "mt-4 sm:mt-6" : ""}>
-													{isEventPast(selectedEvent.eventdate) ? (
-														<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
-															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-															Event Completed
-														</button>
-													) : selectedEvent.registrationEnabled === false ? (
-														<button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
-															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-															Registration Closed
-														</button>
-													) : (
-														<button onClick={() => setRegistrationModal(selectedEvent)} className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition-all duration-200 flex items-center justify-center gap-2">
-															<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-															Register
-														</button>
-													)}
-												</div>
-											</div>
-										)}
-
-										{/* Feedback */}
-										{isEventPast(selectedEvent.eventdate) && (
-											<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-												<div className="flex items-center gap-2 sm:gap-3">
-													<div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-														<MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
-													</div>
-													<div>
-														<h3 className="font-bold text-gray-900 text-sm sm:text-base">{tFeedback("attendedPromptTitle")}</h3>
-														<p className="text-gray-600 text-xs sm:text-sm">{tFeedback("attendedPromptSubtitle")}</p>
-													</div>
-												</div>
-												<Link href={`/events/feedback?eventId=${selectedEvent._id}`} className="inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand/90 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-all duration-200 flex-shrink-0">
-													{tFeedback("leaveFeedback")}
-												</Link>
-											</div>
-										)}
-
-										{/* Gallery */}
-										{eventImages.length > 1 && (
-											<div className="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border border-gray-100">
-												<h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
-													<svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-													</svg>
-													Event Gallery
-												</h3>
-												<div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
-													{eventImages.slice(1).map((url, index) => (
-														<div key={`${url}-${index}`} className="group relative overflow-hidden rounded-lg border border-gray-200 bg-gray-50 hover:border-indigo-300 transition-all duration-300">
-															<div className="aspect-square relative">
-																<Image src={url} alt={`${selectedEvent.eventname} ${index + 2}`} fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-															</div>
-															<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-														</div>
-													))}
-												</div>
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
-
-							{/* ── Floating Register Button (Mobile) ── */}
-							<div className="lg:hidden fixed bottom-4 right-4 z-50">
-								{!isEventPast(selectedEvent.eventdate) && (
-									<button onClick={() => setRegistrationModal(selectedEvent)} className="bg-brand hover:bg-brand/90 text-white font-semibold px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 text-sm">
-										<Users className="w-4 h-4" />
-										Register
-									</button>
-								)}
-							</div>
-
-							{/* ── Sidebar ── */}
-							<div className="lg:col-span-1">
-								<div className="sticky top-4 sm:top-8 space-y-4 sm:space-y-6">
-									{/* Registration Section */}
-									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden hidden lg:block">
-										<div className="bg-gradient-to-r from-brand to-emerald-600 p-4 sm:p-6">
-											<div className="flex items-center gap-2 sm:gap-3">
-												<Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-												<h3 className="text-lg sm:text-xl font-bold text-white">Event Registration</h3>
-											</div>
-										</div>
-										<div className="p-4 sm:p-6">
-											<div className="space-y-3 sm:space-y-4">
-												<div className="text-center">
-													{(() => {
-														// Debug log to check event properties
-														console.log("Event registration debug:", {
-															eventId: selectedEvent._id,
-															eventName: selectedEvent.eventname,
-															registrationEnabled: selectedEvent.registrationEnabled,
-															paymentCollectionEnabled: selectedEvent.paymentCollectionEnabled,
-															isPast: isEventPast(selectedEvent.eventdate),
-															eventData: selectedEvent,
-														});
-
-														if (selectedEvent.registrationEnabled === false) {
-															return (
-																<>
-																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">Registration for this event is currently disabled</p>
-																	<Button disabled className="w-full bg-gray-100 text-gray-600 font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed text-sm sm:text-base">
-																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-																		Registration Closed
-																	</Button>
-																</>
-															);
-														} else {
-															return (
-																<>
-																	<p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{selectedEvent.paymentCollectionEnabled === false ? "Register now for this free event!" : "Register now to secure your spot!"}</p>
-																	<Button onClick={() => setRegistrationModal(selectedEvent)} className="w-full bg-brand hover:bg-brand/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base">
-																		<Users className="w-4 h-4 sm:w-5 sm:h-5" />
-																		Register
-																	</Button>
-																</>
-															);
-														}
-													})()}
-												</div>
-												{(selectedPriceLines.length > 0 || selectedSeatsRemaining !== null) && (
-													<div className="text-xs text-gray-500 text-center space-y-1">
-														{selectedPriceLines.length > 0 && <div>{selectedPriceLines.join(" | ")}</div>}
-														{selectedSeatsRemaining !== null && <div>{selectedSeatsRemaining > 0 ? `${selectedSeatsRemaining} seats remaining` : "Sold out"}</div>}
-													</div>
-												)}
-											</div>
-										</div>
-									</div>
-
-									{/* Other Events Section */}
-									<div className="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl border border-gray-100 overflow-hidden">
-										<div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6">
-											<div className="flex items-center gap-3">
-												<Calendar className="w-6 h-6 text-white" />
-												<h3 className="text-xl font-bold text-white">{t.other_events}</h3>
-											</div>
-										</div>
-										<div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-											{sortedEvents
-												.filter((e) => e._id !== selectedEvent._id)
-												.slice(0, 4)
-												.map((event) => {
-													const { day, month } = formatEventDate(event.eventdate);
-													return (
-														<div key={event._id} className="group cursor-pointer rounded-lg sm:rounded-xl border border-gray-200 bg-white hover:border-indigo-300 hover:shadow-sm transition-all duration-300 p-3 sm:p-4" onClick={() => handleSelectEvent(event._id)}>
-															<div className="flex gap-3 sm:gap-4">
-																<div className="bg-gradient-to-br from-indigo-100 to-purple-100 text-indigo-600 rounded-lg sm:rounded-xl p-3 sm:p-4 text-center min-w-[60px] sm:min-w-[80px] flex-shrink-0">
-																	<div className="text-lg sm:text-2xl font-bold leading-none">{day}</div>
-																	<div className="text-xs uppercase tracking-wider mt-1 font-semibold">{month}</div>
-																</div>
-																<div className="flex-1 min-w-0">
-																	<h4 className="font-bold text-gray-900 line-clamp-2 mb-1 sm:mb-2 group-hover:text-indigo-600 transition-colors text-sm sm:text-base">{event.eventname}</h4>
-																	<p className="text-xs sm:text-sm text-gray-600 line-clamp-2">{event.eventvenue}</p>
-																</div>
-															</div>
-														</div>
-													);
-												})}
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-				<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
-			</>
-		);
-	}
-
-	// ── List View ─────────────────────────────────────────────────────
 	return (
-		<>
-			<section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-brand-50">
-				<div className="container max-w-7xl mx-auto px-4 pt-8 lg:pt-12">
-					<SectionHeader heading={t.events_tab} subtitle={t.events_subtitle} />
-					{sortedEvents.length > 0 ? (
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
-							{sortedEvents.map((event) => {
-								const { day, month } = formatEventDate(event.eventdate);
-								const priceLines = getPriceLines(event);
-								const seatsRemaining = getSeatsRemaining(event);
-								const eventHasTicketInfo = hasTicketInfo(event);
-								return (
-									<div key={event._id} className="group cursor-pointer bg-white rounded-2xl border border-gray-100 hover:border-indigo-200 shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden h-full flex flex-col" onClick={() => handleSelectEvent(event._id)}>
-										{/* Image Section */}
-										<div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-											{event.eventposterUrl ? (
-												<Image src={event.eventposterUrl} alt={event.eventname} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover object-top origin-top group-hover:scale-105 transition-transform duration-500" />
-											) : (
-												<div className="w-full h-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
-													<Calendar className="w-12 h-12 text-indigo-300" />
-												</div>
-											)}
-											{/* Date Badge */}
-											<div className="absolute top-3 right-3 bg-gradient-to-br from-brand to-brand/80 text-white rounded-xl p-3 text-center shadow-lg backdrop-blur-sm bg-opacity-95">
-												<div className="text-2xl font-bold leading-none">{day}</div>
-												<div className="text-xs uppercase font-semibold">{month}</div>
-											</div>
-										</div>
+		<section className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-brand-50/20">
+			<div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 lg:pt-14 pb-16">
+				{/* Header */}
+				<SectionHeader
+					heading={t.events_tab || "Events"}
+					subtitle={t.events_subtitle || "Bringing people together through memorable experiences"}
+				/>
 
-										{/* Content Section */}
-										<div className="p-6 flex flex-col flex-1">
-											<h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-brand transition-colors">{event.eventname}</h3>
-											<div className="space-y-2 text-sm text-gray-600 mb-4 flex-1">
-												{event.eventtime && (
-													<div className="flex items-start gap-2">
-														<Clock className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
-														<span className="line-clamp-1">{event.eventtime}</span>
-													</div>
-												)}
-												{event.eventvenue && (
-													<div className="flex items-start gap-2">
-														<MapPin className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
-														<span className="line-clamp-1">{event.eventvenue}</span>
-													</div>
-												)}
-												{eventHasTicketInfo && (
-													<div className="rounded-xl bg-brand/5 border border-brand/10 p-3 space-y-1.5">
-														<div className="text-xs uppercase tracking-wide font-bold text-brand">Ticket Information</div>
-														{priceLines.length > 0 && <div className="font-semibold text-brand text-xs sm:text-sm">{priceLines.join(" | ")}</div>}
-														{seatsRemaining !== null && (
-															<div className="flex items-start gap-2 text-gray-700 text-xs">
-																<Users className="w-3.5 h-3.5 text-brand flex-shrink-0 mt-0.5" />
-																<span className="line-clamp-1">{seatsRemaining > 0 ? `${seatsRemaining} seats remaining` : "Sold out"}</span>
-															</div>
-														)}
-													</div>
-												)}
-												{event.practicalInfo && (
-													<div className="rounded-xl bg-emerald-50 border border-emerald-100 p-3 space-y-1">
-														<div className="text-xs uppercase tracking-wide font-bold text-emerald-700">Practical Information</div>
-														<p className="text-xs text-gray-600 line-clamp-2">{event.practicalInfo}</p>
-													</div>
-												)}
-											</div>
-											<div className="pt-3 border-t border-gray-100">
-												<div className="flex items-center gap-2">
-													{/* View Detail Link */}
-													<Link
-														href={`/events?eventId=${event._id}`}
-														onClick={(e) => {
-															e.preventDefault();
-															handleSelectEvent(event._id);
-														}}
-														className="text-brand font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all flex-1"
-													>
-														{t.view_detail}
-														<svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-														</svg>
-													</Link>
+				{/* Toolbar: Filter Tabs & Search Bar */}
+				<div className="mb-8 sm:mb-10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+					{/* Filter Pills */}
+					<div className="inline-flex p-1 bg-white rounded-xl border border-gray-200/80 shadow-sm self-start sm:self-auto overflow-x-auto max-w-full">
+						<button
+							onClick={() => setActiveFilter("all")}
+							className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+								activeFilter === "all"
+									? "bg-brand text-white shadow-sm"
+									: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+							}`}
+						>
+							<span>All Events</span>
+							<span
+								className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+									activeFilter === "all" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+								}`}
+							>
+								{counts.all}
+							</span>
+						</button>
 
-													{/* Share Button */}
-													<button
-														onClick={(e) => {
-															e.stopPropagation();
-															handleShareEvent(event);
-														}}
-														className="p-1.5 text-gray-400 hover:text-brand hover:bg-brand/5 rounded-md transition-colors flex-shrink-0"
-														title="Share event link"
-													>
-														{copiedId === event._id ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
-													</button>
+						<button
+							onClick={() => setActiveFilter("upcoming")}
+							className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+								activeFilter === "upcoming"
+									? "bg-brand text-white shadow-sm"
+									: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+							}`}
+						>
+							<span>Upcoming</span>
+							<span
+								className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+									activeFilter === "upcoming" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+								}`}
+							>
+								{counts.upcoming}
+							</span>
+						</button>
 
-													{/* Register Button */}
-													<div onClick={(e) => e.stopPropagation()} className="flex-1">
-														{isEventPast(event.eventdate) ? (
-															<button disabled className="w-full bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-not-allowed">
-																<Users className="w-4 h-4" />
-																Completed
-															</button>
-														) : (
-															<button
-																onClick={(e) => {
-																	e.stopPropagation();
-																	setRegistrationModal(event);
-																}}
-																className="w-full bg-brand hover:bg-brand/90 text-white font-medium py-2 px-4 rounded-lg text-sm transition-all duration-200 flex items-center justify-center gap-2"
-															>
-																<Users className="w-4 h-4" />
-																Register
-															</button>
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								);
-							})}
-						</div>
-					) : (
-						<div className="text-center py-12">
-							<div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-								<Calendar className="w-10 h-10 text-gray-400" />
-							</div>
-							<h3 className="text-lg font-medium text-gray-900 mb-2">{t.no_events}</h3>
-							<p className="text-gray-600 text-sm">{t.no_events_desc}</p>
-						</div>
-					)}
+						<button
+							onClick={() => setActiveFilter("past")}
+							className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+								activeFilter === "past"
+									? "bg-brand text-white shadow-sm"
+									: "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+							}`}
+						>
+							<span>Past Events</span>
+							<span
+								className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+									activeFilter === "past" ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+								}`}
+							>
+								{counts.past}
+							</span>
+						</button>
+					</div>
+
+					{/* Search Input */}
+					<div className="relative w-full sm:w-72 md:w-80">
+						<Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+						<input
+							type="text"
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							placeholder="Search by title, venue..."
+							className="w-full pl-9 pr-9 py-2 text-sm bg-white border border-gray-200/90 rounded-xl shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+						/>
+						{searchQuery && (
+							<button
+								onClick={() => setSearchQuery("")}
+								className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+								title="Clear search"
+							>
+								<X className="w-3.5 h-3.5" />
+							</button>
+						)}
+					</div>
 				</div>
-			</section>
-			<EventRegistrationModal event={registrationModal} isOpen={!!registrationModal} onClose={() => setRegistrationModal(null)} />
-		</>
+
+				{/* Event Cards Grid */}
+				{filteredEvents.length > 0 ? (
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+						{filteredEvents.map((event) => (
+							<EventCard key={event._id} event={event} translations={t} />
+						))}
+					</div>
+				) : (
+					/* Empty State */
+					<div className="max-w-md mx-auto text-center py-16 px-4 bg-white rounded-2xl border border-gray-200/80 shadow-sm">
+						<div className="w-16 h-16 rounded-2xl bg-brand-50 text-brand flex items-center justify-center mx-auto mb-4">
+							<Calendar className="w-8 h-8 text-brand/70" />
+						</div>
+						<h3 className="text-lg font-bold text-gray-900 mb-1">
+							{searchQuery || activeFilter !== "all" ? "No Matching Events" : t.no_events || "No Events Scheduled"}
+						</h3>
+						<p className="text-sm text-gray-500 mb-6">
+							{searchQuery || activeFilter !== "all"
+								? "Try adjusting your search terms or filter selection to find events."
+								: t.no_events_desc || "Check back soon for upcoming events!"}
+						</p>
+						{(searchQuery || activeFilter !== "all") && (
+							<button
+								onClick={handleResetFilters}
+								className="inline-flex items-center gap-2 px-4 py-2 bg-brand hover:bg-brand/90 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-sm transition-all"
+							>
+								Reset Filters
+							</button>
+						)}
+					</div>
+				)}
+			</div>
+		</section>
 	);
 }

@@ -9,9 +9,9 @@ import SectionHeader from "./SectionHeader";
 import { useState, useEffect } from "react";
 import EventPopup from "./EventPopup";
 import ViewAllButton from "./ViewAllButton";
-import EventRegistrationModal from "./EventRegistrationModal";
+import EventRegistrationModal, { Event as RegistrationModalEvent } from "./EventRegistrationModal";
 
-interface Event {
+interface Event extends Partial<RegistrationModalEvent> {
 	_id: string;
 	eventname: string;
 	eventdescription: string;
@@ -177,7 +177,7 @@ export default function EventsTimeline() {
 											{/* Event Information */}
 											<div className="p-6 flex flex-col justify-center">
 												{/* Event Title */}
-												<Link href={`/${locale}/events?eventId=${event._id}`}>
+												<Link href={`/${locale}/events/${event._id}`}>
 													<h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 group-hover:text-brand transition-colors duration-300 cursor-pointer">{getLocalizedTitle(event)}</h3>
 												</Link>
 
@@ -202,7 +202,7 @@ export default function EventsTimeline() {
 
 												{/* Action Buttons */}
 												<div className="flex gap-4">
-													<Link href={`/${locale}/events?eventId=${event._id}`}>
+													<Link href={`/${locale}/events/${event._id}`}>
 														<button className="flex-1 bg-brand text-white px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-brand/90 transition-colors duration-200">View Details</button>
 													</Link>
 
