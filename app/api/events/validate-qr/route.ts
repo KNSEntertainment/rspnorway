@@ -6,6 +6,7 @@ import Membership from "@/models/Membership.Model";
 import ExecutiveMember from "@/models/ExecutiveMember.Model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/options";
+import { logActivity } from "@/lib/activityLogger";
 
 interface MemberDoc {
   _id: unknown;
@@ -242,6 +243,22 @@ export async function POST(request: NextRequest) {
     registration.checkedInAt = new Date();
     registration.checkedInBy = session.user.email || session.user.fullName || "admin";
     await registration.save();
+
+    // Log check-in activity safely
+    await logActivity({
+      userName: `${registration.firstName} ${registration.lastName}`.trim(),
+      userEmail: registration.email,
+      action: "EVENT_CHECKIN",
+      category: "event",
+      description: `${registration.firstName} ${registration.lastName} checked in for "${event.eventname}" (Verified by ${session.user.fullName || session.user.email})`,
+      status: "success",
+      metadata: {
+        eventName: event.eventname,
+        registrationId: registration.registrationId,
+        checkedInBy: session.user.email || "admin",
+      },
+      req: request,
+    });
 
     return NextResponse.json({
       status: "success",

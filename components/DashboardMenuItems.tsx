@@ -22,6 +22,7 @@ import {
 	Receipt, 
 	ScanLine, 
 	CreditCard,
+	Activity,
 	LucideIcon 
 } from "lucide-react";
 
@@ -55,6 +56,16 @@ export const getDashboardMenuItems = (locale = "en"): MenuItem[] => [
 		category: "Core",
 		description: "Overview metrics, quick tools and system summary",
 		roles: ["admin", "treasurer"] 
+	},
+	{ 
+		id: "logs", 
+		label: "Logs", 
+		icon: Activity, 
+		color: "text-indigo-600 bg-indigo-50", 
+		href: `/${locale}/dashboard/logs`, 
+		category: "Core",
+		description: "User logins, page visits, and system activity logs",
+		roles: ["admin"] 
 	},
 	{ 
 		id: "idcard", 

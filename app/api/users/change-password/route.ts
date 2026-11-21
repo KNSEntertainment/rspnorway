@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import Membership from '@/models/Membership.Model';
 import User from '@/models/User.Model';
 import nodemailer from 'nodemailer';
+import { logActivity } from '@/lib/activityLogger';
 
 // Create nodemailer transporter using existing configuration
 const transporter = nodemailer.createTransport({
@@ -55,6 +56,18 @@ export async function POST(request: NextRequest) {
 		const storedPassword = member?.password || user?.password || '';
 		const isCurrentPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
 		if (!isCurrentPasswordValid) {
+			await logActivity({
+				userId: (member?._id || user?._id || "").toString(),
+				userName: member?.fullName || user?.fullName || "User",
+				userEmail: email,
+				userRole: user ? user.role : "member",
+				membershipType: member?.membershipType || (user ? "executive" : "general"),
+				action: "PASSWORD_CHANGE",
+				category: "auth",
+				description: `Failed password change attempt: Incorrect current password`,
+				status: "failed",
+				req: request,
+			});
 			return NextResponse.json(
 				{ error: 'Current password is incorrect' },
 				{ status: 400 }
@@ -138,6 +151,20 @@ export async function POST(request: NextRequest) {
 		} catch (mailError) {
 			console.warn("Could not send email notification:", mailError);
 		}
+
+		// Log successful password change (safe, zero credential exposure)
+		await logActivity({
+			userId: (member?._id || user?._id || "").toString(),
+			userName: recipientName,
+			userEmail: email,
+			userRole: user ? user.role : "member",
+			membershipType: member?.membershipType || (user ? "executive" : "general"),
+			action: "PASSWORD_CHANGE",
+			category: "auth",
+			description: `${recipientName} changed account password successfully`,
+			status: "success",
+			req: request,
+		});
 
 		return NextResponse.json(
 			{ 

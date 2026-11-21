@@ -7,6 +7,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/options";
 import nodemailer from "nodemailer";
 import { v2 as cloudinary } from "cloudinary";
 import QRCode from "qrcode";
+import { logActivity } from "@/lib/activityLogger";
 
 const getTicketPrice = (value: unknown) => {
 	const price = Number(value || 0);
@@ -263,6 +264,23 @@ export async function POST(request: NextRequest) {
 				console.error("Error sending registration email:", emailError);
 			}
 		}
+
+		// Log event registration safely
+		await logActivity({
+			userName: `${firstName} ${lastName}`.trim(),
+			userEmail: email,
+			action: "EVENT_REGISTRATION",
+			category: "event",
+			description: `${firstName} ${lastName} registered for event: "${event.eventname}" (${totalSeats} attendee${totalSeats > 1 ? "s" : ""})`,
+			status: "success",
+			metadata: {
+				eventName: event.eventname,
+				eventId: event._id.toString(),
+				registrationId,
+				attendeesCount: totalSeats,
+			},
+			req: request,
+		});
 
 		return NextResponse.json({
 			success: true,

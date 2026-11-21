@@ -4,6 +4,7 @@ import User from "@/models/User.Model";
 import Membership from "@/models/Membership.Model";
 import ConnectDB from "@/lib/mongodb";
 import NextAuth from "next-auth";
+import { logActivity } from "@/lib/activityLogger";
 
 /** @type {import('next-auth').AuthOptions} */
 export const authOptions = {
@@ -19,7 +20,7 @@ export const authOptions = {
 				email: { label: "Email", type: "text" },
 				password: { label: "Password", type: "password" },
 			},
-			async authorize(credentials) {
+			async authorize(credentials, req) {
 				await ConnectDB();
 
 				try {
@@ -34,8 +35,38 @@ export const authOptions = {
 						// Validate admin password
 						const isValid = await bcrypt.compare(credentials.password, user.password);
 						if (!isValid) {
+							await logActivity({
+								userEmail: credentials.email,
+								userName: user.fullName || "Admin User",
+								userRole: user.role,
+								membershipType: "executive",
+								action: "LOGIN_FAILED",
+								category: "auth",
+								description: `Failed login attempt for admin account (${credentials.email}): Invalid credentials`,
+								status: "failed",
+								req,
+							});
 							throw new Error("Invalid credentials");
 						}
+
+						// Update last login
+						await User.findByIdAndUpdate(user._id, {
+							$set: { lastLoginAt: new Date() }
+						});
+
+						// Log successful admin login
+						await logActivity({
+							userId: user._id.toString(),
+							userEmail: user.email,
+							userName: user.fullName,
+							userRole: user.role,
+							membershipType: "executive",
+							action: "LOGIN",
+							category: "auth",
+							description: `Admin ${user.fullName} (${user.role}) logged in successfully`,
+							status: "success",
+							req,
+						});
 						
 						// Return admin user data (considered members as well)
 						return {
@@ -60,21 +91,65 @@ export const authOptions = {
 					});
 					
 					if (!member) {
+						await logActivity({
+							userEmail: credentials.email,
+							action: "LOGIN_FAILED",
+							category: "auth",
+							description: `Failed login attempt: Account not found for email (${credentials.email})`,
+							status: "failed",
+							req,
+						});
 						throw new Error("No member found with this email. Please register first.");
 					}
 					
 					// Check if member account is blocked
 					if (member.membershipStatus === "blocked") {
+						await logActivity({
+							userId: member._id.toString(),
+							userEmail: member.email,
+							userName: member.fullName,
+							userRole: "member",
+							membershipType: member.membershipType || "general",
+							action: "LOGIN_FAILED",
+							category: "auth",
+							description: `Blocked member account ${member.email} attempted to log in`,
+							status: "warning",
+							req,
+						});
 						throw new Error("Your account has been blocked. Please contact support.");
 					}
 					
 					// Check if member has a password set
 					if (!member.password) {
+						await logActivity({
+							userId: member._id.toString(),
+							userEmail: member.email,
+							userName: member.fullName,
+							userRole: "member",
+							membershipType: member.membershipType || "general",
+							action: "LOGIN_FAILED",
+							category: "auth",
+							description: `Member ${member.email} attempted login without setting password`,
+							status: "warning",
+							req,
+						});
 						throw new Error("Please set your password first. Check your email for the setup link.");
 					}
 					
 					// Check if account is locked due to too many failed attempts
 					if (member.lockUntil && member.lockUntil > Date.now()) {
+						await logActivity({
+							userId: member._id.toString(),
+							userEmail: member.email,
+							userName: member.fullName,
+							userRole: "member",
+							membershipType: member.membershipType || "general",
+							action: "LOGIN_FAILED",
+							category: "auth",
+							description: `Login attempt for temporarily locked member account (${member.email})`,
+							status: "warning",
+							req,
+						});
 						throw new Error("Account temporarily locked due to too many failed attempts. Please try again later.");
 					}
 					
@@ -88,6 +163,18 @@ export const authOptions = {
 								lockUntil: member.loginAttempts + 1 >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : undefined // Lock for 15 minutes after 5 attempts
 							}
 						});
+						await logActivity({
+							userId: member._id.toString(),
+							userEmail: member.email,
+							userName: member.fullName,
+							userRole: "member",
+							membershipType: member.membershipType || "general",
+							action: "LOGIN_FAILED",
+							category: "auth",
+							description: `Failed password login attempt for member ${member.fullName} (${member.email})`,
+							status: "failed",
+							req,
+						});
 						throw new Error("Invalid credentials");
 					}
 					
@@ -98,6 +185,20 @@ export const authOptions = {
 							lockUntil: undefined,
 							lastLoginAt: new Date()
 						}
+					});
+
+					// Log successful member login
+					await logActivity({
+						userId: member._id.toString(),
+						userEmail: member.email,
+						userName: member.fullName,
+						userRole: "member",
+						membershipType: member.membershipType || "general",
+						action: "LOGIN",
+						category: "auth",
+						description: `Member ${member.fullName} (${member.membershipType || "general"}) logged in successfully`,
+						status: "success",
+						req,
 					});
 					
 					// Return member data for NextAuth
@@ -119,6 +220,23 @@ export const authOptions = {
 			},
 		}),
 	],
+	events: {
+		async signOut({ token }) {
+			if (token) {
+				await logActivity({
+					userId: token._id ? token._id.toString() : "",
+					userName: token.fullName || "User",
+					userEmail: token.email || "",
+					userRole: token.role || "member",
+					membershipType: token.membershipType || "general",
+					action: "LOGOUT",
+					category: "auth",
+					description: `User ${token.fullName || token.email} signed out`,
+					status: "info",
+				});
+			}
+		},
+	},
 	pages: {
 		signIn: "/login",
 		signOut: "/logout",

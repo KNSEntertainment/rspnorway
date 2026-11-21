@@ -256,7 +256,7 @@ function DashboardLayoutContent({ children }) {
 								type="text"
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
-								placeholder="Filter 24 tools..."
+								placeholder="Filter tools..."
 								className="w-full pl-8 pr-7 py-1.5 text-xs bg-slate-50 hover:bg-slate-100/80 focus:bg-white border border-slate-200 rounded-lg text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
 							/>
 							{searchQuery && (

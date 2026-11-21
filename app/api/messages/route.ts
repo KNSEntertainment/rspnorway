@@ -8,6 +8,7 @@ import ExecutiveMember from "@/models/ExecutiveMember.Model";
 import User from "@/models/User.Model";
 import { sendBulkMessages, isEmailConfigured } from "@/lib/emailService";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/utils/saveFileToCloudinaryUtils";
+import { logActivity } from "@/lib/activityLogger";
 
 export async function GET(req: NextRequest) {
 	try {
@@ -409,6 +410,28 @@ export async function POST(req: NextRequest) {
 				console.error("Error sending email notifications:", err);
 			}
 		}
+
+		// Log broadcast message sending activity
+		await logActivity({
+			userId: senderId,
+			userName: senderFullName,
+			userEmail: session.user.email,
+			userRole: session.user.role || (isAdminUser ? "admin" : "member"),
+			membershipType: session.user.membershipType || "executive",
+			action: "SEND_MESSAGE",
+			category: "communication",
+			description: `${senderFullName} sent a ${messageData.type} message: "${messageData.title}" to ${messageData.recipientType} (${recipientEmails.length} recipients)`,
+			status: "success",
+			metadata: {
+				title: messageData.title,
+				type: messageData.type,
+				priority: messageData.priority,
+				recipientType: messageData.recipientType,
+				recipientCount: recipientEmails.length,
+				emailSent: Boolean(emailResult && emailResult.sentCount > 0),
+			},
+			req,
+		});
 
 		return NextResponse.json({
 			...message.toObject(),

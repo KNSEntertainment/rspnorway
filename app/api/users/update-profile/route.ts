@@ -5,6 +5,7 @@ import User from '@/models/User.Model';
 import ExecutiveMember from '@/models/ExecutiveMember.Model';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/options';
+import { logActivity } from '@/lib/activityLogger';
 
 export async function PATCH(request: NextRequest) {
 	try {
@@ -116,6 +117,23 @@ export async function PATCH(request: NextRequest) {
 			membershipType: member.membershipType,
 			membershipStatus: member.membershipStatus,
 		};
+
+		// Log profile update safely (only which fields changed, never sensitive values)
+		await logActivity({
+			userId: session.user._id?.toString() || member._id?.toString() || "",
+			userName: member.fullName || session.user.fullName || "User",
+			userEmail: session.user.email,
+			userRole: session.user.role || "member",
+			membershipType: member.membershipType || session.user.membershipType || "general",
+			action: "PROFILE_UPDATE",
+			category: "profile",
+			description: `${member.fullName || session.user.email} updated profile (${Object.keys(filteredData).join(", ")})`,
+			status: "success",
+			metadata: {
+				updatedFields: Object.keys(filteredData),
+			},
+			req: request,
+		});
 
 		return NextResponse.json({
 			message: 'Profile updated successfully',
