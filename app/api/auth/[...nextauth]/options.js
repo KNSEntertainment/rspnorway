@@ -47,6 +47,7 @@ export const authOptions = {
 							isMember: true, // Flag to identify this user has full member access
 							membershipType: "executive",
 							membershipStatus: "approved",
+							position: user.role === "treasurer" ? "Treasurer" : "Admin",
 							emailVerified: user.emailVerified ?? true,
 						};
 					}
@@ -108,6 +109,7 @@ export const authOptions = {
 						role: "member", // All members get "member" role
 						membershipType: member.membershipType,
 						membershipStatus: member.membershipStatus,
+						position: member.position || (member.membershipType === "executive" ? "Executive Member" : undefined),
 						isMember: true, // Flag to identify this is a member
 						emailVerified: member.emailVerified,
 					};
@@ -136,6 +138,7 @@ export const authOptions = {
 				token.isMember = Boolean(user.isMember || isAdmin);
 				token.membershipType = user.membershipType || (isAdmin ? "executive" : undefined);
 				token.membershipStatus = user.membershipStatus || (isAdmin ? "approved" : undefined);
+				token.position = user.position;
 				token.emailVerified = user.emailVerified ?? true;
 			}
 			return token;
@@ -153,6 +156,7 @@ export const authOptions = {
 					isMember: Boolean(token.isMember || isAdmin),
 					membershipType: token.membershipType || (isAdmin ? "executive" : undefined),
 					membershipStatus: token.membershipStatus || (isAdmin ? "approved" : undefined),
+					position: token.position,
 					emailVerified: token.emailVerified ?? true,
 				};
 			}

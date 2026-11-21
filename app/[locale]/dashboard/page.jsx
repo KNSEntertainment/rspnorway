@@ -32,13 +32,19 @@ export default function DashboardGrid() {
 	const allItems = useMemo(() => getDashboardMenuItems(locale), [locale]);
 
 	const role = session?.user?.role || "admin";
+	const isExecutive = session?.user?.membershipType === "executive" || role === "admin" || role === "treasurer";
+	const userRoles = useMemo(() => {
+		const roles = [role];
+		if (isExecutive) roles.push("executive");
+		return roles;
+	}, [role, isExecutive]);
 
 	const visibleItems = useMemo(() => {
 		return allItems.filter((item) => {
 			if (!item.roles) return role === "admin";
-			return item.roles.includes(role);
+			return item.roles.some((r) => userRoles.includes(r));
 		});
-	}, [allItems, role]);
+	}, [allItems, role, userRoles]);
 
 	// Filter by search and category
 	const filteredItems = useMemo(() => {

@@ -11,7 +11,7 @@ const AdminMessageSchema = new mongoose.Schema({
 	content: {
 		type: String,
 		required: [true, "Content is required"],
-		minlength: [10, "Content must be at least 10 characters long"],
+		minlength: [1, "Content cannot be empty"],
 	},
 
 	type: {
@@ -28,8 +28,29 @@ const AdminMessageSchema = new mongoose.Schema({
 
 	recipientType: {
 		type: String,
-		enum: ["all", "executive", "general", "specific"],
+		enum: ["all", "executive", "general", "specific", "individual"],
 		default: "all",
+	},
+
+	recipientEmails: [{
+		type: String,
+		trim: true,
+		lowercase: true,
+	}],
+
+	recipientDetails: [{
+		id: String,
+		name: String,
+		email: String,
+		position: String,
+	}],
+
+	senderName: {
+		type: String,
+	},
+
+	senderPosition: {
+		type: String,
 	},
 
 	sentBy: {
@@ -66,6 +87,20 @@ const AdminMessageSchema = new mongoose.Schema({
 		size: Number,
 	}],
 
+	emailSent: {
+		type: Boolean,
+		default: false,
+	},
+
+	emailSentAt: {
+		type: Date,
+	},
+
+	emailSentCount: {
+		type: Number,
+		default: 0,
+	},
+
 	createdAt: {
 		type: Date,
 		default: Date.now,
@@ -80,11 +115,22 @@ const AdminMessageSchema = new mongoose.Schema({
 // Index for better query performance
 AdminMessageSchema.index({ recipientType: 1, isActive: 1, createdAt: -1 });
 AdminMessageSchema.index({ "readBy.memberId": 1 });
+AdminMessageSchema.index({ recipientEmails: 1 });
+AdminMessageSchema.index({ "recipientDetails.email": 1 });
+AdminMessageSchema.index({ "recipientDetails.id": 1 });
+AdminMessageSchema.index({ sentBy: 1 });
 
 // Pre-save middleware to update the updatedAt field
 AdminMessageSchema.pre('save', function(next) {
 	this.updatedAt = new Date();
 	next();
 });
+
+if (mongoose.models && mongoose.models.AdminMessage) {
+	delete mongoose.models.AdminMessage;
+}
+if (mongoose.modelSchemas && mongoose.modelSchemas.AdminMessage) {
+	delete mongoose.modelSchemas.AdminMessage;
+}
 
 export default mongoose.models.AdminMessage || mongoose.model("AdminMessage", AdminMessageSchema);

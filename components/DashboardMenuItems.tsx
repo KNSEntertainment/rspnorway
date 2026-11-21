@@ -284,7 +284,7 @@ export const getDashboardMenuItems = (locale = "en"): MenuItem[] => [
 		href: `/${locale}/dashboard/send-message`, 
 		category: "Communications & Settings",
 		description: "Broadcast announcements and bulk member emails",
-		roles: ["admin"] 
+		roles: ["admin", "executive", "treasurer"] 
 	},
 	{ 
 		id: "contactmessages", 

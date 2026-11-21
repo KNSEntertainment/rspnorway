@@ -8,6 +8,7 @@ import {
 	TrendingUp, 
 	DollarSign, 
 	CreditCard,
+	Send,
 	LucideIcon 
 } from "lucide-react";
 
@@ -100,6 +101,14 @@ export const getMemberMenuItems = (locale: string, membershipType?: string): Mem
 				href: `/${locale}/profile/contributions`,
 				category: "Executive",
 				description: "Executive monthly dues and contribution register"
+			},
+			{ 
+				id: "send-message", 
+				label: "Send Message", 
+				icon: Send, 
+				href: `/${locale}/profile/send-message`,
+				category: "Executive",
+				description: "Message executive members individually or in bulk"
 			}
 		);
 	}

@@ -1,6 +1,15 @@
+import cloudinary from "cloudinary";
+import { Readable } from "stream";
+
+cloudinary.v2.config({
+	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 // Helper to extract public_id from a Cloudinary URL
 // Works for images, videos, and raw files (e.g., PDFs, docs, zips)
-function getCloudinaryPublicId(url) {
+function getCloudinaryPublicId(url, isRaw = false) {
 	if (!url) return null;
 	// Find the part after '/upload/'
 	const uploadIndex = url.indexOf("/upload/");
@@ -10,6 +19,9 @@ function getCloudinaryPublicId(url) {
 	publicIdWithExt = publicIdWithExt.split("?")[0];
 	// Remove version number if present (e.g., v12345/)
 	publicIdWithExt = publicIdWithExt.replace(/^v[0-9]+\//, "");
+	if (isRaw) {
+		return publicIdWithExt; // raw files retain the extension in public_id
+	}
 	// Find the last dot after the last slash
 	const lastSlash = publicIdWithExt.lastIndexOf("/");
 	const lastDot = publicIdWithExt.lastIndexOf(".");
@@ -21,11 +33,7 @@ function getCloudinaryPublicId(url) {
 
 // Delete a file from Cloudinary (supports image, video, and raw files)
 export async function deleteFromCloudinary(url, resourceType) {
-	const publicId = getCloudinaryPublicId(url);
-	if (!publicId) {
-		console.error("Cloudinary delete: Could not extract public_id from URL", url);
-		return;
-	}
+	if (!url) return;
 	// Auto-detect resourceType if not provided
 	if (!resourceType) {
 		// Guess resource type from file extension
@@ -38,28 +46,36 @@ export async function deleteFromCloudinary(url, resourceType) {
 			resourceType = "raw";
 		}
 	}
-	return new Promise((resolve, reject) => {
+
+	const isRaw = resourceType === "raw";
+	const publicId = getCloudinaryPublicId(url, isRaw);
+	if (!publicId) {
+		console.error("Cloudinary delete: Could not extract public_id from URL", url);
+		return;
+	}
+
+	return new Promise((resolve) => {
 		cloudinary.v2.uploader.destroy(publicId, { resource_type: resourceType }, (error, result) => {
-			if (error) {
-				console.error("Cloudinary delete error:", { publicId, resourceType, error });
-				reject(error);
-			} else {
-				if (result && result.result !== "ok") {
-					console.error("Cloudinary delete not ok:", { publicId, resourceType, result });
+			if (error || (result && result.result === "not found" && isRaw)) {
+				// Fallback: If raw was not found with extension, try without extension
+				const alternateId = getCloudinaryPublicId(url, false);
+				if (alternateId && alternateId !== publicId) {
+					try {
+						cloudinary.v2.uploader.destroy(alternateId, { resource_type: resourceType }, (_err2, res2) => {
+							resolve(res2 || result);
+						});
+						return;
+					} catch {
+						// ignore
+					}
 				}
+				resolve(result);
+			} else {
 				resolve(result);
 			}
 		});
 	});
 }
-import cloudinary from "cloudinary";
-import { Readable } from "stream";
-
-cloudinary.v2.config({
-	cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-	api_key: process.env.CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Upload a file to Cloudinary (supports image, video, and raw files)
 export async function uploadToCloudinary(file, folder = "default_folder") {

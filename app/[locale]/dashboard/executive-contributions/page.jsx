@@ -19,7 +19,11 @@ export default function ExecutiveContributionsPage() {
 	const [payment, setPayment] = useState({ amount: "", paymentDate: new Date().toISOString().split("T")[0], paymentMethod: "cash", notes: "" });
 	const [submitting, setSubmitting] = useState(false);
 
-	const { data: executiveMembers } = useFetchData("/api/membership", "memberships");
+	const { data: membersData } = useFetchData("/api/membership?type=executive", "memberships");
+
+	const executiveMembers = (Array.isArray(membersData) ? membersData : [])
+		.filter((m) => m.membershipType === "executive" && m.membershipStatus !== "blocked")
+		.sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""));
 
 	const fetchContributions = useCallback(async () => {
 		try {
@@ -104,13 +108,17 @@ export default function ExecutiveContributionsPage() {
 
 	return (
 		<div className="space-y-6">
-			<div className="flex flex-col sm:flex-row sm:justify-between items-stretch gap-2">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 				<div>
 					<h1 className="text-3xl font-bold text-gray-900">Executive Contributions</h1>
 					<p className="text-gray-600 mt-1">Manage 100 NOK/month membership contributions</p>
 				</div>
-				<div className="flex gap-2">
-					<select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="border border-gray-300 rounded px-2 text-sm">
+				<div className="flex items-center gap-2">
+					<select
+						value={filterYear}
+						onChange={(e) => setFilterYear(e.target.value)}
+						className="h-9 border border-gray-300 rounded-md px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary"
+					>
 						<option value="">All Years</option>
 						{years.map((y) => (
 							<option key={y} value={y}>
@@ -229,15 +237,15 @@ export default function ExecutiveContributionsPage() {
 											...newContribution,
 											memberId: e.target.value,
 											memberEmail: member?.email || "",
-											memberName: member?.fullName || "",
+											memberName: member?.fullName || member?.name || "",
 										});
 									}}
 									className="w-full p-2 border rounded"
 								>
-									<option value="">Select member...</option>
+									<option value="">Select executive member...</option>
 									{executiveMembers.map((m) => (
 										<option key={m._id} value={m._id}>
-											{m.fullName}
+											{m.fullName || m.name}{m.position ? ` (${m.position})` : ""}
 										</option>
 									))}
 								</select>

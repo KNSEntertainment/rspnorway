@@ -44,12 +44,18 @@ function DashboardLayoutContent({ children }) {
 		router.replace(`/${locale}/login`);
 		return null;
 	}
-	if (session.user.role !== "admin" && session.user.role !== "treasurer") {
+	const isExecutive = session.user.membershipType === "executive" || session.user.role === "admin" || session.user.role === "treasurer";
+
+	if (session.user.role !== "admin" && session.user.role !== "treasurer" && session.user.membershipType !== "executive") {
 		router.replace(`/${locale}/profile`);
 		return null;
 	}
 
 	const role = session.user.role;
+	const userRoles = [role];
+	if (isExecutive) {
+		userRoles.push("executive");
+	}
 
 	// Route-level authorization check: protect against direct URL navigation
 	const matchingMenuItem = allMenuItems.find((item) => {
@@ -59,12 +65,12 @@ function DashboardLayoutContent({ children }) {
 		return pathname === item.href || pathname.startsWith(item.href + "/");
 	});
 
-	const isRouteAuthorized = !matchingMenuItem || !matchingMenuItem.roles || matchingMenuItem.roles.includes(role);
+	const isRouteAuthorized = !matchingMenuItem || !matchingMenuItem.roles || matchingMenuItem.roles.some((r) => userRoles.includes(r));
 
 	// Filter menu items by role
 	const visibleMenuItems = allMenuItems.filter((item) => {
 		if (!item.roles) return role === "admin";
-		return item.roles.includes(role);
+		return item.roles.some((r) => userRoles.includes(r));
 	});
 
 	// Filter by search query if user types in search

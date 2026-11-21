@@ -77,6 +77,8 @@ export async function GET(req: NextRequest) {
 	await connectDB();
 	const { searchParams } = new URL(req.url);
 	const email = searchParams.get("email");
+	const type = searchParams.get("type");
+	const status = searchParams.get("status");
 
 	if (email) {
 		const emailRegex = new RegExp(`^${email.trim()}$`, "i");
@@ -133,8 +135,15 @@ export async function GET(req: NextRequest) {
 		return NextResponse.json(null);
 	}
 
-	// Return all memberships if no email filter
-	const memberships = await Membership.find().sort({ createdAt: -1 });
+	// Return all memberships if no email filter (filtered by type/status if provided)
+	const query: Record<string, unknown> = {};
+	if (type) {
+		query.membershipType = type;
+	}
+	if (status) {
+		query.membershipStatus = status;
+	}
+	const memberships = await Membership.find(query).sort({ createdAt: -1 });
 	return NextResponse.json(memberships);
 }
 
