@@ -1,5 +1,8 @@
 import MembersClient from './MembersClient';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata = {
   title: 'Members | PNSB-Norway',
   description: 'Meet the members of PNSB-Norway. Browse our executive members, active members, and general members. Connect with our community.',

@@ -17,7 +17,8 @@ export async function POST(req) {
 		const subdepartment = formData.get("subdepartment");
 		const phone = formData.get("phone");
 		const email = formData.get("email");
-		const order = formData.get("order") || 0;
+		const rawOrder = formData.get("order");
+		const order = Number.isFinite(parseInt(rawOrder, 10)) ? parseInt(rawOrder, 10) : 0;
 		const isActive = formData.get("isActive") === "true";
 		const imageFile = formData.get("image");
 
@@ -38,7 +39,7 @@ export async function POST(req) {
 			subdepartment,
 			phone,
 			email,
-			order: parseInt(order),
+			order,
 			isActive,
 			imageUrl,
 		});
@@ -58,6 +59,10 @@ export async function POST(req) {
 			gender: "prefer-not-to-say",
 			province: "",
 			district: "",
+			position: position || "Executive Member",
+			order: order,
+			department: department || "",
+			subdepartment: subdepartment || "",
 			profession: position || "Executive Member",
 			membershipType: "executive",
 			membershipStatus: "approved",

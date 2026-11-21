@@ -20,9 +20,9 @@ export default function ExecutiveMemberBulkUpload({ onClose, onSuccess }: { onCl
   const [uploadResult, setUploadResult] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
 
   const downloadTemplate = () => {
-    const csvContent = `name,email,phone,address,city,postalCode,dateOfBirth,gender
-John Doe,john@example.com,+47 123 45 678,Main Street 123,Oslo,0010,1990-01-01,male
-Jane Smith,jane@example.com,+47 987 65 432,High Street 45,Bergen,5000,1985-05-15,female`;
+    const csvContent = `name,email,phone,address,city,postalCode,dateOfBirth,gender,position,department,order
+John Doe,john@example.com,+47 123 45 678,Main Street 123,Oslo,0010,1990-01-01,male,President,Executive Committee,1
+Jane Smith,jane@example.com,+47 987 65 432,High Street 45,Bergen,5000,1985-05-15,female,Vice President,Executive Committee,2`;
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

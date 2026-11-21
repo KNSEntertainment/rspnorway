@@ -25,6 +25,9 @@ const MembershipSchema = new mongoose.Schema({
 	membershipType: { type: String, enum: ["general", "executive"], required: true, default: "general" },
 	membershipStatus: { type: String, enum: ["blocked", "pending", "approved"], required: true, default: "pending" },
 	position: { type: String }, // Only for executive members (e.g., Chairman, Treasurer, etc.)
+	order: { type: Number, default: 0 }, // For organizational hierarchy sorting
+	department: { type: String, default: "" },
+	subdepartment: { type: String, default: "" },
 	volunteerInterest: { type: [String], default: [] },
 	
 	// Permissions and Consent
@@ -65,6 +68,7 @@ const MembershipSchema = new mongoose.Schema({
 	lockUntil: { type: Date },
 }, {
 	timestamps: true,
+	strict: false,
 });
 
 // Add indexes for performance
@@ -75,5 +79,13 @@ MembershipSchema.index({ passwordResetToken: 1 });
 
 // Add text index for search functionality
 MembershipSchema.index({ fullName: "text" });
+
+// In development, clear cached model if schema updated
+if (mongoose.models && mongoose.models.Membership) {
+	delete mongoose.models.Membership;
+}
+if (mongoose.modelSchemas && mongoose.modelSchemas.Membership) {
+	delete mongoose.modelSchemas.Membership;
+}
 
 export default mongoose.models.Membership || mongoose.model("Membership", MembershipSchema);

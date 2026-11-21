@@ -13,6 +13,16 @@ const executiveMemberSchema = new mongoose.Schema({
 	createdBy: { type: String, default: "" },
 	createdAt: { type: Date, default: Date.now },
 	updatedAt: { type: Date, default: Date.now },
+}, {
+	timestamps: true,
+	strict: false,
 });
+
+if (mongoose.models && mongoose.models.ExecutiveMember) {
+	delete mongoose.models.ExecutiveMember;
+}
+if (mongoose.modelSchemas && mongoose.modelSchemas.ExecutiveMember) {
+	delete mongoose.modelSchemas.ExecutiveMember;
+}
 
 export default mongoose.models.ExecutiveMember || mongoose.model("ExecutiveMember", executiveMemberSchema);

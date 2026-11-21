@@ -1,10 +1,8 @@
-
-
 "use client";
 
 import SectionHeader from "@/components/SectionHeader";
 import Image from "next/image";
-import { Phone, Mail, Search, X, Filter, ChevronRight, UserPlus } from "lucide-react";
+import { Phone, Mail, Search, X, UserPlus } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
@@ -54,52 +52,78 @@ import Link from "next/link";
  * @property {string} search
  */
 
-
-function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact, session, member }) {
+function MemberCard({ name, position, department, subdepartment, email, phone, imageUrl, avatarGradient, showContact, session, member, locale = "en" }) {
 	const initial = name?.charAt(0).toUpperCase() ?? "?";
-	
+
 	// Debug logging for production vs localhost differences
-	if (member?.profilePhoto && process.env.NODE_ENV === 'production') {
-		console.log('MemberCard Debug:', {
+	if (member?.profilePhoto && process.env.NODE_ENV === "production") {
+		console.log("MemberCard Debug:", {
 			name,
 			permissionPhotos: member?.permissionPhotos,
 			permissionType: typeof member?.permissionPhotos,
 			hasPhoto: !!member?.profilePhoto,
-			imageUrl
+			imageUrl,
 		});
 	}
 
+	const profileUrl = member?._id ? `/${locale}/members/${member._id}` : null;
+
 	return (
-		<div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+		<div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col relative group">
 			{/* Avatar / Photo */}
-			<div className="aspect-square overflow-hidden bg-light">
-				{(member?.permissionPhotos !== false && imageUrl && !imageUrl.startsWith("data:")) ? (
-					<Image src={imageUrl} alt={name} width={200} height={200} className="w-full h-full object-cover" />
-				) : (
-					<div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${avatarGradient}`}>
-						<span className="text-white text-6xl font-bold">{initial}</span>
-					</div>
-				)}
-			</div>
+			{profileUrl ? (
+				<Link href={profileUrl} className="block aspect-square overflow-hidden bg-light relative cursor-pointer">
+					{member?.permissionPhotos !== false && imageUrl && !imageUrl.startsWith("data:") ? (
+						<Image src={imageUrl} alt={name} width={300} height={300} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+					) : (
+						<div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${avatarGradient}`}>
+							<span className="text-white text-6xl font-bold">{initial}</span>
+						</div>
+					)}
+				</Link>
+			) : (
+				<div className="aspect-square overflow-hidden bg-light relative">
+					{member?.permissionPhotos !== false && imageUrl && !imageUrl.startsWith("data:") ? (
+						<Image src={imageUrl} alt={name} width={300} height={300} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+					) : (
+						<div className={`w-full h-full flex items-center justify-center bg-gradient-to-br ${avatarGradient}`}>
+							<span className="text-white text-6xl font-bold">{initial}</span>
+						</div>
+					)}
+				</div>
+			)}
 
 			{/* Info */}
-			<div className="p-3 md:p-6">
-				<h3 className="text-sm md:text-xl font-bold text-gray-900 mb-2">{name}</h3>
-				{/* {badgeLabel && <p className={`text-sm font-medium mb-3 ${badgeClass}`}>{badgeLabel}</p>} */}
+			<div className="p-3 md:p-5 flex flex-col flex-1">
+				{profileUrl ? (
+					<Link href={profileUrl} className="hover:text-brand transition-colors">
+						<h3 className="text-sm md:text-lg font-bold text-gray-900 group-hover:text-brand mb-0.5 line-clamp-1">{name}</h3>
+					</Link>
+				) : (
+					<h3 className="text-sm md:text-lg font-bold text-gray-900 mb-0.5 line-clamp-1">{name}</h3>
+				)}
+
+				{position && <p className="text-xs md:text-sm font-semibold text-brand mb-1 line-clamp-1">{position}</p>}
+				{department && (
+					<span className="inline-block self-start text-[10px] md:text-xs text-gray-600 bg-gray-100 rounded px-2 py-0.5 mb-2 line-clamp-1">
+						{department}
+						{subdepartment ? ` • ${subdepartment}` : ""}
+					</span>
+				)}
 
 				{/* Contact — only show when session exists AND member has granted permission (or undefined for executive members) */}
 				{showContact && session?.user && (
-					<div className="space-y-2 mb-4">
+					<div className="space-y-1.5 mb-2 mt-auto text-xs">
 						{(member?.permissionPhone !== false || member?.permissionPhone === undefined) && phone && (
-							<a href={`tel:${phone}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm">
-								<Phone className="w-4 h-4" />
-								{phone}
+							<a href={`tel:${phone}`} className="flex items-center gap-2 text-gray-600 hover:text-brand text-xs">
+								<Phone className="w-3.5 h-3.5 flex-shrink-0" />
+								<span className="truncate">{phone}</span>
 							</a>
 						)}
 						{(member?.permissionEmail !== false || member?.permissionEmail === undefined) && (
-							<a href={`mailto:${email}`} className="flex items-center gap-2 text-gray-900 hover:text-brand text-sm break-all">
-								<Mail className="w-4 h-4" />
-								{email}
+							<a href={`mailto:${email}`} className="flex items-center gap-2 text-gray-600 hover:text-brand text-xs break-all">
+								<Mail className="w-3.5 h-3.5 flex-shrink-0" />
+								<span className="truncate">{email}</span>
 							</a>
 						)}
 					</div>
@@ -109,82 +133,62 @@ function MemberCard({ name, email, phone, imageUrl, avatarGradient, showContact,
 	);
 }
 
+// Sensible hierarchy priority when numeric order is 0 or unassigned
+function getPublicHierarchyPriority(position = "") {
+	const pos = (position || "").toLowerCase().trim();
+	if (!pos) return 99;
+
+	if (pos.includes("senior vice") || pos.includes("sr. vice") || pos.includes("sr vice") || pos.includes("वरिष्ठ उपाध्यक्ष")) return 2;
+	if (pos.includes("vice") || pos.includes("उपाध्यक्ष")) return 3;
+	if (pos.includes("president") || pos.includes("chair") || pos.includes("अध्यक्ष") || pos.includes("सभापति")) return 1;
+	if (pos.includes("general secretary") || pos.includes("gen. sec") || pos.includes("gen sec") || pos.includes("secretary general") || pos.includes("महासचिव")) return 4;
+	if (pos.includes("joint secretary") || pos.includes("deputy secretary") || pos.includes("सह-सचिव") || pos.includes("सहसचिव") || pos.includes("उप-सचिव")) return 7;
+	if (pos.includes("secretary") || pos.includes("सचिव")) return 5;
+	if (pos.includes("joint treasurer") || pos.includes("deputy treasurer") || pos.includes("सह-कोषाध्यक्ष") || pos.includes("सहकोषाध्यक्ष")) return 8;
+	if (pos.includes("treasurer") || pos.includes("finance") || pos.includes("कोषाध्यक्ष")) return 6;
+	if (pos.includes("spokesperson") || pos.includes("प्रवक्ता")) return 8.5;
+	if (pos.includes("head") || pos.includes("coordinator") || pos.includes("प्रमुख") || pos.includes("संयोजक")) return 9;
+	if (pos.includes("advisor") || pos.includes("सल्लाहकार")) return 12;
+	if (pos.includes("member") || pos.includes("सदस्य")) return 10;
+	return 20;
+}
+
 export default function Members() {
 	const t = useTranslations("members");
 	const locale = useLocale();
 	const { data: session } = useSession();
 	const [executiveMembers, setExecutiveMembers] = useState([]);
-	const [regularMembers, setRegularMembers] = useState([]);
-	const [departments, setDepartments] = useState([]);
 	const [filteredExecutiveMembers, setFilteredExecutiveMembers] = useState([]);
-	const [filteredGeneralMembers, setFilteredGeneralMembers] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [filters, setFilters] = useState({
-		department: null,
-		subdepartment: null,
-		search: "",
-	});
-	const [activeDepartment, setActiveDepartment] = useState(null);
-	const [activeSubdepartment, setActiveSubdepartment] = useState(null);
-	const [showMobileFilters, setShowMobileFilters] = useState(false);
+	const [searchQuery, setSearchQuery] = useState("");
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 				const timestamp = new Date().getTime();
+				const getUrl = (path) => {
+					if (typeof window !== "undefined") return `${path}?t=${timestamp}`;
+					const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+					return `${base}${path}?t=${timestamp}`;
+				};
 
-				const [executiveMembersResponse, regularMembersResponse, departmentsResponse] = await Promise.all([
-					fetch(`${baseUrl}/api/executive-members/unified?t=${timestamp}`, {
-						cache: "no-store",
-						headers: {
-							"Cache-Control": "no-cache, no-store, must-revalidate",
-							Pragma: "no-cache",
-							Expires: "0",
-						},
-					}),
-					fetch(`${baseUrl}/api/membership?t=${timestamp}`, {
-						cache: "no-store",
-						headers: {
-							"Cache-Control": "no-cache, no-store, must-revalidate",
-							Pragma: "no-cache",
-							Expires: "0",
-						},
-					}),
-					fetch(`${baseUrl}/api/departments?t=${timestamp}`, {
-						cache: "no-store",
-						headers: {
-							"Cache-Control": "no-cache, no-store, must-revalidate",
-							Pragma: "no-cache",
-							Expires: "0",
-						},
-					}),
-				]);
+				const executiveMembersResponse = await fetch(getUrl("/api/executive-members/unified"), {
+					cache: "no-store",
+					headers: {
+						"Cache-Control": "no-cache, no-store, must-revalidate",
+						Pragma: "no-cache",
+						Expires: "0",
+					},
+				});
 
 				if (executiveMembersResponse.ok) {
 					const executiveMembersData = await executiveMembersResponse.json();
 					setExecutiveMembers(executiveMembersData);
 				}
-
-				if (regularMembersResponse.ok) {
-					const regularMembersData = await regularMembersResponse.json();
-					const members = regularMembersData.filter((member) => member.membershipStatus === "approved" && member.membershipType !== "executive");
-					setRegularMembers(members);
-				}
-
-				if (departmentsResponse.ok) {
-					const departmentsData = await departmentsResponse.json();
-					if (departmentsData.success) {
-						setDepartments(departmentsData.departments);
-					}
-				}
 			} catch (error) {
 				console.error("Error fetching data:", error);
 				setExecutiveMembers([]);
-				setRegularMembers([]);
 				setFilteredExecutiveMembers([]);
-				setFilteredGeneralMembers([]);
-				setDepartments([]);
 			} finally {
 				setLoading(false);
 			}
@@ -193,146 +197,66 @@ export default function Members() {
 		fetchData();
 	}, []);
 
+	// Helper to safely parse order values
+	const parseOrder = (val) => {
+		if (val === null || val === undefined || val === "") return 0;
+		const n = Number(val);
+		return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+	};
+
+	// Sort executive members strictly by organizational hierarchy order (lower numbers first, or by role hierarchy priority)
+	const sortExecutiveByHierarchy = useCallback((list) => {
+		return [...list].sort((a, b) => {
+			const orderA = parseOrder(a.order);
+			const orderB = parseOrder(b.order);
+
+			// 1. If explicit positive orders exist and differ, sort by explicit order
+			if (orderA > 0 && orderB > 0) {
+				if (orderA !== orderB) {
+					return orderA - orderB;
+				}
+			}
+			if (orderA > 0 && orderB === 0) return -1;
+			if (orderA === 0 && orderB > 0) return 1;
+
+			// 2. If unranked or equal order, sort by organizational hierarchy priority of the position
+			const prioA = getPublicHierarchyPriority(a.position);
+			const prioB = getPublicHierarchyPriority(b.position);
+			if (prioA !== prioB) {
+				return prioA - prioB;
+			}
+
+			// 3. Fallback: alphabetical by name
+			return (a.name || "").localeCompare(b.name || "");
+		});
+	}, []);
+
 	useEffect(() => {
-		const generalMembers = regularMembers.filter((m) => m.membershipType === "general");
-		
-		// Sort executive members by first name
-		const sortedExecutiveMembers = [...executiveMembers].sort((a, b) => {
-			const firstNameA = a.name.split(' ')[0] || a.name;
-			const firstNameB = b.name.split(' ')[0] || b.name;
-			return firstNameA.localeCompare(firstNameB);
-		});
-		
-		// Sort general members by first name
-		const sortedGeneralMembers = [...generalMembers].sort((a, b) => {
-			const firstNameA = a.fullName.split(' ')[0] || a.fullName;
-			const firstNameB = b.fullName.split(' ')[0] || b.fullName;
-			return firstNameA.localeCompare(firstNameB);
-		});
-		
+		const sortedExecutiveMembers = sortExecutiveByHierarchy(executiveMembers);
 		setFilteredExecutiveMembers(sortedExecutiveMembers);
-		setFilteredGeneralMembers(sortedGeneralMembers);
-	}, [regularMembers, executiveMembers]);
+	}, [executiveMembers, sortExecutiveByHierarchy]);
 
 	const applyFilters = useCallback(() => {
 		let executiveFiltered = [...executiveMembers];
-		if (filters.department) {
-			executiveFiltered = executiveFiltered.filter((m) => m.department === filters.department);
-		}
-		if (filters.subdepartment) {
-			executiveFiltered = executiveFiltered.filter((m) => m.subdepartment === filters.subdepartment);
-		}
-		if (filters.search) {
-			const searchLower = filters.search.toLowerCase();
+		if (searchQuery.trim()) {
+			const searchLower = searchQuery.toLowerCase().trim();
 			executiveFiltered = executiveFiltered.filter((m) => {
-				const nameMatch = m.name.toLowerCase().includes(searchLower);
+				const nameMatch = m.name?.toLowerCase().includes(searchLower);
 				const positionMatch = m.position?.toLowerCase().includes(searchLower);
-				const emailMatch = m.permissionEmail && m.email.toLowerCase().includes(searchLower);
+				const emailMatch = m.permissionEmail && m.email?.toLowerCase().includes(searchLower);
 				return nameMatch || positionMatch || emailMatch;
 			});
 		}
 
-		let generalFiltered = regularMembers.filter((m) => m.membershipType === "general");
+		// Sort filtered executive members by organizational hierarchy order
+		const sortedExecutiveFiltered = sortExecutiveByHierarchy(executiveFiltered);
 
-		if (filters.department) {
-			const departmentProvinceMap = {
-				"Information and Technology Department": "province-3",
-			};
-			const targetProvince = departmentProvinceMap[filters.department];
-			if (targetProvince) {
-				generalFiltered = generalFiltered.filter((m) => m.province === targetProvince);
-			}
-		}
-
-		if (filters.subdepartment) {
-			const subdepartmentCityMap = {
-				IT: "Oslo",
-				"IT Online News": "Oslo",
-			};
-			const targetCity = subdepartmentCityMap[filters.subdepartment];
-			if (targetCity) {
-				generalFiltered = generalFiltered.filter((m) => m.city?.toLowerCase() === targetCity.toLowerCase());
-			}
-		}
-
-		if (filters.search) {
-			const searchLower = filters.search.toLowerCase();
-			generalFiltered = generalFiltered.filter((m) => {
-				const nameMatch = m.fullName.toLowerCase().includes(searchLower);
-				const emailMatch = m.permissionEmail && m.email.toLowerCase().includes(searchLower);
-				const professionMatch = m.profession?.toLowerCase().includes(searchLower);
-				return nameMatch || emailMatch || professionMatch;
-			});
-		}
-
-		// Sort filtered executive members by first name
-		const sortedExecutiveFiltered = executiveFiltered.sort((a, b) => {
-			const firstNameA = a.name.split(' ')[0] || a.name;
-			const firstNameB = b.name.split(' ')[0] || b.name;
-			return firstNameA.localeCompare(firstNameB);
-		});
-		
-		// Sort filtered general members by first name
-		const sortedGeneralFiltered = generalFiltered.sort((a, b) => {
-			const firstNameA = a.fullName.split(' ')[0] || a.fullName;
-			const firstNameB = b.fullName.split(' ')[0] || b.fullName;
-			return firstNameA.localeCompare(firstNameB);
-		});
-		
 		setFilteredExecutiveMembers(sortedExecutiveFiltered);
-		setFilteredGeneralMembers(sortedGeneralFiltered);
-	}, [executiveMembers, regularMembers, filters]);
+	}, [executiveMembers, searchQuery, sortExecutiveByHierarchy]);
 
 	useEffect(() => {
 		applyFilters();
 	}, [applyFilters]);
-
-	const selectDepartment = (deptName) => {
-		if (activeDepartment === deptName) {
-			setActiveDepartment(null);
-			setActiveSubdepartment(null);
-			setFilters({ ...filters, department: null, subdepartment: null });
-		} else {
-			setActiveDepartment(deptName);
-			setActiveSubdepartment(null);
-			setFilters({ ...filters, department: deptName, subdepartment: null });
-		}
-	};
-
-	const selectSubdepartment = (subdept) => {
-		if (activeSubdepartment === subdept) {
-			setActiveSubdepartment(null);
-			setFilters({ ...filters, subdepartment: null });
-		} else {
-			setActiveSubdepartment(subdept);
-			setFilters({ ...filters, subdepartment: subdept });
-		}
-	};
-
-	const clearAllFilters = () => {
-		setFilters({ department: null, subdepartment: null, search: "" });
-		setActiveDepartment(null);
-		setActiveSubdepartment(null);
-	};
-
-	const removeFilter = (filterType) => {
-		if (filterType === "department") {
-			setActiveDepartment(null);
-			setActiveSubdepartment(null);
-			setFilters({ ...filters, department: null, subdepartment: null });
-		} else if (filterType === "subdepartment") {
-			setActiveSubdepartment(null);
-			setFilters({ ...filters, subdepartment: null });
-		}
-	};
-
-	const getActiveDepartmentSubdepartments = () => {
-		if (!activeDepartment) return [];
-		const dept = departments.find((d) => d.name === activeDepartment);
-		return dept?.subdepartments || [];
-	};
-
-	const hasActiveFilters = filters.department || filters.subdepartment || filters.search;
 
 	if (loading) {
 		return (
@@ -349,7 +273,7 @@ export default function Members() {
 		<div className="min-h-screen pt-12">
 			<SectionHeader heading={t("title")} subtitle={t("description")} className="mb-0" />
 
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
 				{/* Search and Filter Toggle */}
 				<div className="mb-3">
 					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
@@ -367,16 +291,16 @@ export default function Members() {
 								<div className="flex">
 									<div className="relative">
 										<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-										<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={filters.search} onChange={(e) => setFilters({ ...filters, search: e.target.value })} />
-										{filters.search && (
-											<button onClick={() => setFilters({ ...filters, search: "" })} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+										<input type="text" id="search" placeholder={t("search_placeholder")} className="w-full pl-9 pr-9 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent transition-all text-sm" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+										{searchQuery && (
+											<button onClick={() => setSearchQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
 												<X className="h-4 w-4" />
 											</button>
 										)}
 									</div>
 								</div>
 
-								<div className="flex items-center gap-2">
+								{/* <div className="flex items-center gap-2">
 									<button onClick={() => setShowMobileFilters(!showMobileFilters)} className="inline-flex items-center gap-2 px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
 										<Filter className="h-4 w-4" />
 										<span>{t("filters")}</span>
@@ -387,18 +311,18 @@ export default function Members() {
 											{t("clear_all")}
 										</button>
 									)}
-								</div>
+								</div> */}
 							</div>
 						</div>
 
-						<div className="text-sm text-gray-700 sm:ml-auto m-2 text-left sm:text-right">
-							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")},<span className="text-brand font-bold ml-2">{filteredGeneralMembers.length}</span> {filteredGeneralMembers.length === 1 ? t("general_member") : t("general_members")}
-						</div>
+						{/* <div className="text-sm text-gray-700 sm:ml-auto m-2 text-left sm:text-right">
+							<span className="text-brand font-bold">{filteredExecutiveMembers.length}</span> {filteredExecutiveMembers.length === 1 ? t("executive_member") : t("executive_members")}
+						</div> */}
 					</div>
 				</div>
 
 				{/* Filters Panel */}
-				<div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
+				{/* <div className={`mb-3 ${showMobileFilters ? "block" : "hidden"}`}>
 					<div className="bg-white rounded-lg shadow-sm px-4 py-3">
 						<div className="flex items-center justify-between mb-3">
 							<h3 className="text-md font-bold text-brand">{t("filters")}</h3>
@@ -456,10 +380,10 @@ export default function Members() {
 							scrollbar-width: none;
 						}
 					`}</style>
-				</div>
+				</div> */}
 
 				{/* Active Filter Pills */}
-				{hasActiveFilters && (
+				{/* {hasActiveFilters && (
 					<div className="mb-4">
 						<div className="bg-white rounded-lg shadow-sm px-4 py-3">
 							<div className="flex flex-wrap items-center gap-2">
@@ -483,21 +407,21 @@ export default function Members() {
 							</div>
 						</div>
 					</div>
-				)}
+				)} */}
 
 				{/* Executive Members */}
 				{filteredExecutiveMembers.length > 0 && (
-					<div className="mb-8 md:mb-20 px-0 p-6 sm:bg-brand/5">
+					<div className="mb-8 md:mb-20 px-0 p-6">
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("executive_members")}</h2>
 						<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
 							{filteredExecutiveMembers.map((member) => (
-								<MemberCard key={member._id} name={member.name} email={member.email} phone={member.phone} imageUrl={member.imageUrl} avatarGradient="from-brand to-blue-600" showContact={true} session={session} member={member} />
+								<MemberCard key={member._id} name={member.name} position={member.position} department={member.department} subdepartment={member.subdepartment} order={member.order} email={member.email} phone={member.phone} imageUrl={member.imageUrl} avatarGradient="from-brand to-blue-600" showContact={true} session={session} member={member} locale={locale} />
 							))}
 						</div>
 					</div>
 				)}
 
-				{/* General Members */}
+				{/* General Members
 				{filteredGeneralMembers.length > 0 && (
 					<div className="mb-8">
 						<h2 className="text-2xl font-bold text-gray-900 mb-4">{t("general_members")}</h2>
@@ -507,10 +431,10 @@ export default function Members() {
 							))}
 						</div>
 					</div>
-				)}
+				)} */}
 
 				{/* No Results */}
-				{filteredExecutiveMembers.length === 0 && filteredGeneralMembers.length === 0 && (
+				{/* {filteredExecutiveMembers.length === 0 && (
 					<div className="bg-white rounded-lg shadow-sm p-12 text-center">
 						<div className="max-w-md mx-auto">
 							<svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -525,7 +449,7 @@ export default function Members() {
 							)}
 						</div>
 					</div>
-				)}
+				)} */}
 			</div>
 		</div>
 	);

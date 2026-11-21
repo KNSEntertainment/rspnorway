@@ -57,6 +57,9 @@ export interface Membership {
 	membershipType: "general" | "active" | "executive";
 	membershipStatus: "blocked" | "pending" | "approved";
 	position?: string; // Only for executive members
+	order?: number; // Organizational hierarchy display order
+	department?: string;
+	subdepartment?: string;
 	nationalMembershipNo?: string;
 	skills?: string;
 	volunteerInterest?: string[];

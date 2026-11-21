@@ -5,9 +5,11 @@ import useFetchData from "@/hooks/useFetchData";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X, Edit, Upload } from "lucide-react";
+import { Trash2, Eye, CheckCircle, XCircle, Clock, User, Mail, Phone, Calendar, MapPin, Briefcase, Award, Heart, X, Edit, Upload, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Membership } from "@/types";
 import MembershipBulkUpload from "@/components/MembershipBulkUpload";
@@ -23,6 +25,7 @@ export default function MembershipsPage() {
 	const [editingMember, setEditingMember] = useState<Membership | null>(null);
 	const [editFormData, setEditFormData] = useState<Partial<Membership>>({});
 	const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+	const locale = useLocale();
 	const MEMBERS_PER_PAGE = 10;
 	const { data: memberships, error, loading, mutate } = useFetchData("/api/membership", "memberships");
 	const { toast } = useToast();
@@ -99,6 +102,7 @@ export default function MembershipsPage() {
 			membershipType: member.membershipType,
 			membershipStatus: member.membershipStatus,
 			position: member.position || '',
+			order: member.order || 0,
 			memberSinceDate: member.memberSinceDate ? new Date(member.memberSinceDate).toISOString().split('T')[0] : '',
 			skills: member.skills,
 			volunteerInterest: member.volunteerInterest || [],
@@ -140,7 +144,7 @@ export default function MembershipsPage() {
 		}
 	};
 
-	const handleEditChange = (field: string, value: string | boolean) => {
+	const handleEditChange = (field: string, value: string | boolean | number) => {
 		setEditFormData((prev) => ({ ...prev, [field]: value }));
 	};
 
@@ -325,18 +329,29 @@ export default function MembershipsPage() {
 
 	return (
 		<div className="max-w-7xl">
-			<div className="flex justify-between items-center mb-6">
-				<h1 className="text-2xl font-bold">Membership Management</h1>
-				<Button onClick={handleBulkUpload} className="bg-brand hover:bg-brand/90">
-					{showBulkUploadModal ? (
-						"Cancel"
-					) : (
-						<>
-							<Upload className="w-4 h-4 mr-2" />
-							Bulk Upload
-						</>
-					)}
-				</Button>
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+				<div>
+					<h1 className="text-2xl font-bold text-gray-900">Membership Management</h1>
+					<p className="text-sm text-gray-500 mt-0.5">Manage regular and executive member applications and roles</p>
+				</div>
+				<div className="flex flex-wrap items-center gap-3">
+					<Link href={`/${locale}/dashboard/executive-members`}>
+						<Button variant="outline" className="border-brand text-brand hover:bg-blue-50">
+							<Shield className="w-4 h-4 mr-2" />
+							Executive Hierarchy (Drag & Drop)
+						</Button>
+					</Link>
+					<Button onClick={handleBulkUpload} className="bg-brand hover:bg-brand/90">
+						{showBulkUploadModal ? (
+							"Cancel"
+						) : (
+							<>
+								<Upload className="w-4 h-4 mr-2" />
+								Bulk Upload
+							</>
+						)}
+					</Button>
+				</div>
 			</div>
 
 			{/* Bulk Upload Section */}
@@ -886,6 +901,22 @@ export default function MembershipsPage() {
 												className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 											/>
 											<p className="text-xs text-gray-500 mt-1">Executive member position (e.g., Chairman, Treasurer, etc.)</p>
+										</div>
+									)}
+
+									{/* Hierarchy Order Field - Only for Executive Members */}
+									{editFormData.membershipType === "executive" && (
+										<div>
+											<label className="block text-sm font-medium text-gray-900 mb-2">Hierarchy Rank / Order</label>
+											<input
+												type="number"
+												min="1"
+												value={editFormData.order || ''}
+												onChange={(e) => handleEditChange('order', Number(e.target.value))}
+												placeholder="1"
+												className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											/>
+											<p className="text-xs text-gray-500 mt-1">Lower numbers appear first to visitors on the members page (e.g., 1 for President, 2 for VP)</p>
 										</div>
 									)}
 
