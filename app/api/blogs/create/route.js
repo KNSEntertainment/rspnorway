@@ -11,6 +11,13 @@ export const config = {
 	},
 };
 
+const isEditorEmpty = (html) => {
+	if (!html || typeof html !== "string") return true;
+	if (/<(img|iframe|video|audio)/i.test(html)) return false;
+	const text = html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+	return text.length === 0;
+};
+
 export async function POST(request) {
 	try {
 		const session = await getServerSession(authOptions);
@@ -36,34 +43,55 @@ export async function POST(request) {
 		const blogMainPicture = formData.get("blogMainPicture");
 		const blogSecondPicture = formData.get("blogSecondPicture");
 
-		console.log("blogMainPicture type:", typeof blogMainPicture);
-		console.log("blogSecondPicture type:", typeof blogSecondPicture);
-
-		if (!(blogMainPicture instanceof File)) {
-			throw new Error("blogMainPicture must be a File object");
+		if (!blogMainPicture || !(blogMainPicture instanceof File) || blogMainPicture.size === 0) {
+			return NextResponse.json({ success: false, error: "Main image is required and must be a valid file" }, { status: 400 });
 		}
 
-		// Validate required fields
-		if (!blogTitle_en || !blogDesc_en || !blogMainPicture || !blogDate) {
-			return NextResponse.json({ success: false, error: "English title, description, main image or date is missing" }, { status: 400 });
+		if (!blogDate) {
+			return NextResponse.json({ success: false, error: "Blog date is required" }, { status: 400 });
 		}
 
-		// Save the files to the uploads directory
+		const cleanTitle_en = blogTitle_en?.trim() || "";
+		const cleanTitle_ne = blogTitle_ne?.trim() || "";
+		const cleanTitle_no = blogTitle_no?.trim() || "";
+
+		const cleanDesc_en = !isEditorEmpty(blogDesc_en) ? blogDesc_en.trim() : "";
+		const cleanDesc_ne = !isEditorEmpty(blogDesc_ne) ? blogDesc_ne.trim() : "";
+		const cleanDesc_no = !isEditorEmpty(blogDesc_no) ? blogDesc_no.trim() : "";
+
+		const hasEn = Boolean(cleanTitle_en && cleanDesc_en);
+		const hasNe = Boolean(cleanTitle_ne && cleanDesc_ne);
+		const hasNo = Boolean(cleanTitle_no && cleanDesc_no);
+
+		if (!hasEn && !hasNe && !hasNo) {
+			return NextResponse.json(
+				{ success: false, error: "Title and description are required in at least one language (English, Nepali, or Norwegian)" },
+				{ status: 400 }
+			);
+		}
+
+		// Save the files to Cloudinary
 		const blogMainPictureUrl = await uploadToCloudinary(blogMainPicture, "blogs_images");
-		const blogSecondPictureUrl = blogSecondPicture ? await uploadToCloudinary(blogSecondPicture, "blogs_images") : "";
+		const blogSecondPictureUrl = (blogSecondPicture instanceof File && blogSecondPicture.size > 0)
+			? await uploadToCloudinary(blogSecondPicture, "blogs_images")
+			: "";
+
+		const primaryTitle = cleanTitle_en || cleanTitle_ne || cleanTitle_no;
+		const primaryDesc = cleanDesc_en || cleanDesc_ne || cleanDesc_no;
+		const author = blogAuthor?.trim() || session?.user?.name || "PNSB-Norway";
 
 		// Save blog to MongoDB
 		console.log("Creating blog in database");
 		const blog = await Blog.create({
-			blogTitle_en,
-			...(blogTitle_ne && { blogTitle_ne }),
-			...(blogTitle_no && { blogTitle_no }),
-			blogDesc_en,
-			...(blogDesc_ne && { blogDesc_ne }),
-			...(blogDesc_no && { blogDesc_no }),
-			blogTitle: blogTitle_en, // Legacy field
-			blogDesc: blogDesc_en, // Legacy field
-			blogAuthor,
+			blogTitle_en: cleanTitle_en,
+			blogTitle_ne: cleanTitle_ne,
+			blogTitle_no: cleanTitle_no,
+			blogDesc_en: cleanDesc_en,
+			blogDesc_ne: cleanDesc_ne,
+			blogDesc_no: cleanDesc_no,
+			blogTitle: primaryTitle, // Legacy field
+			blogDesc: primaryDesc, // Legacy field
+			blogAuthor: author,
 			blogMainPicture: blogMainPictureUrl,
 			blogSecondPicture: blogSecondPictureUrl,
 			blogDate: blogDate,

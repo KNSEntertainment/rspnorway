@@ -76,7 +76,7 @@ export default function DashboardBlogClient({ blogs }) {
 						{blogs.length > 0 ? (
 							blogs.map((blog) => (
 								<TableRow key={blog?._id}>
-									<TableCell className="w-64 font-semibold">{blog.blogTitle}</TableCell>
+									<TableCell className="w-64 font-semibold">{blog.blogTitle || blog.blogTitle_en || blog.blogTitle_ne || blog.blogTitle_no || "Untitled"}</TableCell>
 									{/* <TableCell className="w-72">{blog.blogDesc}</TableCell> */}
 									{/* <TableCell className="w-36">{blog.blogAuthor}</TableCell> */}
 									<TableCell className="w-32">{blog.blogDate}</TableCell>

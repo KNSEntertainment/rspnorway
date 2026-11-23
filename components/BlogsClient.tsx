@@ -9,7 +9,7 @@ import ViewAllButton from "@/components/ViewAllButton";
 
 interface Blog {
 	_id: string;
-	blogTitle_en: string;
+	blogTitle_en?: string;
 	blogTitle_ne?: string;
 	blogTitle_no?: string;
 	blogDate: string;
@@ -20,6 +20,7 @@ interface Blog {
 	blogDesc_no?: string;
 	// Legacy field
 	blogTitle?: string;
+	blogDesc?: string;
 }
 
 interface Translations {
@@ -55,14 +56,28 @@ export default function BlogsClient({ blogs, locale }: Props) {
 	const getLocalizedTitle = (blog: Blog): string => {
 		const key = `blogTitle_${locale}` as keyof Blog;
 		const localizedTitle = blog[key];
-		return (typeof localizedTitle === "string" && localizedTitle) || blog.blogTitle_en || blog.blogTitle || "Untitled";
+		return (
+			(typeof localizedTitle === "string" && localizedTitle.trim()) ||
+			blog.blogTitle_en?.trim() ||
+			blog.blogTitle_ne?.trim() ||
+			blog.blogTitle_no?.trim() ||
+			blog.blogTitle?.trim() ||
+			"Untitled"
+		);
 	};
 
 	// Helper function to get localized blog description
 	const getLocalizedDescription = (blog: Blog): string => {
 		const key = `blogDesc_${locale}` as keyof Blog;
 		const localizedDesc = blog[key];
-		return (typeof localizedDesc === "string" && localizedDesc) || blog.blogDesc_en || "";
+		return (
+			(typeof localizedDesc === "string" && localizedDesc.trim()) ||
+			blog.blogDesc_en?.trim() ||
+			blog.blogDesc_ne?.trim() ||
+			blog.blogDesc_no?.trim() ||
+			blog.blogDesc?.trim() ||
+			""
+		);
 	};
 
 	// Enhanced description processing for professional preview

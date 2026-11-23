@@ -10,6 +10,14 @@ export const config = {
 		bodyParser: false,
 	},
 };
+
+const isEditorEmpty = (html) => {
+	if (!html || typeof html !== "string") return true;
+	if (/<(img|iframe|video|audio)/i.test(html)) return false;
+	const text = html.replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+	return text.length === 0;
+};
+
 export async function GET(req, { params }) {
 	const { id } = await params;
 	console.log("Received ID:", id);
@@ -51,14 +59,28 @@ export async function PUT(request, { params }) {
 			return NextResponse.json({ success: false, error: "Blog not found" }, { status: 404 });
 		}
 
-		// Update text fields
-		const blogTitle_en = formData.get("blogTitle_en") || existingBlog.blogTitle_en || existingBlog.blogTitle;
-		const blogTitle_ne = formData.get("blogTitle_ne") || existingBlog.blogTitle_ne;
-		const blogTitle_no = formData.get("blogTitle_no") || existingBlog.blogTitle_no;
-		const blogDesc_en = formData.get("blogDesc_en") || existingBlog.blogDesc_en || existingBlog.blogDesc;
-		const blogDesc_ne = formData.get("blogDesc_ne") || existingBlog.blogDesc_ne;
-		const blogDesc_no = formData.get("blogDesc_no") || existingBlog.blogDesc_no;
-		const blogDate = formData.get("blogDate") || existingBlog.blogDate;
+		// Update text fields (use existing value if not provided in formData)
+		const blogTitle_en = formData.has("blogTitle_en") ? formData.get("blogTitle_en")?.trim() || "" : (existingBlog.blogTitle_en || "");
+		const blogTitle_ne = formData.has("blogTitle_ne") ? formData.get("blogTitle_ne")?.trim() || "" : (existingBlog.blogTitle_ne || "");
+		const blogTitle_no = formData.has("blogTitle_no") ? formData.get("blogTitle_no")?.trim() || "" : (existingBlog.blogTitle_no || "");
+
+		const blogDesc_en = formData.has("blogDesc_en") ? (!isEditorEmpty(formData.get("blogDesc_en")) ? formData.get("blogDesc_en").trim() : "") : (existingBlog.blogDesc_en || "");
+		const blogDesc_ne = formData.has("blogDesc_ne") ? (!isEditorEmpty(formData.get("blogDesc_ne")) ? formData.get("blogDesc_ne").trim() : "") : (existingBlog.blogDesc_ne || "");
+		const blogDesc_no = formData.has("blogDesc_no") ? (!isEditorEmpty(formData.get("blogDesc_no")) ? formData.get("blogDesc_no").trim() : "") : (existingBlog.blogDesc_no || "");
+
+		const blogDate = formData.has("blogDate") ? formData.get("blogDate") : existingBlog.blogDate;
+		const blogAuthor = formData.has("blogAuthor") ? formData.get("blogAuthor") : existingBlog.blogAuthor;
+
+		const hasEn = Boolean(blogTitle_en && blogDesc_en);
+		const hasNe = Boolean(blogTitle_ne && blogDesc_ne);
+		const hasNo = Boolean(blogTitle_no && blogDesc_no);
+
+		if (!hasEn && !hasNe && !hasNo) {
+			return NextResponse.json(
+				{ success: false, error: "Title and description are required in at least one language (English, Nepali, or Norwegian)" },
+				{ status: 400 }
+			);
+		}
 
 		// Handle images
 		let blogMainPictureUrl = existingBlog.blogMainPicture;
@@ -67,16 +89,21 @@ export async function PUT(request, { params }) {
 		let oldSecondPictureUrl = null;
 
 		// Update main picture if a new file is provided
-		if (formData.get("blogMainPicture")) {
+		const newMainPic = formData.get("blogMainPicture");
+		if (newMainPic instanceof File && newMainPic.size > 0) {
 			oldMainPictureUrl = existingBlog.blogMainPicture || null;
-			blogMainPictureUrl = await uploadToCloudinary(formData.get("blogMainPicture"), "blogs_images");
+			blogMainPictureUrl = await uploadToCloudinary(newMainPic, "blogs_images");
 		}
 
 		// Update second picture if a new file is provided
-		if (formData.get("blogSecondPicture")) {
+		const newSecondPic = formData.get("blogSecondPicture");
+		if (newSecondPic instanceof File && newSecondPic.size > 0) {
 			oldSecondPictureUrl = existingBlog.blogSecondPicture || null;
-			blogSecondPictureUrl = await uploadToCloudinary(formData.get("blogSecondPicture"), "blogs_images");
+			blogSecondPictureUrl = await uploadToCloudinary(newSecondPic, "blogs_images");
 		}
+
+		const primaryTitle = blogTitle_en || blogTitle_ne || blogTitle_no || existingBlog.blogTitle;
+		const primaryDesc = blogDesc_en || blogDesc_ne || blogDesc_no || existingBlog.blogDesc;
 
 		// Update the blog in the database
 		existingBlog.blogTitle_en = blogTitle_en;
@@ -85,9 +112,10 @@ export async function PUT(request, { params }) {
 		existingBlog.blogDesc_en = blogDesc_en;
 		existingBlog.blogDesc_ne = blogDesc_ne;
 		existingBlog.blogDesc_no = blogDesc_no;
-		existingBlog.blogTitle = blogTitle_en; // Legacy field
-		existingBlog.blogDesc = blogDesc_en; // Legacy field
+		existingBlog.blogTitle = primaryTitle; // Legacy field
+		existingBlog.blogDesc = primaryDesc; // Legacy field
 		existingBlog.blogDate = blogDate;
+		existingBlog.blogAuthor = blogAuthor || existingBlog.blogAuthor || "PNSB-Norway";
 		existingBlog.blogMainPicture = blogMainPictureUrl;
 		existingBlog.blogSecondPicture = blogSecondPictureUrl;
 

@@ -9,9 +9,10 @@ function BlogSidebar({ blogs, locale: propLocale }) {
 
 	const getLocalizedTitle = (blog) => {
 		if (!blog) return "";
-		if (locale === "ne" && blog.blogTitle_ne) return blog.blogTitle_ne;
-		if (locale === "no" && blog.blogTitle_no) return blog.blogTitle_no;
-		return blog.blogTitle_en || blog.blogTitle || "";
+		if (locale === "ne" && blog.blogTitle_ne?.trim()) return blog.blogTitle_ne;
+		if (locale === "no" && blog.blogTitle_no?.trim()) return blog.blogTitle_no;
+		if (locale === "en" && blog.blogTitle_en?.trim()) return blog.blogTitle_en;
+		return blog.blogTitle_en || blog.blogTitle_ne || blog.blogTitle_no || blog.blogTitle || "";
 	};
 	return (
 		<div className="space-y-6 md:sticky md:top-36 h-auto overflow-y-scroll p-0 md:p-6 rounded-lg shadow-md">

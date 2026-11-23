@@ -15,11 +15,11 @@ import { ObjectId } from "mongodb";
 
 export interface Blog {
 	_id: ObjectId;
-	blogTitle_en: string;
+	blogTitle_en?: string;
 	blogTitle_ne?: string;
 	blogTitle_no?: string;
 	blogTitle?: string; // Legacy field
-	blogDesc_en: string;
+	blogDesc_en?: string;
 	blogDesc_ne?: string;
 	blogDesc_no?: string;
 	blogDesc?: string; // Legacy field

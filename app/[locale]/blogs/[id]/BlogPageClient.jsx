@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Calendar, Pencil } from "lucide-react";
 import BlogSidebar from "@/components/BlogSidebar";
+import { useLocale } from "next-intl";
 import "@/styles/blog-styles.css";
 
 export default function BlogPageClient({ blogData, blogsData }) {
@@ -11,16 +12,18 @@ export default function BlogPageClient({ blogData, blogsData }) {
 
 	const getLocalizedTitle = (blog) => {
 		if (!blog) return "";
-		if (locale === "ne" && blog.blogTitle_ne) return blog.blogTitle_ne;
-		if (locale === "no" && blog.blogTitle_no) return blog.blogTitle_no;
-		return blog.blogTitle_en || blog.blogTitle || "";
+		if (locale === "ne" && blog.blogTitle_ne?.trim()) return blog.blogTitle_ne;
+		if (locale === "no" && blog.blogTitle_no?.trim()) return blog.blogTitle_no;
+		if (locale === "en" && blog.blogTitle_en?.trim()) return blog.blogTitle_en;
+		return blog.blogTitle_en || blog.blogTitle_ne || blog.blogTitle_no || blog.blogTitle || "";
 	};
 
 	const getLocalizedDesc = (blog) => {
 		if (!blog) return "";
-		if (locale === "ne" && blog.blogDesc_ne) return blog.blogDesc_ne;
-		if (locale === "no" && blog.blogDesc_no) return blog.blogDesc_no;
-		return blog.blogDesc_en || blog.blogDesc || "";
+		if (locale === "ne" && blog.blogDesc_ne?.trim()) return blog.blogDesc_ne;
+		if (locale === "no" && blog.blogDesc_no?.trim()) return blog.blogDesc_no;
+		if (locale === "en" && blog.blogDesc_en?.trim()) return blog.blogDesc_en;
+		return blog.blogDesc_en || blog.blogDesc_ne || blog.blogDesc_no || blog.blogDesc || "";
 	};
 
 	if (!blog || !blog._id) {

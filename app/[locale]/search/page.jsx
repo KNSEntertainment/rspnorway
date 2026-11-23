@@ -66,8 +66,18 @@ async function SearchContent({ query, locale }) {
 		return nameMatch || emailMatch || phoneMatch || skillsMatch || membershipTypeMatch || volunteerMatch;
 	});
 	const filteredBlogs = blogsArray.filter((blog) => {
-		const titleMatch = blog.blogTitle?.toLowerCase().trim().includes(lowerQuery);
-		const contentMatch = blog.blogDesc?.toLowerCase().trim().includes(lowerQuery);
+		const titleMatch = (
+			blog.blogTitle?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogTitle_en?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogTitle_ne?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogTitle_no?.toLowerCase().trim().includes(lowerQuery)
+		);
+		const contentMatch = (
+			blog.blogDesc?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogDesc_en?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogDesc_ne?.toLowerCase().trim().includes(lowerQuery) ||
+			blog.blogDesc_no?.toLowerCase().trim().includes(lowerQuery)
+		);
 		const authorMatch = blog.blogAuthor?.toLowerCase().trim().includes(lowerQuery);
 		return titleMatch || contentMatch || authorMatch;
 	});
@@ -161,10 +171,10 @@ async function SearchContent({ query, locale }) {
 		...filteredBlogs.map((item) => ({
 			type: "Blog",
 			_id: String(item._id),
-			title: item.blogTitle,
-			description: item.blogDesc,
+			title: item[`blogTitle_${locale}`] || item.blogTitle_en || item.blogTitle_ne || item.blogTitle_no || item.blogTitle || "Blog",
+			description: item[`blogDesc_${locale}`] || item.blogDesc_en || item.blogDesc_ne || item.blogDesc_no || item.blogDesc || "",
 			image: item.blogMainPicture,
-			url: `/en/blogs/${item._id}`,
+			url: `/${locale}/blogs/${item._id}`,
 			date: item.blogDate ? String(item.blogDate) : null,
 			meta: item.blogAuthor,
 		})),

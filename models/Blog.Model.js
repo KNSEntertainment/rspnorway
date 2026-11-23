@@ -5,7 +5,6 @@ const blogSchema = new mongoose.Schema(
 		// Multilingual title fields
 		blogTitle_en: {
 			type: String,
-			required: true,
 			trim: true,
 		},
 		blogTitle_ne: {
@@ -19,7 +18,6 @@ const blogSchema = new mongoose.Schema(
 		// Multilingual description fields
 		blogDesc_en: {
 			type: String,
-			required: true,
 			trim: true,
 		},
 		blogDesc_ne: {
