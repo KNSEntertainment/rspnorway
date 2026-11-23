@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function LandingPage() {
+export default async function LandingPage() {
 	return (
 		<main aria-label="Main content">
 			{/* Hero Section - Critical, loaded immediately */}
@@ -31,7 +31,7 @@ export default function LandingPage() {
 			<AboutPreview />
 
 			{/* Featured News/Updates Section */}
-			<Blogs />
+			<Blogs isHomePage={true} />
 
 			{/* Events Timeline Section */}
 			<EventsTimeline />

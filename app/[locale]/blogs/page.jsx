@@ -13,8 +13,6 @@ export const metadata = {
 	},
 };
 
-const page = () => {
-	return <Blogs />;
-};
-
-export default page;
+export default async function Page() {
+	return <Blogs isHomePage={false} />;
+}

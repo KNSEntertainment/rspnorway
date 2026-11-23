@@ -55,7 +55,7 @@ export default function BlogPageClient({ blogData, blogsData }) {
 							{/* Date Section */}
 							<div className="flex items-center gap-1">
 								<Calendar className="w-5 h-5" />
-								<time dateTime={blog.createdAt}>
+								<time dateTime={blog.createdAt} suppressHydrationWarning>
 									{new Date(blog.createdAt).toLocaleDateString(locale, { 
 										year: 'numeric', 
 										month: 'long', 
